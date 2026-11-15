@@ -1,5 +1,5 @@
 (function(){
-var $=function(i){return document.getElementById(i)},B=document.body,H=document.documentElement,authState=null,authInitialized=false;
+var $=function(i){return document.getElementById(i)},B=document.body,H=document.documentElement,authState=null,authInitialized=false,dashboardContent=document.querySelector("#dashboard .dash");
 /* ===== Navbar liquid glass ===== */
 var nav=$("lgn"),lens=$("lens"),lg=$("lg"),prev=null,anim=null,EASE="cubic-bezier(.22,1,.36,1)";
 function rect(a){return{l:a.offsetLeft,t:a.offsetTop,w:a.offsetWidth,h:a.offsetHeight}}
@@ -141,6 +141,7 @@ function step(){
   tick++;$("dclk").textContent=new Date().toLocaleTimeString("id-ID");apply(sim());setSt(false,"OFFLINE / DATA SIMULASI")
 }
 function checkSession(){
+  if(window.VX_DEMO_MODE)return;
   if(Date.now()-lastAuthCheck<15000)return;
   lastAuthCheck=Date.now();
   window.VXAuth.request("auth/me").then(function(result){if(!result.authenticated||result.role!=="admin")window.VXAuth.expire()})
@@ -160,14 +161,14 @@ function renderVisits(visits){
   $("vhs").textContent=visits.length+" kunjungan terakhir"
 }
 function refreshVisits(){
-  if(!isAdminDashboard())return;
+  if(window.VX_DEMO_MODE||!isAdminDashboard())return;
   window.VXAuth.request("visits?limit=100").then(function(result){renderVisits(result.visits);updateVisitStatus("Riwayat tersimpan di server dan diperbarui langsung.")}).catch(function(error){
     updateVisitStatus("Riwayat kunjungan tidak dapat dimuat: "+error.message);
     if(error.status===401)window.VXAuth.expire()
   })
 }
 function openVisitStream(){
-  if(visitsSource||!window.EventSource)return;
+  if(window.VX_DEMO_MODE||visitsSource||!window.EventSource)return;
   try{
     visitsSource=new EventSource(window.VXAuth.url("stream/visits"),{withCredentials:true});
     visitsSource.addEventListener("auth-expired",function(){visitsSource.close();visitsSource=null;window.VXAuth.expire()});
@@ -179,6 +180,7 @@ function openVisitStream(){
   }catch(error){updateVisitStatus("Riwayat realtime tidak tersedia: "+error.message)}
 }
 function loadLatest(){
+  if(window.VX_DEMO_MODE)return;
   window.VXAuth.request("latest").then(function(result){
     if(result.reading&&Date.now()-Number(result.reading.ts)<10000){sensorOnline=true;lastSensorAt=Number(result.reading.ts);if(run)apply(result.reading);setSt(true,"LIVE · SENSOR")}
     else{sensorOnline=false;setSt(false,"OFFLINE / DATA SIMULASI")}
@@ -188,7 +190,7 @@ function loadLatest(){
   })
 }
 function openSensorStream(){
-  if(sensorSource||!window.EventSource)return;
+  if(window.VX_DEMO_MODE||sensorSource||!window.EventSource)return;
   try{
     sensorSource=new EventSource(window.VXAuth.url("stream/sensor"),{withCredentials:true});
     sensorSource.addEventListener("auth-expired",function(){sensorSource.close();sensorSource=null;window.VXAuth.expire()});
@@ -214,17 +216,34 @@ function setupDashboard(){
     $("dsrcb").onclick=function(){$("dsrc").classList.toggle("show")};
     $("durl").hidden=true;$("dcon").hidden=true;$("dsim").hidden=true;
     var sourceNote=document.querySelector("#dsrc .dnote");
-    if(sourceNote)sourceNote.textContent="Sensor mengirim data ke POST /api/ingest dengan header X-API-Key. Tanpa data sensor, dashboard admin menampilkan simulasi dengan label OFFLINE / DATA SIMULASI.";
+    if(sourceNote)sourceNote.textContent=window.VX_DEMO_MODE
+      ?"GitHub Pages tidak terhubung ke sensor. Semua nilai di Dashboard ini hanya simulasi."
+      :"Sensor mengirim data ke POST /api/ingest dengan header X-API-Key. Tanpa data sensor, dashboard admin menampilkan simulasi dengan label OFFLINE / DATA SIMULASI.";
     $("vhclr").textContent="Muat ulang";$("vhclr").onclick=refreshVisits;
     var historyNote=document.querySelector(".vhc .dnote");
-    if(historyNote)historyNote.textContent="Riwayat nama, halaman, dan jenis perangkat disimpan di server. Kunjungan baru muncul otomatis.";
+    if(historyNote)historyNote.textContent=window.VX_DEMO_MODE
+      ?"Riwayat kunjungan tidak tersedia pada versi demo GitHub Pages."
+      :"Riwayat nama, halaman, dan jenis perangkat disimpan di server. Kunjungan baru muncul otomatis.";
     var status=$("visit-feed-status");
     if(!status){status=document.createElement("p");status.className="dnote";status.id="visit-feed-status";status.setAttribute("role","status");status.setAttribute("aria-live","polite");$("vhl").parentNode.insertBefore(status,$("vhl"))}
-    status.textContent="Memuat riwayat kunjungan...";
+    status.textContent=window.VX_DEMO_MODE
+      ?"Mode demo: riwayat kunjungan tidak terhubung ke server."
+      :"Memuat riwayat kunjungan...";
+    if(window.VX_DEMO_MODE){
+      $("vhclr").hidden=true;
+      if(dashboardContent&&!$("vx-demo-notice")){
+        var notice=document.createElement("p");
+        notice.id="vx-demo-notice";
+        notice.className="vx-demo-notice";
+        notice.setAttribute("role","status");
+        notice.textContent="MODE DEMO — Dashboard ini hanya simulasi publik. Login tidak diverifikasi dan tidak ada data sensor realtime.";
+        dashboardContent.insertBefore(notice,dashboardContent.firstChild);
+      }
+    }
     $("dtabs").onclick=function(event){var button=event.target.closest("button");if(!button)return;tab=button.dataset.k;this.querySelectorAll("button").forEach(function(item){item.setAttribute("aria-pressed",String(item===button))});chart()}
   }
   window.vxDashboard={push:function(reading){
-    if(!isAdminDashboard()||!reading||K.some(function(key){return typeof reading[key]!=="number"||!Number.isFinite(reading[key])}))return;
+    if(window.VX_DEMO_MODE||!isAdminDashboard()||!reading||K.some(function(key){return typeof reading[key]!=="number"||!Number.isFinite(reading[key])}))return;
     sensorOnline=true;lastSensorAt=Date.now();apply(reading);setSt(true,"DATA EKSTERNAL")
   }}
 }
@@ -243,7 +262,11 @@ function resetDashboard(){
 }
 function dash(on){
   if(!on||!authState||authState.role!=="admin"){stopStreams();window.vxDashboard=undefined;return}
-  setupDashboard();openSensorStream();openVisitStream();refreshVisits();loadLatest();startSimulation()
+  setupDashboard();
+  if(window.VX_DEMO_MODE){
+    sensorOnline=false;setSt(false,"OFFLINE / DATA SIMULASI");startSimulation();return
+  }
+  openSensorStream();openVisitStream();refreshVisits();loadLatest();startSimulation()
 }
 sync();
 })();

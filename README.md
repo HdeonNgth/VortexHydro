@@ -4,7 +4,9 @@ Website satu halaman untuk proyek pembangkit listrik mikro-hidro berbasis pusara
 
 ## Situs online
 
-Buka [Vortex Hydro](https://hdeonngth.github.io/VortexHydro/) untuk melihat situs statis. Fitur login dan Dashboard memerlukan backend Node.js yang aktif; GitHub Pages tidak menjalankan backend. Sebelum memakai fitur tersebut, deploy backend dan atur `assets/js/api-config.js` ke URL API yang diizinkan.
+Buka [Vortex Hydro](https://hdeonngth.github.io/VortexHydro/) untuk melihat situs di GitHub Pages. Karena GitHub Pages tidak menjalankan backend, situs online otomatis memakai mode demo: Tamu masuk langsung, sedangkan Admin dapat membuka Dashboard simulasi dengan isian apa pun. Login Admin tidak diverifikasi, data sensor dan riwayat kunjungan tidak realtime, dan halaman ini tidak boleh dipakai untuk informasi privat atau kata sandi asli.
+
+Untuk login dan Dashboard realtime yang aman, deploy backend Node.js pada layanan hosting terpisah dan atur `assets/js/api-config.js` ke URL API yang diizinkan.
 
 ## Menjalankan backend
 
@@ -20,9 +22,15 @@ Persyaratan: Node.js 20 atau lebih baru.
 
 Jangan commit `.env` atau menaruh `API_KEY` di file frontend. Untuk layanan hosting yang mengharuskan bind ke semua interface, atur `HOST=0.0.0.0`. `NODE_ENV=production` mengaktifkan cookie `Secure`.
 
+## Cara masuk
+
+Pada backend Node.js, pilih **Masuk sebagai Tamu** untuk langsung membuka halaman publik; tamu tidak diminta mengisi nama dan tidak dapat membuka Dashboard. **Masuk sebagai Admin** memeriksa akun yang dibuat lewat skrip seed. Identitas akun tidak ditampilkan di navbar; tombol Keluar tetap tersedia untuk mengakhiri sesi.
+
+Di GitHub Pages, tombol Admin hanya simulasi visual: username dan kata sandi tidak diperiksa. Gunakan hanya untuk demo dan jangan masukkan kata sandi asli.
+
 ## API sensor
 
-ESP32 mengirim objek JSON berisi `debit`, `head`, `rpm`, `volt`, `amp`, `daya`, `eff`, dan `temp` ke `POST /api/ingest`, dengan header `X-API-Key`. Batas nilai divalidasi server. Data realtime Dashboard dan riwayat kunjungan hanya tersedia bagi sesi admin; tanpa sensor aktif, Dashboard admin memberi label `OFFLINE / DATA SIMULASI`.
+ESP32 mengirim objek JSON berisi `debit`, `head`, `rpm`, `volt`, `amp`, `daya`, `eff`, dan `temp` ke `POST /api/ingest`, dengan header `X-API-Key`. Batas nilai divalidasi server. Pada backend Node, data realtime Dashboard dan riwayat kunjungan hanya tersedia bagi sesi admin; tanpa sensor aktif, Dashboard admin memberi label `OFFLINE / DATA SIMULASI`. Dashboard GitHub Pages hanya simulasi lokal di browser.
 
 Jalankan pengujian backend dengan `npm test` (atau `npm.cmd test`). Database SQLite berada di `server/data/` dan tidak dilacak Git.
 

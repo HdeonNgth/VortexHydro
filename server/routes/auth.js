@@ -3,18 +3,13 @@ const bcrypt = require('bcryptjs');
 const { COOKIE_NAME, createSession } = require('../middleware/session');
 const { requireAuth } = require('../middleware/access');
 
-const NAME_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M}\s.'’-]*$/u;
 const DUMMY_HASH = bcrypt.hashSync('not-a-valid-vortex-password', 10);
 
 function createAuthRouter({ db, secureCookies, loginLimiter }) {
   const router = express.Router();
   router.post('/guest', loginLimiter, (req, res) => {
-    const name = typeof req.body?.name === 'string' ? req.body.name.trim() : '';
-    if (name.length < 2 || name.length > 30 || !NAME_PATTERN.test(name)) {
-      return res.status(400).json({ error: 'Nama harus 2–30 karakter dan hanya berisi huruf, spasi, titik, tanda petik, atau tanda hubung.' });
-    }
     if (req.auth) db.prepare('DELETE FROM sessions WHERE session_hash = ?').run(req.auth.sessionId);
-    const session = createSession(db, res, { role: 'guest', guestName: name, displayName: name }, { secureCookies });
+    const session = createSession(db, res, { role: 'guest', guestName: 'Tamu', displayName: 'Tamu' }, { secureCookies });
     res.status(201).json({ authenticated: true, ...session });
   });
 

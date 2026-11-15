@@ -33,19 +33,18 @@ test('auth, admin authorization, visits, sensor ingest, and logout', async t => 
   });
 
   await t.test('guest cannot access admin resources and a guest visit is saved', async () => {
-    const login = await post('/auth/guest', { name: 'Tamu Uji' });
+    const login = await post('/auth/guest', {});
     assert.equal(login.status, 201);
     assert.match(login.headers.get('set-cookie'), /HttpOnly/i);
     guestCookie = cookieFrom(login);
     const body = await login.json();
     assert.equal(body.authenticated, true);
     assert.equal(body.role, 'guest');
-    assert.equal(body.displayName, 'Tamu Uji');
+    assert.equal(body.displayName, 'Tamu');
     assert.ok(Number.isInteger(body.expiresAt));
     assert.equal((await send('/stream/sensor', { headers: { Cookie: guestCookie } })).status, 403);
     assert.equal((await send('/latest', { headers: { Cookie: guestCookie } })).status, 403);
     assert.equal((await send('/visits', { headers: { Cookie: guestCookie } })).status, 403);
-    assert.equal((await post('/auth/guest', { name: 'X' })).status, 400);
     assert.equal((await post('/track', { page: 'beranda' }, guestCookie, { 'User-Agent': 'iPhone Mobile' })).status, 201);
     return guestCookie;
   });
@@ -72,7 +71,7 @@ test('auth, admin authorization, visits, sensor ingest, and logout', async t => 
     const visits = await send('/visits?limit=10', { headers: { Cookie: adminCookie } });
     assert.equal(visits.status, 200);
     const visitRows = (await visits.json()).visits;
-    assert.equal(visitRows[0].visitorName, 'Tamu Uji');
+    assert.equal(visitRows[0].visitorName, 'Tamu');
     assert.equal(visitRows[0].device, 'mobile');
 
     const sensorStream = await send('/stream/sensor', { headers: { Cookie: adminCookie } });
@@ -101,7 +100,7 @@ test('auth, admin authorization, visits, sensor ingest, and logout', async t => 
   });
 
   await t.test('logout revokes a guest session', async () => {
-    const login = await post('/auth/guest', { name: 'Tamu Keluar' });
+    const login = await post('/auth/guest', {});
     const guestCookie = cookieFrom(login);
     assert.equal((await post('/auth/logout', {}, guestCookie)).status, 204);
     assert.deepEqual(await (await send('/auth/me', { headers: { Cookie: guestCookie } })).json(), { authenticated: false });
