@@ -2,19 +2,13 @@
 
 Website statis satu halaman untuk proyek pembangkit listrik mikro-hidro berbasis pusaran air.
 
-## Menjalankan lokal
+## Situs online
 
-Jalankan server dari folder proyek:
-
-```powershell
-python -m http.server 8000
-```
-
-Buka [http://localhost:8000/html.html](http://localhost:8000/html.html). Situs memakai rute hash seperti `#teknologi`, `#struktur-tim`, `#faq`, dan `#dashboard`.
+Buka [Vortex Hydro](https://hdeonngth.github.io/VortexHydro/). Situs dipublikasikan melalui GitHub Pages, jadi server lokal tidak diperlukan untuk melihatnya. Rute aplikasi mencakup `#teknologi`, `#struktur-tim`, `#faq`, dan `#dashboard`.
 
 ## Struktur
 
-- `html.html` — markup halaman dan rute.
+- `index.html` — markup halaman dan rute.
 - `assets/css/site.css` — gaya situs.
 - `assets/js/` — skrip yang dipisah menurut fitur.
 - `assets/i18n.js` — bahasa Indonesia dan Inggris.
