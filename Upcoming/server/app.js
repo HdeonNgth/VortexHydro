@@ -8,7 +8,7 @@ const { createAuthRouter } = require('./routes/auth');
 const { createTelemetryRouter } = require('./routes/telemetry');
 
 function createApp(options = {}) {
-  const root = options.publicRoot || path.join(__dirname, '..');
+  const root = options.publicRoot || path.join(__dirname, '..', '..');
   const db = options.db || openDatabase(options.dbPath);
   const secureCookies = options.secureCookies === true;
   const apiKey = options.apiKey === undefined ? process.env.API_KEY : options.apiKey;

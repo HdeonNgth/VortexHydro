@@ -9,7 +9,7 @@ assets/js/              Skrip per fitur, tetap dimuat berurutan
 assets/i18n.js          Terjemahan antarmuka Indonesia/Inggris
 assets/team/            Foto tim yang dioptimalkan untuk website
 assets/images/          Gambar dokumentasi dan logo software
-server/                 API Express, sesi, SQLite, dan pengujian
+Upcoming/               Backend Node.js, konfigurasi contoh, tes, dan panduan hosting
 docs/                   Dokumentasi proyek
 ```
 
@@ -17,13 +17,9 @@ Beranda, Tentang, Teknologi, Dokumentasi, Struktur Tim, FAQ, dan Dashboard tetap
 
 ## Akses situs dan backend
 
-Situs statis dipublikasikan melalui [GitHub Pages](https://hdeonngth.github.io/VortexHydro/). GitHub Pages tidak menjalankan backend Express. Mode demo publik membiarkan Tamu masuk langsung dan meminta kata sandi demo `vortex-demo` untuk Admin. Pemeriksaan itu dilakukan di browser, dapat dilewati, dan bukan perlindungan data. Login sungguhan, pencatatan kunjungan, dan Dashboard realtime memerlukan backend yang di-host terpisah. Atur `window.VX_API_BASE` di `assets/js/api-config.js` ke URL backend publik; nilai tersebut bukan secret. Backend harus mengizinkan origin frontend melalui `CORS_ORIGINS`.
+Situs statis dipublikasikan melalui [GitHub Pages](https://hdeonngth.github.io/VortexHydro/). GitHub Pages tidak menjalankan backend Express. Situs publik saat ini memakai mode demo frontend; backend belum di-host atau dihubungkan. Semua kode server, contoh konfigurasi, dan panduan hosting berada di [`../Upcoming/README.md`](../Upcoming/README.md).
 
-Cookie sesi memakai `SameSite=Lax`, sehingga gunakan HTTPS dan sajikan frontend/API pada origin yang sama atau site yang sama (misalnya melalui reverse proxy atau subdomain satu domain). Jika backend tidak terhubung, halaman login menampilkan status kegagalan dan Dashboard admin tidak menampilkan data realtime.
-
-Akun admin dibuat dengan `npm run seed:admin` setelah mengisi `ADMIN_USERNAME` dan `ADMIN_PASSWORD` pada `.env`. Simpan `API_KEY` hanya di konfigurasi backend/ESP32; jangan menaruhnya di HTML atau JavaScript publik. Perangkat mengirim pembacaan sensor ke `POST /api/ingest` menggunakan header `X-API-Key`. Akses riwayat kunjungan, pembacaan sensor, dan SSE dibatasi oleh sesi admin di server.
-
-Panduan setup ada pada `README.md` di root repositori.
+Panduan setup backend ada pada `Upcoming/README.md`.
 
 Foto tim yang digunakan situs berada di `assets/team/`; gambar dokumentasi dan logo software berada di `assets/images/`. Data anggota serta pemetaan foto berada di `assets/js/team.js`. Folder bahan sumber foto dan referensi desain lokal tidak diperlukan untuk menjalankan situs dan tidak disertakan dalam distribusi publik.
 

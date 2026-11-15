@@ -4,4 +4,4 @@ UI & UX/
 .env.*
 !.env.example
 node_modules/
-server/data/
+Upcoming/server/data/
