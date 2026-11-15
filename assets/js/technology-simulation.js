@@ -12,7 +12,7 @@ for(i=0;i<N;i++){var c=document.createElementNS(NS,"circle");c.setAttribute("r",
 var tg=$("vs-turb");
 for(k=0;k<6;k++){var bl=document.createElementNS(NS,"path");bl.setAttribute("d","M6 0C16 -2 24 -8 28 -22");bl.setAttribute("fill","none");bl.setAttribute("stroke","var(--cyan,#00B4D8)");bl.setAttribute("stroke-width","5");bl.setAttribute("stroke-linecap","round");bl.setAttribute("transform","rotate("+k*60+")");tg.appendChild(bl)}
 var gl=document.querySelectorAll("#vs-led .g"),bu=document.querySelectorAll("#vs-led .b");
-var on=!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches),q=.5,h=.5,qe=0,rpm=0,ang=0,gang=0,ph=0,last=0,vis=false,raf=0,lastTxt={};
+var on=!(window.matchMedia&&(matchMedia("(prefers-reduced-motion: reduce)").matches||matchMedia("(max-width:760px)").matches)),q=.5,h=.5,qe=0,rpm=0,ang=0,gang=0,ph=0,last=0,vis=false,raf=0,lastTxt={};
 var btn=$("vs-pump"),sq=$("vs-q"),sh=$("vs-h");
 function fmt(n,d){return n.toFixed(d).replace(".",",")}
 function set(id,v){if(lastTxt[id]!==v){lastTxt[id]=v;$(id).textContent=v}}

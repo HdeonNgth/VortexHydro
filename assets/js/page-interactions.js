@@ -24,7 +24,8 @@
   if (fab) {
     fab.addEventListener('click', function (e) {
       e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      var reduced = document.documentElement.classList.contains('vx-noanim') || (window.matchMedia && window.matchMedia('(max-width:760px)').matches);
+      window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
     });
   }
 })();

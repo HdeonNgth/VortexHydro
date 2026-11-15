@@ -1190,3 +1190,100 @@ body.vx-auth-open{overflow:hidden}
 .visit-row__meta{grid-column:1/-1;color:var(--slate,#53617a);font-size:.78rem}
 @media(max-width:420px){.vx-auth{padding:12px}.vx-auth__card{border-radius:20px}.dashboard-locked{margin:20px 14px;min-height:42vh}}
 @media(max-width:900px){.lg__logout{position:fixed;z-index:90;top:76px;right:10px;padding:8px 10px;border:1px solid var(--g-ln);background:var(--g-bg);box-shadow:0 10px 30px rgba(var(--navy-rgb),.2)}body.is-dash .lg__logout{top:14px;right:12px}}
+
+@media(max-width:760px){
+  html{font-size:15px;scroll-behavior:auto!important}
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  body{font-size:.94rem;line-height:1.55}
+  .wrap,.wrap--wide{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .section{padding-block:42px}
+  .section.intro{padding-block:42px}
+  .hero{padding-top:108px;padding-bottom:34px}
+  .pagehead{padding-top:104px;padding-bottom:28px}
+  .h-xl,.hero h1,.pagehead h1{font-size:clamp(2rem,8.5vw,2.7rem);line-height:1.08}
+  .h-lg{font-size:clamp(1.55rem,6.5vw,2rem);line-height:1.15}
+  .hero .sub,.pagehead .sub{font-size:.94rem;line-height:1.6}
+  .hero__cta{gap:9px;margin-top:20px}
+  .btn{min-height:44px;padding:10px 16px;font-size:.84rem}
+  .stats{gap:4px;padding:6px;border-radius:18px}
+  .stats>div{padding:12px 4px}
+  .stats strong{font-size:clamp(1rem,5vw,1.3rem)}
+  .stats span{font-size:.68rem}
+  .panel,.flow-panel{gap:14px;padding:15px;border-radius:18px}
+  .pcard,.gcard{min-height:0!important;padding:17px!important;border-radius:18px!important}
+  .pcard p,.gcard p,.gcard li{font-size:.84rem;line-height:1.55}
+  .note-box{margin-top:18px;padding:13px 15px;font-size:.86rem}
+  .intro__grid,.split,.who{gap:22px}
+  .intro__grid p,.who p{font-size:.92rem;line-height:1.65}
+  .checks{gap:12px;margin-top:16px}
+  .checks .tick{width:30px;height:30px}
+  .bento{gap:10px;grid-auto-rows:minmax(150px,auto)}
+  .bento__intro{min-height:145px;padding:20px;border-radius:22px}
+  .bento__intro h2{font-size:1.55rem}
+  .bento .tile{min-height:150px;border-radius:22px}
+  .bento .tile strong{left:15px;right:12px;bottom:14px;font-size:1.05rem}
+  .komp__grid,.docgrid{gap:10px}
+  .kc{padding:8px 8px 13px;border-radius:19px}
+  .kc__art{height:124px;border-radius:14px}
+  .kc__body{padding:10px 8px 0}
+  .kc h3.ed{font-size:.94rem}
+  .docfull .wrap,.docfull .wrap--wide{padding-inline:16px}
+  .docfull .tile{min-height:155px;border-radius:18px}
+  .docfull .tile strong{left:14px;right:12px;bottom:13px;font-size:1rem}
+  .team-deck-title{margin-top:18px;font-size:1.3rem}
+  .tcf__stage{--cw:min(68vw,260px);height:calc(var(--cw)*1.25 + 82px)}
+  .tc__back{padding:20px 14px 6px}
+  .tc__cap{left:14px;right:14px;bottom:14px}
+  .tc__cap strong{font-size:1rem}
+  .tcf__bar{width:calc(100% - 28px);gap:8px}
+  .tcf__arrow{width:42px;height:42px}
+  .tcf__meta{margin:8px 12px 0;font-size:.8rem}
+  .vsim__head{margin-bottom:20px}
+  .vsim__box{gap:14px}
+  .vsim__fig{padding:8px}
+  .vsim__fig svg{min-width:460px}
+  .vsim__ctl{gap:10px}
+  .vsim__ctl label{min-width:100%;font-size:.82rem}
+  .vsim__btn{min-height:44px;padding:10px 16px;font-size:.86rem}
+  .vsim__cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .vsim__c{padding:10px}
+  .vsim__c b{font-size:1.15rem}
+  .faq-page{padding:94px 14px 48px}
+  .faq__head{margin-bottom:24px}
+  .faq__title{font-size:clamp(1.8rem,8vw,2.25rem)}
+  .faq__lead,.faq__item p{font-size:.9rem;line-height:1.6}
+  .faq__item summary{padding:15px 48px 15px 15px;font-size:.9rem}
+  .faq__item summary::after{right:13px;width:24px;height:24px}
+  .faq__item p{padding:0 15px 15px}
+  .ft__card{padding:28px 17px 0;border-radius:22px 22px 0 0}
+  .ft__grid{gap:18px}
+  .ft__base{font-size:.72rem}
+  .vxt{right:max(12px,env(safe-area-inset-right,0px));bottom:max(12px,env(safe-area-inset-bottom,0px))}
+  .vxt__pan{max-height:calc(100vh - 190px);overflow-y:auto;bottom:166px}
+  .lg{top:max(8px,env(safe-area-inset-top,0px));max-width:calc(100vw - 16px);padding:4px 6px;gap:2px}
+  .lg__nav a{padding:9px 8px}
+  .lg__nav a svg{width:17px;height:17px}
+  .lg__lang{width:34px;height:34px}
+  .lg__logout{top:64px!important;right:8px!important;padding:7px 9px}
+  body.is-dash .lg__logout{top:10px!important;right:8px!important}
+  .dash{padding:18px 12px 76px}
+  .dashboard-locked{min-height:40vh;margin:22px 14px;padding:22px}
+  .fx-bubbles,.fx-bar,.fx-orb,.hex{display:none!important}
+  .fx-rise,.fx-t,.fx-intro .fx-w{opacity:1!important;transform:none!important}
+  .hero>.wrap,.tile__bg{transform:none!important;translate:none!important;opacity:1!important}
+  .pin{height:auto!important;overflow:visible!important;padding-block:initial!important}
+  .pin>.wrap{position:relative!important;top:auto!important;min-height:0!important;padding-top:0!important;padding-bottom:0!important}
+  .pin>.wrap>.flow-panel{margin-top:18px}
+  .pin .gcard{position:static!important}
+}
+@media(max-width:430px){
+  .stats{gap:0;padding:4px}
+  .stats>div{padding:10px 2px}
+  .stats span{font-size:.62rem}
+  .bento{grid-template-columns:minmax(0,1fr);grid-auto-rows:minmax(140px,auto)}
+  .bento__intro{grid-column:auto}
+  .bento .b-wide{grid-column:auto}
+  .docgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tcf__stage{--cw:min(72vw,250px)}
+  .vsim__cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

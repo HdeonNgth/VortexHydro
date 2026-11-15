@@ -90,7 +90,7 @@ const TEAM_CARDS=[
  const cards=[...stage.querySelectorAll('.tc')],ticks=[...ticksEl.children];
  const flip=cards.map(()=>({v:0,from:0,to:0,t0:0,dur:0}));   // v: 0 = foto, 1 = daftar anggota
  let pos=0,target=0,cur=0,spread=0,spreadT0=null,cw=300,raf=0,last=0,drag=null,suppress=false,lastWheel=0;
- const still=()=>matchMedia('(prefers-reduced-motion:reduce)').matches;
+ const still=()=>matchMedia('(prefers-reduced-motion:reduce)').matches||matchMedia('(max-width:760px)').matches;
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const easeInOut=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
  const easeOut=p=>1-Math.pow(1-p,3);
@@ -129,7 +129,7 @@ const TEAM_CARDS=[
   render();
   raf=busy?requestAnimationFrame(frame):0
  }
- const kick=()=>{if(!raf){last=performance.now();raf=requestAnimationFrame(frame)}};
+ const kick=()=>{if(still()){if(raf){cancelAnimationFrame(raf);raf=0}pos=target;spread=1;spreadT0=null;flip.forEach(f=>f.v=f.to);render();return}if(!raf){last=performance.now();raf=requestAnimationFrame(frame)}};
 
  function syncUi(){
   ticks.forEach((t,i)=>t.setAttribute('aria-current',i===cur?'true':'false'));

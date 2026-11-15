@@ -22,7 +22,7 @@ ul.innerHTML=items.map(function(e,i){return'<li role="option" data-i="'+i+'"><sm
 function open(){back=document.activeElement;build();ov.hidden=false;document.body.style.overflow="hidden";inp.value="";render();inp.focus()}
 function close(){ov.hidden=true;document.body.style.overflow="";if(back&&back.focus)back.focus()}
 function go(e){close();var cur=(location.hash||"#beranda").slice(1);
-function sc(){e.el.scrollIntoView({behavior:"smooth",block:"center"});e.el.classList.add("vs-flash");setTimeout(function(){e.el.classList.remove("vs-flash")},2200)}
+function sc(){var noMotion=document.documentElement.classList.contains("vx-noanim")||(window.matchMedia&&window.matchMedia("(max-width:760px)").matches);e.el.scrollIntoView({behavior:noMotion?"auto":"smooth",block:"center"});e.el.classList.add("vs-flash");setTimeout(function(){e.el.classList.remove("vs-flash")},2200)}
 if(cur!==e.p){location.hash="#"+e.p;setTimeout(sc,160)}else sc()}
 [].forEach.call(document.querySelectorAll("[data-vs-open]"),function(b){b.addEventListener("click",open)});
 document.getElementById("vs-x").addEventListener("click",close);

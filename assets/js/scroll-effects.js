@@ -1,6 +1,7 @@
 
 /* Scroll FX: lapisan animasi tambahan. Tidak mengubah isi atau router halaman. */
 (function () {
+  if (window.matchMedia && window.matchMedia("(max-width:760px)").matches) return;
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var clamp = function (v) { return v < 0 ? 0 : v > 1 ? 1 : v; };
   var ease = function (t) { return 1 - Math.pow(1 - t, 3); };
