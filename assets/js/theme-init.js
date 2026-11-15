@@ -1,0 +1,1 @@
+try{var t=localStorage.getItem("vxt");if(t)document.documentElement.dataset.theme=t;var pp=localStorage.getItem("vxpal");if(pp&&/^(carousel|sakura|teratai)$/.test(pp))document.documentElement.dataset.pal=pp}catch(e){}
