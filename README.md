@@ -1,18 +1,40 @@
 # Vortex Hydro
 
-Website statis satu halaman untuk proyek pembangkit listrik mikro-hidro berbasis pusaran air.
+Website satu halaman untuk proyek pembangkit listrik mikro-hidro berbasis pusaran air, dengan backend Express dan SQLite untuk login serta data Dashboard.
 
 ## Situs online
 
-Buka [Vortex Hydro](https://hdeonngth.github.io/VortexHydro/). Situs dipublikasikan melalui GitHub Pages, jadi server lokal tidak diperlukan untuk melihatnya. Rute aplikasi mencakup `#teknologi`, `#struktur-tim`, `#faq`, dan `#dashboard`.
+Buka [Vortex Hydro](https://hdeonngth.github.io/VortexHydro/) untuk melihat situs statis. Fitur login dan Dashboard memerlukan backend Node.js yang aktif; GitHub Pages tidak menjalankan backend. Sebelum memakai fitur tersebut, deploy backend dan atur `assets/js/api-config.js` ke URL API yang diizinkan.
+
+## Menjalankan backend
+
+Persyaratan: Node.js 20 atau lebih baru.
+
+1. Pasang dependensi dengan `npm install` (di PowerShell yang memblokir skrip npm, gunakan `npm.cmd install`).
+2. Salin `.env.example` menjadi `.env`.
+3. Isi `API_KEY` dengan nilai acak minimal 32 karakter. Contoh pembuatannya:
+   `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`
+4. Isi `ADMIN_USERNAME` dan `ADMIN_PASSWORD` (12–128 karakter), lalu jalankan `npm run seed:admin`. Akun admin hanya dibuat lewat skrip ini.
+5. Atur `CORS_ORIGINS` ke origin frontend yang tepat. Untuk deployment, gunakan HTTPS dan sajikan API pada origin yang sama atau site yang sama agar cookie `SameSite=Lax` dapat dikirim.
+6. Jalankan `npm start` (atau `npm.cmd start` di PowerShell yang memblokir skrip), lalu buka URL server yang ditampilkan.
+
+Jangan commit `.env` atau menaruh `API_KEY` di file frontend. Untuk layanan hosting yang mengharuskan bind ke semua interface, atur `HOST=0.0.0.0`. `NODE_ENV=production` mengaktifkan cookie `Secure`.
+
+## API sensor
+
+ESP32 mengirim objek JSON berisi `debit`, `head`, `rpm`, `volt`, `amp`, `daya`, `eff`, dan `temp` ke `POST /api/ingest`, dengan header `X-API-Key`. Batas nilai divalidasi server. Data realtime Dashboard dan riwayat kunjungan hanya tersedia bagi sesi admin; tanpa sensor aktif, Dashboard admin memberi label `OFFLINE / DATA SIMULASI`.
+
+Jalankan pengujian backend dengan `npm test` (atau `npm.cmd test`). Database SQLite berada di `server/data/` dan tidak dilacak Git.
 
 ## Struktur
 
 - `index.html` — markup halaman dan rute.
 - `assets/css/site.css` — gaya situs.
 - `assets/js/` — skrip yang dipisah menurut fitur.
+- `server/` — backend, middleware sesi, endpoint, dan pengujian.
+- `.env.example` — contoh konfigurasi backend tanpa secret.
 - `assets/i18n.js` — bahasa Indonesia dan Inggris.
 - `assets/images/` dan `assets/team/` — aset situs yang digunakan langsung.
-- `docs/README.md` — catatan proyek dan informasi pengujian.
+- `docs/README.md` — catatan struktur dan deployment situs.
 
 CSS dan skrip dipisahkan tanpa menambahkan build step; urutan pemuatan skrip dipertahankan.

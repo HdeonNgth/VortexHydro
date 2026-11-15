@@ -85,14 +85,6 @@ const TEAM_CARDS=[
   +'</div></article>'
  };
  stage.innerHTML=TEAM_CARDS.map(cardHtml).join('');
- const loadTeamPhotos=()=>{
-  if(location.hash!=='#struktur-tim')return;
-  document.querySelectorAll('#struktur-tim img[data-src]').forEach(img=>{img.src=img.dataset.src;img.removeAttribute('data-src')});
- };
- window.addEventListener('hashchange',loadTeamPhotos);
- loadTeamPhotos();
- const teamPage=document.getElementById('struktur-tim');
- if(teamPage)new MutationObserver(loadTeamPhotos).observe(teamPage,{childList:true,subtree:true});
  ticksEl.innerHTML=TEAM_CARDS.map((c,i)=>'<button class="tcf__tick" type="button" data-i="'+i+'" style="--ac:'+accent(c)+'" aria-label="Ke kartu '+(i+1)+': '+escapeHtml(c.role)+'"></button>').join('');
 
  const cards=[...stage.querySelectorAll('.tc')],ticks=[...ticksEl.children];
@@ -242,7 +234,7 @@ const TEAM_CARDS=[
 
  const measure=()=>{const w=cards[0].offsetWidth;if(w)cw=w;render()};
  if('ResizeObserver' in window)new ResizeObserver(measure).observe(stage);else addEventListener('resize',measure);
- measure();syncUi();window.vhTeamGoTo=function(i){goTo(i);stage.scrollIntoView({behavior:'smooth',block:'center'})};
+ measure();syncUi();
 
  /* satu momen pembuka: kartu menyebar dari tengah saat bagian ini terlihat */
  if(still()||!('IntersectionObserver' in window)){spread=1;render()}
@@ -265,13 +257,18 @@ const TEAM_CARDS=[
   +card('Bendahara',grp('Bendahara'))+'</div><div class="stem"></div><div class="rail"></div><div class="divisions">';
  TEAM_LEADERS.forEach((t,i)=>{
   const rows=[{n:t.leader,s:'Ketua Divisi'}].concat(t.members.map(n=>({n:n,s:''})));
-  h+='<article class="node division" tabindex="0" role="button" data-go="'+(i+1)+'" aria-label="Divisi '+escapeHtml(t.division)+', '+rows.length+' orang. Tampilkan di carousel."><header><span class="tag">Divisi '+(i+1)+'</span><h3>'+escapeHtml(t.division)+'</h3></header><div class="slots">'
+  h+='<article class="node division"><header><span class="tag">Divisi '+(i+1)+'</span><h3>'+escapeHtml(t.division)+'</h3></header><div class="slots">'
    +rows.map(r=>'<div class="slot">'+av(r.n,t.folder)+'<span>'+escapeHtml(r.n)+(r.s?'<em>'+r.s+'</em>':'')+'</span></div>').join('')+'</div></article>'
  });
  host.innerHTML=h+'</div>';
- const go=el=>{const d=el.closest('.division');if(d&&window.vhTeamGoTo)window.vhTeamGoTo(+d.dataset.go)};
- host.addEventListener('click',e=>go(e.target));
- host.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.division')){e.preventDefault();go(e.target)}});
+ const loadTeamPhotos=()=>{
+  if(location.hash!=='#struktur-tim')return;
+  document.querySelectorAll('#struktur-tim img[data-src]').forEach(img=>{img.src=img.dataset.src;img.removeAttribute('data-src')});
+ };
+ window.addEventListener('hashchange',loadTeamPhotos);
+ loadTeamPhotos();
+ const teamPage=document.getElementById('struktur-tim');
+ if(teamPage)new MutationObserver(loadTeamPhotos).observe(teamPage,{childList:true,subtree:true});
 })();
 
 })();

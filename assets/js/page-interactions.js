@@ -32,10 +32,36 @@
 (function () {
   var ids = ['beranda', 'tentang', 'teknologi', 'dokumentasi', 'struktur-tim', 'faq', 'dashboard'];
   var names = { beranda: 'Vortex Hydro', tentang: 'Tentang', teknologi: 'Teknologi', dokumentasi: 'Dokumentasi', 'struktur-tim': 'Struktur Tim', faq: 'FAQ', dashboard: 'Dashboard' };
+  var dashboard = document.getElementById('dashboard');
+  var dashboardContent = dashboard && dashboard.querySelector('.dash');
+  var locked = document.createElement('section');
+  locked.className = 'dashboard-locked';
+  locked.setAttribute('aria-labelledby', 'dashboard-locked-title');
+  locked.hidden = true;
+  var lockedTitle = document.createElement('h1');
+  lockedTitle.id = 'dashboard-locked-title';
+  lockedTitle.textContent = 'Dashboard khusus admin';
+  var lockedMessage = document.createElement('p');
+  lockedMessage.textContent = 'Data sensor realtime dan riwayat kunjungan hanya dapat dilihat oleh admin.';
+  var loginButton = document.createElement('button');
+  loginButton.className = 'btn btn--navy';
+  loginButton.type = 'button';
+  loginButton.setAttribute('data-vx-admin-login', '');
+  loginButton.textContent = 'Login Admin';
+  locked.appendChild(lockedTitle);
+  locked.appendChild(lockedMessage);
+  locked.appendChild(loginButton);
+  if (dashboard) dashboard.insertBefore(locked, dashboard.firstChild);
+
   function route() {
     var h = (location.hash || '#beranda').slice(1);
     if (ids.indexOf(h) < 0) h = 'beranda';
+    var session = window.VXAuth ? window.VXAuth.state() : null;
+    var isAdmin = !!(session && session.authenticated && session.role === 'admin');
+    var isLockedDashboard = h === 'dashboard' && !isAdmin;
     ids.forEach(function (id) { document.getElementById(id).hidden = (id !== h); });
+    if (dashboardContent) dashboardContent.hidden = isLockedDashboard;
+    locked.hidden = !isLockedDashboard;
     document.body.classList.toggle('is-home', h === 'beranda');
     document.querySelectorAll('.nav__links a').forEach(function (a) {
       if (a.getAttribute('href') === '#' + h) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
@@ -45,5 +71,6 @@
     window.scrollTo(0, 0);
   }
   window.addEventListener('hashchange', route);
+  window.addEventListener('vx:authchange', route);
   route();
 })();
