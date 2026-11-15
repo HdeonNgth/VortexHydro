@@ -1,7 +1,8 @@
 (function () {
   var apiBase = String(window.VX_API_BASE || "").replace(/\/+$/, "");
   var isDemo = window.VX_DEMO_MODE === true;
-  var demoSessionKey = "vx-demo-role";
+  var demoSessionKey = "vx-demo-role-v2";
+  var demoAdminPassword = "vortex-demo";
   var state = { authenticated: false, role: null, displayName: "", offline: false };
   var forceOpen = false;
 
@@ -41,7 +42,7 @@
   var title = make("h1", "vx-auth__title", "Masuk ke Vortex Hydro");
   title.id = "vx-auth-title";
   var intro = make("p", "vx-auth__intro", isDemo
-    ? "Mode demo publik. Akses Admin tidak diverifikasi dan Dashboard hanya simulasi."
+    ? "Mode demo publik. Admin memerlukan kata sandi demo; Dashboard hanya simulasi."
     : "Pilih akses untuk melanjutkan.");
 
   function makeField(form, labelText, name, type, autocomplete, minLength, maxLength) {
@@ -77,12 +78,15 @@
   adminForm.setAttribute("role", "tabpanel");
   adminForm.setAttribute("aria-labelledby", "vx-auth-title");
   adminForm.appendChild(make("p", "vx-auth__hint", isDemo
-    ? "Mode demo: kombinasi username dan kata sandi apa pun diterima. Jangan masukkan kata sandi asli."
+    ? "Gunakan kata sandi demo publik. Pemeriksaan dilakukan di browser dan bukan pengamanan sungguhan."
     : "Gunakan akun admin yang disiapkan oleh pengelola."));
-  var username = makeField(adminForm, "Username", "admin-username", "text", "username", 3, 32);
-  username.autocapitalize = "none";
-  username.spellcheck = false;
-  var password = makeField(adminForm, "Kata sandi", "admin-password", "password", "current-password", 1, 128);
+  var username = null;
+  if (!isDemo) {
+    username = makeField(adminForm, "Username", "admin-username", "text", "username", 3, 32);
+    username.autocapitalize = "none";
+    username.spellcheck = false;
+  }
+  var password = makeField(adminForm, isDemo ? "Kata sandi demo" : "Kata sandi", "admin-password", "password", "current-password", 1, 128);
   var adminSubmit = make("button", "vx-auth__submit", "Masuk sebagai Admin");
   adminSubmit.type = "submit";
   adminSubmit.disabled = true;
@@ -178,10 +182,10 @@
     choices.hidden = false;
     adminForm.hidden = true;
     back.hidden = true;
-    username.value = "";
+    if (username) username.value = "";
     password.value = "";
     setStatus(isDemo
-      ? "DEMO — jangan gunakan kata sandi asli; login tidak diverifikasi."
+      ? "DEMO — kata sandi Admin adalah sandi publik, bukan keamanan sungguhan."
       : (state.offline ? "Backend belum terhubung. Periksa server lalu coba lagi." : ""), !isDemo && state.offline);
   }
 
@@ -190,9 +194,9 @@
     adminForm.hidden = false;
     back.hidden = false;
     setStatus(isDemo
-      ? "DEMO — isian tidak diperiksa server dan tidak mengamankan Dashboard."
+      ? "DEMO — password dicek di browser dan dapat dilewati."
       : (state.offline ? "Backend belum terhubung. Periksa server lalu coba lagi." : ""), !isDemo && state.offline);
-    username.focus();
+    (username || password).focus();
   }
 
   function showLogin(mode) {
@@ -213,7 +217,10 @@
       setStatus(error.message, true);
     }).then(function () {
       button.disabled = false;
-      if (form === adminForm) password.value = "";
+      if (form === adminForm) {
+        password.value = "";
+        if (username) username.value = "";
+      }
     });
   }
 
@@ -227,7 +234,9 @@
     setState({ authenticated: true, role: role, displayName: "", offline: true });
     setStatus(storageError
       ? "Mode demo dibuka, tetapi sesi tidak tersimpan: " + storageError.message
-      : "Mode demo dibuka. Kredensial tidak diverifikasi.", !!storageError);
+      : (role === "admin"
+        ? "Mode demo dibuka. Password hanya diperiksa di browser dan tidak aman."
+        : "Mode demo Tamu dibuka."), !!storageError);
   }
 
   guestSubmit.addEventListener("click", function () {
@@ -242,8 +251,13 @@
     event.preventDefault();
     if (!adminForm.reportValidity()) return;
     if (isDemo) {
+      if (password.value !== demoAdminPassword) {
+        password.value = "";
+        setStatus("Kata sandi demo salah. Dashboard Admin tidak dibuka.", true);
+        password.focus();
+        return;
+      }
       password.value = "";
-      username.value = "";
       enterDemo("admin");
       return;
     }

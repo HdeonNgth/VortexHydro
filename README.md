@@ -4,7 +4,7 @@ Website satu halaman untuk proyek pembangkit listrik mikro-hidro berbasis pusara
 
 ## Situs online
 
-Buka [Vortex Hydro](https://hdeonngth.github.io/VortexHydro/) untuk melihat situs di GitHub Pages. Karena GitHub Pages tidak menjalankan backend, situs online otomatis memakai mode demo: Tamu masuk langsung, sedangkan Admin dapat membuka Dashboard simulasi dengan isian apa pun. Login Admin tidak diverifikasi, data sensor dan riwayat kunjungan tidak realtime, dan halaman ini tidak boleh dipakai untuk informasi privat atau kata sandi asli.
+Buka [Vortex Hydro](https://hdeonngth.github.io/VortexHydro/) untuk melihat situs di GitHub Pages. Karena GitHub Pages tidak menjalankan backend, situs online otomatis memakai mode demo: Tamu masuk langsung, sedangkan Admin perlu memasukkan kata sandi demo `vortex-demo` untuk membuka Dashboard simulasi. Pemeriksaan kata sandi berjalan di browser dan dapat dilewati; jangan gunakan untuk melindungi data atau kata sandi asli. Data sensor dan riwayat kunjungan tidak realtime.
 
 Untuk login dan Dashboard realtime yang aman, deploy backend Node.js pada layanan hosting terpisah dan atur `assets/js/api-config.js` ke URL API yang diizinkan.
 
@@ -26,7 +26,7 @@ Jangan commit `.env` atau menaruh `API_KEY` di file frontend. Untuk layanan host
 
 Pada backend Node.js, pilih **Masuk sebagai Tamu** untuk langsung membuka halaman publik; tamu tidak diminta mengisi nama dan tidak dapat membuka Dashboard. **Masuk sebagai Admin** memeriksa akun yang dibuat lewat skrip seed. Identitas akun tidak ditampilkan di navbar; tombol Keluar tetap tersedia untuk mengakhiri sesi.
 
-Di GitHub Pages, tombol Admin hanya simulasi visual: username dan kata sandi tidak diperiksa. Gunakan hanya untuk demo dan jangan masukkan kata sandi asli.
+Di GitHub Pages, tombol Admin hanya simulasi: kolom username tidak ditampilkan dan kata sandi demo `vortex-demo` diperlukan. Pemeriksaan dilakukan di browser sehingga tidak memberi keamanan nyata. Gunakan hanya untuk demo dan jangan masukkan kata sandi asli.
 
 ## API sensor
 

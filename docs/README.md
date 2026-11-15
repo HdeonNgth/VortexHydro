@@ -17,7 +17,7 @@ Beranda, Tentang, Teknologi, Dokumentasi, Struktur Tim, FAQ, dan Dashboard tetap
 
 ## Akses situs dan backend
 
-Situs statis dipublikasikan melalui [GitHub Pages](https://hdeonngth.github.io/VortexHydro/). GitHub Pages tidak menjalankan backend Express, sehingga login, pencatatan kunjungan, dan Dashboard realtime memerlukan backend yang di-host terpisah. Atur `window.VX_API_BASE` di `assets/js/api-config.js` ke URL backend publik; nilai tersebut bukan secret. Backend harus mengizinkan origin frontend melalui `CORS_ORIGINS`.
+Situs statis dipublikasikan melalui [GitHub Pages](https://hdeonngth.github.io/VortexHydro/). GitHub Pages tidak menjalankan backend Express. Mode demo publik membiarkan Tamu masuk langsung dan meminta kata sandi demo `vortex-demo` untuk Admin. Pemeriksaan itu dilakukan di browser, dapat dilewati, dan bukan perlindungan data. Login sungguhan, pencatatan kunjungan, dan Dashboard realtime memerlukan backend yang di-host terpisah. Atur `window.VX_API_BASE` di `assets/js/api-config.js` ke URL backend publik; nilai tersebut bukan secret. Backend harus mengizinkan origin frontend melalui `CORS_ORIGINS`.
 
 Cookie sesi memakai `SameSite=Lax`, sehingga gunakan HTTPS dan sajikan frontend/API pada origin yang sama atau site yang sama (misalnya melalui reverse proxy atau subdomain satu domain). Jika backend tidak terhubung, halaman login menampilkan status kegagalan dan Dashboard admin tidak menampilkan data realtime.
 
