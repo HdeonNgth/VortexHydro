@@ -458,7 +458,9 @@
 
   document.addEventListener("click", function (event) {
     var button = event.target.closest && event.target.closest("[data-vx-admin-login]");
-    if (button) showLogin("admin");
+    if (!button) return;
+    if (state.authenticated && state.role === "admin") location.hash = "#dashboard";
+    else showLogin("admin");
   });
 
   /* Klik logo Vortex Hydro di navbar -> halaman login admin (admin yang sudah masuk tetap ke beranda). */

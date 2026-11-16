@@ -108,6 +108,7 @@ applyMotionPreference();
 
 $("vxl").onclick=function(e){var x=e.target.closest("[data-a]");if(!x)return;var a=x.dataset.a;
   if(a==="calc"){window.VXPAL&&VXPAL.close();p.classList.toggle("show");x.classList.toggle("on",p.classList.contains("show"))}
+  else if(a==="login"){tog(false)}
   else if(a==="lang"){var lb=document.querySelector("[data-language-toggle]");lb&&lb.click()}
   else if(a==="top")scrollTo({top:0,behavior:motionDisabled()?"auto":"smooth"});
   else if(a==="anim"){userNoAnim=!userNoAnim;if(!motionQuery.matches){try{localStorage.setItem("vxa",userNoAnim?"off":"on")}catch(_){}}applyMotionPreference()}
