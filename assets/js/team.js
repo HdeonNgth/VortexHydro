@@ -1,3 +1,8 @@
+(function(){
+const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const CROWN='<svg class="king__crown" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 10H5L3 8z" fill="currentColor"/><rect x="5" y="19" width="14" height="2" rx="1" fill="currentColor"/></svg>';
+window.vxNameHtml=n=>/ferly\s+f[ae]rnando/i.test(n)?'<span class="king">'+CROWN+'<span class="king__name">'+esc(n)+'</span><b class="king__tag">KING</b></span>':esc(n);
+})();
 
 (function(){
 const $=s=>document.querySelector(s);
@@ -72,7 +77,7 @@ const TEAM_CARDS=[
  const accent=c=>TEAM_ACCENT[c.key]||'#140951';
 
  const cardHtml=(c,i)=>{
-  const rows=c.people.map((p,k)=>'<li class="tc__row" style="--i:'+k+'">'+teamPhoto(p.name,c.folder,'member')+'<span><strong>'+escapeHtml(p.name)+'</strong>'+(p.sub?'<em>'+escapeHtml(p.sub)+'</em>':'')+'</span></li>').join('');
+  const rows=c.people.map((p,k)=>'<li class="tc__row" style="--i:'+k+'">'+teamPhoto(p.name,c.folder,'member')+'<span><strong>'+vxNameHtml(p.name)+'</strong>'+(p.sub?'<em>'+escapeHtml(p.sub)+'</em>':'')+'</span></li>').join('');
   return '<article class="tc" data-i="'+i+'" style="--ac:'+accent(c)+'"><div class="tc__inner">'
    +'<div class="tc__face tc__front"><button class="tc__open" type="button" tabindex="-1" aria-expanded="false" aria-label="'+escapeHtml(c.role)+': '+escapeHtml(c.name)+'. Tekan untuk melihat '+c.unit+'.">'
     +(c.groupPhoto?teamGroupPhoto(c.folder,c.division):teamPhoto(c.name,c.folder,'card'))+'<span class="tc__shade"></span>'
@@ -90,7 +95,7 @@ const TEAM_CARDS=[
  const cards=[...stage.querySelectorAll('.tc')],ticks=[...ticksEl.children];
  const flip=cards.map(()=>({v:0,from:0,to:0,t0:0,dur:0}));   // v: 0 = foto, 1 = daftar anggota
  let pos=0,target=0,cur=0,spread=0,spreadT0=null,cw=300,raf=0,last=0,drag=null,suppress=false,lastWheel=0;
- const still=()=>matchMedia('(prefers-reduced-motion:reduce)').matches||matchMedia('(max-width:760px)').matches;
+ const still=()=>matchMedia('(prefers-reduced-motion:reduce)').matches||document.documentElement.classList.contains('vx-noanim');
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const easeInOut=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
  const easeOut=p=>1-Math.pow(1-p,3);
@@ -258,7 +263,7 @@ const TEAM_CARDS=[
  TEAM_LEADERS.forEach((t,i)=>{
   const rows=[{n:t.leader,s:'Ketua Divisi'}].concat(t.members.map(n=>({n:n,s:''})));
   h+='<article class="node division"><header><span class="tag">Divisi '+(i+1)+'</span><h3>'+escapeHtml(t.division)+'</h3></header><div class="slots">'
-   +rows.map(r=>'<div class="slot">'+av(r.n,t.folder)+'<span>'+escapeHtml(r.n)+(r.s?'<em>'+r.s+'</em>':'')+'</span></div>').join('')+'</div></article>'
+   +rows.map(r=>'<div class="slot">'+av(r.n,t.folder)+'<span>'+vxNameHtml(r.n)+(r.s?'<em>'+r.s+'</em>':'')+'</span></div>').join('')+'</div></article>'
  });
  host.innerHTML=h+'</div>';
  const loadTeamPhotos=()=>{

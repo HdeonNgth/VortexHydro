@@ -4,7 +4,7 @@ var $=function(i){return document.getElementById(i)},B=document.body,H=document.
 var nav=$("lgn"),lens=$("lens"),lg=$("lg"),prev=null,anim=null,EASE="cubic-bezier(.22,1,.36,1)";
 function rect(a){return{l:a.offsetLeft,t:a.offsetTop,w:a.offsetWidth,h:a.offsetHeight}}
 function css(r){return{left:r.l+"px",top:r.t+"px",width:r.w+"px",height:r.h+"px"}}
-function motionDisabled(){return H.classList.contains("vx-noanim")||(window.matchMedia&&window.matchMedia("(max-width:760px)").matches)}
+function motionDisabled(){return H.classList.contains("vx-noanim")}
 function splash(r){
   if(motionDisabled()||!lens.animate)return;
   var cx=r.l+r.w/2,top=r.t+2,i,d,ring=document.createElement("span");
@@ -102,14 +102,14 @@ addEventListener("keydown",function(e){if(e.key==="Escape")tog(false)});
 function calc(){var q=+$("vq").value||0,h=+$("vh").value||0,e=(+$("ve").value||0)/100,w=9.81*q*h*e;$("vr").textContent=w>=1000?(w/1000).toFixed(2)+" kW":w.toFixed(1)+" W"}
 ["vq","vh","ve"].forEach(function(i){$(i).oninput=calc});calc();
 var sz=0,ab=document.querySelector("[data-a=anim]"),motionQuery=window.matchMedia("(max-width:760px)"),userNoAnim=false;
-try{userNoAnim=localStorage.getItem("vxa")==="off"}catch(_){}
-function applyMotionPreference(){var mobile=motionQuery.matches,off=userNoAnim||mobile;H.classList.toggle("vx-noanim",off);if(ab){ab.setAttribute("aria-pressed",String(!off));ab.disabled=mobile;if(mobile)ab.title="Animasi mati otomatis pada perangkat mobile";else ab.removeAttribute("title")}}
+userNoAnim=motionQuery.matches;if(!userNoAnim){try{userNoAnim=localStorage.getItem("vxa")==="off"}catch(_){}}
+function applyMotionPreference(){H.classList.toggle("vx-noanim",userNoAnim);if(ab){ab.setAttribute("aria-pressed",String(!userNoAnim));ab.disabled=false;ab.removeAttribute("title")}}
 applyMotionPreference();
-if(motionQuery.addEventListener)motionQuery.addEventListener("change",applyMotionPreference);else if(motionQuery.addListener)motionQuery.addListener(applyMotionPreference);
+
 $("vxl").onclick=function(e){var x=e.target.closest("[data-a]");if(!x)return;var a=x.dataset.a;
   if(a==="calc"){window.VXPAL&&VXPAL.close();p.classList.toggle("show");x.classList.toggle("on",p.classList.contains("show"))}
   else if(a==="top")scrollTo({top:0,behavior:motionDisabled()?"auto":"smooth"});
-  else if(a==="anim"){if(motionQuery.matches){applyMotionPreference();return}userNoAnim=!userNoAnim;try{localStorage.setItem("vxa",userNoAnim?"off":"on")}catch(_){}applyMotionPreference()}
+  else if(a==="anim"){userNoAnim=!userNoAnim;if(!motionQuery.matches){try{localStorage.setItem("vxa",userNoAnim?"off":"on")}catch(_){}}applyMotionPreference()}
   else if(a==="palette"){window.VXPAL&&VXPAL.toggle(x)}
   else if(a==="theme"){var dk=H.dataset.theme!=="dark";H.classList.add("vx-theming");H.dataset.theme=dk?"dark":"light";setTh();try{localStorage.setItem("vxt",H.dataset.theme)}catch(_){}setTimeout(function(){H.classList.remove("vx-theming")},700)}};
 var SUN='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',MOON='<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>';
