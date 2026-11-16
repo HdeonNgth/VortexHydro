@@ -222,7 +222,7 @@
 
   var navbar = document.getElementById("lg");
   var logout = make("button", "lg__logout", "Keluar");
-  logout.type = "button";
+  logout.type = "button";logout.title = "Keluar";logout.setAttribute("aria-label", "Keluar");
   logout.hidden = true;
   logout.addEventListener("click", function () {
     logout.disabled = true;
