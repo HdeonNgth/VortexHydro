@@ -159,7 +159,7 @@
   }
 
   var card = make("div", "vx-auth__card");
-  card.dataset.mode = "guest";
+  card.dataset.mode = "admin";
   var tabs = make("div", "vx-auth__tabs");
   tabs.setAttribute("role", "tablist");
   tabs.setAttribute("aria-label", "Pilih cara masuk");
@@ -189,12 +189,12 @@
   var adminBadge = make("span", "vx-auth__badge");
   adminBadge.appendChild(makeIcon("lock"));
   adminForm.appendChild(adminBadge);
-  var adminTitle = make("h2", "", "Masuk sebagai Admin");
+  var adminTitle = make("h2", "", "Login Admin");
   adminTitle.id = "vx-auth-admin-title";
   adminForm.appendChild(adminTitle);
   adminForm.appendChild(make("p", "vx-auth__sub", isDemo
     ? "Masukkan kata sandi demo untuk membuka Dashboard simulasi."
-    : "Gunakan akun admin yang disiapkan oleh pengelola."));
+    : "Gunakan akun admin untuk membuka Dashboard."));
   var username = null;
   if (!isDemo) {
     username = makeField(adminForm, "Username", "admin-username", "text", "username", 3, 32);
@@ -211,7 +211,7 @@
   password.parentNode.appendChild(eye);
   var adminSubmit = make("button", "vx-auth__button vx-auth__button--primary", "Masuk");
   adminSubmit.type = "submit";
-  adminSubmit.disabled = true;
+  adminSubmit.disabled = false;
   adminForm.appendChild(adminSubmit);
 
   var guestPane = make("section", "vx-auth__pane vx-auth__pane--guest");
@@ -221,26 +221,24 @@
   var guestBadge = make("span", "vx-auth__badge");
   guestBadge.appendChild(makeIcon("user"));
   guestPane.appendChild(guestBadge);
-  var guestTitle = make("h2", "", "Masuk sebagai Tamu");
+  var guestTitle = make("h2", "", "Mode Tamu");
   guestTitle.id = "vx-auth-guest-title";
   guestPane.appendChild(guestTitle);
-  guestPane.appendChild(make("p", "vx-auth__sub", "Jelajahi halaman publik dan lihat bagaimana pusaran air menggerakkan turbin."));
-  guestPane.appendChild(make("span", "vx-auth__tag", "Tanpa kata sandi"));
-  var guestSubmit = make("button", "vx-auth__button vx-auth__button--primary", "Masuk");
+  guestPane.appendChild(make("p", "vx-auth__sub", "Jelajahi halaman publik dan lihat bagaimana pusaran air menggerakkan turbin. Tidak perlu kata sandi."));
+    var guestSubmit = make("button", "vx-auth__button vx-auth__button--primary", "Kembali ke Website");
   guestSubmit.type = "button";
-  guestSubmit.disabled = true;
   guestPane.appendChild(guestSubmit);
 
   var overlay = make("div", "vx-auth__overlay");
   var toAdmin = make("div", "vx-auth__overlay-copy vx-auth__overlay-copy--admin");
-  toAdmin.appendChild(make("h3", "", "Punya akses Admin?"));
-  toAdmin.appendChild(make("p", "vx-auth__sub", "Masuk dengan kata sandi untuk membuka Dashboard simulasi."));
-  var adminChoice = make("button", "vx-auth__button vx-auth__button--ghost", "Mode Admin");
+  toAdmin.appendChild(make("h3", "", "Halo, Admin!"));
+  toAdmin.appendChild(make("p", "vx-auth__sub", "Masuk dengan akun admin untuk membuka Dashboard pemantauan."));
+  var adminChoice = make("button", "vx-auth__button vx-auth__button--ghost", "Login Admin");
   adminChoice.type = "button";
   toAdmin.appendChild(adminChoice);
   var toGuest = make("div", "vx-auth__overlay-copy vx-auth__overlay-copy--guest");
-  toGuest.appendChild(make("h3", "", "Hanya ingin melihat-lihat?"));
-  toGuest.appendChild(make("p", "vx-auth__sub", "Masuk sebagai Tamu untuk menjelajahi halaman publik."));
+  toGuest.appendChild(make("h3", "", "Hanya melihat-lihat?"));
+  toGuest.appendChild(make("p", "vx-auth__sub", "Kembali ke website dan jelajahi halaman publik sebagai Tamu."));
   var guestChoice = make("button", "vx-auth__button vx-auth__button--ghost", "Mode Tamu");
   guestChoice.type = "button";
   toGuest.appendChild(guestChoice);
@@ -250,6 +248,10 @@
   card.appendChild(adminForm);
   card.appendChild(guestPane);
   card.appendChild(overlay);
+  var closeBtn = make("button", "vx-auth__close", "\u00d7");
+  closeBtn.type = "button";
+  closeBtn.setAttribute("aria-label", "Tutup dan kembali ke website");
+  dialog.appendChild(closeBtn);
   dialog.appendChild(title);
   dialog.appendChild(brand);
   dialog.appendChild(status);
@@ -262,25 +264,26 @@
   logout.hidden = true;
   logout.addEventListener("click", function () {
     logout.disabled = true;
+    var storageError = null;
+    var finish = function () {
+      if (location.hash === "#dashboard") location.hash = "#beranda";
+      return becomeGuest();
+    };
     if (isDemo) {
-      var storageError = null;
       try {
         window.sessionStorage.removeItem(demoSessionKey);
       } catch (error) {
         storageError = error;
       }
-      setState({ authenticated: false, role: null, displayName: "", offline: false });
-      showChoices();
-      setStatus(storageError ? "Sesi demo tidak dapat dihapus: " + storageError.message : "Anda telah keluar.", !!storageError);
-      logout.disabled = false;
+      finish().then(function () {
+        logout.disabled = false;
+      });
       return;
     }
-    request("auth/logout", { method: "POST" }).then(function () {
-      setState({ authenticated: false, role: null, displayName: "", offline: false });
-      showChoices();
-      setStatus("Anda telah keluar.", false);
-    }).catch(function (error) {
+    request("auth/logout", { method: "POST" }).then(finish).catch(function (error) {
       setStatus(error.message + " Sesi tetap aktif sampai server dapat dihubungi.", true);
+      forceOpen = true;
+      updateUi();
     }).then(function () {
       logout.disabled = false;
     });
@@ -298,9 +301,9 @@
 
   function updateUi() {
     var dashboardLink = document.querySelector('#lgn a[data-k="dashboard"]');
-    logout.hidden = !state.authenticated;
+    logout.hidden = !(state.authenticated && state.role === "admin");
     if (dashboardLink) dashboardLink.hidden = !(state.authenticated && state.role === "admin");
-    dialog.hidden = state.authenticated && !forceOpen;
+    dialog.hidden = !forceOpen;
     document.body.classList.toggle("vx-auth-open", !dialog.hidden);
   }
 
@@ -312,7 +315,12 @@
 
   function setMode(mode, shouldFocus) {
     var adminMode = mode === "admin";
-    card.dataset.mode = adminMode ? "admin" : "guest";
+    var nextMode = adminMode ? "admin" : "guest";
+    if (card.dataset.mode !== nextMode && !dialog.hidden) {
+      card.classList.add("is-gx");
+      window.setTimeout(function () { card.classList.remove("is-gx"); }, 1500);
+    }
+    card.dataset.mode = nextMode;
     adminForm.inert = !adminMode;
     guestPane.inert = adminMode;
     adminTab.setAttribute("aria-selected", String(adminMode));
@@ -350,7 +358,7 @@
     password.removeAttribute("aria-invalid");
     setStatus(isDemo
       ? "DEMO — kata sandi Admin adalah sandi publik, bukan keamanan sungguhan."
-      : (state.offline ? "Backend belum terhubung. Periksa server lalu coba lagi." : "Pilih akses Tamu atau Admin untuk melanjutkan."), !isDemo && state.offline);
+      : (state.offline ? "Backend belum terhubung. Periksa server lalu coba lagi." : ""), !isDemo && state.offline);
   }
 
   function showAdminForm() {
@@ -360,11 +368,41 @@
       : (state.offline ? "Backend belum terhubung. Periksa server lalu coba lagi." : ""), !isDemo && state.offline);
   }
 
+  var lastFocus = null;
   function showLogin(mode) {
+    if (dialog.hidden) lastFocus = document.activeElement;
     forceOpen = true;
     updateUi();
-    if (mode === "admin") showAdminForm();
-    else showChoices();
+    if (mode === "guest") showChoices();
+    else showAdminForm();
+  }
+
+  function closeLogin() {
+    forceOpen = false;
+    password.value = "";
+    if (username) username.value = "";
+    password.removeAttribute("aria-invalid");
+    updateUi();
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    lastFocus = null;
+  }
+
+  function becomeGuest() {
+    if (isDemo) {
+      setState({ authenticated: true, role: "guest", displayName: "", offline: true });
+      return Promise.resolve(snapshot());
+    }
+    return request("auth/guest", { method: "POST", body: JSON.stringify({}) }).then(function (result) {
+      setState(result);
+    }).catch(function () {
+      setState({ authenticated: true, role: "guest", displayName: "", offline: true });
+    }).then(function () {
+      return snapshot();
+    });
+  }
+
+  function openDashboard() {
+    if (state.authenticated && state.role === "admin") location.hash = "#dashboard";
   }
 
   function submit(form, endpoint, payload, button) {
@@ -373,6 +411,7 @@
     request(endpoint, { method: "POST", body: JSON.stringify(payload) }).then(function (result) {
       setState(result);
       setStatus("Login berhasil.", false);
+      openDashboard();
     }).catch(function (error) {
       if (!error.status) state.offline = true;
       setStatus(error.message, true);
@@ -393,6 +432,7 @@
       storageError = error;
     }
     setState({ authenticated: true, role: role, displayName: "", offline: true });
+    openDashboard();
     setStatus(storageError
       ? "Mode demo dibuka, tetapi sesi tidak tersimpan: " + storageError.message
       : (role === "admin"
@@ -400,13 +440,8 @@
         : "Mode demo Tamu dibuka."), !!storageError);
   }
 
-  guestSubmit.addEventListener("click", function () {
-    if (isDemo) {
-      enterDemo("guest");
-      return;
-    }
-    submit(null, "auth/guest", {}, guestSubmit);
-  });
+  guestSubmit.addEventListener("click", closeLogin);
+  closeBtn.addEventListener("click", closeLogin);
   adminForm.addEventListener("submit", function (event) {
     event.preventDefault();
     if (!adminForm.reportValidity()) return;
@@ -448,55 +483,50 @@
     if (button) showLogin("admin");
   });
 
+  /* Klik logo Vortex Hydro di navbar -> halaman login admin (admin yang sudah masuk tetap ke beranda). */
+  document.addEventListener("click", function (event) {
+    var logo = event.target.closest && event.target.closest(".lg__brand");
+    if (!logo || event.button || event.metaKey || event.ctrlKey || event.shiftKey) return;
+    if (state.authenticated && state.role === "admin") return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    showLogin("admin");
+  }, true);
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && !dialog.hidden) closeLogin();
+  });
+
+  setMode("admin");
   var ready;
   if (isDemo) {
     var demoRole = null;
-    var demoStorageError = null;
     try {
       demoRole = window.sessionStorage.getItem(demoSessionKey);
     } catch (error) {
-      demoStorageError = error;
+      demoRole = null;
     }
-    state.authenticated = demoRole === "guest" || demoRole === "admin";
-    state.role = state.authenticated ? demoRole : null;
+    state.authenticated = true;
+    state.role = demoRole === "admin" ? "admin" : "guest";
     state.displayName = "";
     state.offline = true;
     forceOpen = false;
     dispatchState();
-    guestSubmit.disabled = false;
-    adminSubmit.disabled = false;
-    if (!state.authenticated) {
-      showChoices();
-      if (demoStorageError) setStatus("Sesi demo tidak dapat dipulihkan: " + demoStorageError.message, true);
-    }
     ready = Promise.resolve(snapshot());
   } else {
     ready = request("auth/me").then(function (result) {
-      state.authenticated = result.authenticated === true;
-      state.role = state.authenticated ? result.role : null;
-      state.displayName = state.authenticated ? result.displayName : "";
-      state.offline = false;
-      forceOpen = false;
-      dispatchState();
-      guestSubmit.disabled = false;
-      adminSubmit.disabled = false;
-      if (!state.authenticated) {
-        showChoices();
-        setStatus("Pilih Tamu atau Admin untuk melanjutkan.", false);
+      if (result.authenticated === true) {
+        state.authenticated = true;
+        state.role = result.role;
+        state.displayName = result.displayName;
+        state.offline = false;
+        forceOpen = false;
+        dispatchState();
+        return snapshot();
       }
-      return snapshot();
-    }).catch(function (error) {
-      state.authenticated = false;
-      state.role = null;
-      state.displayName = "";
-      state.offline = true;
-      forceOpen = false;
-      dispatchState();
-      guestSubmit.disabled = false;
-      adminSubmit.disabled = false;
-      showChoices();
-      setStatus("Backend login tidak dapat dihubungi. " + error.message, true);
-      return snapshot();
+      return becomeGuest();
+    }).catch(function () {
+      return becomeGuest();
     });
   }
 
@@ -517,9 +547,10 @@
           setStatus("Sesi demo tidak dapat dihapus: " + error.message, true);
         }
       }
-      setState({ authenticated: false, role: null, displayName: "", offline: false });
-      showChoices();
-      setStatus("Sesi berakhir. Silakan masuk kembali.", true);
+      becomeGuest().then(function () {
+        showLogin("admin");
+        setStatus("Sesi berakhir. Silakan masuk kembali.", true);
+      });
     },
     url: function (path) { return apiBase + "/api/" + path; }
   };
