@@ -309,32 +309,27 @@ html[data-theme=dark] .vxt__pan input{background:var(--d-soft);border-color:var(
 html[data-theme=dark] .vxt__res{background:var(--d-soft)}
 html[data-theme=dark] .vxt__res small{color:var(--dmu)}
 
-/* --- daftar palet --- */
-.vxt__pal{width:min(330px,calc(100vw - 40px))}
-.pal{display:grid;gap:9px}
-.pal__c{position:relative;display:grid;gap:8px;width:100%;text-align:left;border:0;border-radius:14px;padding:10px 12px 11px;cursor:pointer;font:inherit;color:var(--ink);
-  background:var(--soft);box-shadow:inset 0 0 0 1.5px var(--line);overflow:hidden;
-  transition:transform .4s cubic-bezier(.3,1.7,.5,1),box-shadow .3s,background .3s}
-html[data-theme=dark] .pal__c{color:var(--dtx);background:var(--d-soft);box-shadow:inset 0 0 0 1.5px var(--d-line)}
-.pal__c:hover,.pal__c:focus-visible{transform:translateY(-3px) scale(1.02);box-shadow:inset 0 0 0 1.5px var(--cyan),0 12px 22px -14px rgba(var(--cyan-rgb),.9)}
-.pal__c:active{transform:scale(.97)}
-.pal__c::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);pointer-events:none;opacity:0}
-.pal__c:hover::after{opacity:1;animation:vxshine .9s ease}
+/* --- daftar palet: bulatan warna ringkas --- */
+.vxt__pal{width:min(236px,calc(100vw - 40px))}
+.pal{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 4px;justify-items:center}
+.pal__c{position:relative;display:grid;place-items:center;width:46px;height:46px;padding:0;border:0;border-radius:50%;cursor:pointer;background:none;font:inherit;color:var(--ink);-webkit-tap-highlight-color:transparent;transition:transform .28s cubic-bezier(.3,1.6,.5,1)}
+.pal__dot{display:block;width:36px;height:36px;border-radius:50%;background:var(--pie);box-shadow:inset 0 0 0 1px rgba(0,0,0,.14),0 3px 8px -3px rgba(0,0,0,.4);transition:transform .28s cubic-bezier(.3,1.6,.5,1),box-shadow .25s}
+.pal__c:hover .pal__dot,.pal__c:focus-visible .pal__dot{transform:scale(1.12)}
+.pal__c:active .pal__dot{transform:scale(.94)}
+.pal__c:focus-visible{outline:2px solid var(--cyan);outline-offset:1px}
+.pal__c[aria-pressed=true] .pal__dot{box-shadow:0 0 0 2px var(--card,#fff),0 0 0 4px var(--cyan),0 6px 14px -6px rgba(var(--cyan-rgb),.9)}
+.pal__ck{position:absolute;right:1px;bottom:1px;width:17px;height:17px;border-radius:50%;display:grid;place-items:center;background:var(--cyan);color:var(--deep);border:2px solid var(--card,#fff);transform:scale(0);transition:transform .4s cubic-bezier(.3,1.9,.5,1)}
+.pal__ck svg{width:9px;height:9px}
+.pal__c[aria-pressed=true] .pal__ck{transform:scale(1)}
+.pal__cap{grid-column:1/-1;text-align:center;margin-top:4px;line-height:1.25}
+.pal__cap b{display:block;font:700 .84rem var(--f-display,system-ui)}
+.pal__cap span{display:block;font:500 .68rem var(--f-body,system-ui);color:var(--muted);margin-top:2px}
+html[data-theme=dark] .pal__cap span{color:var(--dmu)}
+.vxt__pan.show .pal__c{animation:vxpop .45s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(var(--c)*55ms + .1s)}
+@keyframes vxpop{from{transform:scale(.3);opacity:0}}
 @keyframes vxshine{to{left:130%}}
-.pal__top{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.pal__n{font:700 .88rem/1.1 var(--f-display,system-ui)}
-.pal__s{display:block;font:500 .68rem/1.2 var(--f-body,system-ui);color:var(--muted);margin-top:3px}
-html[data-theme=dark] .pal__s{color:var(--dmu)}
-.pal__ck{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--cyan);color:var(--deep);transform:scale(0) rotate(-120deg);transition:transform .5s cubic-bezier(.3,1.9,.5,1)}
-.pal__ck svg{width:13px;height:13px}
-.pal__c[aria-pressed=true]{box-shadow:inset 0 0 0 2px var(--cyan),0 10px 24px -14px rgba(var(--cyan-rgb),.9)}
-.pal__c[aria-pressed=true] .pal__ck{transform:scale(1) rotate(0)}
-.pal__sw{display:flex;height:28px;border-radius:9px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.07)}
-.pal__sw i{flex:1;transition:flex .5s cubic-bezier(.3,1.6,.5,1);transform-origin:left}
-.pal__sw i:hover{flex:2.4}
-.vxt__pan.show .pal__sw i{animation:vxsw .6s cubic-bezier(.3,1.3,.5,1) both;animation-delay:calc(var(--c)*90ms + var(--k)*55ms + .25s)}
-@keyframes vxsw{from{transform:scaleX(0);opacity:0}}
-.pal__hint{margin-top:10px;font-size:.7rem;color:var(--muted);text-align:center}
+@media (prefers-reduced-motion:reduce){.vxt__pan.show .pal__c{animation:none}}
+.pal__hint{margin-top:8px;font-size:.7rem;color:var(--muted);text-align:center}
 html[data-theme=dark] .pal__hint{color:var(--dmu)}
 
 /* --- gelombang transisi saat ganti palet --- */

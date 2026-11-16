@@ -17,14 +17,17 @@
   function build() {
     var box = $('pall'); if (!box || box.children.length) return;
     box.innerHTML = PALS.map(function (p, ci) {
-      return '<button type="button" class="pal__c" data-p="' + p.id + '" aria-pressed="' + (p.id === cur) + '" aria-label="Palet ' + p.name + '">' +
-        '<span class="pal__top"><span><b class="pal__n">' + p.name + '</b><span class="pal__s">' + p.note + '</span></span><span class="pal__ck">' + CK + '</span></span>' +
-        '<span class="pal__sw">' + p.sw.map(function (c, k) { return '<i style="background:' + c + ';--c:' + ci + ';--k:' + k + '" title="' + c + '"></i>'; }).join('') + '</span></button>';
-    }).join('');
+      var s = p.sw, pie = 'conic-gradient(from -90deg,' + s.map(function (c, k) { return c + ' ' + k * 20 + '% ' + (k + 1) * 20 + '%'; }).join(',') + ')';
+      return '<button type="button" class="pal__c" data-p="' + p.id + '" aria-pressed="' + (p.id === cur) + '" aria-label="Palet ' + p.name + '" title="' + p.name + '" style="--c:' + ci + '">' +
+        '<span class="pal__dot" style="--pie:' + pie + '"></span><span class="pal__ck">' + CK + '</span></button>';
+    }).join('') + '<p class="pal__cap" id="palcap"></p>';
+    mark();
   }
   function mark() {
     var box = $('pall'); if (!box) return;
-    Array.prototype.forEach.call(box.children, function (b) { b.setAttribute('aria-pressed', b.dataset.p === cur); });
+    Array.prototype.forEach.call(box.querySelectorAll('.pal__c'), function (b) { b.setAttribute('aria-pressed', b.dataset.p === cur); });
+    var cap = $('palcap'), p = PALS.filter(function (x) { return x.id === cur; })[0];
+    if (cap && p) cap.innerHTML = '<b>' + p.name + '</b><span>' + p.note + '</span>';
   }
   function apply(id) {
     cur = id;
