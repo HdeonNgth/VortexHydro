@@ -2,7 +2,7 @@
   var apiBase = String(window.VX_API_BASE || "").replace(/\/+$/, "");
   var isDemo = window.VX_DEMO_MODE === true;
   var demoSessionKey = "vx-demo-role-v2";
-  var demoAdminPassword = "vortex-demo";
+  var demoAdminPassword = "pakcikiniv2";
   var state = { authenticated: false, role: null, displayName: "", offline: false };
   var forceOpen = false;
 
@@ -159,27 +159,7 @@
   }
 
   var card = make("div", "vx-auth__card");
-  card.dataset.mode = "admin";
-  var tabs = make("div", "vx-auth__tabs");
-  tabs.setAttribute("role", "tablist");
-  tabs.setAttribute("aria-label", "Pilih cara masuk");
-  var guestTab = make("button", "", "Tamu");
-  guestTab.type = "button";
-  guestTab.id = "vx-auth-tab-guest";
-  guestTab.setAttribute("role", "tab");
-  guestTab.setAttribute("aria-controls", "vx-auth-pane-guest");
-  guestTab.setAttribute("aria-selected", "true");
-  guestTab.tabIndex = 0;
-  var adminTab = make("button", "", "Admin");
-  adminTab.type = "button";
-  adminTab.id = "vx-auth-tab-admin";
-  adminTab.setAttribute("role", "tab");
-  adminTab.setAttribute("aria-controls", "vx-auth-pane-admin");
-  adminTab.setAttribute("aria-selected", "false");
-  adminTab.tabIndex = -1;
-  tabs.appendChild(guestTab);
-  tabs.appendChild(adminTab);
-  card.appendChild(tabs);
+  card.dataset.mode = "cover";
 
   var adminForm = make("form", "vx-auth__pane vx-auth__pane--admin");
   adminForm.id = "vx-auth-pane-admin";
@@ -214,39 +194,21 @@
   adminSubmit.disabled = false;
   adminForm.appendChild(adminSubmit);
 
-  var guestPane = make("section", "vx-auth__pane vx-auth__pane--guest");
-  guestPane.id = "vx-auth-pane-guest";
-  guestPane.setAttribute("role", "tabpanel");
-  guestPane.setAttribute("aria-labelledby", "vx-auth-guest-title");
-  var guestBadge = make("span", "vx-auth__badge");
-  guestBadge.appendChild(makeIcon("user"));
-  guestPane.appendChild(guestBadge);
-  var guestTitle = make("h2", "", "Mode Tamu");
-  guestTitle.id = "vx-auth-guest-title";
-  guestPane.appendChild(guestTitle);
-  guestPane.appendChild(make("p", "vx-auth__sub", "Jelajahi halaman publik dan lihat bagaimana pusaran air menggerakkan turbin. Tidak perlu kata sandi."));
-    var guestSubmit = make("button", "vx-auth__button vx-auth__button--primary", "Kembali ke Website");
-  guestSubmit.type = "button";
-  guestPane.appendChild(guestSubmit);
 
   var overlay = make("div", "vx-auth__overlay");
-  var toAdmin = make("div", "vx-auth__overlay-copy vx-auth__overlay-copy--admin");
-  toAdmin.appendChild(make("h3", "", "Halo, Admin!"));
-  toAdmin.appendChild(make("p", "vx-auth__sub", "Masuk dengan akun admin untuk membuka Dashboard pemantauan."));
-  var adminChoice = make("button", "vx-auth__button vx-auth__button--ghost", "Login Admin");
-  adminChoice.type = "button";
-  toAdmin.appendChild(adminChoice);
-  var toGuest = make("div", "vx-auth__overlay-copy vx-auth__overlay-copy--guest");
-  toGuest.appendChild(make("h3", "", "Hanya melihat-lihat?"));
-  toGuest.appendChild(make("p", "vx-auth__sub", "Kembali ke website dan jelajahi halaman publik sebagai Tamu."));
-  var guestChoice = make("button", "vx-auth__button vx-auth__button--ghost", "Mode Tamu");
-  guestChoice.type = "button";
-  toGuest.appendChild(guestChoice);
-  overlay.appendChild(toAdmin);
-  overlay.appendChild(toGuest);
+  var coverCopy = make("div", "vx-auth__overlay-copy vx-auth__overlay-copy--cover");
+  coverCopy.appendChild(make("h3", "", "Selamat Datang!"));
+  coverCopy.appendChild(make("p", "vx-auth__sub", "Panel admin pemantauan turbin vortex mikro-hidro."));
+  var adminCopy = make("div", "vx-auth__overlay-copy vx-auth__overlay-copy--admin");
+  adminCopy.appendChild(make("h3", "", "Halo, Admin!"));
+  adminCopy.appendChild(make("p", "vx-auth__sub", "Masuk dengan akun admin untuk membuka Dashboard pemantauan."));
+  var backBtn = make("button", "vx-auth__button vx-auth__button--ghost", "Kembali ke Website");
+  backBtn.type = "button";
+  adminCopy.appendChild(backBtn);
+  overlay.appendChild(coverCopy);
+  overlay.appendChild(adminCopy);
 
   card.appendChild(adminForm);
-  card.appendChild(guestPane);
   card.appendChild(overlay);
   var closeBtn = make("button", "vx-auth__close", "\u00d7");
   closeBtn.type = "button";
@@ -313,24 +275,23 @@
     status.classList.toggle("is-demo", isDemo && !!message);
   }
 
+  function slideDelay() {
+    return (document.documentElement.classList.contains("vx-noanim") || window.matchMedia("(max-width: 760px)").matches) ? 0 : 1250;
+  }
+
   function setMode(mode, shouldFocus) {
     var adminMode = mode === "admin";
-    var nextMode = adminMode ? "admin" : "guest";
+    var nextMode = adminMode ? "admin" : "cover";
     if (card.dataset.mode !== nextMode && !dialog.hidden) {
       card.classList.add("is-gx");
       window.setTimeout(function () { card.classList.remove("is-gx"); }, 1500);
     }
     card.dataset.mode = nextMode;
     adminForm.inert = !adminMode;
-    guestPane.inert = adminMode;
-    adminTab.setAttribute("aria-selected", String(adminMode));
-    guestTab.setAttribute("aria-selected", String(!adminMode));
-    adminTab.tabIndex = adminMode ? 0 : -1;
-    guestTab.tabIndex = adminMode ? -1 : 0;
-    if (shouldFocus) {
+    if (shouldFocus && adminMode) {
       window.setTimeout(function () {
-        (adminMode ? (username || password) : guestSubmit).focus();
-      }, window.matchMedia("(max-width: 760px)").matches ? 0 : 450);
+        (username || password).focus();
+      }, slideDelay() ? 1300 : 60);
     }
   }
 
@@ -348,43 +309,61 @@
     dispatchState();
   }
 
-  function showChoices() {
-    setMode("guest");
+  var lastFocus = null;
+  var openTimer = 0;
+  var closing = false;
+
+  function resetForm() {
     if (username) username.value = "";
     password.value = "";
     password.type = "password";
     eye.setAttribute("aria-pressed", "false");
     eye.setAttribute("aria-label", "Tampilkan kata sandi");
     password.removeAttribute("aria-invalid");
-    setStatus(isDemo
-      ? "DEMO — kata sandi Admin adalah sandi publik, bukan keamanan sungguhan."
-      : (state.offline ? "Backend belum terhubung. Periksa server lalu coba lagi." : ""), !isDemo && state.offline);
   }
 
-  function showAdminForm() {
-    setMode("admin", true);
+  function showLogin() {
+    if (dialog.hidden) lastFocus = document.activeElement;
+    closing = false;
+    window.clearTimeout(openTimer);
+    resetForm();
+    card.classList.add("no-anim");
+    card.dataset.mode = "cover";
+    adminForm.inert = true;
+    forceOpen = true;
+    updateUi();
+    void card.offsetWidth;
+    card.classList.remove("no-anim");
     setStatus(isDemo
       ? "DEMO — password dicek di browser dan dapat dilewati."
       : (state.offline ? "Backend belum terhubung. Periksa server lalu coba lagi." : ""), !isDemo && state.offline);
+    openTimer = window.setTimeout(function () { setMode("admin", true); }, 90);
   }
 
-  var lastFocus = null;
-  function showLogin(mode) {
-    if (dialog.hidden) lastFocus = document.activeElement;
-    forceOpen = true;
-    updateUi();
-    if (mode === "guest") showChoices();
-    else showAdminForm();
+  /* Panel kembali menutup formulir (seperti di video), lalu aksi lanjutan dijalankan. */
+  function playExit(done) {
+    window.clearTimeout(openTimer);
+    adminForm.inert = true;
+    var delay = slideDelay();
+    if (!delay) {
+      done();
+      return;
+    }
+    setMode("cover");
+    window.setTimeout(done, delay - 100);
   }
 
   function closeLogin() {
-    forceOpen = false;
-    password.value = "";
-    if (username) username.value = "";
-    password.removeAttribute("aria-invalid");
-    updateUi();
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
-    lastFocus = null;
+    if (dialog.hidden || closing) return;
+    closing = true;
+    playExit(function () {
+      closing = false;
+      forceOpen = false;
+      resetForm();
+      updateUi();
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+      lastFocus = null;
+    });
   }
 
   function becomeGuest() {
@@ -409,9 +388,11 @@
     button.disabled = true;
     setStatus("Memproses login...", false);
     request(endpoint, { method: "POST", body: JSON.stringify(payload) }).then(function (result) {
-      setState(result);
       setStatus("Login berhasil.", false);
-      openDashboard();
+      playExit(function () {
+        setState(result);
+        openDashboard();
+      });
     }).catch(function (error) {
       if (!error.status) state.offline = true;
       setStatus(error.message, true);
@@ -440,7 +421,7 @@
         : "Mode demo Tamu dibuka."), !!storageError);
   }
 
-  guestSubmit.addEventListener("click", closeLogin);
+  backBtn.addEventListener("click", closeLogin);
   closeBtn.addEventListener("click", closeLogin);
   adminForm.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -455,15 +436,12 @@
       }
       password.value = "";
       password.removeAttribute("aria-invalid");
-      enterDemo("admin");
+      setStatus("Login berhasil.", false);
+      playExit(function () { enterDemo("admin"); });
       return;
     }
     submit(adminForm, "auth/admin", { username: username.value.trim(), password: password.value }, adminSubmit);
   });
-  adminChoice.addEventListener("click", showAdminForm);
-  guestChoice.addEventListener("click", function () { setMode("guest", true); });
-  guestTab.addEventListener("click", function () { setMode("guest", true); });
-  adminTab.addEventListener("click", showAdminForm);
   eye.addEventListener("click", function () {
     var visible = password.type === "password";
     password.type = visible ? "text" : "password";
@@ -497,7 +475,7 @@
     if (event.key === "Escape" && !dialog.hidden) closeLogin();
   });
 
-  setMode("admin");
+  adminForm.inert = true;
   var ready;
   if (isDemo) {
     var demoRole = null;

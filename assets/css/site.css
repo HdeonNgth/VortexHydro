@@ -1151,8 +1151,8 @@ html[data-theme=dark] .vx-auth__flash.is-demo:not(.is-error){color:#FFD27A}
 .vx-auth__card{position:relative;width:min(1000px,100%);height:min(600px,calc(100vh - 130px));min-height:500px;overflow:hidden;border-radius:26px;background:var(--bg);box-shadow:12px 12px 26px var(--sh-d),-12px -12px 26px var(--sh-l)}
 .vx-auth__pane{position:absolute;top:0;bottom:0;display:flex;width:50%;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px 56px;text-align:center;opacity:0;visibility:hidden;transition:opacity .5s ease,visibility 0s linear .5s}
 .vx-auth__pane--admin{left:0}
-.vx-auth__pane--guest{left:50%}
-.vx-auth__card[data-mode=guest] .vx-auth__pane--guest,.vx-auth__card[data-mode=admin] .vx-auth__pane--admin{opacity:1;visibility:visible;transition:opacity .6s ease .55s,visibility 0s}
+.vx-auth__card[data-mode=admin] .vx-auth__pane--admin{opacity:1;visibility:visible;transition:opacity .6s ease .55s,visibility 0s}
+.vx-auth__card.no-anim,.vx-auth__card.no-anim *{transition:none!important;animation:none!important}
 .vx-auth__badge{display:grid;width:58px;height:58px;flex:none;place-items:center;border-radius:50%;background:var(--bg);box-shadow:6px 6px 12px var(--sh-d),-6px -6px 12px var(--sh-l);color:var(--blue)}
 .vx-auth__badge svg{width:23px;height:23px}
 .vx-auth .vx-auth__pane h2,.vx-auth .vx-auth__overlay-copy h3{margin:0;color:var(--tx);font-size:2rem;font-weight:700;line-height:1.2;letter-spacing:0}
@@ -1184,10 +1184,9 @@ html[data-theme=dark] .vx-auth__flash.is-demo:not(.is-error){color:#FFD27A}
 .vx-auth__overlay:after{bottom:-110px;left:-80px;width:300px;height:300px;animation-duration:10s;animation-delay:-4s}
 @keyframes vx-auth-float{50%{transform:translateY(-12px)}}
 .vx-auth__overlay-copy{position:absolute;z-index:2;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px 48px;text-align:center;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility 0s linear .4s}
-.vx-auth__card[data-mode=guest] .vx-auth__overlay-copy--admin,.vx-auth__card[data-mode=admin] .vx-auth__overlay-copy--guest{opacity:1;visibility:visible;transition:opacity .6s ease .55s,visibility 0s}
-.vx-auth__tabs{display:none}
+.vx-auth__card[data-mode=cover] .vx-auth__overlay-copy--cover,.vx-auth__card[data-mode=admin] .vx-auth__overlay-copy--admin{opacity:1;visibility:visible;transition:opacity .6s ease .55s,visibility 0s}
 .vx-auth :focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
-@media(max-width:760px){.vx-auth{justify-content:flex-start;gap:14px;padding:76px 16px 28px}.vx-auth .vx-auth__close{top:14px;right:14px;width:42px;height:42px}.vx-auth__card{height:auto;min-height:0;padding:20px 18px 30px;border-radius:22px;box-shadow:8px 8px 18px var(--sh-d),-8px -8px 18px var(--sh-l)}.vx-auth__overlay{display:none}.vx-auth__tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;border-radius:14px;box-shadow:inset 3px 3px 6px var(--sh-d),inset -3px -3px 6px var(--sh-l)}.vx-auth__tabs button{min-height:40px;border:0;border-radius:10px;background:none;color:var(--mut);font:inherit;font-size:12px;font-weight:700;letter-spacing:.06em;cursor:pointer}.vx-auth__tabs button[aria-selected=true]{background:linear-gradient(135deg,var(--blue),var(--navy));box-shadow:3px 3px 8px var(--sh-d);color:#fff}.vx-auth__pane{position:static;display:none;width:100%;padding:24px 4px 0;opacity:1;visibility:visible;transition:none}.vx-auth__card[data-mode=guest] .vx-auth__pane--guest,.vx-auth__card[data-mode=admin] .vx-auth__pane--admin{display:flex}.vx-auth .vx-auth__pane h2{font-size:1.6rem}}
+@media(max-width:760px){.vx-auth{justify-content:flex-start;gap:14px;padding:76px 16px 28px}.vx-auth .vx-auth__close{top:14px;right:14px;width:42px;height:42px}.vx-auth__card{height:auto;min-height:0;padding:14px 18px 34px;border-radius:22px;box-shadow:8px 8px 18px var(--sh-d),-8px -8px 18px var(--sh-l)}.vx-auth__overlay{display:none}.vx-auth__pane{position:static;display:flex;width:100%;padding:22px 4px 0;opacity:1;visibility:visible;transition:none}.vx-auth .vx-auth__pane h2{font-size:1.6rem}}
 @media(max-width:420px){.vx-auth{padding:72px 12px 24px}.vx-auth__card{border-radius:20px}}
 @media(prefers-reduced-motion:reduce){.vx-auth__wave,.vx-auth__bubble,.vx-auth__overlay:before,.vx-auth__overlay:after{animation:none}.vx-auth__pane,.vx-auth__overlay,.vx-auth__overlay-copy,.vx-auth__button{transition:none}.vx-auth__card.is-gx .vx-auth__overlay,.vx-auth__field input[aria-invalid=true]{animation:none}}
 .vx-demo-notice{margin:0 0 16px;padding:12px 16px;border:1px solid rgba(255,190,85,.35);border-radius:14px;background:rgba(255,190,85,.12);color:#ffd08b;font-size:.84rem;line-height:1.55}
