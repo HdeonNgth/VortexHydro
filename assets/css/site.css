@@ -1287,3 +1287,85 @@ body.vx-auth-open{overflow:hidden}
   .tcf__stage{--cw:min(72vw,250px)}
   .vsim__cards{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* ===== MOBILE: ukuran mengikuti referensi (tampilan mobile Ansys) =====
+   Hanya ukuran: teks lebih kecil dan rapat, kartu lebar penuh dengan sudut
+   kecil, jarak antarbagian ringkas. Desktop tidak berubah. */
+@media(max-width:760px){
+  html{font-size:14px}
+  body{font-size:.96rem;line-height:1.55}
+  .wrap,.wrap--wide{padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
+  .section,.section.intro{padding-block:34px}
+  .sec-title{margin-bottom:20px}
+  .pagehead{padding-top:92px;padding-bottom:22px}
+
+  /* judul dan teks */
+  .h-xl,.pagehead h1,.hero h1{font-size:clamp(1.6rem,6.6vw,2rem);line-height:1.12}
+  .h-lg{font-size:clamp(1.3rem,5.4vw,1.55rem);line-height:1.18}
+  .org-title{font-size:1.2rem!important;margin-bottom:18px}
+  .sub,.body,.hero .sub,.pagehead .sub,.intro__grid p,.who p,.vsim__head p{font-size:.96rem;line-height:1.6}
+  .checks b{font-size:.96rem}
+
+  /* hero: judul besar di kiri, seperti referensi */
+  .hx{min-height:560px}
+  .hx__h1{left:18px!important;right:18px;top:clamp(150px,30svh,260px)!important;font-size:clamp(1.8rem,7.4vw,2.3rem);line-height:1.12}
+  .hx__h1 span{width:auto;max-width:100%}
+  .hx__trust p{font-size:.78rem;margin-bottom:10px}
+
+  /* tombol kecil, huruf besar tipis */
+  .btn,.vsim__btn{min-height:38px;padding:8px 14px;font-size:.78rem;letter-spacing:.04em;border-radius:6px}
+
+  /* kartu: sudut kecil, jarak rapat */
+  .bento{gap:10px}
+  .bento__intro{min-height:120px;padding:16px;border-radius:14px}
+  .bento__intro h2{font-size:1.35rem}
+  .bento .tile,.docfull .tile,.tile{min-height:132px;border-radius:14px}
+  .bento .tile strong,.docfull .tile strong{font-size:.98rem;left:13px;right:10px;bottom:12px}
+  .docgrid,.komp__grid{gap:10px}
+  .kc{border-radius:14px}
+  .kc__art{height:110px}
+  .pcard,.gcard{padding:15px!important;border-radius:12px!important}
+  .goal__c{padding:18px;border-radius:14px}
+  .goal__c .n{font-size:3.2rem;right:12px}
+  .goal__c h3{font-size:1.05rem}
+  .f3__c{width:64px;height:64px;margin-bottom:10px;box-shadow:0 0 0 6px #fff,0 0 0 7px var(--line)}
+  .f3__c svg{width:28px;height:28px}
+  .flow3 b{font-size:.9rem}
+  .sw-grid{gap:10px}
+
+  /* teknologi: kartu langkah rapat, tidak redup */
+  #teknologi .stack{gap:10px;padding-block:0}
+  .fcard{padding:14px 15px;border-radius:12px}
+  .fx-seq{opacity:.75;transform:none}
+  .fx-seq.cur{opacity:1}
+  .vsim__fig{border-radius:12px}
+  .vsim__cards{gap:8px}
+  .vsim__steps{font-size:.9rem}
+  table{font-size:.85rem}
+  th,td{padding:10px 12px}
+
+  /* struktur tim: kartu penuh lebar, nama tidak menumpuk */
+  .org .mgmt{grid-template-columns:minmax(0,1fr);gap:10px}
+  .org .mgmt .mgmt__lead,.mgmt__c{width:100%}
+  .divisions{gap:10px;margin-top:22px}
+  .divisions .division,.division{flex:1 1 100%;min-width:0;width:100%}
+  .node{padding:14px;border-radius:12px}
+  .org .node small{font-size:.8rem}
+  .slot{padding:7px 9px;gap:10px;font-size:.88rem}
+  .slot .avatar{width:28px}
+  .stem{height:22px}
+
+  /* footer ringkas */
+  .ft__card{padding:22px 14px 0;border-radius:16px 16px 0 0}
+  .ft__grid{gap:14px}
+  .ft__col h4{font-size:.7rem}
+  .ft__links a{padding:6px 0;font-size:.84rem}
+  .ft__info,.ft__soc{gap:8px}
+  .ft__s{padding:9px 11px;border-radius:12px;gap:10px}
+  .ft__ic{width:32px;height:32px;border-radius:9px}
+  .ft__base{font-size:.7rem;padding-top:14px!important}
+
+  /* tombol melayang lebih kecil agar tidak menutupi isi */
+  .vxt{right:max(10px,env(safe-area-inset-right,0px));bottom:max(10px,env(safe-area-inset-bottom,0px))}
+  .vxt__btn{scale:.78}
+}
