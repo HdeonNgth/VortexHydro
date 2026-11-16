@@ -249,7 +249,7 @@ html:not([data-theme=dark]) body.is-dash .dtabs button[aria-pressed=true]{color:
 .vxt__trk path{filter:drop-shadow(0 0 4px rgba(var(--cyan-rgb),.85))}
 .vxt__spark{position:absolute;left:0;top:0;width:9px;height:9px;margin:0;border-radius:50%;background:#fff;pointer-events:none;z-index:2;opacity:0;
   box-shadow:0 0 12px 4px rgba(var(--cyan-rgb),.95),0 0 28px 9px rgba(var(--sky-rgb),.5);
-  offset-path:path("M30 -92A122 122 0 0 0 -92 30");offset-rotate:0deg;offset-distance:0%}
+  offset-path:path("M30 -120A150 150 0 0 0 -99.9 -45");offset-rotate:0deg;offset-distance:0%}
 .vxt.open .vxt__spark{animation:vxrun 2.8s cubic-bezier(.55,0,.45,1) 1s infinite}
 @keyframes vxrun{0%{offset-distance:0%;opacity:0;scale:.4}12%{opacity:1;scale:1}88%{opacity:1;scale:1}100%{offset-distance:100%;opacity:0;scale:.4}}
 
@@ -1470,3 +1470,6 @@ body:not(.is-dash) .lg .lg__logout::before{content:"";width:20px;height:20px;bac
 .vxt__chip[aria-pressed=false] svg{opacity:.55}
 html[data-theme=dark] .vxt__chip{background:var(--d-soft);border-color:var(--d-line);color:var(--dtx)}
 html[data-theme=dark] .vxt__chip:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* rapikan: tanpa cincin putus-putus; lintasan hanya sepanjang 4 tombol */
+.vxt__bloom::after{display:none}
