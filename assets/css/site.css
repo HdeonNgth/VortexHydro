@@ -1189,7 +1189,7 @@ body.vx-auth-open{overflow:hidden}
 .visit-row__name{font-weight:700;overflow-wrap:anywhere}
 .visit-row__meta{grid-column:1/-1;color:var(--slate,#53617a);font-size:.78rem}
 @media(max-width:420px){.vx-auth{padding:12px}.vx-auth__card{border-radius:20px}.dashboard-locked{margin:20px 14px;min-height:42vh}}
-@media(max-width:900px){.lg__logout{position:fixed;z-index:90;top:76px;right:10px;padding:8px 10px;border:1px solid var(--g-ln);background:var(--g-bg);box-shadow:0 10px 30px rgba(var(--navy-rgb),.2)}body.is-dash .lg__logout{top:14px;right:12px}}
+@media(max-width:900px){.lg__logout{position:absolute;z-index:1;top:calc(100% + 10px);right:0;padding:8px 10px;border:1px solid var(--g-ln);background:var(--g-bg);box-shadow:0 10px 30px rgba(var(--navy-rgb),.2)}body.is-dash .lg__logout{top:auto;right:auto;left:50%;bottom:12px;translate:-50% 0;padding:8px 6px;font-size:.62rem}}
 
 @media(max-width:760px){
   html{font-size:15px;scroll-behavior:auto!important}
@@ -1264,8 +1264,8 @@ body.vx-auth-open{overflow:hidden}
   .lg__nav a{padding:9px 8px}
   .lg__nav a svg{width:17px;height:17px}
   .lg__lang{width:34px;height:34px}
-  .lg__logout{top:64px!important;right:8px!important;padding:7px 9px}
-  body.is-dash .lg__logout{top:10px!important;right:8px!important}
+  .lg__logout{top:calc(100% + 10px)!important;right:0!important;padding:7px 9px}
+  body.is-dash .lg__logout{top:auto!important;right:auto!important;bottom:12px!important;left:50%!important}
   .dash{padding:18px 12px 76px}
   .dashboard-locked{min-height:40vh;margin:22px 14px;padding:22px}
   .fx-bubbles,.fx-bar,.fx-orb,.hex{display:none!important}
@@ -1369,3 +1369,12 @@ body.vx-auth-open{overflow:hidden}
   .vxt{right:max(10px,env(safe-area-inset-right,0px));bottom:max(10px,env(safe-area-inset-bottom,0px))}
   .vxt__btn{scale:.78}
 }
+
+/* Mode gelap: kartu struktur tim (node/slot) ikut tema */
+html[data-theme=dark] .node{background:var(--card);border-color:var(--d-line,var(--line));color:var(--dtx)}
+html[data-theme=dark] .node small,html[data-theme=dark] .slot,html[data-theme=dark] .org .slot{color:var(--dtx)}
+html[data-theme=dark] .node h3,html[data-theme=dark] .node .tag{color:var(--d-heading,#fff)}
+html[data-theme=dark] .slot{border-color:var(--d-line,var(--line))}
+html[data-theme=dark] .org .slot em{color:var(--dmu)}
+html[data-theme=dark] .mgmt__lead{background:linear-gradient(180deg,var(--card),var(--soft))}
+html[data-theme=dark] .mgmt__lead small{color:var(--dtx)!important}
