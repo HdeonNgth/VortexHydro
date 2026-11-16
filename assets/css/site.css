@@ -1198,7 +1198,6 @@ html[data-theme=dark] .vx-auth__flash.is-demo:not(.is-error){color:#FFD27A}
 
 @media(max-width:760px){
   html{font-size:15px;scroll-behavior:auto!important}
-  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   body{font-size:.94rem;line-height:1.55}
   .wrap,.wrap--wide{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
   .section{padding-block:42px}

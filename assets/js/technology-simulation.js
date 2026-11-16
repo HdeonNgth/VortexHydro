@@ -18,6 +18,7 @@ function fmt(n,d){return n.toFixed(d).replace(".",",")}
 function set(id,v){if(lastTxt[id]!==v){lastTxt[id]=v;$(id).textContent=v}}
 function sync(){btn.setAttribute("aria-pressed",on);btn.textContent="Pompa: "+(on?"hidup":"mati");$("vs-qo").textContent=fmt(q,2);$("vs-ho").textContent=fmt(h,2)}
 btn.onclick=function(){on=!on;sync();kick()};
+if(window.MutationObserver)new MutationObserver(function(){var n=document.documentElement.classList.contains("vx-noanim");if(on===n){on=!n;sync();kick()}}).observe(document.documentElement,{attributes:true,attributeFilter:["class"]});
 sq.oninput=function(){q=+sq.value;sync()};sh.oninput=function(){h=+sh.value;sync()};
 function tick(t){raf=0;if(!vis||document.hidden)return;
 var dt=Math.min(.05,(t-last)/1000||0);last=t;

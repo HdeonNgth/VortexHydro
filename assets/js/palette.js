@@ -12,7 +12,7 @@
   var cur = H.dataset.pal || 'biru';
   var busy = false;
   var $ = function (i) { return document.getElementById(i); };
-  var noanim = function () { return H.classList.contains('vx-noanim') || (window.matchMedia && window.matchMedia('(max-width:760px)').matches) || !document.body.animate; };
+  var noanim = function () { return H.classList.contains('vx-noanim') || !document.body.animate; };
 
   function build() {
     var box = $('pall'); if (!box || box.children.length) return;

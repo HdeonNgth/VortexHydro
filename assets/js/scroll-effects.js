@@ -1,7 +1,8 @@
 
 /* Scroll FX: lapisan animasi tambahan. Tidak mengubah isi atau router halaman. */
 (function () {
-  if (window.matchMedia && window.matchMedia("(max-width:760px)").matches) return;
+  var H = document.documentElement;
+  var boot = function () {
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var clamp = function (v) { return v < 0 ? 0 : v > 1 ? 1 : v; };
   var ease = function (t) { return 1 - Math.pow(1 - t, 3); };
@@ -265,4 +266,12 @@
     spawn(8); setTimeout(req, 30);
   });
   frame();
+  };
+  /* HP: animasi mati secara bawaan; efek baru dimulai ketika tombol Animasi dinyalakan. */
+  if (window.matchMedia && window.matchMedia("(max-width:760px)").matches && H.classList.contains("vx-noanim") && window.MutationObserver) {
+    var mo = new MutationObserver(function () {
+      if (!H.classList.contains("vx-noanim")) { mo.disconnect(); boot(); }
+    });
+    mo.observe(H, { attributes: true, attributeFilter: ["class"] });
+  } else boot();
 })();
