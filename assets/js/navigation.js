@@ -103,10 +103,10 @@ function calc(){var q=+$("vq").value||0,h=+$("vh").value||0,e=(+$("ve").value||0
 ["vq","vh","ve"].forEach(function(i){$(i).oninput=calc});calc();
 var sz=0,ab=document.querySelector("[data-a=anim]"),motionQuery=window.matchMedia("(max-width:760px)"),userNoAnim=false;
 userNoAnim=motionQuery.matches;if(!userNoAnim){try{userNoAnim=localStorage.getItem("vxa")==="off"}catch(_){}}
-function applyMotionPreference(){H.classList.toggle("vx-noanim",userNoAnim);if(ab){ab.setAttribute("aria-pressed",String(!userNoAnim));ab.disabled=false;ab.removeAttribute("title")}}
+function applyMotionPreference(){H.classList.toggle("vx-noanim",userNoAnim);if(ab){var al=ab.querySelector("span");if(al)al.textContent=userNoAnim?"Animasi mati":"Animasi aktif";ab.setAttribute("aria-pressed",String(!userNoAnim));ab.disabled=false;ab.removeAttribute("title")}}
 applyMotionPreference();
 
-$("vxl").onclick=function(e){var x=e.target.closest("[data-a]");if(!x)return;var a=x.dataset.a;
+var act=function(e){var x=e.target.closest("[data-a]");if(!x)return;var a=x.dataset.a;
   if(a==="calc"){window.VXPAL&&VXPAL.close();p.classList.toggle("show");x.classList.toggle("on",p.classList.contains("show"))}
   else if(a==="login"){tog(false)}
   else if(a==="lang"){var lb=document.querySelector("[data-language-toggle]");lb&&lb.click()}
@@ -114,8 +114,9 @@ $("vxl").onclick=function(e){var x=e.target.closest("[data-a]");if(!x)return;var
   else if(a==="anim"){userNoAnim=!userNoAnim;if(!motionQuery.matches){try{localStorage.setItem("vxa",userNoAnim?"off":"on")}catch(_){}}applyMotionPreference()}
   else if(a==="palette"){window.VXPAL&&VXPAL.toggle(x)}
   else if(a==="theme"){var dk=H.dataset.theme!=="dark";H.classList.add("vx-theming");H.dataset.theme=dk?"dark":"light";setTh();try{localStorage.setItem("vxt",H.dataset.theme)}catch(_){}setTimeout(function(){H.classList.remove("vx-theming")},700)}};
+$("vxl").onclick=act;var _pl=$("vxpal");if(_pl)_pl.addEventListener("click",act);
 var SUN='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',MOON='<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>';
-function setTh(){var x=document.querySelector("[data-a=theme] svg");if(x)x.innerHTML=H.dataset.theme==="dark"?SUN:MOON}setTh();
+function setTh(){var x=document.querySelector("[data-a=theme] svg");if(x)x.innerHTML=H.dataset.theme==="dark"?SUN:MOON;var tl=document.querySelector("[data-a=theme] span");if(tl)tl.textContent=H.dataset.theme==="dark"?"Mode gelap":"Mode terang"}setTh();
 /* ===== Dashboard ===== */
 var K=["debit","head","rpm","volt","amp","daya","eff","temp"],D={},N=60,hist={},tick=0,run=true,timer=null,tab="daya",initialized=false,sensorOnline=false,sensorSource=null,visitsSource=null,lastAuthCheck=0,lastSensorAt=0;
 K.forEach(function(k){hist[k]=[]});
