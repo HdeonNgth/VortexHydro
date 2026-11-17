@@ -60,5 +60,6 @@ Bila simulasi dihentikan, Dashboard menjadi OFFLINE setelah 10 detik tanpa data 
 | Status simulasi `OFFLINE` | Browser tidak bisa menjangkau Supabase. Cek internet. |
 | Dashboard tetap OFFLINE · MENUNGGU DATA | Simulasi belum menekan Mulai Kirim, atau `url` di `supabase-config.js` kosong. |
 | Dashboard menampilkan "sabuk slip" atau "bocor" | `VX_LIMITS` belum sesuai skala simulasi. |
+| Sesekali putus lalu nyambung lagi | Sudah ditangani: pengirim memakai timer Web Worker (tidak diperlambat saat tab di latar belakang), tiap permintaan dibatasi 3 detik, dan melanjutkan otomatis setelah halaman di-refresh. Dashboard memakai polling cadangan bila Realtime diam lebih dari 2,5 detik, dan baru menyatakan OFFLINE setelah 15 detik tanpa data. |
 | Log berisi "Realtime terputus, memakai polling" | Normal bila WebSocket diblokir jaringan. Dashboard tetap jalan lewat polling 1 detik. |
 | Project Supabase gratis berhenti sendiri | Paket gratis menjeda project yang tidak aktif seminggu. Buka dashboard Supabase lalu **Restore**. |

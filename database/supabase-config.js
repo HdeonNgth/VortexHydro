@@ -11,4 +11,4 @@ window.VX_SUPABASE = window.VX_SUPABASE || {
 
 /* Ambang Dashboard disesuaikan dengan skala simulasi 3D (rasio pulley 1:4, poros maks 80 RPM,
    debit maks 0,4 L/s). Tanpa ini Dashboard akan salah menuduh "sabuk slip" dan "bocor". */
-window.VX_LIMITS = Object.assign({ ratio: 4, rpmRef: 80, qRef: 0.4, leakFrac: 0.5 }, window.VX_LIMITS || {});
+window.VX_LIMITS = Object.assign({ ratio: 4, rpmRef: 80, qRef: 0.4, leakFrac: 0.5, staleMs: 15000 }, window.VX_LIMITS || {});

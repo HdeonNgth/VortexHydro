@@ -2627,7 +2627,22 @@
         status: document.getElementById('sb-status'),
         note: document.getElementById('sb-note')
       };
-      const sbState = { on: false, inFlight: false, timer: null, sent: 0, lastErr: '' };
+      const sbState = { on: false, inFlight: false, ticker: null, sent: 0, lastErr: '', failStreak: 0 };
+
+      // Timer di Web Worker TIDAK diperlambat browser saat tab ada di latar belakang
+      // (setInterval biasa bisa jadi sekali per menit). Bila Worker tidak tersedia, pakai setInterval.
+      function sbMakeTicker(cb, ms) {
+        try {
+          const code = 'setInterval(function(){postMessage(0)},' + ms + ');';
+          const url = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
+          const w = new Worker(url);
+          w.onmessage = cb;
+          return { stop: () => { w.terminate(); URL.revokeObjectURL(url); } };
+        } catch (e) {
+          const id = setInterval(cb, ms);
+          return { stop: () => clearInterval(id) };
+        }
+      }
 
       try { sbEls.key.value = localStorage.getItem('vx_sim_key') || ''; } catch (e) {}
 
@@ -2642,8 +2657,11 @@
         if (!key) return;
         const v = simState.latest;
         sbState.inFlight = true;
+        const ac = new AbortController();
+        const abortTimer = setTimeout(() => ac.abort(), 3000);
         try {
           const res = await fetch(SB.url + '/rest/v1/rpc/push_telemetry', {
+            signal: ac.signal,
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -2660,6 +2678,7 @@
           });
           if (res.ok) {
             sbState.sent += 1;
+            sbState.failStreak = 0;
             sbSetStatus('TERKIRIM · ' + sbState.sent, 'text-emerald-400');
             sbEls.note.textContent = 'Data mengalir ke website tiap 0,25 detik.';
           } else {
@@ -2675,9 +2694,11 @@
             }
           }
         } catch (err) {
-          sbSetStatus('OFFLINE', 'text-amber-400');
-          sbEls.note.textContent = 'Tidak bisa menghubungi Supabase. Cek koneksi internet.';
+          sbState.failStreak += 1;
+          sbSetStatus('MENYAMBUNG ULANG…', 'text-amber-400');
+          sbEls.note.textContent = 'Koneksi ke Supabase terputus, mencoba lagi otomatis (gagal ' + sbState.failStreak + 'x).';
         } finally {
+          clearTimeout(abortTimer);
           sbState.inFlight = false;
         }
       }
@@ -2695,27 +2716,39 @@
         sbEls.toggle.textContent = 'Berhenti Kirim';
         sbEls.toggle.className = 'flex-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-500 text-slate-950 border border-sky-400 transition cursor-pointer';
         sbSetStatus('MENGIRIM…', 'text-sky-400');
-        clearInterval(sbState.timer);
-        sbState.timer = setInterval(sbSendOnce, SB.everyMs);
+        try { localStorage.setItem('vx_sim_on', '1'); } catch (e) {}
+        if (sbState.ticker) sbState.ticker.stop();
+        sbState.ticker = sbMakeTicker(sbSendOnce, SB.everyMs);
         sbSendOnce();
       }
 
       function sbStop() {
         sbState.on = false;
-        clearInterval(sbState.timer);
+        if (sbState.ticker) { sbState.ticker.stop(); sbState.ticker = null; }
         sbEls.toggle.textContent = 'Mulai Kirim';
         sbEls.toggle.className = 'flex-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 transition cursor-pointer';
         if (sbEls.status.textContent.indexOf('KUNCI SALAH') === -1) sbSetStatus('OFF', 'text-slate-400');
       }
 
-      sbEls.toggle.addEventListener('click', () => { sbState.on ? sbStop() : sbStart(); });
+      sbEls.toggle.addEventListener('click', () => {
+        if (sbState.on) {
+          sbStop();
+          try { localStorage.removeItem('vx_sim_on'); } catch (e) {}
+        } else {
+          sbStart();
+        }
+      });
       sbEls.forget.addEventListener('click', () => {
         sbStop();
         sbEls.key.value = '';
-        try { localStorage.removeItem('vx_sim_key'); } catch (e) {}
+        try { localStorage.removeItem('vx_sim_key'); localStorage.removeItem('vx_sim_on'); } catch (e) {}
         sbSetStatus('OFF', 'text-slate-400');
         sbEls.note.textContent = 'Kunci dihapus dari browser ini.';
       });
+
+      try {
+        if (localStorage.getItem('vx_sim_on') === '1' && sbEls.key.value.trim()) setTimeout(sbStart, 600);
+      } catch (e) {}
 
       // =========================================================================
       // 21. MAIN REAL-TIME ANIMATION LOOP

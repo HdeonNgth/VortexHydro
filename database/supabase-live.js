@@ -8,7 +8,7 @@
   var table = cfg.table || "live_telemetry";
   var restUrl = base + "/rest/v1/" + table + "?select=*&id=eq.live";
   var headers = { apikey: cfg.anonKey, Authorization: "Bearer " + cfg.anonKey };
-  var connected = false, first = true, pollTimer = null, rtOk = false, client = null;
+  var connected = false, first = true, pollTimer = null, rtOk = false, client = null, lastRtAt = 0;
 
   function status(msg, lv) { if (window.VXDash) window.VXDash.status(msg, lv); }
 
@@ -41,11 +41,12 @@
       push(j[0]);
     }).catch(function () { status("Supabase tidak bisa dihubungi. Cek koneksi internet dan url", "w"); });
   }
-  /* Polling berjalan sebagai jaring pengaman; saat Realtime sehat, permintaannya dilewati */
+  /* Polling berjalan sebagai jaring pengaman. Dilewati hanya bila Realtime benar-benar baru mengirim
+     data (<2,5 detik lalu). Jadi kalau koneksi mati diam-diam, polling langsung mengambil alih. */
   function startPolling() {
     if (pollTimer) return;
     poll();
-    pollTimer = setInterval(function () { if (!rtOk) poll(); }, 1000);
+    pollTimer = setInterval(function () { if (!(rtOk && Date.now() - lastRtAt < 2500)) poll(); }, 1000);
   }
 
   function subscribe() {
@@ -55,6 +56,7 @@
       client.channel("vx-live")
         .on("postgres_changes", { event: "*", schema: "public", table: table }, function (p) {
           if (p && p.new) {
+            lastRtAt = Date.now();
             if (!connected) { connected = true; status("Supabase Realtime terhubung (" + table + ")", "o"); }
             push(p.new);
           }
