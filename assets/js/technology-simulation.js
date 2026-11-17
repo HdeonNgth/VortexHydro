@@ -3,7 +3,7 @@
 var $=function(i){return document.getElementById(i)},NS="http://www.w3.org/2000/svg";
 var svg=$("vs-svg");if(!svg)return;
 var E=window.VXSim;if(!E)return;var S=E.state;
-var path=[[508,307],[565,307],[720,307],[720,60],[95,60],[95,142],[100,160],[465,160],[472,172],[472,262],[455,292]];
+var path=[[420,307],[257,307],[95,307],[95,160],[465,160],[472,172],[472,262],[455,292]];
 var cum=[0],L=0,i,k;
 for(i=0;i<path.length;i++){var a=path[i],b=path[(i+1)%path.length];L+=Math.hypot(b[0]-a[0],b[1]-a[1]);cum.push(L)}
 function at(s){s=((s%L)+L)%L;var j=1;while(cum[j]<s)j++;var a=path[j-1],b=path[j%path.length],t=(s-cum[j-1])/(cum[j]-cum[j-1]);return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t]}

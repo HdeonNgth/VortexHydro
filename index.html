@@ -139,12 +139,12 @@
 <g fill="none" stroke="currentColor" stroke-opacity=".55" stroke-width="1.5"><path d="M10 338H750" stroke-opacity=".3"/></g>
 <rect x="36" y="188" width="9" height="134" fill="#aab4bd"/><rect x="676" y="188" width="9" height="134" fill="#aab4bd"/>
 <rect x="30" y="322" width="660" height="8" fill="#b9c2ca"/><rect x="30" y="180" width="660" height="8" fill="#b9c2ca"/><rect x="30" y="170" width="660" height="10" fill="#c9a074"/>
-<path d="M508 307H720V60H95V140" fill="none" stroke="var(--blue,#0077B6)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity=".28"/>
+<path d="M408 307H95V168" fill="none" stroke="var(--blue,#0077B6)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity=".28"/>
 <rect x="60" y="118" width="70" height="52" fill="none" stroke="currentColor" stroke-width="3" opacity=".75"/><rect x="62" y="140" width="66" height="30" fill="var(--sky,#5bc0eb)" opacity=".8"/>
 <polygon points="130,152 440,160 440,170 130,170" fill="var(--sky,#5bc0eb)" opacity=".85"/><path d="M130 142H440V170M130 142V170" fill="none" stroke="currentColor" stroke-width="3" opacity=".75"/>
 <path d="M472 172V262" stroke="var(--sky,#5bc0eb)" stroke-width="6" opacity=".45" stroke-linecap="round"/>
 <path d="M400 255H510L500 322H410Z" fill="#3fae49"/><polygon points="403,282 507,282 500,322 410,322" fill="var(--sky,#5bc0eb)" opacity=".8"/><path d="M398 255H512" stroke="#2f8a39" stroke-width="5" stroke-linecap="round"/>
-<rect x="540" y="292" width="50" height="30" rx="6" fill="#26303a"/><circle cx="548" cy="307" r="9" fill="#3a4651"/><path d="M590 307h6" stroke="currentColor" stroke-width="3"/>
+<rect x="215" y="292" width="50" height="30" rx="6" fill="#26303a"/><circle cx="257" cy="307" r="9" fill="#3a4651"/><path d="M209 307h6" stroke="currentColor" stroke-width="3"/>
 <path d="M465 149L528 146M465 167L528 158" stroke="currentColor" stroke-width="1.6" opacity=".6"/>
 <g id="vs-turb" transform="translate(465 158)"><circle r="9" fill="var(--navy,#0b2a4a)"/></g>
 <g id="vs-gen" transform="translate(528 152)"><circle r="6" fill="var(--navy,#0b2a4a)"/><path d="M-6 0H6" stroke="#fff" stroke-width="1.5"/></g>
@@ -153,8 +153,8 @@
 <g id="vs-led"><circle class="g" cx="622" cy="150" r="26" fill="url(#vsGlow)" opacity="0"/><circle class="g" cx="643" cy="150" r="26" fill="url(#vsGlow)" opacity="0"/><circle class="g" cx="664" cy="150" r="26" fill="url(#vsGlow)" opacity="0"/>
 <circle class="b" cx="622" cy="150" r="7" fill="#ffd24a" stroke="currentColor" stroke-opacity=".6"/><circle class="b" cx="643" cy="150" r="7" fill="#ffd24a" stroke="currentColor" stroke-opacity=".6"/><circle class="b" cx="664" cy="150" r="7" fill="#ffd24a" stroke="currentColor" stroke-opacity=".6"/></g>
 <g id="vs-p" fill="var(--cyan,#00B4D8)"></g>
-<g font-weight="700" font-size="12" text-anchor="middle" fill="#fff"><g fill="var(--blue,#0077B6)"><circle cx="352" cy="288" r="11"/><circle cx="565" cy="270" r="11"/><circle cx="742" cy="190" r="11"/><circle cx="95" cy="96" r="11"/><circle cx="285" cy="124" r="11"/><circle cx="465" cy="112" r="11"/><circle cx="640" cy="104" r="11"/></g>
-<text x="352" y="292">1</text><text x="565" y="274">2</text><text x="742" y="194">3</text><text x="95" y="100">4</text><text x="285" y="128">5</text><text x="465" y="116">6</text><text x="640" y="108">7</text></g>
+<g font-weight="700" font-size="12" text-anchor="middle" fill="#fff"><g fill="var(--blue,#0077B6)"><circle cx="352" cy="288" r="11"/><circle cx="240" cy="270" r="11"/><circle cx="125" cy="250" r="11"/><circle cx="95" cy="96" r="11"/><circle cx="285" cy="124" r="11"/><circle cx="465" cy="112" r="11"/><circle cx="640" cy="104" r="11"/></g>
+<text x="352" y="292">1</text><text x="240" y="274">2</text><text x="125" y="254">3</text><text x="95" y="100">4</text><text x="285" y="128">5</text><text x="465" y="116">6</text><text x="640" y="108">7</text></g>
 </svg></figure>
 <div class="vsim__ctl"><button class="vsim__btn" id="vs-pump" type="button" aria-pressed="true">Pompa: hidup</button>
 <label for="vs-q"><span>Debit pompa: <output id="vs-qo">0,50</output> L/s</span><input id="vs-q" type="range" min="0.1" max="1" step="0.05" value="0.5"></label>
@@ -162,10 +162,10 @@
 <div class="vsim__fault" id="vs-fault" role="group" aria-label="Simulasi gangguan"><span>Simulasi gangguan:</span><button type="button" data-f="none" aria-pressed="true">Normal</button><button type="button" data-f="leak" aria-pressed="false">Kebocoran</button><button type="button" data-f="jam" aria-pressed="false">Turbin macet</button><button type="button" data-f="heat" aria-pressed="false">Panas berlebih</button></div>
 <div class="vsim__cards" aria-live="off"><div class="vsim__c"><small>Daya hidrolik</small><b id="r-ph">0</b><em>W</em></div><div class="vsim__c"><small>Putaran turbin</small><b id="r-rpm">0</b><em>RPM</em></div><div class="vsim__c"><small>Tegangan</small><b id="r-v">0</b><em>V</em></div><div class="vsim__c"><small>Arus</small><b id="r-i">0</b><em>mA</em></div><div class="vsim__c"><small>Daya listrik</small><b id="r-pe">0</b><em>W</em></div><div class="vsim__c"><small>Lampu LED</small><b id="r-led">0</b><em>%</em></div><div class="vsim__c"><small>Suhu air</small><b id="r-t">27</b><em>°C</em></div></div>
 <p class="vsim__note">Data prototipe ini sama dengan yang tampil di Dashboard admin. Gangguan yang Anda pilih di sini langsung tercatat di log Dashboard.</p>
-<ol class="vsim__steps"><li>Ember menampung air yang jatuh dari turbin.</li><li>Pompa menyedot air dari ember.</li><li>Pipa mengirim air naik ke awal saluran.</li><li>Bak masuk menenangkan air sebelum mengalir.</li><li>Saluran di atas meja mengarahkan air ke turbin.</li><li>Turbin berputar oleh dorongan air, lalu air jatuh ke ember.</li><li>Generator mengubah putaran jadi listrik untuk lampu LED.</li></ol>
+<ol class="vsim__steps"><li>Ember menampung air yang jatuh dari turbin.</li><li>Pompa di sisi kiri menyedot air dari ember.</li><li>Pipa lewat bawah lalu naik ke awal saluran.</li><li>Bak masuk menenangkan air sebelum mengalir.</li><li>Saluran di atas meja mengarahkan air ke turbin.</li><li>Turbin berputar oleh dorongan air, lalu air jatuh ke ember.</li><li>Generator mengubah putaran jadi listrik untuk lampu LED.</li></ol>
 <p class="vsim__note">Model sederhana: P = ρ·g·Q·H·η. Nilai η (30%), konstanta RPM, dan tegangan adalah asumsi, bukan hasil ukur. Ubah nilainya di objek CFG pada skrip ini setelah ada data pengujian.</p>
 </div>
-<script src="assets/js/vx-engine.js?v=1"></script><script src="assets/js/technology-simulation.js?v=3"></script>
+<script src="assets/js/vx-engine.js?v=1"></script><script src="assets/js/technology-simulation.js?v=4"></script>
 </div></section>
 
 <section class="section" style="background:var(--soft)"><div class="wrap">
