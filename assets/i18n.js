@@ -324,6 +324,9 @@
     'Sabuk slip': 'Belt slip',
     'Baterai turun': 'Battery draining',
     'Debit air, tegangan baterai, RPM poros utama, dan RPM generator. Diperbarui setiap detik': 'Water flow, battery voltage, main shaft RPM, and generator RPM. Updated every second',
+    'Putar Video Sinematik': 'Play Cinematic Video',
+    'Animasi 3D prototipe Vortex Hydro, 8 bab, sekitar 1 menit': '3D animation of the Vortex Hydro prototype, 8 chapters, about 1 minute',
+    'Layar penuh': 'Fullscreen',
   };
 
   var enToId = Object.create(null);
