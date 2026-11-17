@@ -90,6 +90,7 @@ function onAuthChange(event){
   if(!authInitialized)initialSync=true;
   else initialSync=false;
   authInitialized=true;
+  if(next.role==="admin")dash(false);
   sync()
 }
 window.addEventListener("vx:authchange",onAuthChange);
@@ -129,6 +130,23 @@ function sim(){var r=window.VXSim?VXSim.read():{debit:0,head:0,rpm:0,volt:0,amp:
 function norm(o){var r={};K.forEach(function(k){r[k]=o[k]!=null?+o[k]:(D[k]||0)});if(o.daya==null)r.daya=r.volt*r.amp;if(o.eff==null&&o.debit!=null&&o.head!=null){var ph=9.81*r.debit*r.head;r.eff=ph?Math.min(100,r.daya/ph*100):0}return r}
 function apply(o){if(!authState||authState.role!=="admin"||!o)return;D=norm(o);K.forEach(function(k){var a=hist[k];a.push(D[k]);if(a.length>N)a.shift()});var w=analyze(D);render();showLevel(w)}
 function spark(k){var a=hist[k],mn=Math.min.apply(0,a),mx=Math.max.apply(0,a),r=mx-mn||1;return a.map(function(v,i){return(i/(N-1)*100).toFixed(1)+","+(30-(v-mn)/r*26).toFixed(1)}).join(" ")}
+/* Notifikasi mengambang untuk admin */
+var toasts={};
+function dismiss(t){if(!t||t.gone)return;t.gone=1;t.el.classList.add("out");setTimeout(function(){t.el.remove()},350)}
+function toast(id,lv,msg){
+  if(!authState||authState.role!=="admin")return;
+  var box=$("vxn");if(!box){box=document.createElement("div");box.id="vxn";box.className="vxn";box.setAttribute("role","region");box.setAttribute("aria-label","Notifikasi pemantauan");document.body.appendChild(box)}
+  dismiss(toasts[id]);
+  var el=document.createElement("div");el.className="vxn__t";el.dataset.l=lv;el.setAttribute("role",lv===2?"alert":"status");
+  var ic=document.createElement("div");ic.className="vxn__i";ic.textContent=lv===0?"\u2713":"!";
+  var bd=document.createElement("div");bd.className="vxn__b";var h=document.createElement("b");h.textContent=LVN[lv];var sp=document.createElement("span");sp.textContent=msg;bd.appendChild(h);bd.appendChild(sp);
+  var x=document.createElement("button");x.type="button";x.className="vxn__x";x.setAttribute("aria-label","Tutup");x.textContent="\u00d7";
+  el.appendChild(ic);el.appendChild(bd);el.appendChild(x);
+  var t={el:el};x.onclick=function(){dismiss(t)};box.appendChild(el);toasts[id]=t;
+  while(box.querySelectorAll(".vxn__t:not(.out)").length>4){var f=box.querySelector(".vxn__t:not(.out)");f.classList.add("out");setTimeout(function(e){e.remove()}.bind(null,f),350)}
+  if(lv<2)setTimeout(function(){dismiss(t)},lv?7000:4500);
+  else if(navigator.vibrate){try{navigator.vibrate([200,80,200])}catch(_){}}
+}
 var cardLv={};
 /* Penganalisis kondisi: bekerja untuk data simulasi maupun sensor asli. */
 function analyze(d){
@@ -146,9 +164,9 @@ function analyze(d){
   var cl={},worst=0;
   Object.keys(al).forEach(function(id){
     var x=al[id];worst=Math.max(worst,x.lv);x.cards.forEach(function(k){cl[k]=Math.max(cl[k]||0,x.lv)});
-    if(!act[id]||act[id].lv!==x.lv)log(LVN[x.lv]+" · "+x.msg,LVC[x.lv]);
+    if(!act[id]||act[id].lv!==x.lv){log(LVN[x.lv]+" · "+x.msg,LVC[x.lv]);toast(id,x.lv,x.msg)}
   });
-  Object.keys(act).forEach(function(id){if(!al[id])log("NORMAL · Pulih: "+act[id].msg.split(" (")[0].split(":")[0].toLowerCase(),"o")});
+  Object.keys(act).forEach(function(id){if(!al[id]){var rm="Pulih: "+act[id].msg.split(" (")[0].split(":")[0].toLowerCase();log("NORMAL · "+rm,"o");dismiss(toasts[id]);toast(id,0,rm)}});
   act=al;cardLv=cl;return worst
 }
 function render(){
@@ -236,13 +254,18 @@ var onChange={};
 function buildCtl(){
   var box=$("dsrc");if(!box||$("dfault")||!window.VXSim)return;
   var d=document.createElement("div");d.className="dfault";d.id="dfault";
-  [["pump","Pompa"],["none","Normal"],["leak","Bocor"],["jam","Macet"],["heat","Panas"]].forEach(function(x){
-    var b=document.createElement("button");b.type="button";b.className="dpill";b.dataset.f=x[0];b.textContent=x[1];
-    b.onclick=function(){x[0]==="pump"?VXSim.set({on:!VXSim.state.on}):VXSim.set({fault:x[0]})};d.appendChild(b)});
+  d.innerHTML='<label class="vsw"><input id="dpump" type="checkbox" role="switch"><i></i><span id="dpt">Pompa</span></label>'
+   +'<div class="vfs" id="dfs" data-f="none"><label for="dfi"><span>Simulasi gangguan</span><output id="dfo">Normal</output></label><input id="dfi" type="range" min="0" max="3" step="1" value="0"><ol aria-hidden="true"><li data-i="0">Normal</li><li data-i="1">Bocor</li><li data-i="2">Macet</li><li data-i="3">Panas</li></ol></div>';
+  var FO=["none","leak","jam","heat"];
+  d.querySelector("#dpump").onchange=function(){VXSim.set({on:this.checked})};
+  d.querySelector("#dfi").oninput=function(){VXSim.set({fault:FO[+this.value]})};
+  Array.prototype.forEach.call(d.querySelectorAll("li"),function(l){l.onclick=function(){VXSim.set({fault:FO[+l.dataset.i]})}});
   box.insertBefore(d,box.querySelector(".dnote"));syncCtl()
 }
-function syncCtl(){var d=$("dfault");if(!d)return;Array.prototype.forEach.call(d.children,function(b){
-  var f=b.dataset.f;b.setAttribute("aria-pressed",f==="pump"?String(VXSim.state.on):String(VXSim.state.fault===f));if(f==="pump")b.textContent="Pompa: "+(VXSim.state.on?"hidup":"mati")})}
+function syncCtl(){var d=$("dfault");if(!d)return;var FO=["none","leak","jam","heat"],FN={none:"Normal",leak:"Bocor",jam:"Turbin macet",heat:"Panas berlebih"},f=VXSim.state.fault;
+  $("dpump").checked=!!VXSim.state.on;$("dpt").textContent="Pompa: "+(VXSim.state.on?"hidup":"mati");
+  $("dfi").value=FO.indexOf(f);$("dfs").dataset.f=f;$("dfo").textContent=FN[f];
+  Array.prototype.forEach.call(d.querySelectorAll("li"),function(l){l.classList.toggle("on",FO[+l.dataset.i]===f)})}
 function setupDashboard(){
   if(!initialized){
     initialized=true;
@@ -313,7 +336,7 @@ function dash(on){
   if(!authState||authState.role!=="admin"){stopStreams();window.vxDashboard=undefined;return}
   setupDashboard();
   if(window.VX_DEMO_MODE){sensorOnline=false;startSimulation();return}
-  openSensorStream();openVisitStream();if(on)refreshVisits();loadLatest();startSimulation()
+  if(!sensorSource)openSensorStream();if(!visitsSource)openVisitStream();if(on)refreshVisits();loadLatest();startSimulation()
 }
 sync();
 })();
