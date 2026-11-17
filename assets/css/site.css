@@ -1549,3 +1549,33 @@ body.is-dash .vxn{top:224px;right:20px}
 .hx__vid.on iframe{opacity:1}
 .hx__vid::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,7,13,.78) 0,rgba(3,7,13,.35) 38%,transparent 62%)}
 @media (max-width:760px){.hx__vid::after{background:linear-gradient(180deg,rgba(3,7,13,.8) 0,rgba(3,7,13,.4) 40%,transparent 70%)}}
+
+/* ===== Homepage: tipografi & tata letak ulang (hero) ===== */
+.hx__vid::after{background:linear-gradient(90deg,rgba(3,7,13,.86) 0,rgba(3,7,13,.55) 34%,rgba(3,7,13,.12) 62%,transparent 80%)}
+.hx__copy{position:absolute;z-index:3;left:max(24px,6vw);top:50%;transform:translateY(-54%);width:min(660px,calc(100% - 48px));display:flex;flex-direction:column;align-items:flex-start;gap:0}
+.hx__eyebrow{margin:0 0 22px;display:inline-flex;align-items:center;gap:12px;font:600 .74rem/1 var(--f-body);letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.82)}
+.hx__eyebrow::before{content:"";width:34px;height:1px;background:var(--sky,#90E0EF)}
+html .hx__title{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(2.7rem,5.6vw,5.1rem);line-height:1.04;letter-spacing:-.01em;color:#fff;text-shadow:0 2px 28px rgba(0,0,0,.45)}
+.hx__title span{display:block;width:auto;max-width:100%;background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#fff;padding:0;margin:0}
+.hx__title .hx__title2{margin-top:.12em;color:var(--sky,#90E0EF)}
+.hx__lead{margin:28px 0 0;max-width:48ch;font:400 clamp(1rem,1.25vw,1.18rem)/1.7 var(--f-body);color:rgba(255,255,255,.86);text-shadow:0 1px 16px rgba(0,0,0,.5)}
+.hx__actions{margin-top:36px;display:flex;flex-wrap:wrap;gap:14px}
+.hx__go{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 28px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.08);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;text-decoration:none;font:600 .95rem/1 var(--f-body);letter-spacing:.01em;transition:background .25s,border-color .25s,transform .25s}
+.hx__go:hover{background:rgba(255,255,255,.2);border-color:#fff;transform:translateY(-2px)}
+.hx__go--main{background:#fff;border-color:#fff;color:#03045E}
+.hx__go--main:hover{background:var(--pale,#CAF0F8);border-color:var(--pale,#CAF0F8)}
+.hx__go:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.hx__trust p{font:600 .72rem/1 var(--f-body);letter-spacing:.22em;text-transform:uppercase;opacity:.75}
+@media (max-width:760px){
+  .hx__copy{left:20px;right:20px;width:auto;top:auto;bottom:clamp(96px,16svh,140px);transform:none}
+  .hx__eyebrow{margin-bottom:16px;font-size:.68rem}
+  html .hx__title{font-size:clamp(2.2rem,10.4vw,3rem)}
+  .hx__lead{margin-top:18px;font-size:.98rem;line-height:1.6}
+  .hx__actions{margin-top:24px;gap:10px;width:100%}
+  .hx__go{flex:1 1 150px;min-height:48px;padding:0 18px}
+  .hx__vid::after{background:linear-gradient(0deg,rgba(3,7,13,.88) 0,rgba(3,7,13,.6) 45%,rgba(3,7,13,.2) 80%,transparent)}
+}
+@media (max-height:620px) and (min-width:761px){.hx__lead{display:none}.hx__copy{transform:translateY(-50%)}}
+.hx .hx__go{color:#fff}.hx .hx__go--main{color:#03045E}
+.hx__copy{width:min(780px,calc(100% - 48px))}
+@media (min-width:761px){html .hx__title{font-size:clamp(2.7rem,4.6vw,4.4rem)}.hx__title span{white-space:nowrap}}
