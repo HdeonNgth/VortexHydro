@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "vortexhydro": {
+      "live": {
+        ".read": true,
+        ".write": true
+      }
+    }
+  }
+}

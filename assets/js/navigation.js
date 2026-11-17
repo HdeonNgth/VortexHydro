@@ -119,15 +119,25 @@ $("vxl").onclick=act;var _pl=$("vxpal");if(_pl)_pl.addEventListener("click",act)
 var SUN='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',MOON='<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>';
 function setTh(){var x=document.querySelector("[data-a=theme] svg");if(x)x.innerHTML=H.dataset.theme==="dark"?SUN:MOON;var tl=document.querySelector("[data-a=theme] span");if(tl)tl.textContent=H.dataset.theme==="dark"?"Mode gelap":"Mode terang"}setTh();
 /* ===== Dashboard ===== */
-var K=["debit","head","rpm","volt","amp","daya","eff","temp"],D={},N=60,hist={},tick=0,run=true,timer=null,tab="daya",initialized=false,sensorOnline=false,sensorSource=null,visitsSource=null,lastAuthCheck=0,lastSensorAt=0;
+var K=["debit","vbat","rpmShaft","rpmGen"],D={},N=60,hist={},tick=0,run=true,timer=null,tab="debit",initialized=false,sensorOnline=false,sensorSource=null,visitsSource=null,lastAuthCheck=0,lastSensorAt=0;
+var liveLast=null,liveAt=0,liveTs,liveStale=null;
 K.forEach(function(k){hist[k]=[]});
-var fmt={debit:2,head:2,rpm:0,volt:1,amp:3,daya:2,eff:1,temp:1},flag={},act={},cnt={},lastLv=-1;
+var fmt={debit:2,vbat:2,rpmShaft:0,rpmGen:0},flag={},act={},cnt={},lastLv=-1;
 /* Ambang peringatan skala prototipe. Ganti lewat window.VX_LIMITS bila sensor asli berbeda skala. */
-var LIM=Object.assign({flowMin:.03,flowLow:.2,rpmWarn:290,rpmBad:340,jamRpm:8,effLeak:20,tempWarn:35,tempBad:45},window.VX_LIMITS||{});
+var LIM=Object.assign({flowMin:.03,flowLow:.2,rpmWarn:290,rpmBad:340,jamRpm:8,minShaft:30,ratio:2.2,ratioWarn:.8,ratioBad:.6,rpmRef:150,qRef:.5,leakFrac:.6,vLowWarn:11.5,vLowBad:11.0,vHighWarn:14.4,vHighBad:14.8,staleMs:10000},window.VX_LIMITS||{});
 var LVN=["NORMAL","WASPADA","BAHAYA"],LVC=["o","w","d"];
+function liveOn(){return !!(window.VX_FIREBASE&&window.VX_FIREBASE.databaseURL)}
+/* Pintu masuk data dari Firebase (database/firebase-live.js). Dashboard membaca nilai terakhir tiap detik. */
+window.VXDash={enabled:liveOn,
+  ingest:function(r,initial){if(!r||typeof r!=="object")return;var o={},n=0;K.forEach(function(k){var v=r[k];if(v==null&&k==="rpmShaft")v=r.rpm;v=Number(v);if(v==null||!isFinite(v)||r[k]===null||r[k]===""){return}o[k]=v;n++});
+    if(!n)return;liveLast=Object.assign(liveLast||{},o);
+    /* dianggap baru hanya bila ts berubah, jadi data lama yang tersisa di database tidak tampil sebagai LIVE */
+    var ts=r.ts,changed=!initial&&(ts==null||ts!==liveTs);liveTs=ts;if(changed)liveAt=Date.now()},
+  last:null,
+  status:function(msg,lv){if(this.last&&this.last.msg===msg)return;this.last={msg:msg,lv:lv||"i"};log(msg,lv||"i")}};
 function log(m,c){if(!authState||authState.role!=="admin")return;var ul=$("dlog"),li=document.createElement("li"),time=document.createElement("time"),message=document.createElement("span");li.className=c||"";time.textContent=new Date().toLocaleTimeString("id-ID");message.textContent=m;li.appendChild(time);li.appendChild(message);ul.insertBefore(li,ul.firstChild);while(ul.children.length>40)ul.lastChild.remove()}
-function sim(){var r=window.VXSim?VXSim.read():{debit:0,head:0,rpm:0,volt:0,amp:0,daya:0,eff:0,temp:27};return r}
-function norm(o){var r={};K.forEach(function(k){r[k]=o[k]!=null?+o[k]:(D[k]||0)});if(o.daya==null)r.daya=r.volt*r.amp;if(o.eff==null&&o.debit!=null&&o.head!=null){var ph=9.81*r.debit*r.head;r.eff=ph?Math.min(100,r.daya/ph*100):0}return r}
+function sim(){return window.VXSim?VXSim.read():{debit:0,vbat:0,rpmShaft:0,rpmGen:0}}
+function norm(o){var r={};K.forEach(function(k){var v=o[k];if(v==null&&k==="rpmShaft")v=o.rpm;r[k]=v!=null?+v:(D[k]||0)});return r}
 function apply(o){if(!authState||authState.role!=="admin"||!o)return;D=norm(o);K.forEach(function(k){var a=hist[k];a.push(D[k]);if(a.length>N)a.shift()});var w=analyze(D);render();showLevel(w)}
 function spark(k){var a=hist[k],mn=Math.min.apply(0,a),mx=Math.max.apply(0,a),r=mx-mn||1;return a.map(function(v,i){return(i/(N-1)*100).toFixed(1)+","+(30-(v-mn)/r*26).toFixed(1)}).join(" ")}
 /* Bunyi peringatan (hanya BAHAYA) */
@@ -158,13 +168,17 @@ function toast(id,lv,msg){
 /* Panel penjelasan masalah (Dashboard) */
 var WHY={
   stop:["Pompa mati atau debit nol, jadi tidak ada air yang menggerakkan turbin.","Hidupkan pompa dan cek sumber listriknya."],
-  jam:["Air sudah mengalir, tetapi turbin tidak berputar. Biasanya ada benda yang menyangkut, atau poros, bearing, atau belt macet. Tanpa putaran, generator tidak menghasilkan listrik dan sistem bisa memanas.","Matikan pompa, lalu periksa poros, bearing, belt, dan benda asing di tabung pusaran."],
-  leak:["Debit masuk cukup, tetapi putaran dan efisiensi rendah. Artinya sebagian air tidak sampai ke turbin, kemungkinan bocor di pipa atau sambungan.","Periksa sambungan pipa, selang, dan dasar tangki dari rembesan air."],
+  jam:["Air sudah mengalir, tetapi poros utama tidak berputar. Biasanya ada benda yang menyangkut, atau poros, bearing, atau belt macet. Tanpa putaran, generator tidak mengisi baterai.","Matikan pompa, lalu periksa poros, bearing, belt, dan benda asing di tabung pusaran."],
+  leak:["Debit masuk cukup, tetapi poros berputar jauh lebih pelan dari seharusnya. Artinya sebagian air tidak sampai ke turbin, kemungkinan bocor di pipa atau sambungan.","Periksa sambungan pipa, selang, dan dasar tangki dari rembesan air."],
+  belt:["Poros berputar normal, tetapi RPM generator tidak mengikuti. Sabuk (belt) kemungkinan slip, kendor, atau putus, sehingga generator tidak menghasilkan listrik penuh.","Matikan pompa, cek ketegangan dan kondisi belt, serta kedua pulley."],
+  beltw:["Perbandingan RPM generator terhadap poros mulai turun dari nilai pulley. Sabuk mulai kendor atau aus.","Cek ketegangan belt sebelum makin parah."],
   lowq:["Debit di bawah batas normal. Bisa karena pompa melemah, pipa tersumbat, atau pengaturan debit terlalu kecil.","Bersihkan filter pompa, cek pipa, lalu naikkan debit."],
-  rpmw:["Putaran turbin tinggi. Biasanya debit atau tinggi jatuh terlalu besar, atau beban generator berkurang.","Kurangi debit dan pastikan beban (lampu LED) terhubung."],
-  rpmb:["Putaran melebihi batas aman. Beban generator mungkin terlepas, sehingga turbin berputar terlalu bebas dan bisa merusak bearing dan belt.","Matikan pompa, periksa sambungan beban generator, lalu nyalakan kembali dengan debit lebih kecil."],
-  tmpw:["Suhu air mulai naik. Air yang berputar terus di sistem tertutup lama-lama memanas, atau pompa bekerja terlalu keras.","Istirahatkan pompa sebentar atau ganti sebagian air dengan yang lebih dingin."],
-  tmpb:["Suhu air terlalu tinggi. Bisa karena turbin tertahan, pompa terus bekerja tanpa aliran lancar, atau air tidak bersirkulasi.","Matikan pompa, biarkan dingin, lalu periksa turbin dan aliran sebelum menyalakan lagi."]
+  rpmw:["Putaran poros tinggi. Biasanya debit atau tinggi jatuh terlalu besar, atau beban generator berkurang.","Kurangi debit dan pastikan beban terhubung."],
+  rpmb:["Putaran poros melebihi batas aman. Beban generator mungkin terlepas, sehingga turbin berputar terlalu bebas dan bisa merusak bearing dan belt.","Matikan pompa, periksa sambungan beban generator, lalu nyalakan kembali dengan debit lebih kecil."],
+  vlw:["Tegangan baterai mulai turun. Pengisian dari generator lebih kecil daripada pemakaian beban.","Naikkan debit agar generator mengisi lebih banyak, atau kurangi beban."],
+  vlb:["Baterai hampir habis. Jika dibiarkan, beban mati dan baterai bisa rusak karena terlalu kosong.","Lepas beban yang tidak perlu dan isi baterai sampai tegangannya pulih."],
+  vhw:["Tegangan baterai di atas batas pengisian normal. Pengisian mungkin tidak terkendali.","Cek pengontrol pengisian (charge controller) dan sambungan baterai."],
+  vhb:["Tegangan baterai terlalu tinggi dan berisiko merusak atau memanaskan baterai.","Putuskan pengisian segera, lalu periksa pengontrol pengisian."]
 };
 function whyBox(){
   var box=$("dwhy");if(box)return box;
@@ -190,17 +204,20 @@ function explain(al,worst){
 var cardLv={};
 /* Penganalisis kondisi: bekerja untuk data simulasi maupun sensor asli. */
 function analyze(d){
-  var on=d.debit>=LIM.flowMin,flow=d.debit>=.1,al={};
-  function a(id,ok,lv,msg,cards){var c=ok?(cnt[id]||0)+1:0;cnt[id]=c;if(ok&&c>=(al.__n||3))al[id]={lv:lv,msg:msg,cards:cards}}
-  a("stop",!on,1,"Tidak ada aliran air: pompa mati, turbin berhenti",["debit","rpm","daya"]);
-  a("jam",flow&&d.rpm<LIM.jamRpm,2,"Turbin macet: air mengalir ("+d.debit.toFixed(2)+" L/s) tetapi turbin tidak berputar",["rpm","volt","amp","daya","temp"]);
-  a("leak",flow&&d.rpm>=LIM.jamRpm&&d.eff<LIM.effLeak,2,"Dugaan kebocoran: efisiensi turun ke "+d.eff.toFixed(0)+"% (debit "+d.debit.toFixed(2)+" L/s)",["eff","debit","daya"]);
+  var on=d.debit>=LIM.flowMin,flow=d.debit>=.1,al={},ratio=d.rpmShaft>=LIM.minShaft?d.rpmGen/d.rpmShaft:null,expRpm=LIM.rpmRef*Math.pow(Math.max(d.debit,0)/LIM.qRef,.7);
+  function a(id,ok,lv,msg,cards){var c=ok?(cnt[id]||0)+1:0;cnt[id]=c;if(ok&&c>=3)al[id]={lv:lv,msg:msg,cards:cards}}
+  a("stop",!on,1,"Tidak ada aliran air: pompa mati, turbin berhenti",["debit","rpmShaft","rpmGen"]);
+  a("jam",flow&&d.rpmShaft<LIM.jamRpm,2,"Turbin macet: air mengalir ("+d.debit.toFixed(2)+" L/s) tetapi poros tidak berputar",["rpmShaft","rpmGen","vbat"]);
+  a("leak",flow&&d.rpmShaft>=LIM.jamRpm&&d.rpmShaft<LIM.leakFrac*expRpm,2,"Dugaan kebocoran: debit "+d.debit.toFixed(2)+" L/s tetapi poros hanya "+Math.round(d.rpmShaft)+" RPM (normalnya sekitar "+Math.round(expRpm)+")",["debit","rpmShaft"]);
+  a("belt",ratio!=null&&ratio<LIM.ratio*LIM.ratioBad,2,"Sabuk slip atau putus: RPM generator "+Math.round(d.rpmGen)+" (seharusnya sekitar "+Math.round(d.rpmShaft*LIM.ratio)+")",["rpmGen","rpmShaft"]);
+  a("beltw",ratio!=null&&ratio>=LIM.ratio*LIM.ratioBad&&ratio<LIM.ratio*LIM.ratioWarn,1,"Sabuk mulai slip: RPM generator "+Math.round(d.rpmGen)+" (seharusnya sekitar "+Math.round(d.rpmShaft*LIM.ratio)+")",["rpmGen","rpmShaft"]);
   a("lowq",on&&d.debit<LIM.flowLow,1,"Debit air rendah ("+d.debit.toFixed(2)+" L/s)",["debit"]);
-  a("rpmw",d.rpm>LIM.rpmWarn&&d.rpm<=LIM.rpmBad,1,"Putaran turbin tinggi ("+Math.round(d.rpm)+" RPM)",["rpm"]);
-  a("rpmb",d.rpm>LIM.rpmBad,2,"Putaran turbin melebihi batas aman ("+Math.round(d.rpm)+" RPM)",["rpm"]);
-  a("tmpw",d.temp>LIM.tempWarn&&d.temp<=LIM.tempBad,1,"Suhu naik ("+d.temp.toFixed(1)+" °C)",["temp"]);
-  a("tmpb",d.temp>LIM.tempBad,2,"Suhu terlalu tinggi ("+d.temp.toFixed(1)+" °C)",["temp"]);
-  delete al.__n;
+  a("rpmw",d.rpmShaft>LIM.rpmWarn&&d.rpmShaft<=LIM.rpmBad,1,"Putaran poros tinggi ("+Math.round(d.rpmShaft)+" RPM)",["rpmShaft"]);
+  a("rpmb",d.rpmShaft>LIM.rpmBad,2,"Putaran poros melebihi batas aman ("+Math.round(d.rpmShaft)+" RPM)",["rpmShaft"]);
+  a("vlw",d.vbat<LIM.vLowWarn&&d.vbat>=LIM.vLowBad,1,"Tegangan baterai rendah ("+d.vbat.toFixed(2)+" V)",["vbat"]);
+  a("vlb",d.vbat<LIM.vLowBad,2,"Baterai hampir habis ("+d.vbat.toFixed(2)+" V)",["vbat"]);
+  a("vhw",d.vbat>LIM.vHighWarn&&d.vbat<=LIM.vHighBad,1,"Tegangan baterai tinggi ("+d.vbat.toFixed(2)+" V)",["vbat"]);
+  a("vhb",d.vbat>LIM.vHighBad,2,"Tegangan baterai terlalu tinggi ("+d.vbat.toFixed(2)+" V)",["vbat"]);
   var cl={},worst=0;
   Object.keys(al).forEach(function(id){
     var x=al[id];worst=Math.max(worst,x.lv);x.cards.forEach(function(k){cl[k]=Math.max(cl[k]||0,x.lv)});
@@ -212,8 +229,8 @@ function analyze(d){
 function render(){
   K.forEach(function(k){var c=document.querySelector('[data-c="'+k+'"]');c.querySelector("b span").textContent=D[k].toFixed(fmt[k]);c.querySelector("polyline").setAttribute("points",spark(k));
     var lv=cardLv[k]||0;c.classList.toggle("warn",lv===1);c.classList.toggle("bad",lv===2)});
-  $("grpm").style.strokeDashoffset=75-Math.min(1,D.rpm/400)*75;$("grpmt").textContent=Math.round(D.rpm);
-  $("geff").style.strokeDashoffset=75-Math.min(1,D.eff/100)*75;$("geft").textContent=D.eff.toFixed(0)+"%";chart()}
+  $("grpm").style.strokeDashoffset=75-Math.min(1,D.rpmShaft/400)*75;$("grpmt").textContent=Math.round(D.rpmShaft);
+  $("geff").style.strokeDashoffset=75-Math.min(1,D.rpmGen/900)*75;$("geft").textContent=Math.round(D.rpmGen);chart()}
 function chart(){var a=hist[tab],W=600,Hh=230,L=44,R=12,T=12,Bm=26,mn=Math.min.apply(0,a),mx=Math.max.apply(0,a),pad=(mx-mn||1)*.2;mn-=pad;mx+=pad;
   var X=function(i){return L+i/(N-1)*(W-L-R)},Y=function(v){return T+(1-(v-mn)/(mx-mn))*(Hh-T-Bm)},g="",pts=a.map(function(v,i){return X(i+N-a.length).toFixed(1)+","+Y(v).toFixed(1)}),i;
   for(i=0;i<=3;i++){var yy=T+i*(Hh-T-Bm)/3,val=mx-i*(mx-mn)/3;g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+yy+'" y2="'+yy+'" stroke="rgba(255,255,255,.08)"/><text x="'+(L-6)+'" y="'+(yy+4)+'" text-anchor="end">'+val.toFixed(val>100?0:1)+"</text>"}
@@ -221,13 +238,23 @@ function chart(){var a=hist[tab],W=600,Hh=230,L=44,R=12,T=12,Bm=26,mn=Math.min.a
   $("dch").innerHTML='<defs><linearGradient id="dg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--cyan)" stop-opacity=".4"/><stop offset="1" stop-color="var(--cyan)" stop-opacity="0"/></linearGradient></defs>'+g+'<polygon fill="url(#dg)" points="'+x0+","+(Hh-Bm)+" "+pts.join(" ")+" "+X(N-1)+","+(Hh-Bm)+'"/><polyline fill="none" stroke="var(--lite)" stroke-width="2.4" stroke-linejoin="round" points="'+pts.join(" ")+'"/><circle cx="'+X(N-1)+'" cy="'+Y(a[a.length-1])+'" r="4.5" fill="#fff" stroke="var(--cyan)" stroke-width="2"/><text x="'+L+'" y="'+(Hh-6)+'">-60 dtk</text><text x="'+(W-R)+'" y="'+(Hh-6)+'" text-anchor="end">sekarang</text>'}
 function setSt(live,txt){var s=$("dst");s.classList.toggle("off",!live);s.lastChild.textContent=txt}
 var srcTxt="Prototipe (simulasi)";
-function showLevel(w){var s=$("dst");if(!s||!run)return;s.classList.remove("ok","warn","bad","off");s.classList.add(["ok","warn","bad"][w]);s.lastChild.textContent=(sensorOnline?"LIVE · SENSOR":"LIVE · "+srcTxt.toUpperCase())+" · "+LVN[w]}
+function showLevel(w){var s=$("dst");if(!s||!run)return;s.classList.remove("ok","warn","bad","off");s.classList.add(["ok","warn","bad"][w]);s.lastChild.textContent=(liveOn()?"LIVE · FIREBASE":sensorOnline?"LIVE · SENSOR":"LIVE · "+srcTxt.toUpperCase())+" · "+LVN[w]}
 function isAdminDashboard(){return !!(authState&&authState.authenticated&&authState.role==="admin"&&B.classList.contains("is-dash"))}
 function step(){
   if(!authState||authState.role!=="admin"||!run)return;
+  $("dclk").textContent=new Date().toLocaleTimeString("id-ID");
+  if(liveOn()){
+    var fresh=liveAt&&Date.now()-liveAt<LIM.staleMs,st=$("dst");
+    if(!fresh){
+      if(liveStale!==true){liveStale=true;var m=liveAt?"Data dari simulasi 3D berhenti masuk":"Menunggu data pertama dari Firebase (simulasi 3D)";log((liveAt?"WASPADA · ":"")+m,liveAt?"w":"i");if(liveAt)toast("live",1,m)}
+      st.classList.remove("ok","warn","bad");st.classList.add("off");st.lastChild.textContent="OFFLINE · MENUNGGU DATA";return
+    }
+    if(liveStale===true&&liveLast&&hist.debit.length>1){log("NORMAL · Data dari simulasi 3D masuk kembali","o");dismiss(toasts.live);toast("live",0,"Data dari simulasi 3D masuk kembali")}
+    liveStale=false;tick++;apply(liveLast);return
+  }
   if(sensorOnline&&Date.now()-lastSensorAt>10000){sensorOnline=false;log("Data sensor berhenti masuk. Beralih ke simulasi prototipe","w")}
   if(sensorOnline)return;
-  tick++;$("dclk").textContent=new Date().toLocaleTimeString("id-ID");apply(sim())
+  tick++;apply(sim())
 }
 function checkSession(){
   if(window.VX_DEMO_MODE)return;
@@ -295,40 +322,45 @@ function buildCtl(){
   var box=$("dsrc");if(!box||$("dfault")||!window.VXSim)return;
   var d=document.createElement("div");d.className="dfault";d.id="dfault";
   d.innerHTML='<label class="vsw"><input id="dpump" type="checkbox" role="switch"><i></i><span id="dpt">Pompa</span></label>'
-   +'<div class="vfs" id="dfs" data-f="none"><label for="dfi"><span>Simulasi gangguan</span><output id="dfo">Normal</output></label><input id="dfi" type="range" min="0" max="3" step="1" value="0"><ol aria-hidden="true"><li data-i="0">Normal</li><li data-i="1">Bocor</li><li data-i="2">Macet</li><li data-i="3">Panas</li></ol></div>';
-  var FO=["none","leak","jam","heat"];
+   +'<div class="vfs" id="dfs" data-f="none"><label for="dfi"><span>Simulasi gangguan</span><output id="dfo">Normal</output></label><input id="dfi" type="range" min="0" max="4" step="1" value="0"><ol aria-hidden="true"><li data-i="0">Normal</li><li data-i="1">Bocor</li><li data-i="2">Macet</li><li data-i="3">Sabuk</li><li data-i="4">Baterai</li></ol></div>';
+  var FO=["none","leak","jam","belt","batt"];
   d.querySelector("#dpump").onchange=function(){VXSim.set({on:this.checked})};
   d.querySelector("#dfi").oninput=function(){VXSim.set({fault:FO[+this.value]})};
   Array.prototype.forEach.call(d.querySelectorAll("li"),function(l){l.onclick=function(){VXSim.set({fault:FO[+l.dataset.i]})}});
   box.insertBefore(d,box.querySelector(".dnote"));syncCtl()
 }
-function syncCtl(){var d=$("dfault");if(!d)return;var FO=["none","leak","jam","heat"],FN={none:"Normal",leak:"Bocor",jam:"Turbin macet",heat:"Panas berlebih"},f=VXSim.state.fault;
+function syncCtl(){var d=$("dfault");if(!d)return;var FO=["none","leak","jam","belt","batt"],FN={none:"Normal",leak:"Bocor",jam:"Turbin macet",belt:"Sabuk slip",batt:"Baterai turun"},f=VXSim.state.fault;
   $("dpump").checked=!!VXSim.state.on;$("dpt").textContent="Pompa: "+(VXSim.state.on?"hidup":"mati");
   $("dfi").value=FO.indexOf(f);$("dfs").dataset.f=f;$("dfo").textContent=FN[f];
   Array.prototype.forEach.call(d.querySelectorAll("li"),function(l){l.classList.toggle("on",FO[+l.dataset.i]===f)})}
 function setupDashboard(){
   if(!initialized){
     initialized=true;
+    if(liveOn()){log("Dashboard menunggu data dari Firebase Realtime Database (simulasi 3D)","i");if(VXDash.last)log(VXDash.last.msg,VXDash.last.lv)}
+    else{
     var seed=window.VXSim?VXSim.history():[];if(!seed.length)seed=[sim()];
     seed.forEach(function(r){var n=norm(r);K.forEach(function(k){hist[k].push(n[k])})});
     log("Dashboard terhubung ke simulasi prototipe (halaman Teknologi)","i");chart();
     if(window.VXSim)VXSim.onChange(function(c){if(!authState||authState.role!=="admin")return;
       if("on"in c)log("Pompa "+(c.on?"dihidupkan":"dimatikan"),"i");
-      if("fault"in c)log(c.fault==="none"?"Gangguan simulasi dihapus":"Gangguan simulasi: "+({leak:"kebocoran",jam:"turbin macet",heat:"panas berlebih"}[c.fault]),"i");
+      if("fault"in c)log(c.fault==="none"?"Gangguan simulasi dihapus":"Gangguan simulasi: "+({leak:"kebocoran",jam:"turbin macet",belt:"sabuk slip",batt:"baterai turun cepat"}[c.fault]),"i");
       if("q"in c||"h"in c)clearTimeout(onChange.t),onChange.t=setTimeout(function(){log("Pengaturan prototipe diubah: debit "+VXSim.state.q.toFixed(2)+" L/s, head "+VXSim.state.h.toFixed(2)+" m","i")},800);
       syncCtl()});
-    buildCtl();whyBox();
+    buildCtl()}
+    whyBox();
     $("dpause").onclick=function(){
       run=!run;this.textContent=run?"Jeda":"Lanjut";
       if(!run){if(timer){clearInterval(timer);timer=null}setSt(false,"DIJEDA")}
       else if(sensorOnline)srcTxt="Sensor";
       else startSimulation()
     };
-    $("dsrcb").textContent="Sumber & uji gangguan";
+    $("dsrcb").textContent=liveOn()?"Sumber data":"Sumber & uji gangguan";
     $("dsrcb").onclick=function(){$("dsrc").classList.toggle("show")};
     $("durl").hidden=true;$("dcon").hidden=true;$("dsim").hidden=true;
     var sourceNote=document.querySelector("#dsrc .dnote");
-    if(sourceNote)sourceNote.textContent=window.VX_DEMO_MODE
+    if(sourceNote)sourceNote.textContent=liveOn()
+      ?"Data berasal dari Firebase Realtime Database di path "+(window.VX_FIREBASE.path||"vortexhydro/live")+", dikirim oleh simulasi 3D. Setiap pesan harus berisi debit, vbat, rpmShaft, rpmGen, dan ts."
+      :window.VX_DEMO_MODE
       ?"Data berasal dari prototipe simulasi di halaman Teknologi, belum dari sensor asli. Gunakan tombol di atas untuk menguji gangguan."
       :"Sensor mengirim data ke POST /api/ingest dengan header X-API-Key. Tanpa data sensor, dashboard admin menampilkan simulasi dengan label OFFLINE / DATA SIMULASI.";
     $("vhclr").textContent="Muat ulang";$("vhclr").onclick=refreshVisits;
@@ -348,14 +380,14 @@ function setupDashboard(){
         notice.id="vx-demo-notice";
         notice.className="vx-demo-notice";
         notice.setAttribute("role","status");
-        notice.textContent="MODE DEMO — Dashboard ini hanya simulasi publik. Login tidak diverifikasi dan tidak ada data sensor realtime.";
+        notice.textContent=liveOn()?"MODE DEMO — Login tidak diverifikasi di versi publik ini. Angka Dashboard berasal dari Firebase Realtime Database (simulasi 3D).":"MODE DEMO — Dashboard ini hanya simulasi publik. Login tidak diverifikasi dan tidak ada data sensor realtime.";
         dashboardContent.insertBefore(notice,dashboardContent.firstChild);
       }
     }
     $("dtabs").onclick=function(event){var button=event.target.closest("button");if(!button)return;tab=button.dataset.k;this.querySelectorAll("button").forEach(function(item){item.setAttribute("aria-pressed",String(item===button))});chart()}
   }
   window.vxDashboard={push:function(reading){
-    if(window.VX_DEMO_MODE||!isAdminDashboard()||!reading||K.some(function(key){return typeof reading[key]!=="number"||!Number.isFinite(reading[key])}))return;
+    if(window.VX_DEMO_MODE||liveOn()||!isAdminDashboard()||!reading||K.some(function(key){return typeof reading[key]!=="number"||!Number.isFinite(reading[key])}))return;
     sensorOnline=true;lastSensorAt=Date.now();apply(reading);srcTxt="Data eksternal"
   }}
 }
@@ -367,7 +399,7 @@ function stopStreams(){
   sensorOnline=false
 }
 function resetDashboard(){
-  stopStreams();window.vxDashboard=undefined;initialized=false;tick=0;D={};flag={};
+  stopStreams();window.vxDashboard=undefined;initialized=false;tick=0;D={};flag={};act={};cnt={};cardLv={};liveStale=null;
   K.forEach(function(key){hist[key]=[]});
   var logList=$("dlog"),visitList=$("vhl");while(logList.firstChild)logList.removeChild(logList.firstChild);while(visitList.firstChild)visitList.removeChild(visitList.firstChild);
   $("vhs").textContent="";$("dch").textContent=""
@@ -375,6 +407,7 @@ function resetDashboard(){
 function dash(on){
   if(!authState||authState.role!=="admin"){stopStreams();window.vxDashboard=undefined;return}
   setupDashboard();
+  if(liveOn()){if(!window.VX_DEMO_MODE){if(!visitsSource)openVisitStream();if(on)refreshVisits()}startSimulation();return}
   if(window.VX_DEMO_MODE){sensorOnline=false;startSimulation();return}
   if(!sensorSource)openSensorStream();if(!visitsSource)openVisitStream();if(on)refreshVisits();loadLatest();startSimulation()
 }

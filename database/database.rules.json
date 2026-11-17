@@ -1,0 +1,26 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "vortexhydro": {
+      "live": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email == 'simulator@vortexhydro.app'",
+        ".validate": "newData.hasChildren(['debit', 'vbat', 'rpmShaft', 'rpmGen', 'ts'])",
+        "debit":    { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000" },
+        "vbat":     { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 60" },
+        "rpmShaft": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
+        "rpmGen":   { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 20000" },
+        "ts":       { ".validate": "newData.isNumber()" },
+        "$other":   { ".validate": false }
+      },
+      "history": {
+        ".read": "auth != null",
+        "$id": {
+          ".write": "auth != null && auth.token.email == 'simulator@vortexhydro.app'",
+          ".validate": "newData.hasChildren(['debit', 'vbat', 'rpmShaft', 'rpmGen', 'ts'])"
+        }
+      }
+    }
+  }
+}

@@ -316,6 +316,14 @@
     'Aliran sungai tidak mungkin dibawa langsung ke kampus. Karena itu pompa mengalirkan air secara terus-menerus dari tangki penampung bawah ke bak masuk, di atas rangka berukuran 2 × 0,8 meter.': 'A river cannot be brought straight to campus, so a pump continuously moves water from the lower storage tank to the inlet tank, on a frame measuring 2 × 0.8 meters.',
     'Bagaimana prototipe diuji?': 'How is the prototype tested?',
     'Setelah semua komponen terpasang, kami melakukan pengujian langsung dengan mengukur debit air, kecepatan putaran turbin (RPM), dan daya listrik yang keluar, untuk membuktikan teori dan rumus Mekanika Fluida.': 'Once all components are installed, we run hands-on tests measuring water flow rate, turbine speed (RPM), and electrical power output, to prove Fluid Mechanics theory and formulas.',
+    'RPM poros utama': 'Main shaft RPM',
+    'RPM generator': 'Generator RPM',
+    'Tegangan baterai': 'Battery voltage',
+    'Sabuk': 'Belt',
+    'Baterai': 'Battery',
+    'Sabuk slip': 'Belt slip',
+    'Baterai turun': 'Battery draining',
+    'Debit air, tegangan baterai, RPM poros utama, dan RPM generator. Diperbarui setiap detik': 'Water flow, battery voltage, main shaft RPM, and generator RPM. Updated every second',
   };
 
   var enToId = Object.create(null);

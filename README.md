@@ -24,6 +24,11 @@ Di GitHub Pages, Tamu masuk tanpa kata sandi. Admin demo memakai kata sandi `pak
 
 CSS dan skrip dipisahkan tanpa menambahkan build step; urutan pemuatan skrip dipertahankan. Untuk setup backend, lihat [`Upcoming/README.md`](Upcoming/README.md).
 
-## Data Dashboard dan simulasi prototipe
+## Data Dashboard
 
-Dashboard admin memakai mesin simulasi bersama `assets/js/vx-engine.js` (`window.VXSim`), yang juga menggerakkan halaman Teknologi. Pompa, debit, head, dan gangguan (kebocoran, turbin macet, panas berlebih) yang diatur di salah satu halaman langsung tampil di yang lain. Penganalisis di `navigation.js` mencatat perubahan kondisi di Log kejadian dengan level NORMAL, WASPADA, dan BAHAYA. Ambang ada di `LIM` dan bisa diganti lewat `window.VX_LIMITS`. Saat sensor asli terhubung (`POST /api/ingest` atau `vxDashboard.push`), Dashboard memakai data sensor dengan aturan peringatan yang sama.
+Dashboard memantau empat besaran prototipe: debit air (L/s), tegangan baterai (V), RPM poros utama, dan RPM generator. Penganalisis di `assets/js/navigation.js` mengubah angka itu menjadi peringatan berwarna (NORMAL, WASPADA, BAHAYA) dan mencatat perubahan kondisi di Log kejadian: pompa mati, turbin macet, dugaan kebocoran, sabuk slip, putaran berlebih, dan baterai rendah atau tinggi.
+
+Dua sumber data:
+
+- **Simulasi prototipe** (bawaan): mesin `assets/js/vx-engine.js` yang juga menggerakkan halaman Teknologi. Dipakai selama Firebase belum diisi.
+- **Firebase Realtime Database**: simulasi 3D mengirim angka ke Firebase, Dashboard membacanya secara langsung. Panduan lengkap, kode pengirim (JavaScript, Python, Unity), dan aturan keamanan ada di folder [`database/`](database/README.md).
