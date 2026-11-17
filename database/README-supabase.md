@@ -26,7 +26,7 @@ Ini jalur alternatif dari Firebase (lihat `README.md` di folder ini). Bila `data
 | `rpm_gen` | Putaran generator | RPM |
 | `ts` | Waktu pembaruan terakhir | ms sejak 1970 (diisi server) |
 
-File simulasi 3D menghitung debit dalam L/min, jadi dibagi 60 sebelum dikirim.
+Simulasi 3D menampilkan satuan dan format yang sama dengan Dashboard (debit L/s 2 desimal, putaran RPM bulat, tegangan V 2 desimal), jadi angka di kedua tempat identik. Pada slider 75%: 0,30 L/s, 60 RPM, 240 RPM. Setara 18,0 L/min dan 3.600 RPH, yang tetap tampil kecil sebagai keterangan di layar LCD 3D.
 
 ## Cara pakai
 

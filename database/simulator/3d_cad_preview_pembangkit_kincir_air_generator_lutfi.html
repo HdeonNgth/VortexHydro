@@ -210,19 +210,19 @@
       <div class="grid grid-cols-2 gap-2">
         <div class="bg-slate-900/95 border border-slate-800 rounded-xl p-2.5">
           <div class="text-[10px] text-slate-400">Debit Air (Flow Meter)</div>
-          <div id="hud-flow" class="mono text-xs font-bold text-sky-400 mt-0.5">18.0 L/min</div>
+          <div id="hud-flow" class="mono text-xs font-bold text-sky-400 mt-0.5">0.30 L/s</div>
         </div>
         <div class="bg-slate-900/95 border border-slate-800 rounded-xl p-2.5">
           <div class="text-[10px] text-slate-400">Tegangan Baterai 12V</div>
-          <div id="hud-volt" class="mono text-xs font-bold text-emerald-400 mt-0.5">13.8 V</div>
+          <div id="hud-volt" class="mono text-xs font-bold text-emerald-400 mt-0.5">12.67 V</div>
         </div>
         <div class="bg-slate-900/95 border border-slate-800 rounded-xl p-2.5">
-          <div class="text-[10px] text-slate-400">RPH Main Shaft</div>
-          <div id="hud-rph-main" class="mono text-xs font-bold text-amber-400 mt-0.5">3,600 RPH</div>
+          <div class="text-[10px] text-slate-400">RPM Poros Utama</div>
+          <div id="hud-rph-main" class="mono text-xs font-bold text-amber-400 mt-0.5">60 RPM</div>
         </div>
         <div class="bg-slate-900/95 border border-slate-800 rounded-xl p-2.5">
-          <div class="text-[10px] text-slate-400">RPH Generator (1:4)</div>
-          <div id="hud-rph-gen" class="mono text-xs font-bold text-cyan-300 mt-0.5">14,400 RPH</div>
+          <div class="text-[10px] text-slate-400">RPM Generator (1:4)</div>
+          <div id="hud-rph-gen" class="mono text-xs font-bold text-cyan-300 mt-0.5">240 RPM</div>
         </div>
         <div class="col-span-2 bg-slate-900/95 border border-slate-800 rounded-xl px-3 py-2 flex items-center justify-between">
           <span class="text-[11px] text-slate-400">Beban Lampu LED 12W</span>
@@ -1233,7 +1233,7 @@
         name: 'Alat Pengukur Debit Air Digital (Inline Water Flow Meter)',
         material: 'Tabung Turbin Akrilik + Rotor 4-Sudu + Layar LCD Digital',
         dims: 'Terpasang Inline di X = -1.07 m, Y = 0.72 m, Z = 0.00 m',
-        desc: 'Mengukur debit aliran air secara real-time (L/min & m³/h) menggunakan rotor turbin internal berputar yang terpasang kokoh dengan bracket baja ke kolom rangka kiri.'
+        desc: 'Mengukur debit aliran air secara real-time (L/s) menggunakan rotor turbin internal berputar yang terpasang kokoh dengan bracket baja ke kolom rangka kiri.'
       };
 
       let pressureCurvePath;
@@ -1327,7 +1327,7 @@
         meterGrp.add(flowTurbineRotor);
 
         // Digital LCD Display angled toward front-left camera
-        flowLcdUnit = createDigitalInstrument('DEBIT AIR • FLOW METER', '#38bdf8', FLOW_METER_INFO);
+        flowLcdUnit = createDigitalInstrument('DEBIT AIR • L/s', '#38bdf8', FLOW_METER_INFO);
         flowLcdUnit.group.position.set(-0.075, 0.00, 0.075);
         flowLcdUnit.group.rotation.y = -Math.PI * 0.25;
         meterGrp.add(flowLcdUnit.group);
@@ -1750,10 +1750,10 @@
       };
 
       const CONSOLE_INFO = {
-        name: 'Panel Instrumen Digital Zona Kering (RPH & Voltmeter)',
+        name: 'Panel Instrumen Digital Zona Kering (RPM & Voltmeter)',
         material: '3 Unit Layar LCD Backlit Presisi + Rangka Penyangga Baja',
         dims: 'Posisi: X = +0.34 m, Z = -0.63 m, Y = 1.39 m',
-        desc: 'Menampilkan pembacaan real-time RPH poros utama (Main Shaft), RPH generator (rasio 1:4), dan tegangan terminal baterai 12V.'
+        desc: 'Menampilkan pembacaan real-time RPM poros utama (Main Shaft), RPM generator (rasio 1:4), dan tegangan terminal baterai 12V.'
       };
 
       const LED_LAMP_INFO = {
@@ -1933,13 +1933,13 @@
         g.add(voltLcd.group);
 
         // 2. Main Shaft RPH LCD at X = +0.35
-        mainRphLcd = createDigitalInstrument('RPH • MAIN SHAFT', '#fbbf24', CONSOLE_INFO);
+        mainRphLcd = createDigitalInstrument('RPM • POROS UTAMA', '#fbbf24', CONSOLE_INFO);
         mainRphLcd.group.position.set(0.35, consoleY, consoleZ - 0.022);
         mainRphLcd.group.rotation.y = Math.PI;
         g.add(mainRphLcd.group);
 
         // 3. Generator RPH (1:4) LCD at X = +0.61
-        genRphLcd = createDigitalInstrument('RPH • GENERATOR (1:4)', '#38bdf8', CONSOLE_INFO);
+        genRphLcd = createDigitalInstrument('RPM • GENERATOR (1:4)', '#38bdf8', CONSOLE_INFO);
         genRphLcd.group.position.set(0.61, consoleY, consoleZ - 0.022);
         genRphLcd.group.rotation.y = Math.PI;
         g.add(genRphLcd.group);
@@ -2252,8 +2252,8 @@
         { label: 'Perisai Cipratan Kincir 6 Sudu', pos: new THREE.Vector3(0.34, 1.40, 0.22) },
         { label: 'Dinding Terjunan Air (Skirt)', pos: new THREE.Vector3(0.66, 0.90, 0.21) },
         { label: 'Pipa Hisap Atas Anti-Bocor', pos: new THREE.Vector3(0.36, 0.86, 0.16) },
-        { label: 'Flow Meter Digital (L/min)', pos: new THREE.Vector3(-1.07, 0.82, 0.04) },
-        { label: 'Panel RPH & Voltmeter (Zona Kering)', pos: new THREE.Vector3(0.35, 1.50, -0.64) },
+        { label: 'Flow Meter Digital (L/s)', pos: new THREE.Vector3(-1.07, 0.82, 0.04) },
+        { label: 'Panel RPM & Voltmeter (Zona Kering)', pos: new THREE.Vector3(0.35, 1.50, -0.64) },
         { label: 'Beban Lampu LED 12W', pos: new THREE.Vector3(-0.20, 1.36, -0.55) }
       ];
 
@@ -2307,49 +2307,50 @@
 
         const ratio = simState.flowPercent / 100;
 
-        // 1. Water Flow Rate (18.0 L/min at 75%, 24.0 L/min at 100%)
+        // Satuan dan format SAMA dengan Dashboard website:
+        // debit L/s (2 desimal), RPM (bilangan bulat), tegangan V (2 desimal)
+
+        // 1. Debit air: 0,30 L/s pada 75% (= 18,0 L/min), 0,40 L/s pada 100% (= 24,0 L/min)
         const flowLpm = 24.0 * ratio;
-        const flowM3h = (flowLpm * 60) / 1000;
-        const flowStr = flowLpm.toFixed(1);
-        hudFlow.textContent = `${flowStr} L/min`;
+        const flowLps = flowLpm / 60;
+        const flowStr = flowLps.toFixed(2);
+        hudFlow.textContent = `${flowStr} L/s`;
 
         if (flowLcdUnit) {
           flowLcdUnit.updateDisplay(
             flowStr,
-            'L/min',
-            `DEBIT: ${flowM3h.toFixed(2)} m³/h`,
+            'L/s',
+            `≈ ${flowLpm.toFixed(1)} L/min`,
             ratio > 0.01 ? 'FLOWING' : 'STOP',
             ratio > 0.01 ? '#38bdf8' : '#94a3b8'
           );
         }
 
-        // 2. Main Shaft RPH (3,600 RPH = 60 RPM at 75%, 4,800 RPH = 80 RPM at 100%)
+        // 2. Poros utama: 60 RPM pada 75%, 80 RPM pada 100%
         const mainRpm = 80.0 * ratio;
-        const mainRph = Math.round(mainRpm * 60);
-        const mainRphStr = mainRph.toLocaleString('en-US');
-        hudRphMain.textContent = `${mainRphStr} RPH`;
+        const mainRpmStr = String(Math.round(mainRpm));
+        hudRphMain.textContent = `${mainRpmStr} RPM`;
 
         if (mainRphLcd) {
           mainRphLcd.updateDisplay(
-            mainRphStr,
-            'RPH',
-            `MAIN SHAFT: ${mainRpm.toFixed(1)} RPM`,
+            mainRpmStr,
+            'RPM',
+            `POROS UTAMA • ${(mainRpm * 60).toLocaleString('en-US')} RPH`,
             ratio > 0.01 ? 'ACTIVE' : 'IDLE',
             ratio > 0.01 ? '#fbbf24' : '#94a3b8'
           );
         }
 
-        // 3. Generator RPH (1:4 Pulley Ratio -> 14,400 RPH at 75%, 19,200 RPH at 100%)
+        // 3. Generator (rasio pulley 1:4): 240 RPM pada 75%, 320 RPM pada 100%
         const genRpm = mainRpm * 4.0;
-        const genRph = Math.round(genRpm * 60);
-        const genRphStr = genRph.toLocaleString('en-US');
-        hudRphGen.textContent = `${genRphStr} RPH`;
+        const genRpmStr = String(Math.round(genRpm));
+        hudRphGen.textContent = `${genRpmStr} RPM`;
 
         if (genRphLcd) {
           genRphLcd.updateDisplay(
-            genRphStr,
-            'RPH',
-            `GENERATOR: ${genRpm.toFixed(0)} RPM (1:4)`,
+            genRpmStr,
+            'RPM',
+            `GENERATOR • RASIO 1:4`,
             ratio > 0.01 ? 'GEN ON' : '0 W',
             ratio > 0.01 ? '#38bdf8' : '#94a3b8'
           );
@@ -2370,12 +2371,12 @@
         const batAmp = netWatts / batVolt;
         // Nilai siap kirim ke database (satuan Dashboard: L/s dan RPM)
         simState.latest = {
-          debit: flowLpm / 60,
+          debit: flowLps,
           vbat: batVolt,
           rpmShaft: mainRpm,
           rpmGen: genRpm
         };
-        hudVolt.textContent = `${batVolt.toFixed(1)} V`;
+        hudVolt.textContent = `${batVolt.toFixed(2)} V`;
         hudLoadWatt.textContent = simState.ledOn ? '12.0 W (ON)' : '0.0 W (OFF)';
 
         const badge = batAmp > 0.05 ? 'CHARGING' : simState.ledOn ? 'DISCHARGE' : 'IDLE';
@@ -2384,7 +2385,7 @@
 
         if (voltLcd) {
           voltLcd.updateDisplay(
-            batVolt.toFixed(1),
+            batVolt.toFixed(2),
             'VOLT',
             `ARUS: ${sign}${batAmp.toFixed(2)} A • BEBAN ${loadWatts.toFixed(0)}W`,
             badge,
