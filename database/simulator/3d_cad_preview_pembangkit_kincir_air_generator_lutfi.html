@@ -317,6 +317,32 @@
       </button>
     </div>
 
+    <!-- Kirim data ke Supabase (website Vortex Hydro) -->
+    <div class="mt-4 pt-3 border-t border-slate-800">
+      <div class="flex items-center justify-between mb-1.5">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Kirim ke Website (Supabase)</div>
+        <span id="sb-status" class="mono text-[10px] font-bold text-slate-400">OFF</span>
+      </div>
+      <input
+        id="sb-key"
+        type="password"
+        autocomplete="off"
+        placeholder="Kunci simulator (vx_...)"
+        class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 placeholder-slate-500 outline-none focus:border-sky-500"
+      />
+      <div class="mt-2 flex items-center gap-2">
+        <button id="sb-toggle" type="button" class="flex-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 transition cursor-pointer">
+          Mulai Kirim
+        </button>
+        <button id="sb-forget" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 border border-slate-700 hover:text-rose-300 transition cursor-pointer">
+          Hapus Kunci
+        </button>
+      </div>
+      <p id="sb-note" class="mt-1.5 text-[11px] text-slate-400 leading-relaxed">
+        Kunci disimpan hanya di browser ini, tidak ada di kode.
+      </p>
+    </div>
+
     <p class="mt-3 text-[11px] text-slate-400 leading-relaxed">
       Klik komponen 3D mana saja untuk inspeksi material, dimensi, &amp; koordinat. Klik ganda kanvas untuk reset sudut pandang.
     </p>
@@ -2263,7 +2289,8 @@
         ledOn: true,
         explodePercent: 0,
         renderMode: 'solid',
-        labelsVisible: false
+        labelsVisible: false,
+        latest: null
       };
 
       const hudFlow = document.getElementById('hud-flow');
@@ -2341,6 +2368,13 @@
         }
 
         const batAmp = netWatts / batVolt;
+        // Nilai siap kirim ke database (satuan Dashboard: L/s dan RPM)
+        simState.latest = {
+          debit: flowLpm / 60,
+          vbat: batVolt,
+          rpmShaft: mainRpm,
+          rpmGen: genRpm
+        };
         hudVolt.textContent = `${batVolt.toFixed(1)} V`;
         hudLoadWatt.textContent = simState.ledOn ? '12.0 W (ON)' : '0.0 W (OFF)';
 
@@ -2571,6 +2605,115 @@
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      // =========================================================================
+      // 20B. PENGIRIM DATA KE SUPABASE (WEBSITE VORTEX HYDRO)
+      //      Memanggil fungsi database push_telemetry tiap 0,25 detik.
+      //      Satuan: debit L/s, vbat Volt, rpmShaft & rpmGen RPM (Dashboard memakai ini).
+      //      Kunci simulator TIDAK ditulis di kode; diketik di panel Kontrol dan
+      //      disimpan di localStorage browser ini saja.
+      // =========================================================================
+      const SB = {
+        url: 'https://gzzwjmcedymcdazckgbc.supabase.co',
+        anonKey: 'sb_publishable_7jdLcpH7rK8GX1uxN8dSxw_9utM-GG9',
+        everyMs: 250
+      };
+      const sbEls = {
+        key: document.getElementById('sb-key'),
+        toggle: document.getElementById('sb-toggle'),
+        forget: document.getElementById('sb-forget'),
+        status: document.getElementById('sb-status'),
+        note: document.getElementById('sb-note')
+      };
+      const sbState = { on: false, inFlight: false, timer: null, sent: 0, lastErr: '' };
+
+      try { sbEls.key.value = localStorage.getItem('vx_sim_key') || ''; } catch (e) {}
+
+      function sbSetStatus(text, cls) {
+        sbEls.status.textContent = text;
+        sbEls.status.className = 'mono text-[10px] font-bold ' + (cls || 'text-slate-400');
+      }
+
+      async function sbSendOnce() {
+        if (!sbState.on || sbState.inFlight || !simState.latest) return;
+        const key = sbEls.key.value.trim();
+        if (!key) return;
+        const v = simState.latest;
+        sbState.inFlight = true;
+        try {
+          const res = await fetch(SB.url + '/rest/v1/rpc/push_telemetry', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              apikey: SB.anonKey,
+              Authorization: 'Bearer ' + SB.anonKey
+            },
+            body: JSON.stringify({
+              p_key: key,
+              p_debit: Number(v.debit.toFixed(4)),
+              p_vbat: Number(v.vbat.toFixed(3)),
+              p_rpm_shaft: Number(v.rpmShaft.toFixed(2)),
+              p_rpm_gen: Number(v.rpmGen.toFixed(2))
+            })
+          });
+          if (res.ok) {
+            sbState.sent += 1;
+            sbSetStatus('TERKIRIM · ' + sbState.sent, 'text-emerald-400');
+            sbEls.note.textContent = 'Data mengalir ke website tiap 0,25 detik.';
+          } else {
+            const body = await res.text();
+            sbState.lastErr = body;
+            if (body.indexOf('kunci simulator salah') !== -1) {
+              sbSetStatus('KUNCI SALAH', 'text-rose-400');
+              sbEls.note.textContent = 'Kunci simulator salah. Periksa lagi, lalu klik Mulai Kirim.';
+              sbStop();
+            } else {
+              sbSetStatus('GAGAL ' + res.status, 'text-amber-400');
+              sbEls.note.textContent = 'Server menolak data (kode ' + res.status + ').';
+            }
+          }
+        } catch (err) {
+          sbSetStatus('OFFLINE', 'text-amber-400');
+          sbEls.note.textContent = 'Tidak bisa menghubungi Supabase. Cek koneksi internet.';
+        } finally {
+          sbState.inFlight = false;
+        }
+      }
+
+      function sbStart() {
+        const key = sbEls.key.value.trim();
+        if (!key) {
+          sbSetStatus('ISI KUNCI', 'text-amber-400');
+          sbEls.note.textContent = 'Isi kunci simulator dulu.';
+          return;
+        }
+        try { localStorage.setItem('vx_sim_key', key); } catch (e) {}
+        sbState.on = true;
+        sbState.sent = 0;
+        sbEls.toggle.textContent = 'Berhenti Kirim';
+        sbEls.toggle.className = 'flex-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-500 text-slate-950 border border-sky-400 transition cursor-pointer';
+        sbSetStatus('MENGIRIM…', 'text-sky-400');
+        clearInterval(sbState.timer);
+        sbState.timer = setInterval(sbSendOnce, SB.everyMs);
+        sbSendOnce();
+      }
+
+      function sbStop() {
+        sbState.on = false;
+        clearInterval(sbState.timer);
+        sbEls.toggle.textContent = 'Mulai Kirim';
+        sbEls.toggle.className = 'flex-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 transition cursor-pointer';
+        if (sbEls.status.textContent.indexOf('KUNCI SALAH') === -1) sbSetStatus('OFF', 'text-slate-400');
+      }
+
+      sbEls.toggle.addEventListener('click', () => { sbState.on ? sbStop() : sbStart(); });
+      sbEls.forget.addEventListener('click', () => {
+        sbStop();
+        sbEls.key.value = '';
+        try { localStorage.removeItem('vx_sim_key'); } catch (e) {}
+        sbSetStatus('OFF', 'text-slate-400');
+        sbEls.note.textContent = 'Kunci dihapus dari browser ini.';
       });
 
       // =========================================================================
