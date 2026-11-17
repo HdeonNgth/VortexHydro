@@ -1,31 +1,29 @@
-/* Video sinematik di beranda: file HTML 3D dimuat di iframe hanya saat tombol Putar ditekan,
-   dan dibongkar lagi saat bagian ini keluar dari layar supaya halaman tetap ringan. */
+/* Video sinematik 3D sebagai latar hero beranda: autoplay, berulang, tanpa kontrol.
+   Dimuat setelah halaman selesai, dibongkar saat hero tidak terlihat supaya halaman tetap ringan.
+   Tidak dimuat bila perangkat meminta gerakan dikurangi atau mode hemat data. */
 (function () {
-  var frame = document.getElementById("vc-frame"), ifr = document.getElementById("vc-if"),
-      play = document.getElementById("vc-play"), full = document.getElementById("vc-full");
-  if (!frame || !ifr || !play) return;
-  var SRC = "ui-design/cinematic.html", on = false;
+  var box = document.querySelector(".hx__vid"), ifr = document.getElementById("vc-if"), hero = document.querySelector(".hx");
+  if (!box || !ifr || !hero) return;
+  var SRC = "ui-design/cinematic.html?embed=1&ui=0&titles=0&autoplay=1", on = false, ready = false;
+  var rm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var sd = navigator.connection && navigator.connection.saveData;
+  if (rm || sd) return;
 
   function start() {
-    if (on) return;
-    on = true; ifr.src = SRC; frame.classList.add("on"); play.hidden = true; full.hidden = false;
+    if (on || !ready) return;
+    on = true; ifr.src = SRC;
+    ifr.onload = function () { setTimeout(function () { if (on) box.classList.add("on"); }, 1500); };
   }
   function stop() {
     if (!on) return;
-    on = false; ifr.removeAttribute("src"); frame.classList.remove("on"); play.hidden = false; full.hidden = true;
+    on = false; ifr.removeAttribute("src"); box.classList.remove("on");
   }
-  function isFull() { return document.fullscreenElement || document.webkitFullscreenElement; }
-  function goFull() {
-    if (isFull()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
-    var el = frame;
-    (el.requestFullscreen || el.webkitRequestFullscreen || function () { start(); }).call(el);
-  }
+  function go() { ready = true; if (visible) start(); }
 
-  play.addEventListener("click", start);
-  full.addEventListener("click", goFull);
+  var visible = true;
   if ("IntersectionObserver" in window) {
-    new IntersectionObserver(function (e) { if (e[0].intersectionRatio < 0.02 && !isFull()) stop(); }, { threshold: [0, 0.02, 0.5] }).observe(frame);
+    new IntersectionObserver(function (e) { visible = e[0].intersectionRatio > 0.02; visible ? start() : stop(); }, { threshold: [0, 0.02, 0.5] }).observe(hero);
   }
-  /* pindah halaman (router memakai hash) juga membongkar video */
-  window.addEventListener("hashchange", function () { if (!isFull()) stop(); });
+  if (document.readyState === "complete") setTimeout(go, 400);
+  else window.addEventListener("load", function () { setTimeout(go, 400); });
 })();

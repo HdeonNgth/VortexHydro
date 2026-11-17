@@ -1543,19 +1543,9 @@ html:not([data-theme=dark]) body.is-dash .dwhy__st{color:#15803d}html:not([data-
 body.is-dash .vxn{top:224px;right:20px}
 @media(max-width:700px){body.is-dash .vxn{top:18px;right:14px}}
 
-/* video sinematik beranda */
-.vcine{padding:0!important;background:#03070d!important}
-.vcine__frame{position:relative;width:100%;height:100vh;height:100svh;min-height:420px;background:radial-gradient(900px 520px at 50% 45%,#0b2a44 0,#03070d 70%);overflow:hidden}
-.vcine__frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#03070d}
-.vcine__frame.on iframe{display:block}
-.vcine__poster{position:absolute;inset:0;width:100%;border:0;background:transparent;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;font:inherit}
-.vcine__poster[hidden],.vcine__full[hidden]{display:none}
-.vcine__poster b{font-family:var(--f-display);font-weight:400;font-size:clamp(1.5rem,4vw,2.6rem);letter-spacing:0}
-.vcine__poster small{color:#a5c8e4;font-size:.95rem}
-.vcine__ring{width:86px;height:86px;border-radius:50%;display:grid;place-items:center;background:rgba(56,189,248,.16);border:1.5px solid #38bdf8;box-shadow:0 0 0 10px rgba(56,189,248,.08),0 0 44px rgba(56,189,248,.35);transition:transform .25s}
-.vcine__poster:hover .vcine__ring,.vcine__poster:focus-visible .vcine__ring{transform:scale(1.08)}
-.vcine__poster:focus-visible{outline:2px solid #7dd3fc;outline-offset:-6px}
-.vcine__full{position:absolute;right:16px;top:16px;z-index:5;border:1px solid rgba(255,255,255,.35);background:rgba(3,7,13,.6);color:#fff;border-radius:999px;padding:8px 16px;font:600 .85rem/1 inherit;cursor:pointer;backdrop-filter:blur(6px)}
-.vcine__full:hover{background:rgba(3,7,13,.85)}
-.vcine__frame:fullscreen,.vcine__frame:-webkit-full-screen{width:100vw;height:100vh}
-.hx + .vcine{padding-top:0!important}
+/* video sinematik sebagai latar hero beranda */
+.hx__vid{position:absolute;inset:0;z-index:0;overflow:hidden;background:#03070d;pointer-events:none}
+.hx__vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity 1.2s ease;background:#03070d}
+.hx__vid.on iframe{opacity:1}
+.hx__vid::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,7,13,.78) 0,rgba(3,7,13,.35) 38%,transparent 62%)}
+@media (max-width:760px){.hx__vid::after{background:linear-gradient(180deg,rgba(3,7,13,.8) 0,rgba(3,7,13,.4) 40%,transparent 70%)}}

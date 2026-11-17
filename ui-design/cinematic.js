@@ -5,6 +5,7 @@
       // CINEMATIC SETUP — opsi lewat URL: ?ui=0 ?titles=0 ?bars=1 ?exp=1.15 ?bloom=0.55 ?speed=1 ?autoplay=0
       // =========================================================================
       const Q = new URLSearchParams(location.search);
+      if (Q.get('embed') === '1') document.body.classList.add('embed'); // mode latar: tanpa progress, scrim, dan teks pemuat
       const qNum = (k, d) => { const v = parseFloat(Q.get(k)); return isFinite(v) ? v : d; };
       const OPT = {
         ui: Q.get('ui') !== '0',

@@ -52,3 +52,9 @@
     #ui button#btn-rec.on { background: #ef4444; border-color: #fca5a5; color: #fff; }
     @media (max-width: 520px) { #ui button { padding: 7px 10px; font-size: 10px; } #btn-full { display: none; } }
   
+
+/* ?embed=1 : dipakai sebagai latar halaman lain */
+body.embed #progress, body.embed #scrim, body.embed #ui, body.embed #hero, body.embed #chapter { display: none; }
+body.embed #loader { background: transparent; }
+body.embed #loader span { display: none; }
+body.embed #stage { cursor: default; }
