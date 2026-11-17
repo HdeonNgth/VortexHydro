@@ -91,6 +91,7 @@
   function fit() { W = window.innerWidth; VH = window.innerHeight; cv.width = W * dpr; cv.height = VH * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); }
   fit();
   function spawn(n) {
+    return; /* gelembung scroll dimatikan: dekorasi tanpa fungsi */
     var pal = document.documentElement.dataset.pal;
     for (var i = 0; i < n && bubbles.length < 45; i++) {
       var edge = Math.random() < .75, left = Math.random() < .5, q = Math.random(), o = null;
