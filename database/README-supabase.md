@@ -38,6 +38,16 @@ Simulasi 3D menampilkan satuan dan format yang sama dengan Dashboard (debit L/s 
 
 Bila simulasi dihentikan, Dashboard menjadi OFFLINE setelah 10 detik tanpa data baru.
 
+## Pengunjung online (live counting)
+
+Header Dashboard punya pil **Online: N** yang menghitung berapa orang sedang membuka website saat ini.
+
+- Memakai Supabase Realtime Presence (kanal `vx-online`), tanpa tabel dan tanpa menyimpan riwayat.
+- Tiap browser memakai ID acak (`vx_vid` di localStorage), tanpa nama atau data pribadi. Dua tab di browser yang sama dihitung satu orang.
+- Angka naik saat orang membuka website dan turun otomatis saat tab ditutup (butuh beberapa detik).
+- Yang dihitung adalah semua pengunjung website, termasuk tamu, bukan hanya admin. Pilnya sendiri hanya terlihat di halaman Dashboard.
+- Batas paket gratis Supabase: sekitar 200 koneksi Realtime bersamaan. Lewat itu, pengunjung baru tidak ikut terhitung, tetapi website tetap jalan. Matikan fitur ini dengan `presence: false` di `supabase-config.js`.
+
 ## Ambang Dashboard
 
 `supabase-config.js` mengatur `window.VX_LIMITS` agar sesuai skala simulasi: rasio pulley 4, debit acuan 0,4 L/s menghasilkan 80 RPM di poros. Tanpa ini Dashboard memakai ambang prototipe (rasio 2,2) dan menuduh sabuk slip. Ubah nilainya bila model simulasi berubah.

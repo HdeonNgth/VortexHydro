@@ -46,13 +46,51 @@
   function startPolling() {
     if (pollTimer) return;
     poll();
-    pollTimer = setInterval(function () { if (!(rtOk && Date.now() - lastRtAt < 2500)) poll(); }, 1000);
+    pollTimer = setInterval(function () { if (!document.hidden && !(rtOk && Date.now() - lastRtAt < 2500)) poll(); }, 1000);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) poll(); });
+  }
+
+
+  /* ---- Pengunjung online (Supabase Realtime Presence) ----
+     Setiap browser yang membuka website mendaftar ke kanal "vx-online" memakai ID acak
+     (disimpan di localStorage, tanpa data pribadi). Jumlah ID unik = jumlah pengunjung online.
+     Dua tab di browser yang sama dihitung satu orang. Otomatis berkurang saat tab ditutup. */
+  function visitorId() {
+    try {
+      var id = localStorage.getItem("vx_vid");
+      if (!id) {
+        id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+           : "v" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+        localStorage.setItem("vx_vid", id);
+      }
+      return id;
+    } catch (e) { return "v" + Math.random().toString(36).slice(2, 12); }
+  }
+  function showOnline(n) {
+    var pill = document.getElementById("donl");
+    if (!pill) return;
+    pill.style.display = "";
+    var label = pill.lastChild;
+    if (label) label.textContent = "Online: " + n;
+    window.VX_ONLINE = n;
+  }
+  function joinPresence() {
+    if (cfg.presence === false || !client) return;
+    try {
+      var ch = client.channel("vx-online", { config: { presence: { key: visitorId() } } });
+      ch.on("presence", { event: "sync" }, function () {
+        showOnline(Object.keys(ch.presenceState()).length);
+      }).subscribe(function (st) {
+        if (st === "SUBSCRIBED") ch.track({ since: Date.now() });
+      });
+    } catch (e) {}
   }
 
   function subscribe() {
     if (!window.supabase || !window.supabase.createClient) return;
     try {
       client = window.supabase.createClient(base, cfg.anonKey, { realtime: { params: { eventsPerSecond: 10 } } });
+      joinPresence();
       client.channel("vx-live")
         .on("postgres_changes", { event: "*", schema: "public", table: table }, function (p) {
           if (p && p.new) {
