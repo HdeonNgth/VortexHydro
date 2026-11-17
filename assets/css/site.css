@@ -1522,3 +1522,4 @@ body.is-dash .vxn{top:18px}
 @keyframes vxnglow{50%{box-shadow:0 22px 44px -18px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.1),inset 4px 0 0 var(--c),0 0 0 3px rgba(239,68,68,.45)}}
 @media(prefers-reduced-motion:reduce){.vxn__t,.vxn__t[data-l="2"]{animation:none}}
 .vsim__ctl .vsw{display:inline-flex;flex:none;min-width:0}
+.vxn__s{display:block;margin-top:6px;padding:0;border:0;background:transparent;color:#fff;opacity:.6;font:600 .72rem var(--f-body,system-ui);text-decoration:underline;text-underline-offset:3px;cursor:pointer}.vxn__s:hover{opacity:1}

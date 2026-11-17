@@ -130,6 +130,11 @@ function sim(){var r=window.VXSim?VXSim.read():{debit:0,head:0,rpm:0,volt:0,amp:
 function norm(o){var r={};K.forEach(function(k){r[k]=o[k]!=null?+o[k]:(D[k]||0)});if(o.daya==null)r.daya=r.volt*r.amp;if(o.eff==null&&o.debit!=null&&o.head!=null){var ph=9.81*r.debit*r.head;r.eff=ph?Math.min(100,r.daya/ph*100):0}return r}
 function apply(o){if(!authState||authState.role!=="admin"||!o)return;D=norm(o);K.forEach(function(k){var a=hist[k];a.push(D[k]);if(a.length>N)a.shift()});var w=analyze(D);render();showLevel(w)}
 function spark(k){var a=hist[k],mn=Math.min.apply(0,a),mx=Math.max.apply(0,a),r=mx-mn||1;return a.map(function(v,i){return(i/(N-1)*100).toFixed(1)+","+(30-(v-mn)/r*26).toFixed(1)}).join(" ")}
+/* Bunyi peringatan (hanya BAHAYA) */
+var AC=null,muted=false;try{muted=localStorage.getItem("vxmute")==="1"}catch(_){}
+function unlock(){try{if(!AC){var C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C()}if(AC&&AC.state==="suspended")AC.resume()}catch(_){}}
+["pointerdown","keydown","touchstart"].forEach(function(e){document.addEventListener(e,unlock,{passive:true})});
+function beep(){if(muted||!AC||AC.state!=="running")return;try{var t=AC.currentTime;[[0,784],[.26,784],[.52,988]].forEach(function(x){var os=AC.createOscillator(),g=AC.createGain();os.type="square";os.frequency.value=x[1];g.gain.setValueAtTime(0,t+x[0]);g.gain.linearRampToValueAtTime(.1,t+x[0]+.02);g.gain.exponentialRampToValueAtTime(.001,t+x[0]+.2);os.connect(g);g.connect(AC.destination);os.start(t+x[0]);os.stop(t+x[0]+.22)})}catch(_){}}
 /* Notifikasi mengambang untuk admin */
 var toasts={};
 function dismiss(t){if(!t||t.gone)return;t.gone=1;t.el.classList.add("out");setTimeout(function(){t.el.remove()},350)}
@@ -141,11 +146,14 @@ function toast(id,lv,msg){
   var ic=document.createElement("div");ic.className="vxn__i";ic.textContent=lv===0?"\u2713":"!";
   var bd=document.createElement("div");bd.className="vxn__b";var h=document.createElement("b");h.textContent=LVN[lv];var sp=document.createElement("span");sp.textContent=msg;bd.appendChild(h);bd.appendChild(sp);
   var x=document.createElement("button");x.type="button";x.className="vxn__x";x.setAttribute("aria-label","Tutup");x.textContent="\u00d7";
+  if(lv===2){var sb=document.createElement("button");sb.type="button";sb.className="vxn__s";
+    var lab=function(){sb.textContent=muted?"Nyalakan suara":"Matikan suara"};lab();
+    sb.onclick=function(){muted=!muted;try{localStorage.setItem("vxmute",muted?"1":"0")}catch(_){}lab()};bd.appendChild(sb)}
   el.appendChild(ic);el.appendChild(bd);el.appendChild(x);
   var t={el:el};x.onclick=function(){dismiss(t)};box.appendChild(el);toasts[id]=t;
   while(box.querySelectorAll(".vxn__t:not(.out)").length>4){var f=box.querySelector(".vxn__t:not(.out)");f.classList.add("out");setTimeout(function(e){e.remove()}.bind(null,f),350)}
   if(lv<2)setTimeout(function(){dismiss(t)},lv?7000:4500);
-  else if(navigator.vibrate){try{navigator.vibrate([200,80,200])}catch(_){}}
+  else{beep();if(navigator.vibrate){try{navigator.vibrate([200,80,200])}catch(_){}}}
 }
 var cardLv={};
 /* Penganalisis kondisi: bekerja untuk data simulasi maupun sensor asli. */
