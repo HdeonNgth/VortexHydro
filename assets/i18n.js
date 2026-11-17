@@ -355,7 +355,7 @@
     'Turbin berputar oleh dorongan air, lalu air jatuh kembali ke tangki.': 'The water pushes the turbine around, then falls back into the tank.',
     'Lewat transmisi pulley dan belt, generator mengubah putaran jadi listrik untuk lampu LED.': 'Through a pulley and belt transmission, the generator turns rotation into electricity for the LED lamp.',
     'Diameter tabung pusaran': 'Vortex tank diameter',
-    'Ukuran rangka (panjang × lebar)': 'Frame size (length × width)',
+    'Ukuran rangka utama, zona basah (panjang × lebar)': 'Main frame size, wet zone (length × width)',
     'Vortex Hydro adalah simulator PLTA Vortex skala laboratorium yang kami rancang, bangun, dan uji secara mandiri. Aliran air dari bak penenang memutar kincir dan menggerakkan generator.': 'Vortex Hydro is a laboratory-scale Vortex hydropower simulator that we design, build, and test on our own. Water from the stilling headbox turns the waterwheel and drives the generator.',
     'Pompa mengalirkan air dari tangki penampung ke bak penenang (headbox), lalu air meluncur di saluran miring yang menyempit dan memutar kincir 6 sudu. Poros kincir terhubung lewat pulley dan belt ke generator untuk menghasilkan listrik.': 'The pump moves water from the storage tank to the stilling headbox, then the water slides down a narrowing sloped chute and turns a 6-blade waterwheel. The wheel shaft connects through a pulley and belt to the generator to produce electricity.',
     'Mengapa memakai pompa dan sirkulasi tertutup?': 'Why use a pump and a closed circulation system?',
