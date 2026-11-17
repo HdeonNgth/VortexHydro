@@ -10,7 +10,7 @@ Kode backend dan panduan hosting untuk pengembangan berikutnya dikumpulkan di [`
 
 ## Akses demo
 
-Di GitHub Pages, Tamu masuk tanpa kata sandi. Admin demo memakai kata sandi `vortex-demo` dan hanya membuka Dashboard simulasi. Pemeriksaan dilakukan di browser sehingga dapat dilewati; jangan gunakan untuk melindungi data atau kata sandi asli. Data sensor dan riwayat kunjungan tidak realtime.
+Di GitHub Pages, Tamu masuk tanpa kata sandi. Admin demo memakai kata sandi `pakcikiniv2` dan hanya membuka Dashboard simulasi. Pemeriksaan dilakukan di browser sehingga dapat dilewati; jangan gunakan untuk melindungi data atau kata sandi asli. Data sensor dan riwayat kunjungan tidak realtime.
 
 ## Struktur
 
@@ -23,3 +23,7 @@ Di GitHub Pages, Tamu masuk tanpa kata sandi. Admin demo memakai kata sandi `vor
 - `docs/README.md` — catatan struktur dan deployment situs.
 
 CSS dan skrip dipisahkan tanpa menambahkan build step; urutan pemuatan skrip dipertahankan. Untuk setup backend, lihat [`Upcoming/README.md`](Upcoming/README.md).
+
+## Data Dashboard dan simulasi prototipe
+
+Dashboard admin memakai mesin simulasi bersama `assets/js/vx-engine.js` (`window.VXSim`), yang juga menggerakkan halaman Teknologi. Pompa, debit, head, dan gangguan (kebocoran, turbin macet, panas berlebih) yang diatur di salah satu halaman langsung tampil di yang lain. Penganalisis di `navigation.js` mencatat perubahan kondisi di Log kejadian dengan level NORMAL, WASPADA, dan BAHAYA. Ambang ada di `LIM` dan bisa diganti lewat `window.VX_LIMITS`. Saat sensor asli terhubung (`POST /api/ingest` atau `vxDashboard.push`), Dashboard memakai data sensor dengan aturan peringatan yang sama.

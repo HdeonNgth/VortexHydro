@@ -120,18 +120,40 @@ function setTh(){var x=document.querySelector("[data-a=theme] svg");if(x)x.inner
 /* ===== Dashboard ===== */
 var K=["debit","head","rpm","volt","amp","daya","eff","temp"],D={},N=60,hist={},tick=0,run=true,timer=null,tab="daya",initialized=false,sensorOnline=false,sensorSource=null,visitsSource=null,lastAuthCheck=0,lastSensorAt=0;
 K.forEach(function(k){hist[k]=[]});
-var fmt={debit:1,head:2,rpm:0,volt:1,amp:2,daya:1,eff:1,temp:1},lim={debit:[40,Infinity],rpm:[0,340],temp:[0,32]},flag={};
-function log(m,c){if(!authState||authState.role!=="admin")return;var ul=$("dlog"),li=document.createElement("li"),time=document.createElement("time"),message=document.createElement("span");li.className=c||"";time.textContent=new Date().toLocaleTimeString("id-ID");message.textContent=m;li.appendChild(time);li.appendChild(message);ul.insertBefore(li,ul.firstChild);while(ul.children.length>8)ul.lastChild.remove()}
-function sim(){var s=tick/9,dip=(tick%75>55)?-22:0,q=52+9*Math.sin(s/2.2)+Math.random()*3+dip,hd=1.5+Math.random()*.04,rpm=110+q*1.9+Math.random()*6,v=rpm/10,ph=9.81*q*hd,eff=.34+.03*Math.sin(s/3)+Math.random()*.01,pe=ph*eff;
-  return{debit:q,head:hd,rpm:rpm,volt:v,amp:pe/v,daya:pe,eff:eff*100,temp:26.4+tick*.004+Math.random()*.2}}
+var fmt={debit:2,head:2,rpm:0,volt:1,amp:3,daya:2,eff:1,temp:1},flag={},act={},cnt={},lastLv=-1;
+/* Ambang peringatan skala prototipe. Ganti lewat window.VX_LIMITS bila sensor asli berbeda skala. */
+var LIM=Object.assign({flowMin:.03,flowLow:.2,rpmWarn:290,rpmBad:340,jamRpm:8,effLeak:20,tempWarn:35,tempBad:45},window.VX_LIMITS||{});
+var LVN=["NORMAL","WASPADA","BAHAYA"],LVC=["o","w","d"];
+function log(m,c){if(!authState||authState.role!=="admin")return;var ul=$("dlog"),li=document.createElement("li"),time=document.createElement("time"),message=document.createElement("span");li.className=c||"";time.textContent=new Date().toLocaleTimeString("id-ID");message.textContent=m;li.appendChild(time);li.appendChild(message);ul.insertBefore(li,ul.firstChild);while(ul.children.length>40)ul.lastChild.remove()}
+function sim(){var r=window.VXSim?VXSim.read():{debit:0,head:0,rpm:0,volt:0,amp:0,daya:0,eff:0,temp:27};return r}
 function norm(o){var r={};K.forEach(function(k){r[k]=o[k]!=null?+o[k]:(D[k]||0)});if(o.daya==null)r.daya=r.volt*r.amp;if(o.eff==null&&o.debit!=null&&o.head!=null){var ph=9.81*r.debit*r.head;r.eff=ph?Math.min(100,r.daya/ph*100):0}return r}
-function apply(o){if(!authState||authState.role!=="admin"||!o)return;D=norm(o);K.forEach(function(k){var a=hist[k];a.push(D[k]);if(a.length>N)a.shift()});render()}
+function apply(o){if(!authState||authState.role!=="admin"||!o)return;D=norm(o);K.forEach(function(k){var a=hist[k];a.push(D[k]);if(a.length>N)a.shift()});var w=analyze(D);render();showLevel(w)}
 function spark(k){var a=hist[k],mn=Math.min.apply(0,a),mx=Math.max.apply(0,a),r=mx-mn||1;return a.map(function(v,i){return(i/(N-1)*100).toFixed(1)+","+(30-(v-mn)/r*26).toFixed(1)}).join(" ")}
+var cardLv={};
+/* Penganalisis kondisi: bekerja untuk data simulasi maupun sensor asli. */
+function analyze(d){
+  var on=d.debit>=LIM.flowMin,flow=d.debit>=.1,al={};
+  function a(id,ok,lv,msg,cards){var c=ok?(cnt[id]||0)+1:0;cnt[id]=c;if(ok&&c>=(al.__n||3))al[id]={lv:lv,msg:msg,cards:cards}}
+  a("stop",!on,1,"Tidak ada aliran air: pompa mati, turbin berhenti",["debit","rpm","daya"]);
+  a("jam",flow&&d.rpm<LIM.jamRpm,2,"Turbin macet: air mengalir ("+d.debit.toFixed(2)+" L/s) tetapi turbin tidak berputar",["rpm","volt","amp","daya","temp"]);
+  a("leak",flow&&d.rpm>=LIM.jamRpm&&d.eff<LIM.effLeak,2,"Dugaan kebocoran: efisiensi turun ke "+d.eff.toFixed(0)+"% (debit "+d.debit.toFixed(2)+" L/s)",["eff","debit","daya"]);
+  a("lowq",on&&d.debit<LIM.flowLow,1,"Debit air rendah ("+d.debit.toFixed(2)+" L/s)",["debit"]);
+  a("rpmw",d.rpm>LIM.rpmWarn&&d.rpm<=LIM.rpmBad,1,"Putaran turbin tinggi ("+Math.round(d.rpm)+" RPM)",["rpm"]);
+  a("rpmb",d.rpm>LIM.rpmBad,2,"Putaran turbin melebihi batas aman ("+Math.round(d.rpm)+" RPM)",["rpm"]);
+  a("tmpw",d.temp>LIM.tempWarn&&d.temp<=LIM.tempBad,1,"Suhu naik ("+d.temp.toFixed(1)+" °C)",["temp"]);
+  a("tmpb",d.temp>LIM.tempBad,2,"Suhu terlalu tinggi ("+d.temp.toFixed(1)+" °C)",["temp"]);
+  delete al.__n;
+  var cl={},worst=0;
+  Object.keys(al).forEach(function(id){
+    var x=al[id];worst=Math.max(worst,x.lv);x.cards.forEach(function(k){cl[k]=Math.max(cl[k]||0,x.lv)});
+    if(!act[id]||act[id].lv!==x.lv)log(LVN[x.lv]+" · "+x.msg,LVC[x.lv]);
+  });
+  Object.keys(act).forEach(function(id){if(!al[id])log("NORMAL · Pulih: "+act[id].msg.split(" (")[0].split(":")[0].toLowerCase(),"o")});
+  act=al;cardLv=cl;return worst
+}
 function render(){
   K.forEach(function(k){var c=document.querySelector('[data-c="'+k+'"]');c.querySelector("b span").textContent=D[k].toFixed(fmt[k]);c.querySelector("polyline").setAttribute("points",spark(k));
-    var l=lim[k],bad=l&&(D[k]<l[0]||D[k]>l[1]);c.classList.toggle("warn",!!bad);
-    if(bad&&!flag[k]){flag[k]=1;log(k==="debit"?"Debit di bawah ambang ("+D[k].toFixed(1)+" L/s)":k==="rpm"?"Putaran melebihi batas":"Suhu air tinggi","w")}
-    if(!bad&&flag[k]){flag[k]=0;log(k+" kembali normal","o")}});
+    var lv=cardLv[k]||0;c.classList.toggle("warn",lv===1);c.classList.toggle("bad",lv===2)});
   $("grpm").style.strokeDashoffset=75-Math.min(1,D.rpm/400)*75;$("grpmt").textContent=Math.round(D.rpm);
   $("geff").style.strokeDashoffset=75-Math.min(1,D.eff/100)*75;$("geft").textContent=D.eff.toFixed(0)+"%";chart()}
 function chart(){var a=hist[tab],W=600,Hh=230,L=44,R=12,T=12,Bm=26,mn=Math.min.apply(0,a),mx=Math.max.apply(0,a),pad=(mx-mn||1)*.2;mn-=pad;mx+=pad;
@@ -140,12 +162,14 @@ function chart(){var a=hist[tab],W=600,Hh=230,L=44,R=12,T=12,Bm=26,mn=Math.min.a
   var x0=X(N-a.length);
   $("dch").innerHTML='<defs><linearGradient id="dg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--cyan)" stop-opacity=".4"/><stop offset="1" stop-color="var(--cyan)" stop-opacity="0"/></linearGradient></defs>'+g+'<polygon fill="url(#dg)" points="'+x0+","+(Hh-Bm)+" "+pts.join(" ")+" "+X(N-1)+","+(Hh-Bm)+'"/><polyline fill="none" stroke="var(--lite)" stroke-width="2.4" stroke-linejoin="round" points="'+pts.join(" ")+'"/><circle cx="'+X(N-1)+'" cy="'+Y(a[a.length-1])+'" r="4.5" fill="#fff" stroke="var(--cyan)" stroke-width="2"/><text x="'+L+'" y="'+(Hh-6)+'">-60 dtk</text><text x="'+(W-R)+'" y="'+(Hh-6)+'" text-anchor="end">sekarang</text>'}
 function setSt(live,txt){var s=$("dst");s.classList.toggle("off",!live);s.lastChild.textContent=txt}
+var srcTxt="Prototipe (simulasi)";
+function showLevel(w){var s=$("dst");if(!s||!run)return;s.classList.remove("ok","warn","bad","off");s.classList.add(["ok","warn","bad"][w]);s.lastChild.textContent=(sensorOnline?"LIVE · SENSOR":"LIVE · "+srcTxt.toUpperCase())+" · "+LVN[w]}
 function isAdminDashboard(){return !!(authState&&authState.authenticated&&authState.role==="admin"&&B.classList.contains("is-dash"))}
 function step(){
-  if(!isAdminDashboard()||!run)return;
-  if(sensorOnline&&Date.now()-lastSensorAt>10000){sensorOnline=false;setSt(false,"OFFLINE / DATA SIMULASI")}
+  if(!authState||authState.role!=="admin"||!run)return;
+  if(sensorOnline&&Date.now()-lastSensorAt>10000){sensorOnline=false;log("Data sensor berhenti masuk. Beralih ke simulasi prototipe","w")}
   if(sensorOnline)return;
-  tick++;$("dclk").textContent=new Date().toLocaleTimeString("id-ID");apply(sim());setSt(false,"OFFLINE / DATA SIMULASI")
+  tick++;$("dclk").textContent=new Date().toLocaleTimeString("id-ID");apply(sim())
 }
 function checkSession(){
   if(window.VX_DEMO_MODE)return;
@@ -189,10 +213,10 @@ function openVisitStream(){
 function loadLatest(){
   if(window.VX_DEMO_MODE)return;
   window.VXAuth.request("latest").then(function(result){
-    if(result.reading&&Date.now()-Number(result.reading.ts)<10000){sensorOnline=true;lastSensorAt=Number(result.reading.ts);if(run)apply(result.reading);setSt(true,"LIVE · SENSOR")}
-    else{sensorOnline=false;setSt(false,"OFFLINE / DATA SIMULASI")}
+    if(result.reading&&Date.now()-Number(result.reading.ts)<10000){sensorOnline=true;lastSensorAt=Number(result.reading.ts);if(run)apply(result.reading);srcTxt="Sensor"}
+    else{sensorOnline=false;srcTxt="Prototipe (simulasi)"}
   }).catch(function(error){
-    sensorOnline=false;setSt(false,"OFFLINE / DATA SIMULASI");
+    sensorOnline=false;srcTxt="Prototipe (simulasi)";
     if(error.status===401)window.VXAuth.expire()
   })
 }
@@ -202,29 +226,47 @@ function openSensorStream(){
     sensorSource=new EventSource(window.VXAuth.url("stream/sensor"),{withCredentials:true});
     sensorSource.addEventListener("auth-expired",function(){sensorSource.close();sensorSource=null;window.VXAuth.expire()});
     sensorSource.addEventListener("reading",function(event){
-      try{var reading=JSON.parse(event.data);sensorOnline=true;lastSensorAt=Date.now();if(run){apply(reading);setSt(true,"LIVE · SENSOR")}else setSt(false,"DIJEDA")}
-      catch(error){setSt(false,"OFFLINE / DATA SIMULASI")}
+      try{var reading=JSON.parse(event.data);sensorOnline=true;lastSensorAt=Date.now();if(run){apply(reading);srcTxt="Sensor"}else setSt(false,"DIJEDA")}
+      catch(error){srcTxt="Prototipe (simulasi)"}
     });
-    sensorSource.onerror=function(){sensorOnline=false;if(run)setSt(false,"OFFLINE / DATA SIMULASI");checkSession()}
-  }catch(error){sensorOnline=false;setSt(false,"OFFLINE / DATA SIMULASI")}
+    sensorSource.onerror=function(){sensorOnline=false;if(run)srcTxt="Prototipe (simulasi)";checkSession()}
+  }catch(error){sensorOnline=false;srcTxt="Prototipe (simulasi)"}
 }
+var onChange={};
+function buildCtl(){
+  var box=$("dsrc");if(!box||$("dfault")||!window.VXSim)return;
+  var d=document.createElement("div");d.className="dfault";d.id="dfault";
+  [["pump","Pompa"],["none","Normal"],["leak","Bocor"],["jam","Macet"],["heat","Panas"]].forEach(function(x){
+    var b=document.createElement("button");b.type="button";b.className="dpill";b.dataset.f=x[0];b.textContent=x[1];
+    b.onclick=function(){x[0]==="pump"?VXSim.set({on:!VXSim.state.on}):VXSim.set({fault:x[0]})};d.appendChild(b)});
+  box.insertBefore(d,box.querySelector(".dnote"));syncCtl()
+}
+function syncCtl(){var d=$("dfault");if(!d)return;Array.prototype.forEach.call(d.children,function(b){
+  var f=b.dataset.f;b.setAttribute("aria-pressed",f==="pump"?String(VXSim.state.on):String(VXSim.state.fault===f));if(f==="pump")b.textContent="Pompa: "+(VXSim.state.on?"hidup":"mati")})}
 function setupDashboard(){
   if(!initialized){
     initialized=true;
-    for(var q=0;q<N;q++){tick++;var initial=sim();K.forEach(function(k){hist[k].push(initial[k])})}
-    log("Dashboard dimulai (OFFLINE / DATA SIMULASI)","o");chart();
+    var seed=window.VXSim?VXSim.history():[];if(!seed.length)seed=[sim()];
+    seed.forEach(function(r){var n=norm(r);K.forEach(function(k){hist[k].push(n[k])})});
+    log("Dashboard terhubung ke simulasi prototipe (halaman Teknologi)","i");chart();
+    if(window.VXSim)VXSim.onChange(function(c){if(!authState||authState.role!=="admin")return;
+      if("on"in c)log("Pompa "+(c.on?"dihidupkan":"dimatikan"),"i");
+      if("fault"in c)log(c.fault==="none"?"Gangguan simulasi dihapus":"Gangguan simulasi: "+({leak:"kebocoran",jam:"turbin macet",heat:"panas berlebih"}[c.fault]),"i");
+      if("q"in c||"h"in c)clearTimeout(onChange.t),onChange.t=setTimeout(function(){log("Pengaturan prototipe diubah: debit "+VXSim.state.q.toFixed(2)+" L/s, head "+VXSim.state.h.toFixed(2)+" m","i")},800);
+      syncCtl()});
+    buildCtl();
     $("dpause").onclick=function(){
       run=!run;this.textContent=run?"Jeda":"Lanjut";
       if(!run){if(timer){clearInterval(timer);timer=null}setSt(false,"DIJEDA")}
-      else if(sensorOnline)setSt(true,"LIVE · SENSOR");
+      else if(sensorOnline)srcTxt="Sensor";
       else startSimulation()
     };
-    $("dsrcb").textContent="Info koneksi sensor";
+    $("dsrcb").textContent="Sumber & uji gangguan";
     $("dsrcb").onclick=function(){$("dsrc").classList.toggle("show")};
     $("durl").hidden=true;$("dcon").hidden=true;$("dsim").hidden=true;
     var sourceNote=document.querySelector("#dsrc .dnote");
     if(sourceNote)sourceNote.textContent=window.VX_DEMO_MODE
-      ?"GitHub Pages tidak terhubung ke sensor. Semua nilai di Dashboard ini hanya simulasi."
+      ?"Data berasal dari prototipe simulasi di halaman Teknologi, belum dari sensor asli. Gunakan tombol di atas untuk menguji gangguan."
       :"Sensor mengirim data ke POST /api/ingest dengan header X-API-Key. Tanpa data sensor, dashboard admin menampilkan simulasi dengan label OFFLINE / DATA SIMULASI.";
     $("vhclr").textContent="Muat ulang";$("vhclr").onclick=refreshVisits;
     var historyNote=document.querySelector(".vhc .dnote");
@@ -251,7 +293,7 @@ function setupDashboard(){
   }
   window.vxDashboard={push:function(reading){
     if(window.VX_DEMO_MODE||!isAdminDashboard()||!reading||K.some(function(key){return typeof reading[key]!=="number"||!Number.isFinite(reading[key])}))return;
-    sensorOnline=true;lastSensorAt=Date.now();apply(reading);setSt(true,"DATA EKSTERNAL")
+    sensorOnline=true;lastSensorAt=Date.now();apply(reading);srcTxt="Data eksternal"
   }}
 }
 function startSimulation(){if(!timer&&run){timer=setInterval(step,1000);step()}}
@@ -268,12 +310,10 @@ function resetDashboard(){
   $("vhs").textContent="";$("dch").textContent=""
 }
 function dash(on){
-  if(!on||!authState||authState.role!=="admin"){stopStreams();window.vxDashboard=undefined;return}
+  if(!authState||authState.role!=="admin"){stopStreams();window.vxDashboard=undefined;return}
   setupDashboard();
-  if(window.VX_DEMO_MODE){
-    sensorOnline=false;setSt(false,"OFFLINE / DATA SIMULASI");startSimulation();return
-  }
-  openSensorStream();openVisitStream();refreshVisits();loadLatest();startSimulation()
+  if(window.VX_DEMO_MODE){sensorOnline=false;startSimulation();return}
+  openSensorStream();openVisitStream();if(on)refreshVisits();loadLatest();startSimulation()
 }
 sync();
 })();
