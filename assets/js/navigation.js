@@ -155,6 +155,38 @@ function toast(id,lv,msg){
   if(lv<2)setTimeout(function(){dismiss(t)},lv?7000:4500);
   else{beep();if(navigator.vibrate){try{navigator.vibrate([200,80,200])}catch(_){}}}
 }
+/* Panel penjelasan masalah (Dashboard) */
+var WHY={
+  stop:["Pompa mati atau debit nol, jadi tidak ada air yang menggerakkan turbin.","Hidupkan pompa dan cek sumber listriknya."],
+  jam:["Air sudah mengalir, tetapi turbin tidak berputar. Biasanya ada benda yang menyangkut, atau poros, bearing, atau belt macet. Tanpa putaran, generator tidak menghasilkan listrik dan sistem bisa memanas.","Matikan pompa, lalu periksa poros, bearing, belt, dan benda asing di tabung pusaran."],
+  leak:["Debit masuk cukup, tetapi putaran dan efisiensi rendah. Artinya sebagian air tidak sampai ke turbin, kemungkinan bocor di pipa atau sambungan.","Periksa sambungan pipa, selang, dan dasar tangki dari rembesan air."],
+  lowq:["Debit di bawah batas normal. Bisa karena pompa melemah, pipa tersumbat, atau pengaturan debit terlalu kecil.","Bersihkan filter pompa, cek pipa, lalu naikkan debit."],
+  rpmw:["Putaran turbin tinggi. Biasanya debit atau tinggi jatuh terlalu besar, atau beban generator berkurang.","Kurangi debit dan pastikan beban (lampu LED) terhubung."],
+  rpmb:["Putaran melebihi batas aman. Beban generator mungkin terlepas, sehingga turbin berputar terlalu bebas dan bisa merusak bearing dan belt.","Matikan pompa, periksa sambungan beban generator, lalu nyalakan kembali dengan debit lebih kecil."],
+  tmpw:["Suhu air mulai naik. Air yang berputar terus di sistem tertutup lama-lama memanas, atau pompa bekerja terlalu keras.","Istirahatkan pompa sebentar atau ganti sebagian air dengan yang lebih dingin."],
+  tmpb:["Suhu air terlalu tinggi. Bisa karena turbin tertahan, pompa terus bekerja tanpa aliran lancar, atau air tidak bersirkulasi.","Matikan pompa, biarkan dingin, lalu periksa turbin dan aliran sebelum menyalakan lagi."]
+};
+function whyBox(){
+  var box=$("dwhy");if(box)return box;
+  var row=document.querySelector("#dashboard .drow");if(!row)return null;
+  box=document.createElement("div");box.className="dc dwhy";box.id="dwhy";
+  var h=document.createElement("h3");h.textContent="Penjelasan masalah";var st=document.createElement("span");st.id="dwhys";st.className="dwhy__st";h.appendChild(st);
+  var ls=document.createElement("div");ls.id="dwhyl";ls.className="dwhy__l";
+  box.appendChild(h);box.appendChild(ls);row.parentNode.insertBefore(box,row);return box
+}
+function explain(al,worst){
+  if(!whyBox())return;var ls=$("dwhyl"),st=$("dwhys"),ids=Object.keys(al).sort(function(a,b){return al[b].lv-al[a].lv});
+  st.textContent=LVN[worst];st.dataset.l=worst;
+  var sig=ids.join(",")+"|"+ids.map(function(i){return al[i].msg}).join("|");if(ls.dataset.sig===sig)return;ls.dataset.sig=sig;
+  while(ls.firstChild)ls.removeChild(ls.firstChild);
+  if(!ids.length){var ok=document.createElement("p");ok.className="dwhy__ok";ok.textContent="Semua normal. Tidak ada masalah yang perlu dijelaskan.";ls.appendChild(ok);return}
+  ids.forEach(function(id){
+    var x=al[id],w=WHY[id]||["Nilai di luar batas normal.","Periksa kondisi alat."],it=document.createElement("div");it.className="dwhy__i";it.dataset.l=x.lv;
+    var t=document.createElement("b");t.textContent=x.msg;
+    var a=document.createElement("p"),as=document.createElement("strong");as.textContent="Kenapa: ";a.appendChild(as);a.appendChild(document.createTextNode(w[0]));
+    var c=document.createElement("p"),cs=document.createElement("strong");cs.textContent="Cek: ";c.appendChild(cs);c.appendChild(document.createTextNode(w[1]));
+    it.appendChild(t);it.appendChild(a);it.appendChild(c);ls.appendChild(it)})
+}
 var cardLv={};
 /* Penganalisis kondisi: bekerja untuk data simulasi maupun sensor asli. */
 function analyze(d){
@@ -175,7 +207,7 @@ function analyze(d){
     if(!act[id]||act[id].lv!==x.lv){log(LVN[x.lv]+" · "+x.msg,LVC[x.lv]);toast(id,x.lv,x.msg)}
   });
   Object.keys(act).forEach(function(id){if(!al[id]){var rm="Pulih: "+act[id].msg.split(" (")[0].split(":")[0].toLowerCase();log("NORMAL · "+rm,"o");dismiss(toasts[id]);toast(id,0,rm)}});
-  act=al;cardLv=cl;return worst
+  act=al;cardLv=cl;explain(al,worst);return worst
 }
 function render(){
   K.forEach(function(k){var c=document.querySelector('[data-c="'+k+'"]');c.querySelector("b span").textContent=D[k].toFixed(fmt[k]);c.querySelector("polyline").setAttribute("points",spark(k));
@@ -285,7 +317,7 @@ function setupDashboard(){
       if("fault"in c)log(c.fault==="none"?"Gangguan simulasi dihapus":"Gangguan simulasi: "+({leak:"kebocoran",jam:"turbin macet",heat:"panas berlebih"}[c.fault]),"i");
       if("q"in c||"h"in c)clearTimeout(onChange.t),onChange.t=setTimeout(function(){log("Pengaturan prototipe diubah: debit "+VXSim.state.q.toFixed(2)+" L/s, head "+VXSim.state.h.toFixed(2)+" m","i")},800);
       syncCtl()});
-    buildCtl();
+    buildCtl();whyBox();
     $("dpause").onclick=function(){
       run=!run;this.textContent=run?"Jeda":"Lanjut";
       if(!run){if(timer){clearInterval(timer);timer=null}setSt(false,"DIJEDA")}
