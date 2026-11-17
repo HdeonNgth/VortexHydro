@@ -45,7 +45,7 @@ Header Dashboard punya pil **Online: N** yang menghitung berapa orang sedang mem
 - Memakai Supabase Realtime Presence (kanal `vx-online`), tanpa tabel dan tanpa menyimpan riwayat.
 - Tiap browser memakai ID acak (`vx_vid` di localStorage), tanpa nama atau data pribadi. Dua tab di browser yang sama dihitung satu orang.
 - Angka naik saat orang membuka website dan turun otomatis saat tab ditutup (butuh beberapa detik).
-- Yang dihitung adalah semua pengunjung website, termasuk tamu, bukan hanya admin. Pilnya sendiri hanya terlihat di halaman Dashboard.
+- Yang dihitung semua pengunjung website, dipisah per peran: `Online: 5 (3 tamu · 1 admin · 1 belum masuk)`. "Belum masuk" adalah orang yang masih di halaman pilih peran. Saat seseorang login atau logout, hitungannya ikut berubah. Bila satu browser punya beberapa tab, peran tertinggi yang dipakai (admin lebih dulu dari tamu). Admin yang sedang membuka Dashboard ikut terhitung. Pilnya sendiri hanya terlihat di halaman Dashboard.
 - Batas paket gratis Supabase: sekitar 200 koneksi Realtime bersamaan. Lewat itu, pengunjung baru tidak ikut terhitung, tetapi website tetap jalan. Matikan fitur ini dengan `presence: false` di `supabase-config.js`.
 
 ## Ambang Dashboard

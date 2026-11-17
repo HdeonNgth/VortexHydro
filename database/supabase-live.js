@@ -66,23 +66,51 @@
       return id;
     } catch (e) { return "v" + Math.random().toString(36).slice(2, 12); }
   }
-  function showOnline(n) {
+  /* Peran pengunjung saat ini: "admin", "guest" (tamu), atau "pending" (masih di halaman masuk) */
+  function currentRole() {
+    try {
+      var st = window.VXAuth && window.VXAuth.state && window.VXAuth.state();
+      if (!st || !st.authenticated) return "pending";
+      return st.role === "admin" ? "admin" : "guest";
+    } catch (e) { return "pending"; }
+  }
+  /* Satu browser = satu orang. Bila ada beberapa tab, peran tertinggi yang dipakai (admin > tamu > belum masuk) */
+  function countRoles(state) {
+    var c = { total: 0, admin: 0, guest: 0, pending: 0 };
+    Object.keys(state).forEach(function (key) {
+      var metas = state[key] || [], role = "pending", i;
+      for (i = 0; i < metas.length; i++) {
+        var r = metas[i] && metas[i].role;
+        if (r === "admin") { role = "admin"; break; }
+        if (r === "guest") role = "guest";
+      }
+      c.total++; c[role]++;
+    });
+    return c;
+  }
+  function showOnline(c) {
     var pill = document.getElementById("donl");
     if (!pill) return;
     pill.style.display = "";
+    var parts = [c.guest + " tamu", c.admin + " admin"];
+    if (c.pending) parts.push(c.pending + " belum masuk");
     var label = pill.lastChild;
-    if (label) label.textContent = "Online: " + n;
-    window.VX_ONLINE = n;
+    if (label) label.textContent = "Online: " + c.total + " (" + parts.join(" \u00b7 ") + ")";
+    window.VX_ONLINE = c;
   }
   function joinPresence() {
     if (cfg.presence === false || !client) return;
     try {
       var ch = client.channel("vx-online", { config: { presence: { key: visitorId() } } });
+      var joined = false;
+      function announce() { if (joined) ch.track({ role: currentRole(), since: Date.now() }); }
       ch.on("presence", { event: "sync" }, function () {
-        showOnline(Object.keys(ch.presenceState()).length);
+        showOnline(countRoles(ch.presenceState()));
       }).subscribe(function (st) {
-        if (st === "SUBSCRIBED") ch.track({ since: Date.now() });
+        if (st === "SUBSCRIBED") { joined = true; announce(); }
       });
+      /* Login atau logout mengubah peran: laporkan ulang agar hitungan ikut berubah */
+      window.addEventListener("vx:authchange", announce);
     } catch (e) {}
   }
 
