@@ -4,7 +4,7 @@
   var frame = document.getElementById("vc-frame"), ifr = document.getElementById("vc-if"),
       play = document.getElementById("vc-play"), full = document.getElementById("vc-full");
   if (!frame || !ifr || !play) return;
-  var SRC = "assets/video/vortex-hydro-cinematic.html", on = false;
+  var SRC = "ui-design/cinematic.html", on = false;
 
   function start() {
     if (on) return;

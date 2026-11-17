@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Vortex Hydro — Project Pembangkit Mikrohidro | Mekanika Fluida Offering B</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="cinematic.css" />
+</head>
+<body>
+  <div id="stage"></div>
+
+  <div id="hero">
+    <div class="eyebrow"><i></i>Project Pembangkit Mikrohidro</div>
+    <h1>Vortex<br /><em>Hydro</em></h1>
+    <p>Mekanika Fluida Offering B</p>
+  </div>
+
+  <div id="chapter">
+    <div class="no" id="ch-no">01 / 08</div>
+    <div class="t" id="ch-title">Judul</div>
+    <div class="s" id="ch-sub">Deskripsi</div>
+  </div>
+
+  <div id="scrim"></div>
+  <div id="progress"><div id="progress-bar"></div></div>
+
+  <div id="ui">
+    <button id="btn-play" type="button">❚❚ Jeda</button>
+    <button id="btn-bars" type="button" title="Letterbox 2.39:1 (B)">▭ Bars</button>
+    <button id="btn-rec" type="button" title="Rekam 1 putaran jadi .webm 1080p (R)">⏺ Rekam</button>
+    <button id="btn-full" type="button" title="Layar penuh (F)">⛶</button>
+  </div>
+
+  <div id="loader"><span>MEMUAT ADEGAN 3D…</span></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
+  <script src="cinematic.js"></script>
+</body>
+</html>
