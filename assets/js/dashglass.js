@@ -3,7 +3,7 @@
   var page=document.getElementById("dashboard");if(!page)return;
   var dash=page.querySelector(".dash"),top=dash&&dash.querySelector(".dash__top"),ctl=top&&top.querySelector(".dash__ctl");
   if(!top||!ctl)return;
-  var tabs=[["all","Ringkasan"],["sensor","Sensor"],["grafik","Grafik"],["riwayat","Riwayat"]];
+  var tabs=[["all","Ringkasan"],["energi","Energi"],["sensor","Sensor"],["grafik","Grafik"],["riwayat","Riwayat"]];
   var bar=document.createElement("div");bar.className="dtabbar";bar.setAttribute("role","group");bar.setAttribute("aria-label","Tampilan dashboard");
   tabs.forEach(function(t,i){
     var b=document.createElement("button");b.type="button";b.dataset.v=t[0];b.textContent=t[1];b.setAttribute("aria-pressed",i===0?"true":"false");bar.appendChild(b)

@@ -23,6 +23,8 @@
       ts: row.ts
     }, first);
     first = false;
+    /* Data energi (daya PLN ke pompa, daya generator, total Wh, jam operasi) dipakai panel Energi di Dashboard */
+    try { window.dispatchEvent(new CustomEvent("vx:telemetry", { detail: row })); } catch (e) {}
   }
 
   function explain(code) {

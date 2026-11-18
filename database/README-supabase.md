@@ -30,7 +30,7 @@ Simulasi 3D menampilkan satuan dan format yang sama dengan Dashboard (debit L/s 
 
 ## Cara pakai
 
-1. Buka `database/simulator/3d_cad_preview_pembangkit_kincir_air_generator_lutfi.html` di browser.
+1. Buka `database/simulator/3d_cad_preview_vortex_hydro_pembangkit_kincir_air_bess_ecoflow_delta_2.html` di browser.
 2. Klik **Kontrol**, cari blok **Kirim ke Website (Supabase)**, isi **kunci simulator**, klik **Mulai Kirim**.
    Status berubah menjadi `TERKIRIM · n`. Kunci disimpan hanya di browser itu (localStorage).
 3. Buka website, masuk admin, buka Dashboard. Status berubah menjadi `LIVE · SUPABASE`.
@@ -73,3 +73,22 @@ Header Dashboard punya pil **Online: N** yang menghitung berapa orang sedang mem
 | Sesekali putus lalu nyambung lagi | Sudah ditangani: pengirim memakai timer Web Worker (tidak diperlambat saat tab di latar belakang), tiap permintaan dibatasi 3 detik, dan melanjutkan otomatis setelah halaman di-refresh. Dashboard memakai polling cadangan bila Realtime diam lebih dari 2,5 detik, dan baru menyatakan OFFLINE setelah 15 detik tanpa data. |
 | Log berisi "Realtime terputus, memakai polling" | Normal bila WebSocket diblokir jaringan. Dashboard tetap jalan lewat polling 1 detik. |
 | Project Supabase gratis berhenti sendiri | Paket gratis menjeda project yang tidak aktif seminggu. Buka dashboard Supabase lalu **Restore**. |
+
+## Energi, efisiensi, dan laporan
+
+Tab **Energi** di Dashboard menampilkan total energi, efisiensi sistem, grafik tumpang-tindih (daya PLN ke pompa vs daya generator), rata-rata dan puncak per 5 jam, serta laporan Excel tiap 10 jam operasi.
+
+**Alur data.** Simulator 3D memanggil `push_telemetry` tiap 0,25 detik dengan tambahan `p_in_w` (daya PLN ke pompa, W), `p_out_w` (daya generator, W), `p_soc` dan `p_op_s` (jam operasi simulasi, detik). Server menghitung energi (Wh = W × detik operasi ÷ 3600), sehingga hasil tetap benar walau waktu simulasi dipercepat dan tidak bergantung pada browser yang membuka Dashboard.
+
+**Tabel dan fungsi** (lihat `database/supabase-energy.sql`, aman dijalankan ulang):
+- `live_telemetry`: kolom baru `pln_in_w`, `gen_out_w`, `bess_soc`, `op_s`, `e_in_wh`, `e_out_wh`.
+- `telemetry_log`: satu baris per menit operasi (energi dan puncak daya). Dapat dibaca publik, hanya fungsi berkunci yang bisa menulis.
+- `report_windows(p_hours, p_limit)`: rata-rata, puncak, dan efisiensi per jendela (bawaan 5 jam).
+- `reset_telemetry(p_key)`: tombol **Mulai Uji Baru** di simulator, menolkan total dan riwayat. Butuh kunci simulator.
+
+**Laporan Excel.** Dibuat di browser (`assets/js/dash-report.js`) dari `telemetry_log`: lembar Ringkasan (KPI, tabel 5 jam, 4 grafik), Grafik (4 grafik per menit), dan Data Menit. Rumus tetap hidup. Blok 10 jam diunduh otomatis saat Dashboard terbuka (admin) dan jam operasi melewati batas blok; blok lama dan laporan sementara bisa diunduh manual.
+
+**Catatan.**
+- Prototipe fisik belum punya wattmeter. Daya PLN ke pompa dihitung oleh model di simulator (dipengaruhi debit, kavitasi, tegangan, keausan), jadi bukan pengukuran. Ganti `protoPhysics.pumpInputW` dengan data wattmeter asli bila tersedia.
+- Data masuk per menit operasi, sehingga batas jendela 5 dan 10 jam bergeser maksimal satu menit.
+- Kunci simulator tidak ada di repo; ketik di panel Kontrol simulator.

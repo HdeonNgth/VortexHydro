@@ -32,4 +32,4 @@ Dua sumber data:
 
 - **Simulasi prototipe** (bawaan): mesin `assets/js/vx-engine.js` yang juga menggerakkan halaman Teknologi. Dipakai selama Firebase belum diisi.
 - **Firebase Realtime Database**: simulasi 3D mengirim angka ke Firebase, Dashboard membacanya secara langsung. Panduan lengkap, kode pengirim (JavaScript, Python, Unity), dan aturan keamanan ada di folder [`database/`](database/README.md).
-- **Supabase Realtime**: jalur alternatif yang juga diisi oleh simulasi 3D (`database/simulator/3d_cad_preview_pembangkit_kincir_air_generator_lutfi.html`). Panduan di [`database/README-supabase.md`](database/README-supabase.md). Bila `database/supabase-config.js` terisi, Supabase dipakai lebih dulu daripada Firebase.
+- **Supabase Realtime**: jalur alternatif yang juga diisi oleh simulasi 3D (`database/simulator/3d_cad_preview_vortex_hydro_pembangkit_kincir_air_bess_ecoflow_delta_2.html`). Panduan di [`database/README-supabase.md`](database/README-supabase.md). Bila `database/supabase-config.js` terisi, Supabase dipakai lebih dulu daripada Firebase.
