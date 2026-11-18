@@ -1642,3 +1642,6 @@ body:not(.is-dash) .lg__lang{border-radius:6px}
 html[data-theme=dark] .goal__c,html[data-theme=dark] .fcard{background-image:none}
 html[data-theme=dark] .goal__c p,html[data-theme=dark] .goal__c h3{color:var(--dtx)}
 html[data-theme=dark] .lg__lang{background:transparent;border-color:rgba(255,255,255,.28);color:var(--g-fg)}
+.goal__c{background:var(--soft)}
+.goal__c .n{position:static;display:block;margin-bottom:12px;font:500 .8rem/1 var(--f-body);letter-spacing:.04em;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:700px){.goal__c .n{font-size:.76rem;right:auto}}
