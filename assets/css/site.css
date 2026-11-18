@@ -94,11 +94,11 @@ html .dc b,html .vxt__res b{font-family:var(--f-accent);font-weight:600;font-siz
 .nav,.hx__nav{display:none!important}.fab{display:none!important}
 .hx__h1{top:clamp(104px,8vw,140px)!important}.footer{padding-bottom:40px}
 /* ===== Liquid glass navbar ===== */
-.lg{--g-bg:rgba(255,255,255,.86);--g-fg:var(--slated);--g-on:var(--deep);--g-ln:rgba(255,255,255,.55);position:fixed;z-index:80;top:max(14px,env(safe-area-inset-top,0px));left:50%;translate:-50% 0;display:flex;align-items:center;gap:8px;padding:8px 8px 8px 16px;border-radius:999px;background:var(--g-bg);backdrop-filter:blur(18px) saturate(1.8);-webkit-backdrop-filter:blur(18px) saturate(1.8);box-shadow:0 18px 40px -18px rgba(var(--navy-rgb),.55),inset 0 1px 0 rgba(255,255,255,.7),inset 0 0 0 1px rgba(255,255,255,.35);font-family:var(--f-body,system-ui,sans-serif);transition:background .5s,box-shadow .5s}
+.lg{--g-bg:rgba(255,255,255,.86);--g-fg:var(--slated);--g-on:var(--deep);--g-ln:rgba(255,255,255,.55);position:fixed;z-index:80;top:max(10px,env(safe-area-inset-top,0px));left:50%;translate:-50% 0;display:flex;align-items:center;gap:4px;padding:4px 4px 4px 14px;border-radius:999px;background:var(--g-bg);backdrop-filter:blur(18px) saturate(1.8);-webkit-backdrop-filter:blur(18px) saturate(1.8);box-shadow:0 18px 40px -18px rgba(var(--navy-rgb),.55),inset 0 1px 0 rgba(255,255,255,.7),inset 0 0 0 1px rgba(255,255,255,.35);font-family:var(--f-body,system-ui,sans-serif);transition:background .5s,box-shadow .5s}
 .lg__brand{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--g-on);font-weight:600;letter-spacing:-.02em;padding-right:8px;white-space:nowrap}
-.lg__brand .vxlogo{width:36px;height:32px}
+.lg__brand .vxlogo{width:30px;height:27px}
 .lg__nav{position:relative;display:flex;gap:2px}
-.lg__nav a{position:relative;z-index:1;display:flex;align-items:center;gap:8px;padding:12px 16px;border-radius:999px;text-decoration:none;color:var(--g-fg);font-weight:600;font-size:.88rem;white-space:nowrap;transition:color .35s}
+.lg__nav a{position:relative;z-index:1;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;text-decoration:none;color:var(--g-fg);font-weight:600;font-size:.88rem;white-space:nowrap;transition:color .35s}
 .lg__nav a svg{width:19px;height:19px;flex:none}
 .lg__nav a:hover{color:var(--g-on)}.lg__nav a[aria-current]{color:var(--g-on)}
 .lg__live{width:7px;height:7px;border-radius:50%;background:#2ee6a6;box-shadow:0 0 0 0 rgba(46,230,166,.6);animation:lgl 1.8s infinite}
@@ -595,7 +595,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); margin: 0; font-weight: 800; let
 .gcard li:nth-child(1) b { background: var(--mist); } .gcard li:nth-child(2) b { background: var(--sky); } .gcard li:nth-child(3) b { background: var(--cyan); } .gcard li:nth-child(4) b { background: #5aa9e0; } .gcard li:nth-child(5) b { background: #3b8fd0; color: #fff; } .gcard li:nth-child(6) b { background: var(--blue); color: #fff; }
 
 /* ---------- Halaman dalam: heading ---------- */
-.pagehead { padding-top: clamp(130px, 15vw, 170px); padding-bottom: 40px; text-align: center; position: relative; overflow: hidden;
+.pagehead { padding-top: clamp(96px, 9vw, 112px); padding-bottom: 24px; text-align: center; position: relative; overflow: hidden;
   background: radial-gradient(640px 300px at 50% -40px, rgba(var(--sky-rgb), .45), transparent 70%), #fff; }
 .pagehead h1 { max-width: 20ch; margin-inline: auto; }
 
@@ -1589,3 +1589,15 @@ html .hx__title{margin:0;font-family:var(--f-display);font-weight:400;font-size:
 .vcap{margin:28px 0 0;text-align:center}
 .hx__go--dark{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 28px;border-radius:999px;background:var(--navy);color:#fff;text-decoration:none;font:600 .92rem var(--f-body);transition:transform .25s,background .25s}
 .hx__go--dark:hover{background:var(--blue);transform:translateY(-2px)}
+
+/* ===== Tema gelap: permukaan yang tadinya selalu putih ===== */
+html[data-theme=dark] .table-wrap,html[data-theme=dark] .diagram,html[data-theme=dark] .stats,html[data-theme=dark] .sw-card,html[data-theme=dark] .sim,html[data-theme=dark] .tc__flipback{background:var(--card);color:var(--dtx);border-color:var(--line)}
+html[data-theme=dark] th{background:var(--soft);color:var(--sky);border-bottom-color:var(--line)}
+html[data-theme=dark] td{color:var(--dtx);border-bottom-color:var(--line)}
+html[data-theme=dark] td.fill{color:var(--dmu)}
+html[data-theme=dark] td.fill:hover{background:var(--d-mist,var(--soft));color:var(--dtx)}
+html[data-theme=dark] td.fill:focus{background:var(--soft);color:var(--dtx)}
+html[data-theme=dark] .stats strong{color:var(--d-heading)}
+html[data-theme=dark] .stats span{color:var(--dmu)}
+html[data-theme=dark] .fcard--hl{background:var(--card);border-color:var(--sky)}
+html[data-theme=dark] .diagram svg text{fill:var(--dtx)}
