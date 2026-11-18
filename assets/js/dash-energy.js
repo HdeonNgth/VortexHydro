@@ -19,43 +19,49 @@
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
   function sv(tag, attrs) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
   function fmt(v, d) { return Number(v).toLocaleString("id-ID", { minimumFractionDigits: d, maximumFractionDigits: d }); }
-  function energy(wh) { return Math.abs(wh) >= 1000 ? [fmt(wh / 1000, 3), "kWh"] : [fmt(wh, 1), "Wh"]; }
   function hms(s) { s = Math.max(0, Math.floor(s)); var h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m + ":" + (x < 10 ? "0" : "") + x; }
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} return null; }
   function visible() { return document.body.classList.contains("is-dash") && !document.hidden && dash.offsetParent !== null; }
   function isAdmin() { try { var s = window.VXAuth && VXAuth.state && VXAuth.state(); return !!(s && s.authenticated && s.role === "admin"); } catch (e) { return false; } }
 
   /* ---------- kerangka tampilan ---------- */
+  /* Empat kartu ringkas: efisiensi, daya generator, efisiensi 5 jam, waktu operasi.
+     Tiap bagian diberi data-sec agar sidebar dashboard bisa menampilkannya per kategori. */
   var kpiDef = [
-    ["ein", "Total energi PLN masuk", "in"], ["eout", "Total energi dihasilkan", "out"],
-    ["eff", "Efisiensi sistem", "eff"], ["op", "Waktu operasi", "op"],
-    ["pin", "Daya PLN ke pompa", "in"], ["pout", "Daya generator", "out"],
-    ["effw", "Efisiensi rata-rata 5 jam", "eff"], ["gap", "Selisih energi", "gap"]
+    ["eff", "Efisiensi sistem", "eff", "gauge"], ["pout", "Daya generator", "out", "bolt"],
+    ["effw", "Efisiensi rata-rata 5 jam", "eff", "trend"], ["op", "Waktu operasi", "op", "clock"]
   ];
+  var ICON = {
+    gauge: '<path d="M4.5 17a8.5 8.5 0 1 1 15 0"/><path d="m12 13 3.5-3.5"/><circle cx="12" cy="13" r="1"/>',
+    bolt: '<path d="M13 3 5 13.5h5.5L10 21l8-10.5h-5.5z"/>',
+    trend: '<path d="M4 19V5M4 19h16"/><path d="m8 14 3-4 3 2 4-6"/>',
+    clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'
+  };
+  function icon(n) { return '<i class="dic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICON[n] + '</svg></i>'; }
   var sec = el("section", "den"); sec.id = "den"; sec.setAttribute("aria-label", "Energi dan efisiensi");
-  var h = '<div class="den__head"><div><h2>Energi dan Efisiensi</h2><p>Listrik PLN yang masuk ke pompa dibandingkan listrik yang dihasilkan generator.</p></div>' +
+  var h = '<div class="den__head" data-sec="ringkasan energi"><h2>Efisiensi dan daya</h2>' +
     '<span class="dpill off" id="den-st"><i></i><span>Menunggu data energi</span></span></div>' +
-    '<p class="den__off" id="den-off" role="status">Belum ada data energi. Buka simulasi 3D terbaru, isi kunci simulator, lalu klik <b>Mulai Kirim</b>.</p>' +
-    '<div class="den__kpi">';
+    '<p class="den__off" id="den-off" role="status" data-sec="ringkasan energi laporan">Belum ada data energi. Buka simulasi 3D terbaru, isi kunci simulator, lalu klik <b>Mulai Kirim</b>.</p>' +
+    '<div class="den__kpi" data-sec="ringkasan energi">';
   kpiDef.forEach(function (k) {
-    h += '<div class="dc den__k" data-t="' + k[2] + '"><small>' + k[1] + '</small><b><span id="dk-' + k[0] + '">–</span><em id="dku-' + k[0] + '"></em></b><p class="den__sub" id="dks-' + k[0] + '">&nbsp;</p></div>';
+    h += '<div class="dc den__k" data-t="' + k[2] + '">' + icon(k[3]) + '<small>' + k[1] + '</small><b><span id="dk-' + k[0] + '">–</span><em id="dku-' + k[0] + '"></em></b><p class="den__sub" id="dks-' + k[0] + '">&nbsp;</p></div>';
   });
-  h += '</div><div class="den__main"><div class="dc den__chart"><h3>Output generator vs input listrik PLN<span class="dtabs" id="den-rng">' +
+  h += '</div><div class="dc den__chart" data-sec="energi grafik"><h3>Output generator vs input listrik PLN<span class="dtabs" id="den-rng">' +
     '<button type="button" aria-pressed="true" data-r="live">2 menit</button><button type="button" aria-pressed="false" data-r="60">1 jam</button>' +
     '<button type="button" aria-pressed="false" data-r="300">5 jam</button><button type="button" aria-pressed="false" data-r="600">10 jam</button></span></h3>' +
     '<div class="den__leg"><span><i style="background:' + COL_IN + '"></i>Input PLN ke pompa (W)</span><span><i style="background:' + COL_OUT + '"></i>Output generator (W)</span>' +
     '<span class="den__now" id="den-now"></span></div>' +
     '<div class="den__plot"><svg id="den-svg" viewBox="0 0 640 270" role="img" aria-label="Grafik daya PLN ke pompa dan daya generator, ditumpuk pada satu sumbu"></svg><div class="den__tip" id="den-tip" hidden></div></div>' +
     '<p class="dnote" id="den-note">Dua garis memakai satu sumbu agar selisih daya terlihat langsung. Jarak antar garis adalah daya yang tidak kembali sebagai listrik.</p></div>' +
-    '<div class="dc den__rep"><h3>Laporan Excel per 10 jam</h3><div class="den__prog"><div class="den__bar"><i id="rp-bar"></i></div><div class="den__pt"><b id="rp-blk">Blok 1</b><span id="rp-hrs">0,00 dari 10 jam</span></div></div>' +
+    '<div class="dc den__win" data-sec="energi"><h3>Rata-rata dan puncak per 5 jam<span class="den__tag" id="den-wt"></span></h3><div class="den__scroll"><table class="den__tbl"><thead><tr>' +
+    '<th>Jendela (jam operasi)</th><th>PLN rata-rata</th><th>PLN puncak</th><th>Generator rata-rata</th><th>Generator puncak</th><th>Efisiensi rata-rata</th><th>Efisiensi puncak</th><th>Efisiensi terendah</th></tr></thead>' +
+    '<tbody id="den-tb"><tr><td colspan="8" class="den__empty">Belum ada riwayat. Jendela pertama terisi setelah satu menit operasi.</td></tr></tbody></table></div>' +
+    '<p class="dnote">Daya dalam watt (W). Efisiensi = energi dihasilkan ÷ energi PLN masuk ke pompa. Puncak dan terendah diambil dari efisiensi tiap menit operasi. Daya PLN ke pompa adalah hasil model simulator, bukan pembacaan wattmeter.</p></div>' +
+    '<div class="dc den__rep" data-sec="laporan"><h3>Laporan Excel per 10 jam</h3><div class="den__prog"><div class="den__bar"><i id="rp-bar"></i></div><div class="den__pt"><b id="rp-blk">Blok 1</b><span id="rp-hrs">0,00 dari 10 jam</span></div></div>' +
     '<p class="dnote" id="rp-next">Laporan terunduh otomatis saat blok selesai.</p>' +
     '<label class="den__chk"><input type="checkbox" id="rp-auto"> Unduh otomatis tiap 10 jam operasi</label>' +
     '<button class="dpill den__btn" id="rp-now" type="button">Unduh laporan blok berjalan</button>' +
-    '<ul class="den__list" id="rp-list"></ul><p class="dnote" id="rp-msg" role="status"></p></div></div>' +
-    '<div class="dc den__win"><h3>Rata-rata dan puncak per 5 jam<span class="den__tag" id="den-wt"></span></h3><div class="den__scroll"><table class="den__tbl"><thead><tr>' +
-    '<th>Jendela (jam operasi)</th><th>PLN rata-rata</th><th>PLN puncak</th><th>Generator rata-rata</th><th>Generator puncak</th><th>Efisiensi rata-rata</th><th>Efisiensi puncak</th><th>Efisiensi terendah</th></tr></thead>' +
-    '<tbody id="den-tb"><tr><td colspan="8" class="den__empty">Belum ada riwayat. Jendela pertama terisi setelah satu menit operasi.</td></tr></tbody></table></div>' +
-    '<p class="dnote">Daya dalam watt (W). Efisiensi = energi dihasilkan ÷ energi PLN masuk ke pompa. Puncak dan terendah diambil dari efisiensi tiap menit operasi. Daya PLN ke pompa adalah hasil model simulator, bukan pembacaan wattmeter.</p></div>';
+    '<ul class="den__list" id="rp-list"></ul><p class="dnote" id="rp-msg" role="status"></p></div>';
   sec.innerHTML = h;
   anchor.parentNode.insertBefore(sec, anchor.nextSibling);
   Array.prototype.forEach.call(sec.querySelectorAll(".dc"), function (c, i) { c.style.setProperty("--i", i + 8); });
@@ -82,19 +88,15 @@
   function curWin() { return win.length ? win[0] : null; }
   function renderKpi() {
     var on = fresh() || live.eIn > 0 || live.op > 0, st = $("den-st"), off = $("den-off");
-    off.hidden = live.seen && (live.op > 0 || live.eIn > 0 || live.pln > 0);
+    off.classList.toggle("is-hidden", !!(live.seen && (live.op > 0 || live.eIn > 0 || live.pln > 0)));
     st.classList.toggle("off", !fresh());
     st.lastChild.textContent = fresh() ? "Data energi mengalir" : (live.seen ? "Data energi berhenti" : "Menunggu data energi");
-    var a = energy(live.eIn), b = energy(live.eOut), eff = live.eIn > 0 ? live.eOut / live.eIn * 100 : 0, gap = energy(live.eIn - live.eOut);
+    var eff = live.eIn > 0 ? live.eOut / live.eIn * 100 : 0;
     var inst = live.pln > 1 ? live.gen / live.pln * 100 : 0, w = curWin();
-    kp("ein", on ? a[0] : "–", on ? a[1] : "", "Dari PLN ke pompa sejak awal uji");
-    kp("eout", on ? b[0] : "–", on ? b[1] : "", "Listrik masuk ke BESS dari generator");
     kp("eff", on ? fmt(eff, 1) : "–", on ? "%" : "", on ? "Sesaat " + fmt(inst, 1) + "% (daya)" : "");
     kp("op", on ? hms(live.op) : "–", "", on ? "Sudah " + fmt(live.op / 3600, 2) + " jam operasi" : "");
-    kp("pin", on ? fmt(live.pln, 1) : "–", on ? "W" : "", w ? "5 jam: rata-rata " + fmt(w.in_avg_w, 1) + " · puncak " + fmt(w.in_peak_w, 1) : "Menunggu riwayat 5 jam");
     kp("pout", on ? fmt(live.gen, 1) : "–", on ? "W" : "", w ? "5 jam: rata-rata " + fmt(w.out_avg_w, 1) + " · puncak " + fmt(w.out_peak_w, 1) : "Menunggu riwayat 5 jam");
     kp("effw", w ? fmt(w.eff_pct, 1) : "–", w ? "%" : "", w ? "Puncak " + fmt(w.eff_peak_pct, 1) + "% · terendah " + fmt(w.eff_min_pct, 1) + "%" : "Menunggu riwayat 5 jam");
-    kp("gap", on ? gap[0] : "–", on ? gap[1] : "", on && live.eIn > 0 ? fmt(100 - eff, 1) + "% dari energi PLN tidak kembali" : "PLN masuk dikurangi dihasilkan");
     var now = $("den-now"); now.textContent = on ? "Sekarang: " + fmt(live.pln, 1) + " W → " + fmt(live.gen, 1) + " W" : "";
     renderReportState();
   }

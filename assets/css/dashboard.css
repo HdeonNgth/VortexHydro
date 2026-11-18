@@ -1,0 +1,141 @@
+/* Dashboard (mode admin): sidebar pil berisi ikon kategori, top bar, judul serif, kartu statistik.
+   Dimuat setelah site.css. Semua aturan dibatasi body.is-dash agar tidak mengubah halaman publik.
+   Penyaringan per kategori dilakukan dashglass.js lewat atribut data-sec. */
+
+/* ---------- warna per tema ---------- */
+body.is-dash{--dsb-w:62px;--dk-ink:var(--deep);--dk-mut:var(--slate);--dk-card:rgba(255,255,255,.82);--dk-ln:rgba(var(--navy-rgb),.08);--dk-sh:0 22px 40px -30px rgba(var(--navy-rgb),.55);--dk-ac:var(--blue)}
+html[data-theme=dark] body.is-dash{--dk-ink:#fff;--dk-mut:var(--dmu2);--dk-card:rgba(255,255,255,.06);--dk-ln:rgba(255,255,255,.09);--dk-sh:0 22px 40px -28px rgba(0,0,0,.7);--dk-ac:var(--lite)}
+html:not([data-theme=dark]) body.is-dash{background:radial-gradient(780px 480px at 88% -8%,rgba(var(--cyan-rgb),.2),transparent 70%),radial-gradient(720px 520px at 4% 105%,rgba(var(--blue-rgb),.11),transparent 70%),var(--soft) no-repeat}
+html[data-theme=dark] body.is-dash{background:radial-gradient(780px 480px at 88% -8%,rgba(var(--blue-rgb),.32),transparent 70%),var(--abyss) no-repeat}
+/* bar navigasi atas milik situs publik disembunyikan; dashboard punya sidebar sendiri */
+body.is-dash .lg{display:none!important}
+
+/* ---------- sidebar ---------- */
+.dsb{display:none}
+body.is-dash .dsb{display:flex;flex-direction:column;align-items:center;gap:10px;position:fixed;z-index:80;top:max(14px,env(safe-area-inset-top,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));left:max(14px,env(safe-area-inset-left,0px));width:var(--dsb-w);padding:14px 9px;border-radius:calc(var(--dsb-w)/2);background:linear-gradient(190deg,var(--navy),var(--deep));color:rgba(255,255,255,.62);box-shadow:0 28px 50px -24px rgba(var(--navy-rgb),.75),inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 1px rgba(255,255,255,.08)}
+.dsb__logo{display:grid;place-items:center;width:100%;padding:2px 0 12px;border-bottom:1px solid rgba(255,255,255,.12)}
+.dsb__logo .vxlogo{width:32px;height:29px}
+.dsb__nav{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;width:100%}
+.dsb__grp{display:flex;flex-direction:column;align-items:center;gap:6px}
+.dsb__sep{display:block;width:22px;height:1px;margin:4px 0;background:rgba(255,255,255,.14)}
+.dsb button,.dsb__exit{position:relative;z-index:1;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:15px;background:transparent;color:inherit;cursor:pointer;transition:color .25s,background .25s}
+.dsb button svg,.dsb__exit svg{width:21px;height:21px}
+.dsb button:hover,.dsb__exit:hover,.dsb button[aria-current]{color:#fff}
+.dsb__exit{margin-top:auto}
+.dsb__exit:hover{background:rgba(255,255,255,.1)}
+.dsb button:focus-visible,.dsb__exit:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.dsb__lens{position:absolute;z-index:0;left:0;top:0;width:44px;height:44px;border-radius:15px;opacity:0;pointer-events:none;background:linear-gradient(160deg,rgba(255,255,255,.27),rgba(255,255,255,.07));box-shadow:inset 0 1px 1px rgba(255,255,255,.42),0 10px 22px -10px rgba(var(--cyan-rgb),.85)}
+.dsb__lens.on{opacity:1;transition:transform .5s cubic-bezier(.22,1,.36,1),opacity .3s}
+.dsb [data-tip]::after{content:attr(data-tip);position:absolute;left:calc(100% + 16px);top:50%;translate:-6px -50%;padding:8px 12px;border-radius:10px;background:var(--deep);color:#fff;font:600 .76rem/1 var(--f-body,system-ui,sans-serif);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s,translate .2s;box-shadow:0 10px 24px -10px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.08)}
+.dsb [data-tip]:hover::after,.dsb [data-tip]:focus-visible::after{opacity:1;translate:0 -50%}
+@media(hover:none){.dsb [data-tip]::after{display:none}}
+
+/* ---------- kerangka halaman ---------- */
+body.is-dash main{margin-left:calc(var(--dsb-w) + 34px)}
+html:root body.is-dash .dash{display:flex;flex-direction:column;gap:16px;max-width:1320px;min-height:100vh;padding:16px clamp(12px,2.4vw,32px) 120px 0;background:none;color:var(--dk-ink)}
+html:root body.is-dash .dash>*{margin:0}
+.den{display:contents}
+.dash>.dtop{order:1}.dash>.dhead{order:2}.dash>.vx-demo-notice{order:3}.dash>.dsrc{order:4}
+.dash .den__head{order:10}.dash .den__off{order:11}.dash .den__kpi{order:12}
+.dash>#dcap-sensor{order:20}.dash>.dgrid{order:21}
+.dash>#dcap-trend{order:30}.dash>#dwhy{order:31}.dash>.drow{order:32}
+.dash .den__chart{order:40}.dash .den__win{order:41}.dash .den__rep{order:42}
+.dash>.vhc{order:50}
+.dash :is([data-sec],.drow)[hidden],.den__off.is-hidden{display:none!important}
+
+/* ---------- top bar ---------- */
+.dtop{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px}
+.dtop__crumb{display:flex;align-items:center;gap:10px;padding:9px 18px;border-radius:999px;background:var(--dk-card);box-shadow:inset 0 0 0 1px var(--dk-ln);color:var(--dk-mut);font-size:.84rem;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.dtop__crumb b{font-family:var(--f-accent);font-weight:600;font-size:.9rem;color:var(--dk-ink)}
+.dtop__crumb i{width:1px;height:14px;background:currentColor;opacity:.3}
+.dtop__search{display:flex;align-items:center;gap:10px;min-width:230px;margin-left:auto;padding:9px 16px;border:0;border-radius:999px;background:var(--dk-card);box-shadow:inset 0 0 0 1px var(--dk-ln);color:var(--dk-mut);font:500 .84rem var(--f-body,system-ui,sans-serif);text-align:left;cursor:pointer;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.dtop__search svg{width:17px;height:17px;flex:none}
+.dtop__search:hover{color:var(--dk-ink)}
+.dtop__acc{display:flex;align-items:center;gap:10px;padding:5px;border-radius:999px;background:var(--dk-card);box-shadow:inset 0 0 0 1px var(--dk-ln)}
+.dtop__av{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(150deg,var(--cyan),var(--blue));color:#fff;font:700 .86rem var(--f-accent)}
+.dtop__who{display:grid;line-height:1.15}
+.dtop__who b{font-size:.82rem;font-weight:600;color:var(--dk-ink)}
+.dtop__who small{font-size:.68rem;color:var(--dk-mut)}
+.dtop__out{display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--dk-mut);cursor:pointer;transition:background .2s,color .2s}
+.dtop__out:hover{background:rgba(239,68,68,.14);color:#ef4444}
+.dtop__out svg{width:18px;height:18px}
+.dtop :is(button,a):focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* ---------- judul halaman ---------- */
+.dhead h1{margin:0;font-size:clamp(1.9rem,4.2vw,3rem);line-height:1.05;letter-spacing:-.01em;color:var(--dk-ink)}
+.dhead h1 em{font-style:italic;color:var(--dk-ac)}
+.dhead p{max-width:62ch;margin:10px 0 0;font-size:.92rem;line-height:1.55;color:var(--dk-mut)}
+
+/* label kategori di halaman Ringkasan */
+html:root body.is-dash .dash :is(.dlab,.den__head h2){display:flex;align-items:center;gap:12px;margin:0;font:600 .82rem var(--f-accent);letter-spacing:.01em;color:var(--dk-mut)}
+html:root body.is-dash .dash :is(.dlab,.den__head h2)::after{content:"";flex:1;height:1px;background:var(--dk-ln)}
+html:root body.is-dash .dash .den__head{display:flex;align-items:center;gap:14px;padding:0}
+html:root body.is-dash .dash .den__head h2{flex:1}
+
+/* ---------- kartu ---------- */
+html:root body.is-dash .dash .dc{padding:18px 20px;border-radius:24px;background:var(--dk-card);box-shadow:inset 0 0 0 1px var(--dk-ln),var(--dk-sh);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4)}
+html:root body.is-dash .dash .dc::after{display:none}
+html:root body.is-dash .dash .dc h3{margin-bottom:14px;font:600 1rem var(--f-accent);letter-spacing:0;color:var(--dk-ink)}
+html:root body.is-dash .dash .dc small{display:block;font-size:.8rem;font-weight:500;letter-spacing:0;color:var(--dk-mut)}
+html:root body.is-dash .dash .dc small::before{content:none}
+html:root body.is-dash .dash .dc b{margin-top:4px;color:var(--dk-ink)}
+html:root body.is-dash .dash .dc b em{color:var(--dk-mut)}
+.dic{position:relative;display:grid;place-items:center;width:38px;height:38px;margin-bottom:14px;border-radius:12px;color:var(--ac,var(--dk-ac))}
+.dic::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--ac,var(--dk-ac));opacity:.14}
+.dic svg{position:relative;width:19px;height:19px}
+.dc[data-c=debit]{--ac:#0ea5e9}.dc[data-c=vbat]{--ac:#f59e0b}.dc[data-c=rpmShaft]{--ac:#8b5cf6}.dc[data-c=rpmGen]{--ac:#10b981}
+html:root body.is-dash .dash .den__k[data-t=eff]{--ac:#0ea5e9}html:root body.is-dash .dash .den__k[data-t=out]{--ac:#10b981}html:root body.is-dash .dash .den__k[data-t=op]{--ac:#8b5cf6}
+html:root body.is-dash .dash .dc .sp{height:36px;margin-top:10px}
+html:root body.is-dash .dash .dc .sp polyline{stroke:var(--ac,var(--dk-ac));filter:none}
+html:root body.is-dash .dash .den__sub{min-height:2.2em;margin:10px 0 0;font-size:.76rem;line-height:1.45;color:var(--dk-mut)}
+
+html:root body.is-dash .dash :is(.dgrid,.den__kpi){display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+html:root body.is-dash .dash .drow{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px}
+html:root body.is-dash .dash .drow[data-n="1"]{grid-template-columns:minmax(0,1fr)}
+.dind{display:grid;gap:20px;align-content:start}
+.dind h3{margin-bottom:12px}
+html:root body.is-dash .dash .drow[data-n="1"] .dind{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:28px}
+html:root body.is-dash .dash .den__rep{max-width:680px}
+
+/* panel sumber data */
+html:root body.is-dash .dash .dsrc{align-items:center;gap:10px;padding:18px 20px;border-radius:24px;background:var(--dk-card);box-shadow:inset 0 0 0 1px var(--dk-ln),var(--dk-sh)}
+html:root body.is-dash .dash .dsrc input{border:0;background:rgba(127,127,127,.12);color:var(--dk-ink);box-shadow:inset 0 0 0 1px var(--dk-ln)}
+html:root body.is-dash .dash .dsrc .dnote{flex:1 1 100%;margin:0}
+html:not([data-theme=dark]) body.is-dash .vx-demo-notice{border-color:rgba(217,119,6,.3);background:rgba(245,158,11,.14);color:#92400e}
+
+/* ---------- layar sedang dan kecil ---------- */
+@media(max-width:1100px){
+  html:root body.is-dash .dash :is(.dgrid,.den__kpi){grid-template-columns:repeat(2,minmax(0,1fr))}
+  html:root body.is-dash .dash .drow{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:900px){
+  html:root body.is-dash .dash .drow[data-n="1"] .dind{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:700px){
+  body.is-dash{--dsb-w:50px}
+  body.is-dash .dsb{left:8px;top:10px;bottom:10px;gap:8px;padding:10px 6px}
+  .dsb button,.dsb__exit,.dsb__lens{width:38px;height:38px;border-radius:13px}
+  .dsb button svg,.dsb__exit svg{width:19px;height:19px}
+  .dsb__logo .vxlogo{width:28px;height:25px}
+  body.is-dash main{margin-left:calc(var(--dsb-w) + 20px)}
+  html:root body.is-dash .dash{gap:14px;padding:10px 12px 96px 0}
+  .dtop__crumb{flex:1 1 0;min-width:0;padding:9px 14px}
+  .dtop__crumb b,.dtop__crumb i,#dclk{display:none}
+  .dtop__search{min-width:0;margin-left:0;padding:10px}
+  .dtop__search span,.dtop__who{display:none}
+  .dtop__acc{gap:2px}
+  .dtop__crumb{order:1}.dtop__search{order:2}.dtop__acc{order:3}#dst{order:4}#donl{order:5}#dpause{order:6}
+  .dhead p{font-size:.86rem}
+  html:root body.is-dash .dash .dc{padding:14px;border-radius:20px}
+  .dic{width:32px;height:32px;margin-bottom:10px;border-radius:10px}
+  .dic svg{width:17px;height:17px}
+  html:root body.is-dash .dash :is(.dgrid,.den__kpi){gap:10px}
+  html:root body.is-dash .dash .dc small{font-size:.72rem}
+  html:root body.is-dash .dash .dc b{font-size:1.4rem}
+}
+@media(max-height:620px){
+  .dsb__logo{display:none}
+  .dsb{gap:6px}
+  .dsb button,.dsb__exit,.dsb__lens{width:38px;height:38px}
+}
+@media(prefers-reduced-motion:reduce){.dsb__lens.on{transition:opacity .3s}}

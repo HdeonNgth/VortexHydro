@@ -1431,9 +1431,6 @@ body.is-dash main{margin-left:calc(var(--dg-w) + 36px)}
 .dgau .arc{stroke-width:11}.dgau .arc.v{filter:drop-shadow()}
 .dtabs{padding:4px;border-radius:999px;background:rgba(255,255,255,.06)}
 
-.dash[data-view=sensor] :is(.drow,.vhc){display:none}
-.dash[data-view=grafik] :is(.dgrid,.vhc){display:none}
-.dash[data-view=riwayat] :is(.dgrid,.drow){display:none}
 #dashboard.vx-enter .dc{animation:dgin .75s cubic-bezier(.22,1,.36,1) backwards;animation-delay:calc(var(--i,0)*70ms)}
 @keyframes dgin{from{opacity:0;transform:translateY(18px) scale(.97);filter:blur(10px)}}
 @media(max-width:700px){.dash__top{padding:12px 12px 12px 16px;border-radius:20px}.dash__top p{display:none}.dtabbar{order:3;width:100%;overflow-x:auto}.dtabbar button{flex:1;padding:8px 12px;white-space:nowrap}.dc{padding:16px;border-radius:20px}}
@@ -1532,7 +1529,6 @@ body.is-dash .vxn{top:18px}
 .dwhy__i[data-l="1"]{--c:#f59e0b}.dwhy__i[data-l="2"]{--c:#ef4444}
 .dwhy__i b{display:block;font-size:.92rem;color:#fff;margin-bottom:8px}
 .dwhy__i p{margin:4px 0 0;font-size:.84rem;line-height:1.5;color:var(--dmu)}.dwhy__i strong{color:var(--c)}
-.dash[data-view=riwayat] .dwhy{display:none}
 html:not([data-theme=dark]) body.is-dash .dwhy__i{background:rgba(var(--navy-rgb),.05)}
 html:not([data-theme=dark]) body.is-dash .dwhy__i b{color:var(--deep)}
 html:not([data-theme=dark]) body.is-dash .dwhy__i p,html:not([data-theme=dark]) body.is-dash .dwhy__ok{color:var(--slate)}
@@ -1669,8 +1665,6 @@ h3 .den__tag{margin-left:0}
 .den__tbl td b{color:#fff}.den__tbl tr.cur td{background:rgba(var(--cyan-rgb),.08)}.den__tbl td.den__empty{text-align:center;color:var(--dmu3);white-space:normal}
 .den__eff{position:relative;display:inline-block;min-width:96px;padding:4px 8px;border-radius:8px;background:rgba(255,255,255,.06);overflow:hidden;text-align:right}
 .den__eff i{position:absolute;left:0;top:0;bottom:0;background:rgba(46,230,166,.28)}.den__eff b{position:relative}
-.dash[data-view=energi] :is(.dgrid,.drow,.vhc,.dwhy){display:none}
-.dash:is([data-view=sensor],[data-view=grafik],[data-view=riwayat]) .den{display:none}
 @media(prefers-reduced-motion:reduce){.den__bar i{transition:none}}
 /* terang */
 html:not([data-theme=dark]) body.is-dash .den__head h2,html:not([data-theme=dark]) body.is-dash .den__now,html:not([data-theme=dark]) body.is-dash .den__pt b,html:not([data-theme=dark]) body.is-dash .den__tbl td b{color:var(--deep)}

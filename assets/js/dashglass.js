@@ -1,24 +1,87 @@
-/* Dashboard kaca: tab tampilan, label tombol, urutan animasi */
-(function(){
-  var page=document.getElementById("dashboard");if(!page)return;
-  var dash=page.querySelector(".dash"),top=dash&&dash.querySelector(".dash__top"),ctl=top&&top.querySelector(".dash__ctl");
-  if(!top||!ctl)return;
-  var tabs=[["all","Ringkasan"],["energi","Energi"],["sensor","Sensor"],["grafik","Grafik"],["riwayat","Riwayat"]];
-  var bar=document.createElement("div");bar.className="dtabbar";bar.setAttribute("role","group");bar.setAttribute("aria-label","Tampilan dashboard");
-  tabs.forEach(function(t,i){
-    var b=document.createElement("button");b.type="button";b.dataset.v=t[0];b.textContent=t[1];b.setAttribute("aria-pressed",i===0?"true":"false");bar.appendChild(b)
+/* Dashboard: sidebar kategori, judul tiap tampilan, dan penyaring bagian (atribut data-sec).
+   Setiap bagian dashboard menulis data-sec="kategori1 kategori2"; hanya yang memuat nama
+   tampilan aktif yang ditampilkan. Semua id lama dipertahankan agar navigation.js tetap jalan. */
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var page = $("dashboard"), bar = $("dsbn"), lens = $("dsbl");
+  var dash = page && page.querySelector(".dash");
+  if (!dash || !bar) return;
+
+  var VIEWS = {
+    ringkasan: ["Ringkasan", "sekilas", "Kondisi prototipe saat ini: efisiensi, sensor, dan peringatan. Diperbarui setiap detik."],
+    sensor: ["Sensor", "langsung", "Debit air, tegangan baterai, RPM poros utama, dan RPM generator, lengkap dengan indikator dan log kejadian."],
+    energi: ["Energi dan", "efisiensi", "Listrik PLN yang masuk ke pompa dibandingkan dengan listrik yang dihasilkan generator."],
+    grafik: ["Grafik", "pemantauan", "Tren sensor 60 detik terakhir dan perbandingan daya PLN dengan generator."],
+    laporan: ["Laporan", "Excel", "Rekap tiap 10 jam operasi. Bisa diunduh otomatis atau kapan saja."],
+    riwayat: ["Riwayat", "kunjungan", "Halaman yang dibuka pengunjung website dan kapan mereka datang."],
+    sumber: ["Sumber", "data", "Pilih asal data dashboard, hubungkan sensor, atau uji gangguan."]
+  };
+  var btns = [].slice.call(bar.querySelectorAll("button[data-v]"));
+  var ttl = $("dtitle"), sub = $("dsub"), crumb = $("dcrumb");
+
+  function filter() {
+    var v = dash.dataset.pane;
+    [].forEach.call(dash.querySelectorAll("[data-sec]"), function (el) { el.hidden = el.dataset.sec.split(" ").indexOf(v) < 0; });
+    [].forEach.call(dash.querySelectorAll(".drow"), function (row) {
+      var n = 0; [].forEach.call(row.children, function (c) { if (!c.hidden) n++; });
+      row.dataset.n = n; row.hidden = n === 0;
+    });
+    var src = $("dsrc"); if (src) src.classList.toggle("show", v === "sumber");
+  }
+  function placeLens() {
+    var a = bar.querySelector("[aria-current]");
+    if (!a || !lens || !a.offsetWidth) return;
+    lens.style.width = a.offsetWidth + "px"; lens.style.height = a.offsetHeight + "px";
+    lens.style.transform = "translate(" + a.offsetLeft + "px," + a.offsetTop + "px)";
+    if (!lens.classList.contains("on")) { void lens.offsetWidth; lens.classList.add("on"); }
+  }
+  function replay() { page.classList.remove("vx-enter"); void page.offsetWidth; page.classList.add("vx-enter"); }
+
+  function show(v, byUser) {
+    if (!VIEWS[v]) v = "ringkasan";
+    dash.dataset.pane = v;
+    btns.forEach(function (b) { if (b.dataset.v === v) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
+    var t = VIEWS[v], em = document.createElement("em");
+    em.textContent = t[1]; ttl.textContent = t[0] + " "; ttl.appendChild(em);
+    sub.textContent = t[2];
+    var cur = bar.querySelector("[aria-current]"); if (crumb && cur) crumb.textContent = cur.dataset.tip;
+    filter(); placeLens();
+    try { sessionStorage.setItem("vx-dash-pane", v); } catch (e) {}
+    if (byUser) { replay(); window.scrollTo(0, 0); }
+  }
+  bar.addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-v]"); if (b) show(b.dataset.v, true);
   });
-  top.insertBefore(bar,ctl);dash.dataset.view="all";
-  function replay(){page.classList.remove("vx-enter");void page.offsetWidth;page.classList.add("vx-enter")}
-  bar.addEventListener("click",function(e){
-    var b=e.target.closest("button");if(!b)return;
-    Array.prototype.forEach.call(bar.children,function(x){x.setAttribute("aria-pressed",x===b?"true":"false")});
-    dash.dataset.view=b.dataset.v;replay()
-  });
-  Array.prototype.forEach.call(dash.querySelectorAll(".dc"),function(c,i){c.style.setProperty("--i",i)});
-  ["dpause","dsrcb"].forEach(function(id){
-    var b=document.getElementById(id);if(!b)return;
-    function sync(){var t=b.textContent.trim();if(!t)return;b.title=t;b.setAttribute("aria-label",t);b.dataset.s=t.toLowerCase()}
-    sync();new MutationObserver(sync).observe(b,{childList:true,characterData:true,subtree:true})
-  });
+
+  /* bagian yang dibuat belakangan (energi, penjelasan masalah) ikut disaring */
+  new MutationObserver(filter).observe(dash, { childList: true });
+  /* sidebar baru terlihat setelah masuk mode dashboard: pasang ulang penanda aktif */
+  new MutationObserver(function () { requestAnimationFrame(function () { requestAnimationFrame(placeLens); }); })
+    .observe(document.body, { attributes: true, attributeFilter: ["class"] });
+  window.addEventListener("resize", placeLens);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeLens);
+
+  [].forEach.call(dash.querySelectorAll(".dc"), function (c, i) { c.style.setProperty("--i", i); });
+
+  /* akun: nama di pojok kanan atas, tombol keluar akun memakai tombol Keluar bawaan */
+  function who(s) {
+    var n = (s && s.displayName) || "Admin";
+    if ($("dwho")) $("dwho").textContent = n;
+    if ($("dav")) $("dav").textContent = n.charAt(0).toUpperCase();
+  }
+  window.addEventListener("vx:authchange", function (e) { who(e.detail); });
+  try { if (window.VXAuth && VXAuth.state) who(VXAuth.state()); } catch (e) {}
+  var out = $("dlogout");
+  if (out) out.addEventListener("click", function () { var l = document.querySelector(".lg__logout"); if (l) l.click(); });
+
+  /* tombol Jeda/Lanjut: label dibaca pembaca layar, teksnya disembunyikan oleh CSS */
+  var pause = $("dpause");
+  if (pause) {
+    var sync = function () { var t = pause.textContent.trim(); if (!t) return; pause.title = t; pause.setAttribute("aria-label", t); pause.dataset.s = t.toLowerCase(); };
+    sync(); new MutationObserver(sync).observe(pause, { childList: true, characterData: true, subtree: true });
+  }
+
+  var saved = null; try { saved = sessionStorage.getItem("vx-dash-pane"); } catch (e) {}
+  show(saved, false);
 })();

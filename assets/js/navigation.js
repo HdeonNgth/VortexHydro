@@ -185,7 +185,7 @@ var WHY={
 function whyBox(){
   var box=$("dwhy");if(box)return box;
   var row=document.querySelector("#dashboard .drow");if(!row)return null;
-  box=document.createElement("div");box.className="dc dwhy";box.id="dwhy";
+  box=document.createElement("div");box.className="dc dwhy";box.id="dwhy";box.dataset.sec="ringkasan sensor";
   var h=document.createElement("h3");h.textContent="Penjelasan masalah";var st=document.createElement("span");st.id="dwhys";st.className="dwhy__st";h.appendChild(st);
   var ls=document.createElement("div");ls.id="dwhyl";ls.className="dwhy__l";
   box.appendChild(h);box.appendChild(ls);row.parentNode.insertBefore(box,row);return box
