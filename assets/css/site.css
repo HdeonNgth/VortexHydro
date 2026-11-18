@@ -595,7 +595,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); margin: 0; font-weight: 800; let
 .gcard li:nth-child(1) b { background: var(--mist); } .gcard li:nth-child(2) b { background: var(--sky); } .gcard li:nth-child(3) b { background: var(--cyan); } .gcard li:nth-child(4) b { background: #5aa9e0; } .gcard li:nth-child(5) b { background: #3b8fd0; color: #fff; } .gcard li:nth-child(6) b { background: var(--blue); color: #fff; }
 
 /* ---------- Halaman dalam: heading ---------- */
-.pagehead { padding-top: clamp(88px, 8vw, 96px); padding-bottom: 24px; text-align: center; position: relative; overflow: hidden;
+.pagehead { padding-top: clamp(96px, 9vw, 112px); padding-bottom: 24px; text-align: center; position: relative; overflow: hidden;
   background: radial-gradient(640px 300px at 50% -40px, rgba(var(--sky-rgb), .45), transparent 70%), #fff; }
 .pagehead h1 { max-width: 20ch; margin-inline: auto; }
 
@@ -1601,21 +1601,6 @@ html[data-theme=dark] .stats strong{color:var(--d-heading)}
 html[data-theme=dark] .stats span{color:var(--dmu)}
 html[data-theme=dark] .fcard--hl{background:var(--card);border-color:var(--sky)}
 html[data-theme=dark] .diagram svg text{fill:var(--dtx)}
-
-/* ===== Header: bar penuh lebar (halaman publik, layar lebar) ===== */
-@media(min-width:901px){
-body:not(.is-dash) .lg{top:0;left:0;right:0;width:auto;max-width:none;translate:none;height:56px;padding:0 clamp(16px,3vw,40px);gap:8px;border-radius:0;justify-content:flex-start;background:var(--card,#fff);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 1px 0 var(--line)}
-html[data-theme=dark] body:not(.is-dash) .lg{background:var(--abyss);box-shadow:0 1px 0 rgba(255,255,255,.1)}
-body:not(.is-dash) .lg__brand{padding-right:24px}
-body:not(.is-dash) .lg__nav{flex:1;align-self:stretch;align-items:stretch;gap:0}
-body:not(.is-dash) .lg__nav a{padding:0 14px;border-radius:0;font-weight:500;font-size:.9rem}
-body:not(.is-dash) .lg__nav a svg{display:none}
-body:not(.is-dash) .lg__nav a[aria-current]{box-shadow:inset 0 -2px 0 var(--blue)}
-html[data-theme=dark] body:not(.is-dash) .lg__nav a[aria-current]{box-shadow:inset 0 -2px 0 var(--sky)}
-body:not(.is-dash) .lg__lens,body:not(.is-dash) .lg__ring,body:not(.is-dash) .lg__drop{display:none}
-body:not(.is-dash) .lg__nav a[data-k=dashboard]{margin-left:auto;align-self:center;height:36px;padding:0 16px;border:1px solid currentColor;border-radius:6px;box-shadow:none;color:var(--g-on)}
-body:not(.is-dash) .lg__lang{border-radius:6px}
-}
 
 /* ===== Footer: bar penuh lebar, kolom datar ===== */
 .footer.ft,html[data-theme=dark] .footer.ft{background:var(--abyss2)!important;padding:0;border-top:0}
