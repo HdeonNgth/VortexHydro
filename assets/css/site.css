@@ -1586,7 +1586,6 @@ html .hx__title{margin:0;font-family:var(--f-display);font-weight:400;font-size:
 .chain b{font-size:.95rem}.chain span{font-size:.8rem;color:var(--muted);line-height:1.5}
 @media (max-width:980px){.chain{grid-template-columns:repeat(2,1fr)}.chain li::after{display:none}}
 @media (max-width:480px){.chain{grid-template-columns:1fr}}
-.vcap{margin:28px 0 0;text-align:center}
 .hx__go--dark{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 28px;border-radius:999px;background:var(--navy);color:#fff;text-decoration:none;font:600 .92rem var(--f-body);transition:transform .25s,background .25s}
 .hx__go--dark:hover{background:var(--blue);transform:translateY(-2px)}
 

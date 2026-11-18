@@ -48,7 +48,6 @@
     "Air yang meninggalkan kincir jatuh lewat cerobong akrilik dan bukaan meja kembali ke tangki penampung.": "Water leaving the wheel falls through an acrylic chute and the tabletop opening back into the reservoir tank.",
     "Zona Kering": "Dry Zone",
     "Dipisahkan sekat dari area basah. Pulley step-up 1:4 menggerakkan generator, yang mengisi baterai 12 V untuk lampu LED 12 W.": "Separated from the wet area by a partition. A 1:4 step-up pulley drives the generator, which charges the 12 V battery for the 12 W LED lamp.",
-    "Lihat simulasi 3D lengkap": "View the full 3D simulation",
     "Zona kering": "Dry zone",
     "Dari Putaran Menjadi Listrik": "From Rotation to Electricity",
     "Kincir 6 sudu": "6-blade wheel",
