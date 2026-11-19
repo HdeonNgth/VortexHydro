@@ -1,11 +1,11 @@
 /* Mesin simulasi prototipe Vortex Hydro.
-   Satu sumber data untuk halaman Teknologi dan Dashboard (data prototipe di browser).
+   Satu sumber data untuk Dashboard (data prototipe di browser).
    Prototipe hanya mengukur 4 besaran:
      debit      aliran air (L/s)
      vbat       tegangan baterai (V)
      rpmShaft   putaran poros utama turbin (RPM)
      rpmGen     putaran generator (RPM)
-   Sisanya (head, daya) hanya hitungan model untuk halaman Teknologi.
+   Sisanya (head, daya) hanya hitungan model.
    Ubah CFG setelah ada data pengujian. */
 (function () {
   var CFG = {

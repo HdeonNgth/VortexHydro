@@ -13,7 +13,7 @@ Upcoming/               Backend Node.js, konfigurasi contoh, tes, dan panduan ho
 docs/                   Dokumentasi proyek
 ```
 
-Beranda, Tentang, Teknologi, Dokumentasi, Struktur Tim, FAQ, dan Dashboard tetap menjadi rute dalam satu aplikasi halaman. CSS dan JavaScript kini berada di file terpisah; skrip dipanggil pada posisi dan urutan semula agar perilaku halaman tidak berubah. FAQ tetap tersedia melalui tautan di bagian footer, bukan di bilah navigasi atas. Tombol bahasa mengganti teks situs antara Bahasa Indonesia dan English serta mengingat pilihan di browser.
+Beranda, Tentang (sudah termasuk cara kerja), Dokumentasi, Struktur Tim, FAQ, dan Dashboard tetap menjadi rute dalam satu aplikasi halaman. CSS dan JavaScript kini berada di file terpisah; skrip dipanggil pada posisi dan urutan semula agar perilaku halaman tidak berubah. FAQ tetap tersedia melalui tautan di bagian footer, bukan di bilah navigasi atas. Tombol bahasa mengganti teks situs antara Bahasa Indonesia dan English serta mengingat pilihan di browser.
 
 ## Akses situs dan backend
 

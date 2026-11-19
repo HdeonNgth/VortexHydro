@@ -1,6 +1,6 @@
 
 (function(){
-var P=[["beranda","Beranda"],["tentang","Tentang"],["teknologi","Teknologi"],["dokumentasi","Dokumentasi"],["struktur-tim","Struktur Tim"],["faq","FAQ"],["dashboard","Dashboard"]];
+var P=[["beranda","Beranda"],["tentang","Tentang"],["dokumentasi","Dokumentasi"],["struktur-tim","Struktur Tim"],["faq","FAQ"],["dashboard","Dashboard"]];
 var ov=document.getElementById("vs-ov"),inp=document.getElementById("vs-in"),ul=document.getElementById("vs-res"),hint=document.getElementById("vs-hint");
 var idx=[],items=[],act=-1,back=null;
 function esc(t){return t.replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}

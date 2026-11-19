@@ -29,11 +29,25 @@
     var e = document.querySelector(x[0]); if (e) { var p = document.createElement('p'); p.className = 'hint'; p.textContent = x[1]; e.parentNode.insertBefore(p, e.nextSibling); }
   });
 
-  /* diagram teknologi: klik nomor atau kartu */
-  var cards = $('#teknologi .stack .fcard'), marks = $('.diagram svg > g > g');
-  function pick(i) { if (cards[i]) cards[i].scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-  marks.forEach(function (m, i) { m.addEventListener('click', function () { pick(i); }); });
-  cards.forEach(function (c, i) { c.addEventListener('click', function () { cards.forEach(function (x) { x.classList.remove('cur'); }); c.classList.add('cur'); marks.forEach(function (m, j) { m.classList.toggle('is-on', j === i); }); }); });
+  /* diagram cara kerja: klik bagian, tampil info singkat */
+  var dia = document.getElementById('vx-diagram'), dtxt = document.getElementById('dinfo-txt');
+  if (dia && dtxt) {
+    var spots = $('.hs', dia), chips = $('#dchips button'), cur = 0;
+    function show(i) {
+      var t = document.querySelector('template[data-i="' + i + '"]');
+      if (!t) return;
+      cur = cur === i ? 0 : i;
+      if (!cur) { dtxt.innerHTML = '<h3>Pilih bagian</h3><p>Klik gambar atau tombol di bawah.</p>'; }
+      else { dtxt.innerHTML = t.innerHTML; }
+      spots.forEach(function (s) { s.classList.toggle('is-on', +s.dataset.i === cur); });
+      chips.forEach(function (c) { c.classList.toggle('is-on', +c.dataset.i === cur); });
+    }
+    spots.forEach(function (s) {
+      s.addEventListener('click', function () { show(+s.dataset.i); });
+      s.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(+s.dataset.i); } });
+    });
+    chips.forEach(function (c) { c.addEventListener('click', function () { show(+c.dataset.i); }); });
+  }
 
   /* dokumentasi: kategori bisa dipilih */
   var grid = document.querySelector('#dokumentasi .docgrid');

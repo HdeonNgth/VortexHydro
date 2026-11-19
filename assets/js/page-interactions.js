@@ -31,8 +31,8 @@
 })();
 /* Navigasi antar halaman (hash) */
 (function () {
-  var ids = ['beranda', 'tentang', 'teknologi', 'dokumentasi', 'struktur-tim', 'faq', 'dashboard'];
-  var names = { beranda: 'Vortex Hydro', tentang: 'Tentang', teknologi: 'Teknologi', dokumentasi: 'Dokumentasi', 'struktur-tim': 'Struktur Tim', faq: 'FAQ', dashboard: 'Dashboard' };
+  var ids = ['beranda', 'tentang', 'dokumentasi', 'struktur-tim', 'faq', 'dashboard'];
+  var names = { beranda: 'Vortex Hydro', tentang: 'Tentang', dokumentasi: 'Dokumentasi', 'struktur-tim': 'Struktur Tim', faq: 'FAQ', dashboard: 'Dashboard' };
   var dashboard = document.getElementById('dashboard');
   var dashboardContent = dashboard && dashboard.querySelector('.dash');
   var locked = document.createElement('section');

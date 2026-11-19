@@ -36,7 +36,7 @@ function rec(k){
     console.warn("Kunjungan tidak tersimpan:",error.message)
   })
 }
-var busy=false,PG=["beranda","tentang","teknologi","dokumentasi","struktur-tim","dashboard"];
+var busy=false,PG=["beranda","tentang","dokumentasi","struktur-tim","dashboard"];
 function enter(k){var pg=$(k);if(!pg)return;pg.classList.remove("vx-enter");void pg.offsetWidth;pg.classList.add("vx-enter")}
 function go(h){var ov=$("vxpt");if(motionDisabled()||!ov.animate){location.hash=h;return}
   busy=true;mark2(h);ov.classList.add("on");
@@ -269,7 +269,7 @@ function checkSession(){
 }
 function visitRow(visit){
   var item=document.createElement("li"),name=document.createElement("span"),details=document.createElement("span");
-  var pages={beranda:"Beranda",tentang:"Tentang",teknologi:"Teknologi",dokumentasi:"Dokumentasi","struktur-tim":"Struktur Tim",faq:"FAQ",dashboard:"Dashboard"};
+  var pages={beranda:"Beranda",tentang:"Tentang",dokumentasi:"Dokumentasi","struktur-tim":"Struktur Tim",faq:"FAQ",dashboard:"Dashboard"};
   item.className="visit-row";name.className="visit-row__name";details.className="visit-row__meta";
   name.textContent=String(visit.visitorName||"Pengunjung")+" · "+(visit.role==="admin"?"Admin":"Tamu");
   details.textContent=new Date(visit.ts).toLocaleString("id-ID")+" · "+(pages[visit.page]||String(visit.page||""))+" · "+String(visit.device||"unknown");
@@ -329,7 +329,7 @@ function setupDashboard(){
     {
     var seed=window.VXSim?VXSim.history():[];if(!seed.length)seed=[sim()];
     seed.forEach(function(r){var n=norm(r);K.forEach(function(k){hist[k].push(n[k])})});
-    log("Dashboard terhubung ke simulasi prototipe (halaman Teknologi)","i");chart();
+    log("Dashboard terhubung ke simulasi prototipe (halaman Tentang)","i");chart();
     if(window.VXSim)VXSim.onChange(function(c){if(!authState||authState.role!=="admin")return;
       if("on"in c)log("Pompa "+(c.on?"dihidupkan":"dimatikan"),"i");
       if("fault"in c)log(c.fault==="none"?"Gangguan simulasi dihapus":"Gangguan simulasi: "+({leak:"kebocoran",jam:"turbin macet",belt:"sabuk slip",batt:"baterai turun cepat"}[c.fault]),"i");

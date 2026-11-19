@@ -49,7 +49,6 @@
     'Sebentar, kami menyiapkan halaman untuk Anda.': 'Please wait while we prepare the page for you.',
     'Beranda': 'Home',
     'Tentang': 'About',
-    'Teknologi': 'Technology',
     'Dokumentasi': 'Documentation',
     'Tim': 'Team',
     'Struktur Tim': 'Team Structure',
@@ -70,7 +69,23 @@
     'Kembali ke atas': 'Back to top',
     'Proyek Kelas · Mikro-hidro': 'Class Project · Micro-hydro',
     'Simulator PLTA vortex skala laboratorium yang mengubah aliran air berketinggian rendah menjadi listrik, tanpa bendungan.': 'A laboratory-scale vortex hydropower simulator that turns low-head water flow into electricity, without a dam.',
-    'Lihat Teknologi': 'See the Technology',
+    'Cara Kerja': 'How It Works',
+    'Klik bagian pada gambar untuk melihat fungsinya.': 'Click a part of the picture to see what it does.',
+    'Pilih bagian': 'Pick a part',
+    'Klik gambar atau tombol di bawah.': 'Click the picture or a button below.',
+    'Penampang samping, tidak berskala. Garis putus-putus = zona kering.': 'Side view, not to scale. Dashed lines = dry zone.',
+    'Tentang & Cara Kerja': 'About & How It Works',
+    'Pompa dan Pipa Hisap': 'Pump & Suction Pipe',
+    'Pipa Dorong dan Flow Meter': 'Pressure Pipe & Flow Meter',
+    'Menampung air yang berputar. Air dari kincir jatuh kembali ke sini.': 'Holds the circulating water. Water from the wheel falls back here.',
+    'Menyedot air dari tangki lalu mendorongnya naik ke headbox.': 'Draws water from the tank and pushes it up to the headbox.',
+    'Mengalirkan air ke atas. Flow meter membaca debitnya.': 'Carries water upward. The flow meter reads the flow rate.',
+    'Menenangkan air supaya aliran halus sebelum masuk saluran.': 'Calms the water so the flow is smooth before entering the channel.',
+    'Menyempitkan dan mengarahkan air tepat ke sudu kincir.': 'Narrows the flow and aims it right at the wheel blades.',
+    'Diputar oleh air untuk menggerakkan generator.': 'Spun by the water to drive the generator.',
+    'Air bekas memutar kincir jatuh kembali ke tangki.': 'Water that has turned the wheel drops back into the tank.',
+    'Pulley menaikkan putaran, generator mengisi baterai untuk lampu LED.': 'The pulley speeds up rotation, the generator charges the battery for the LED lamp.',
+    'Lihat Cara Kerja': 'See How It Works',
     'Buka Dashboard': 'Open Dashboard',
     "Air dipompa dari tangki penampung ke headbox, ditenangkan, dialirkan lewat saluran miring ke kincir 6 sudu, lalu jatuh kembali ke tangki. Putaran kincir menggerakkan generator.": "Water is pumped from the reservoir tank to the headbox, calmed, sent down a sloped channel to the 6-blade wheel, then falls back into the tank. The wheel's rotation drives the generator.",
     "Penampang samping prototipe: tangki penampung, pompa, pipa dorong dengan flow meter, headbox, saluran miring, kincir air 6 sudu, terjunan air, dan zona kering": "Side section of the prototype: reservoir tank, pump, pressure pipe with flow meter, headbox, sloped channel, 6-blade waterwheel, tailrace, and dry zone",
@@ -293,7 +308,6 @@
     'Pertama kali:': 'First visit:',
     'beranda': 'Home',
     'tentang': 'About',
-    'teknologi': 'Technology',
     'dokumentasi': 'Documentation',
     'struktur-tim': 'Team Structure',
     'dashboard': 'Dashboard',
@@ -362,7 +376,7 @@
     'Apakah angka pada dashboard merupakan hasil pengukuran langsung?': 'Are the dashboard values direct measurements?',
     'Tidak selalu. Dashboard menggunakan data simulasi secara bawaan. Nilai simulasi membantu menjelaskan cara kerja antarmuka dan bukan hasil pengujian lapangan. Data nyata memerlukan sumber sensor yang terhubung.': 'Not necessarily. The dashboard uses simulated data by default. These values demonstrate the interface and are not field-test results. Real data requires a connected sensor source.',
     'Faktor apa yang memengaruhi daya yang dihasilkan?': 'What affects the generated power?',
-    'Daya dipengaruhi oleh debit air, tinggi jatuh, serta efisiensi turbin dan generator. Rumus pada halaman Teknologi adalah model sederhana; hasil aktual perlu diverifikasi melalui pengujian.': 'Power depends on water flow, head, and turbine and generator efficiency. The formula on the Technology page is a simplified model; actual results must be verified by testing.',
+    'Daya dipengaruhi oleh debit air, tinggi jatuh, serta efisiensi turbin dan generator. Rumus pada Kalkulator Daya adalah model sederhana; hasil aktual perlu diverifikasi melalui pengujian.': 'Power depends on water flow, head, and turbine and generator efficiency. The formula in the Power Calculator is a simplified model; actual results must be verified by testing.',
     'Perangkat lunak apa yang digunakan dalam proyek?': 'What software is used in the project?',
     'Proyek ini menggunakan ANSYS Fluent, AutoCAD, MATLAB, dan VS Code untuk mendukung simulasi, perancangan, dan pemrograman.': 'The project uses ANSYS Fluent, AutoCAD, MATLAB, and VS Code for simulation, design, and programming.',
     'Bagaimana cara menghubungi tim?': 'How can I contact the team?',
@@ -423,7 +437,7 @@
       enToId.FAQ = 'FAQ';
       return;
     }
-    if (['beranda', 'tentang', 'teknologi', 'dokumentasi', 'struktur-tim', 'dashboard'].indexOf(indonesian) !== -1) return;
+    if (['beranda', 'tentang', 'dokumentasi', 'struktur-tim', 'dashboard'].indexOf(indonesian) !== -1) return;
     enToId[idToEn[indonesian]] = indonesian;
   });
 
@@ -534,8 +548,8 @@
 
   function updateTitle() {
     var titles = {
-      id: { beranda: 'Vortex Hydro', tentang: 'Tentang', teknologi: 'Teknologi', dokumentasi: 'Dokumentasi', 'struktur-tim': 'Struktur Tim', faq: 'FAQ', dashboard: 'Dashboard' },
-      en: { beranda: 'Vortex Hydro', tentang: 'About', teknologi: 'Technology', dokumentasi: 'Documentation', 'struktur-tim': 'Team Structure', faq: 'FAQ', dashboard: 'Dashboard' }
+      id: { beranda: 'Vortex Hydro', tentang: 'Tentang', dokumentasi: 'Dokumentasi', 'struktur-tim': 'Struktur Tim', faq: 'FAQ', dashboard: 'Dashboard' },
+      en: { beranda: 'Vortex Hydro', tentang: 'About', dokumentasi: 'Documentation', 'struktur-tim': 'Team Structure', faq: 'FAQ', dashboard: 'Dashboard' }
     };
     var route = (window.location.hash || '#beranda').slice(1);
     var title = titles[language][route] || titles[language].beranda;

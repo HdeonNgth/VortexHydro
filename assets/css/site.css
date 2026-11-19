@@ -803,14 +803,6 @@ th { text-transform: none; letter-spacing: 0; font-size: .85rem; }
 .pin .track { margin-bottom: 16px; }
 .pin > .wrap > p { margin-top: 24px !important; }
 
-/* ===== 5. Teknologi: diagram menempel, kartu menyala berurutan ===== */
-@media (min-width: 861px) { #teknologi .diagram { position: sticky; top: 112px; } }
-#teknologi .stack { gap: clamp(28px, 7vh, 64px); padding-block: 4vh; }
-.fx-seq { opacity: .22; transform: scale(.96); transition: opacity .5s, transform .5s, border-color .4s, box-shadow .4s; }
-.fx-seq.on { opacity: .6; transform: none; }
-.fx-seq.cur { opacity: 1; border-color: var(--cyan); box-shadow: 0 16px 34px -16px rgba(var(--blue-rgb),.6); }
-.diagram svg g g circle { transition: transform .45s cubic-bezier(.2,.7,.2,1), fill .3s; transform-box: fill-box; transform-origin: center; }
-.diagram svg g g.is-on circle { transform: scale(1.45); fill: var(--navy); }
 
 /* ===== 6. Gelembung air + parallax ===== */
 .fx-orb { position: absolute; z-index: 0; border-radius: 50%; pointer-events: none;
@@ -890,8 +882,7 @@ body.is-home .nav__bar { pointer-events: none !important; } body.is-home.past-he
 .fcard:hover, .pcard:hover, .gcard:hover, .node:hover { border-color: var(--blue); transform: translateY(-3px); }
 .fcard:active, .pcard:active, .gcard:active, .tile:active { transform: scale(.985); }
 .tile { cursor: pointer; } .tile.sel { outline: 3px solid var(--cyan); outline-offset: 4px; }
-.diagram svg g g { cursor: pointer; } .fx-seq { cursor: pointer; }
-.stack .fcard[data-copy] { cursor: copy; }
+.diagram svg g g { cursor: pointer; } .stack .fcard[data-copy] { cursor: copy; }
 td.fill, .edit { cursor: text; border-radius: 4px; } td.fill:hover, .edit:hover { background: var(--mist); color: var(--ink); } td.fill:focus, .edit:focus { outline: 2px solid var(--cyan); background: #fff; color: var(--ink); font-style: normal; }
 .hint { font-size: .85rem; color: var(--muted); margin-top: 12px; }
 .shake { animation: shk .35s; } @keyframes shk { 25% { translate: -6px; } 75% { translate: 6px; } }
@@ -955,7 +946,7 @@ td.fill, .edit { cursor: text; border-radius: 4px; } td.fill:hover, .edit:hover 
 .bento__intro small{font-weight:600;font-size:.9rem;opacity:.85}
 .bento__intro h2{font-size:clamp(1.9rem,2.8vw,2.6rem);color:#fff;position:relative;z-index:1}
 .bento .tile{min-height:0;border-radius:32px}
-.bento .b-wide{grid-column:span 2}
+.bento .b-wide{grid-column:span 2}.bento .b-3{grid-column:span 3}
 .bento .tile strong{left:28px;bottom:24px;font-size:1.45rem}
 .go{position:absolute;top:18px;right:18px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:grid;place-items:center;color:#fff;transition:background .25s,color .25s,transform .25s}
 .go svg{width:18px;height:18px}
@@ -963,7 +954,7 @@ td.fill, .edit { cursor: text; border-radius: 4px; } td.fill:hover, .edit:hover 
 .tile--plain{background:var(--cyan)}
 .tile--plain.alt{background:linear-gradient(140deg,#0a5aa0,var(--navy))}
 .tile--plain .ic{position:absolute;left:28px;top:26px;width:44px;height:44px;color:rgba(255,255,255,.55)}
-@media(max-width:900px){.bento{grid-template-columns:repeat(2,1fr);grid-template-rows:none;grid-auto-rows:minmax(190px,auto)}.bento__intro{grid-column:span 2;grid-row:auto;min-height:170px}}
+@media(max-width:900px){.bento{grid-template-columns:repeat(2,1fr);grid-template-rows:none;grid-auto-rows:minmax(190px,auto)}.bento__intro{grid-column:span 2;grid-row:auto;min-height:170px}.bento .b-3{grid-column:span 2}}
 
 /* untuk siapa: daftar centang + foto */
 .who{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,6vw,80px);align-items:center}
@@ -985,8 +976,6 @@ td.fill, .edit { cursor: text; border-radius: 4px; } td.fill:hover, .edit:hover 
 .bigic b{font:800 1.25rem var(--f-display)}
 .fcard .bigic{width:52px;height:52px;border-radius:16px;margin-bottom:12px}
 .fcard .bigic svg{width:24px;height:24px}
-#teknologi .fcard{grid-template-columns:auto 1fr;align-items:center;gap:20px}
-#teknologi .fcard .bigic{margin:0}
 
 /* kepala halaman dengan pusaran berputar */
 .pagehead{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--tint),#fff)}
@@ -1287,7 +1276,7 @@ html[data-theme=dark] .vx-auth__flash.is-demo:not(.is-error){color:#FFD27A}
   .stats span{font-size:.62rem}
   .bento{grid-template-columns:minmax(0,1fr);grid-auto-rows:minmax(140px,auto)}
   .bento__intro{grid-column:auto}
-  .bento .b-wide{grid-column:auto}
+  .bento .b-wide,.bento .b-3{grid-column:auto}
   .docgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .tcf__stage{--cw:min(72vw,250px)}
   .vsim__cards{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -1339,11 +1328,8 @@ html[data-theme=dark] .vx-auth__flash.is-demo:not(.is-error){color:#FFD27A}
   .sw-grid{gap:12px}
 
   /* teknologi: kartu langkah rapat, tidak redup */
-  #teknologi .stack{gap:12px;padding-block:0}
   .fcard{padding:16px 16px;border-radius:12px}
-  .fx-seq{opacity:.75;transform:none}
-  .fx-seq.cur{opacity:1}
-  .vsim__fig{border-radius:12px}
+      .vsim__fig{border-radius:12px}
   .vsim__cards{gap:8px}
   .vsim__steps{font-size:.9rem}
   table{font-size:.85rem}
@@ -1575,13 +1561,6 @@ html .hx__title{margin:0;font-family:var(--f-display);font-weight:400;font-size:
 @media (min-width:761px){html .hx__title{font-size:clamp(2.7rem,4.6vw,4.4rem)}.hx__title span{white-space:nowrap}}
 
 /* ===== Teknologi: rantai zona kering ===== */
-.chain{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;counter-reset:ch}
-.chain li{counter-increment:ch;position:relative;padding:20px 16px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card,#fff);display:flex;flex-direction:column;gap:4px}
-.chain li::before{content:counter(ch);width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font:600 .78rem var(--f-body);margin-bottom:8px}
-.chain li:not(:last-child)::after{content:"";position:absolute;right:-13px;top:50%;width:14px;height:2px;background:var(--cyan)}
-.chain b{font-size:.95rem}.chain span{font-size:.8rem;color:var(--muted);line-height:1.5}
-@media (max-width:980px){.chain{grid-template-columns:repeat(2,1fr)}.chain li::after{display:none}}
-@media (max-width:480px){.chain{grid-template-columns:1fr}}
 .hx__go--dark{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 28px;border-radius:999px;background:var(--navy);color:#fff;text-decoration:none;font:600 .92rem var(--f-body);transition:transform .25s,background .25s}
 .hx__go--dark:hover{background:var(--blue);transform:translateY(-2px)}
 
@@ -1626,3 +1605,26 @@ html[data-theme=dark] .lg__lang{background:transparent;border-color:rgba(255,255
 .goal__c .n{position:static;display:block;margin-bottom:12px;font:500 .8rem/1 var(--f-body);letter-spacing:.04em;color:var(--muted);font-variant-numeric:tabular-nums}
 @media(max-width:700px){.goal__c .n{font-size:.76rem;right:auto}}
 .lg__lang{display:none!important}
+
+/* ===== Cara Kerja: diagram yang bisa diklik ===== */
+.howto{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start;margin-top:28px;text-align:left}
+.howto .diagram{margin:0}
+.hs{cursor:pointer;outline:none}
+.hs .hit{transition:fill .2s,stroke .2s}
+.hs:hover .hit,.hs:focus-visible .hit{fill:rgba(var(--blue-rgb),.12);stroke:var(--blue);stroke-width:2;stroke-dasharray:5 4}
+.hs.is-on .hit{fill:rgba(var(--blue-rgb),.2);stroke:var(--blue);stroke-width:2;stroke-dasharray:none}
+.hs>g:not(.hit)>circle{transition:transform .35s cubic-bezier(.2,.7,.2,1),fill .25s;transform-box:fill-box;transform-origin:center}
+.hs.is-on>g:not(.hit)>circle{transform:scale(1.4);fill:var(--navy)}
+.dinfo{border:1px solid var(--line);border-radius:22px;padding:clamp(18px,3vw,26px);background:var(--soft);display:grid;gap:18px;position:sticky;top:104px}
+.dinfo__txt{min-height:92px}
+.dinfo__txt h3{font-size:1.25rem;margin:0 0 6px}
+.dinfo__txt p{margin:0;color:var(--muted);line-height:1.6}
+.dchips{display:flex;flex-wrap:wrap;gap:8px}
+.dchips button{font:inherit;font-size:.82rem;display:inline-flex;align-items:center;gap:7px;padding:6px 12px 6px 6px;border:1px solid var(--line);border-radius:999px;background:#fff;color:inherit;cursor:pointer;transition:border-color .18s,background-color .18s}
+.dchips button b{width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:.72rem}
+.dchips button:hover{border-color:var(--blue)}
+.dchips button.is-on{border-color:var(--blue);background:var(--tint)}
+.dchips button.is-on b{background:var(--navy)}
+@media (max-width:860px){.howto{grid-template-columns:1fr}.dinfo{position:static}}
+html[data-theme=dark] .dchips button{background:var(--card);color:var(--dtx)}
+html[data-theme=dark] .dinfo{background:var(--card)}

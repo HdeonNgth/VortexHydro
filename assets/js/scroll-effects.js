@@ -41,10 +41,8 @@
   }
 
   /* ---- kartu naik biasa ---- */
-  var seq = $$('#teknologi .stack .fcard');
-  seq.forEach(function (el) { el.classList.add('fx-seq'); });
   var riseSel = '.stats, .photo, .checks li, .bento > *, .komp__grid > *, .why > *, .goal > *, .f3, .collage__sq, .mock, .pcard, .gcard, .cards3 > *, .node--top, .division, .diagram, .form, .table-wrap, .footer__grid > *, .panel .stack > *';
-  var rise = $$(riseSel).filter(function (el) { return !el.closest('#teknologi .stack') && !el.closest('.pin'); });
+  var rise = $$(riseSel).filter(function (el) { return !el.closest('.pin'); });
   var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
     es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { threshold: .12, rootMargin: '0px 0px -6% 0px' }) : null;
@@ -79,7 +77,6 @@
   var nav = document.querySelector('.nav');
   var heroWrap = document.querySelector('.hero > .wrap');
   var tiles = $$('.tile');
-  var marks = $$('.diagram svg > g > g');
   var bar = document.createElement('div'); bar.className = 'fx-bar'; document.body.appendChild(bar);
   var ticking = false;
 
@@ -228,17 +225,6 @@
         c.style.transform = 'translateY(' + ((1 - e) * vh * .65).toFixed(1) + 'px) rotate(' + ((1 - e) * (rot[i % 3])).toFixed(2) + 'deg)';
       });
     });
-
-    if (seq.length && seq[0].offsetParent !== null) {
-      var best = 0, bd = 1e9;
-      seq.forEach(function (c, i) {
-        var r = c.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - vh * .5);
-        c.classList.toggle('on', r.top < vh * .8);
-        if (d < bd) { bd = d; best = i; }
-      });
-      seq.forEach(function (c, i) { c.classList.toggle('cur', i === best); });
-      marks.forEach(function (m, i) { m.classList.toggle('is-on', i === best); });
-    }
 
     tiles.forEach(function (t) {
       var r = t.getBoundingClientRect();
