@@ -1,5 +1,5 @@
 /* Mesin simulasi prototipe Vortex Hydro.
-   Satu sumber data untuk halaman Teknologi dan Dashboard (saat belum memakai Firebase).
+   Satu sumber data untuk halaman Teknologi dan Dashboard (data prototipe di browser).
    Prototipe hanya mengukur 4 besaran:
      debit      aliran air (L/s)
      vbat       tegangan baterai (V)

@@ -34,14 +34,11 @@ body.is-dash .dsb{display:flex;flex-direction:column;align-items:center;gap:10px
 body.is-dash main{margin-left:calc(var(--dsb-w) + 34px)}
 html:root body.is-dash .dash{display:flex;flex-direction:column;gap:16px;max-width:none;width:auto;min-height:100vh;padding:16px clamp(14px,2vw,36px) 120px 0;background:none;color:var(--dk-ink)}
 html:root body.is-dash .dash>*{margin:0}
-.den{display:contents}
-.dash>.dtop{order:1}.dash>.dhead{order:2}.dash>.vx-demo-notice{order:3}.dash>.dsrc{order:4}
-.dash .den__head{order:10}.dash .den__off{order:11}.dash .den__kpi{order:12}
+.dash>.dtop{order:1}.dash>.dhead{order:2}.dash>.vx-demo-notice{order:3}
 .dash>#dcap-sensor{order:20}.dash>.dgrid{order:21}
 .dash>#dcap-trend{order:30}.dash>#dwhy{order:31}.dash>.drow{order:32}
-.dash .den__chart{order:40}.dash .den__win{order:41}.dash .den__rep{order:42}
 .dash>.vhc{order:50}
-.dash :is([data-sec],.drow)[hidden],.den__off.is-hidden{display:none!important}
+.dash :is([data-sec],.drow)[hidden]{display:none!important}
 
 /* ---------- top bar ---------- */
 .dtop{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px}
@@ -67,10 +64,8 @@ html:root body.is-dash .dash>*{margin:0}
 .dhead p{max-width:62ch;margin:10px 0 0;font-size:.92rem;line-height:1.55;color:var(--dk-mut)}
 
 /* label kategori di halaman Ringkasan */
-html:root body.is-dash .dash :is(.dlab,.den__head h2){display:flex;align-items:center;gap:12px;margin:0;font:600 .82rem var(--f-accent);letter-spacing:.01em;color:var(--dk-mut)}
-html:root body.is-dash .dash :is(.dlab,.den__head h2)::after{content:"";flex:1;height:1px;background:var(--dk-ln)}
-html:root body.is-dash .dash .den__head{display:flex;align-items:center;gap:14px;padding:0}
-html:root body.is-dash .dash .den__head h2{flex:1}
+html:root body.is-dash .dash .dlab{display:flex;align-items:center;gap:12px;margin:0;font:600 .82rem var(--f-accent);letter-spacing:.01em;color:var(--dk-mut)}
+html:root body.is-dash .dash .dlab::after{content:"";flex:1;height:1px;background:var(--dk-ln)}
 
 /* ---------- kartu ---------- */
 html:root body.is-dash .dash .dc{padding:18px 20px;border-radius:24px;background:var(--dk-card);box-shadow:inset 0 0 0 1px var(--dk-ln),var(--dk-sh);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4)}
@@ -84,28 +79,22 @@ html:root body.is-dash .dash .dc b em{color:var(--dk-mut)}
 .dic::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--ac,var(--dk-ac));opacity:.14}
 .dic svg{position:relative;width:19px;height:19px}
 .dc[data-c=debit]{--ac:#0ea5e9}.dc[data-c=vbat]{--ac:#f59e0b}.dc[data-c=rpmShaft]{--ac:#8b5cf6}.dc[data-c=rpmGen]{--ac:#10b981}
-html:root body.is-dash .dash .den__k[data-t=eff]{--ac:#0ea5e9}html:root body.is-dash .dash .den__k[data-t=out]{--ac:#10b981}html:root body.is-dash .dash .den__k[data-t=op]{--ac:#8b5cf6}
 html:root body.is-dash .dash .dc .sp{height:36px;margin-top:10px}
 html:root body.is-dash .dash .dc .sp polyline{stroke:var(--ac,var(--dk-ac));filter:none}
-html:root body.is-dash .dash .den__sub{min-height:2.2em;margin:10px 0 0;font-size:.76rem;line-height:1.45;color:var(--dk-mut)}
 
-html:root body.is-dash .dash :is(.dgrid,.den__kpi){display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+html:root body.is-dash .dash .dgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 html:root body.is-dash .dash .drow{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px}
 html:root body.is-dash .dash .drow[data-n="1"]{grid-template-columns:minmax(0,1fr)}
 .dind{display:grid;gap:20px;align-content:start}
 .dind h3{margin-bottom:12px}
 html:root body.is-dash .dash .drow[data-n="1"] .dind{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:28px}
-html:root body.is-dash .dash .den__rep{max-width:680px}
 
 /* panel sumber data */
-html:root body.is-dash .dash .dsrc{align-items:center;gap:10px;padding:18px 20px;border-radius:24px;background:var(--dk-card);box-shadow:inset 0 0 0 1px var(--dk-ln),var(--dk-sh)}
-html:root body.is-dash .dash .dsrc input{border:0;background:rgba(127,127,127,.12);color:var(--dk-ink);box-shadow:inset 0 0 0 1px var(--dk-ln)}
-html:root body.is-dash .dash .dsrc .dnote{flex:1 1 100%;margin:0}
 html:not([data-theme=dark]) body.is-dash .vx-demo-notice{border-color:rgba(217,119,6,.3);background:rgba(245,158,11,.14);color:#92400e}
 
 /* ---------- layar sedang dan kecil ---------- */
 @media(max-width:1100px){
-  html:root body.is-dash .dash :is(.dgrid,.den__kpi){grid-template-columns:repeat(2,minmax(0,1fr))}
+  html:root body.is-dash .dash .dgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
   html:root body.is-dash .dash .drow{grid-template-columns:minmax(0,1fr)}
 }
 @media(max-width:900px){
@@ -129,7 +118,7 @@ html:not([data-theme=dark]) body.is-dash .vx-demo-notice{border-color:rgba(217,1
   html:root body.is-dash .dash .dc{padding:14px;border-radius:20px}
   .dic{width:32px;height:32px;margin-bottom:10px;border-radius:10px}
   .dic svg{width:17px;height:17px}
-  html:root body.is-dash .dash :is(.dgrid,.den__kpi){gap:10px}
+  html:root body.is-dash .dash .dgrid{gap:10px}
   html:root body.is-dash .dash .dc small{font-size:.72rem}
   html:root body.is-dash .dash .dc b{font-size:1.4rem}
 }
@@ -142,9 +131,9 @@ html:not([data-theme=dark]) body.is-dash .vx-demo-notice{border-color:rgba(217,1
 
 /* ---------- grafik ---------- */
 html:root body.is-dash .dash .dchart{width:100%;height:auto;max-height:340px;display:block;touch-action:pan-y;cursor:crosshair}
-html:root body.is-dash .dash :is(.dchart,.den__plot svg) text{fill:var(--dk-mut);font:500 11px var(--f-body,system-ui,sans-serif)}
-html:root body.is-dash .dash :is(.dchart,.den__plot svg) .gl{stroke:var(--dk-ln);stroke-width:1;stroke-dasharray:2 5}
-html:root body.is-dash .dash :is(.dchart,.den__plot svg) .cl{stroke:var(--dk-mut);stroke-opacity:.5;stroke-width:1;stroke-dasharray:3 3}
+html:root body.is-dash .dash .dchart text{fill:var(--dk-mut);font:500 11px var(--f-body,system-ui,sans-serif)}
+html:root body.is-dash .dash .dchart .gl{stroke:var(--dk-ln);stroke-width:1;stroke-dasharray:2 5}
+html:root body.is-dash .dash .dchart .cl{stroke:var(--dk-mut);stroke-opacity:.5;stroke-width:1;stroke-dasharray:3 3}
 .dchart .tt rect{fill:var(--deep);stroke:rgba(255,255,255,.14)}
 html:root body.is-dash .dash .dchart .tt text{fill:#fff;font-size:11px}
 html:root body.is-dash .dash .dchart .tt .t1{font-size:14px;font-weight:700}
@@ -157,4 +146,3 @@ html:root body.is-dash .dash .dtabs{padding:4px;border-radius:999px;background:r
 html:root body.is-dash .dash .dtabs button{border-radius:999px;padding:6px 14px;font-weight:600}
 html:root body.is-dash .dash .dtabs button[aria-pressed=true]{background:var(--dk-card);color:var(--dk-ink);box-shadow:0 2px 8px -2px rgba(0,0,0,.35),inset 0 0 0 1px var(--dk-ln)}
 @media(max-width:700px){html:root body.is-dash .dash .dtabs{max-width:100%;overflow-x:auto;scrollbar-width:none}html:root body.is-dash .dash .dtabs button{white-space:nowrap;padding:6px 11px}}
-html:root body.is-dash .dash .den__plot svg{max-height:360px;cursor:crosshair}

@@ -16,6 +16,7 @@ Di GitHub Pages, Tamu masuk tanpa kata sandi. Admin demo memakai kata sandi `pak
 
 - `index.html` — markup halaman dan rute.
 - `assets/css/site.css` — gaya situs.
+- `assets/css/dashboard.css` — gaya khusus mode Dashboard (sidebar ikon, top bar, kartu, grafik).
 - `assets/js/` — skrip yang dipisah menurut fitur.
 - `Upcoming/` — backend Node.js, konfigurasi contoh, tes, dan persiapan hosting.
 - `assets/i18n.js` — bahasa Indonesia dan Inggris.
@@ -28,8 +29,8 @@ CSS dan skrip dipisahkan tanpa menambahkan build step; urutan pemuatan skrip dip
 
 Dashboard memantau empat besaran prototipe: debit air (L/s), tegangan baterai (V), RPM poros utama, dan RPM generator. Penganalisis di `assets/js/navigation.js` mengubah angka itu menjadi peringatan berwarna (NORMAL, WASPADA, BAHAYA) dan mencatat perubahan kondisi di Log kejadian: pompa mati, turbin macet, dugaan kebocoran, sabuk slip, putaran berlebih, dan baterai rendah atau tinggi.
 
-Dua sumber data:
+Saat ini Dashboard hanya memakai satu sumber data:
 
-- **Simulasi prototipe** (bawaan): mesin `assets/js/vx-engine.js` yang juga menggerakkan halaman Teknologi. Dipakai selama Firebase belum diisi.
-- **Firebase Realtime Database**: simulasi 3D mengirim angka ke Firebase, Dashboard membacanya secara langsung. Panduan lengkap, kode pengirim (JavaScript, Python, Unity), dan aturan keamanan ada di folder [`database/`](database/README.md).
-- **Supabase Realtime**: jalur alternatif yang juga diisi oleh simulasi 3D (`database/simulator/3d_cad_preview_vortex_hydro_pembangkit_kincir_air_bess_ecoflow_delta_2.html`). Panduan di [`database/README-supabase.md`](database/README-supabase.md). Bila `database/supabase-config.js` terisi, Supabase dipakai lebih dulu daripada Firebase.
+- **Simulasi prototipe**: mesin `assets/js/vx-engine.js` yang juga menggerakkan halaman Teknologi. Angkanya dibuat di browser, jadi tidak ada database atau koneksi realtime. Fokus pengembangan sekarang ada di tampilan (UI).
+
+Jalur database realtime (Firebase dan Supabase), pengirim data dari simulasi 3D, dan halaman Energi serta Laporan Excel sudah dihapus dari kode. Semuanya masih ada di riwayat Git bila dibutuhkan lagi.

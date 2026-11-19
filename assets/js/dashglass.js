@@ -9,13 +9,10 @@
   if (!dash || !bar) return;
 
   var VIEWS = {
-    ringkasan: ["Ringkasan", "sekilas", "Kondisi prototipe saat ini: efisiensi, sensor, dan peringatan. Diperbarui setiap detik."],
+    ringkasan: ["Ringkasan", "sekilas", "Kondisi prototipe saat ini: sensor, tren, dan peringatan. Diperbarui setiap detik."],
     sensor: ["Sensor", "langsung", "Debit air, tegangan baterai, RPM poros utama, dan RPM generator, lengkap dengan indikator dan log kejadian."],
-    energi: ["Energi dan", "efisiensi", "Listrik PLN yang masuk ke pompa dibandingkan dengan listrik yang dihasilkan generator."],
-    grafik: ["Grafik", "pemantauan", "Tren sensor 60 detik terakhir dan perbandingan daya PLN dengan generator."],
-    laporan: ["Laporan", "Excel", "Rekap tiap 10 jam operasi. Bisa diunduh otomatis atau kapan saja."],
-    riwayat: ["Riwayat", "kunjungan", "Halaman yang dibuka pengunjung website dan kapan mereka datang."],
-    sumber: ["Sumber", "data", "Pilih asal data dashboard, hubungkan sensor, atau uji gangguan."]
+    grafik: ["Grafik", "pemantauan", "Tren sensor 60 detik terakhir. Arahkan kursor ke grafik untuk melihat nilainya."],
+    riwayat: ["Riwayat", "kunjungan", "Halaman yang dibuka pengunjung website dan kapan mereka datang."]
   };
   var btns = [].slice.call(bar.querySelectorAll("button[data-v]"));
   var ttl = $("dtitle"), sub = $("dsub"), crumb = $("dcrumb");
@@ -27,7 +24,6 @@
       var n = 0; [].forEach.call(row.children, function (c) { if (!c.hidden) n++; });
       row.dataset.n = n; row.hidden = n === 0;
     });
-    var src = $("dsrc"); if (src) src.classList.toggle("show", v === "sumber");
   }
   function placeLens() {
     var a = bar.querySelector("[aria-current]");

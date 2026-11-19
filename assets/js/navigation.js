@@ -120,23 +120,11 @@ var SUN='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4
 function setTh(){var x=document.querySelector("[data-a=theme] svg");if(x)x.innerHTML=H.dataset.theme==="dark"?SUN:MOON;var tl=document.querySelector("[data-a=theme] span");if(tl)tl.textContent=H.dataset.theme==="dark"?"Mode gelap":"Mode terang"}setTh();
 /* ===== Dashboard ===== */
 var K=["debit","vbat","rpmShaft","rpmGen"],D={},N=60,hist={},tick=0,run=true,timer=null,tab="debit",initialized=false,sensorOnline=false,sensorSource=null,visitsSource=null,lastAuthCheck=0,lastSensorAt=0;
-var liveLast=null,liveAt=0,liveTs,liveStale=null;
 K.forEach(function(k){hist[k]=[]});
 var fmt={debit:2,vbat:2,rpmShaft:0,rpmGen:0},flag={},act={},cnt={},lastLv=-1;
 /* Ambang peringatan skala prototipe. Ganti lewat window.VX_LIMITS bila sensor asli berbeda skala. */
 var LIM=Object.assign({flowMin:.03,flowLow:.2,rpmWarn:290,rpmBad:340,jamRpm:8,minShaft:30,ratio:2.2,ratioWarn:.8,ratioBad:.6,rpmRef:150,qRef:.5,leakFrac:.6,vLowWarn:11.5,vLowBad:11.0,vHighWarn:14.4,vHighBad:14.8,staleMs:10000},window.VX_LIMITS||{});
 var LVN=["NORMAL","WASPADA","BAHAYA"],LVC=["o","w","d"];
-function useSb(){return !!(window.VX_SUPABASE&&window.VX_SUPABASE.url&&window.VX_SUPABASE.anonKey)}
-function liveOn(){return useSb()||!!(window.VX_FIREBASE&&window.VX_FIREBASE.databaseURL)}
-function liveSrc(){return useSb()?"Supabase Realtime":"Firebase Realtime Database"}
-/* Pintu masuk data dari Supabase atau Firebase (database/supabase-live.js, database/firebase-live.js). Dashboard membaca nilai terakhir tiap detik. */
-window.VXDash={enabled:liveOn,
-  ingest:function(r,initial){if(!r||typeof r!=="object")return;var o={},n=0;K.forEach(function(k){var v=r[k];if(v==null&&k==="rpmShaft")v=r.rpm;v=Number(v);if(v==null||!isFinite(v)||r[k]===null||r[k]===""){return}o[k]=v;n++});
-    if(!n)return;liveLast=Object.assign(liveLast||{},o);
-    /* dianggap baru hanya bila ts berubah, jadi data lama yang tersisa di database tidak tampil sebagai LIVE */
-    var ts=r.ts,changed=!initial&&(ts==null||ts!==liveTs);liveTs=ts;if(changed)liveAt=Date.now()},
-  last:null,
-  status:function(msg,lv){if(this.last&&this.last.msg===msg)return;this.last={msg:msg,lv:lv||"i"};log(msg,lv||"i")}};
 function log(m,c){if(!authState||authState.role!=="admin")return;var ul=$("dlog"),li=document.createElement("li"),time=document.createElement("time"),message=document.createElement("span");li.className=c||"";time.textContent=new Date().toLocaleTimeString("id-ID");message.textContent=m;li.appendChild(time);li.appendChild(message);ul.insertBefore(li,ul.firstChild);while(ul.children.length>40)ul.lastChild.remove()}
 function sim(){return window.VXSim?VXSim.read():{debit:0,vbat:0,rpmShaft:0,rpmGen:0}}
 function norm(o){var r={};K.forEach(function(k){var v=o[k];if(v==null&&k==="rpmShaft")v=o.rpm;r[k]=v!=null?+v:(D[k]||0)});return r}
@@ -264,20 +252,11 @@ function chart(){var a=hist[tab];if(!a||!a.length)return;var W=600,Hh=250,L=50,R
   c.addEventListener("pointerleave",function(){hovX=null;chart()})})();
 function setSt(live,txt){var s=$("dst");s.classList.toggle("off",!live);s.lastChild.textContent=txt}
 var srcTxt="Prototipe (simulasi)";
-function showLevel(w){var s=$("dst");if(!s||!run)return;s.classList.remove("ok","warn","bad","off");s.classList.add(["ok","warn","bad"][w]);s.lastChild.textContent=(liveOn()?"LIVE · "+(useSb()?"SUPABASE":"FIREBASE"):sensorOnline?"LIVE · SENSOR":"LIVE · "+srcTxt.toUpperCase())+" · "+LVN[w]}
+function showLevel(w){var s=$("dst");if(!s||!run)return;s.classList.remove("ok","warn","bad","off");s.classList.add(["ok","warn","bad"][w]);s.lastChild.textContent=(sensorOnline?"LIVE · SENSOR":"LIVE · "+srcTxt.toUpperCase())+" · "+LVN[w]}
 function isAdminDashboard(){return !!(authState&&authState.authenticated&&authState.role==="admin"&&B.classList.contains("is-dash"))}
 function step(){
   if(!authState||authState.role!=="admin"||!run)return;
   $("dclk").textContent=new Date().toLocaleTimeString("id-ID");
-  if(liveOn()){
-    var fresh=liveAt&&Date.now()-liveAt<LIM.staleMs,st=$("dst");
-    if(!fresh){
-      if(liveStale!==true){liveStale=true;var m=liveAt?"Data dari simulasi 3D berhenti masuk":"Menunggu data pertama dari "+(useSb()?"Supabase":"Firebase")+" (simulasi 3D)";log((liveAt?"WASPADA · ":"")+m,liveAt?"w":"i");if(liveAt)toast("live",1,m)}
-      st.classList.remove("ok","warn","bad");st.classList.add("off");st.lastChild.textContent="OFFLINE · MENUNGGU DATA";return
-    }
-    if(liveStale===true&&liveLast&&hist.debit.length>1){log("NORMAL · Data dari simulasi 3D masuk kembali","o");dismiss(toasts.live);toast("live",0,"Data dari simulasi 3D masuk kembali")}
-    liveStale=false;tick++;apply(liveLast);return
-  }
   if(sensorOnline&&Date.now()-lastSensorAt>10000){sensorOnline=false;log("Data sensor berhenti masuk. Beralih ke simulasi prototipe","w")}
   if(sensorOnline)return;
   tick++;apply(sim())
@@ -344,26 +323,10 @@ function openSensorStream(){
   }catch(error){sensorOnline=false;srcTxt="Prototipe (simulasi)"}
 }
 var onChange={};
-function buildCtl(){
-  var box=$("dsrc");if(!box||$("dfault")||!window.VXSim)return;
-  var d=document.createElement("div");d.className="dfault";d.id="dfault";
-  d.innerHTML='<label class="vsw"><input id="dpump" type="checkbox" role="switch"><i></i><span id="dpt">Pompa</span></label>'
-   +'<div class="vfs" id="dfs" data-f="none"><label for="dfi"><span>Simulasi gangguan</span><output id="dfo">Normal</output></label><input id="dfi" type="range" min="0" max="4" step="1" value="0"><ol aria-hidden="true"><li data-i="0">Normal</li><li data-i="1">Bocor</li><li data-i="2">Macet</li><li data-i="3">Sabuk</li><li data-i="4">Baterai</li></ol></div>';
-  var FO=["none","leak","jam","belt","batt"];
-  d.querySelector("#dpump").onchange=function(){VXSim.set({on:this.checked})};
-  d.querySelector("#dfi").oninput=function(){VXSim.set({fault:FO[+this.value]})};
-  Array.prototype.forEach.call(d.querySelectorAll("li"),function(l){l.onclick=function(){VXSim.set({fault:FO[+l.dataset.i]})}});
-  box.insertBefore(d,box.querySelector(".dnote"));syncCtl()
-}
-function syncCtl(){var d=$("dfault");if(!d)return;var FO=["none","leak","jam","belt","batt"],FN={none:"Normal",leak:"Bocor",jam:"Turbin macet",belt:"Sabuk slip",batt:"Baterai turun"},f=VXSim.state.fault;
-  $("dpump").checked=!!VXSim.state.on;$("dpt").textContent="Pompa: "+(VXSim.state.on?"hidup":"mati");
-  $("dfi").value=FO.indexOf(f);$("dfs").dataset.f=f;$("dfo").textContent=FN[f];
-  Array.prototype.forEach.call(d.querySelectorAll("li"),function(l){l.classList.toggle("on",FO[+l.dataset.i]===f)})}
 function setupDashboard(){
   if(!initialized){
     initialized=true;
-    if(liveOn()){log("Dashboard menunggu data dari "+liveSrc()+" (simulasi 3D)","i");if(VXDash.last)log(VXDash.last.msg,VXDash.last.lv)}
-    else{
+    {
     var seed=window.VXSim?VXSim.history():[];if(!seed.length)seed=[sim()];
     seed.forEach(function(r){var n=norm(r);K.forEach(function(k){hist[k].push(n[k])})});
     log("Dashboard terhubung ke simulasi prototipe (halaman Teknologi)","i");chart();
@@ -371,8 +334,8 @@ function setupDashboard(){
       if("on"in c)log("Pompa "+(c.on?"dihidupkan":"dimatikan"),"i");
       if("fault"in c)log(c.fault==="none"?"Gangguan simulasi dihapus":"Gangguan simulasi: "+({leak:"kebocoran",jam:"turbin macet",belt:"sabuk slip",batt:"baterai turun cepat"}[c.fault]),"i");
       if("q"in c||"h"in c)clearTimeout(onChange.t),onChange.t=setTimeout(function(){log("Pengaturan prototipe diubah: debit "+VXSim.state.q.toFixed(2)+" L/s, head "+VXSim.state.h.toFixed(2)+" m","i")},800);
-      syncCtl()});
-    buildCtl()}
+      });
+    }
     whyBox();
     $("dpause").onclick=function(){
       run=!run;this.textContent=run?"Jeda":"Lanjut";
@@ -380,16 +343,6 @@ function setupDashboard(){
       else if(sensorOnline)srcTxt="Sensor";
       else startSimulation()
     };
-    $("dsrcb").textContent=liveOn()?"Sumber data":"Sumber & uji gangguan";
-    $("dsrcb").onclick=function(){$("dsrc").classList.toggle("show")};
-    $("durl").hidden=true;$("dcon").hidden=true;$("dsim").hidden=true;
-    var sourceNote=document.querySelector("#dsrc .dnote");
-    if(sourceNote)sourceNote.textContent=liveOn()
-      ?useSb()?"Data berasal dari Supabase Realtime (tabel "+(window.VX_SUPABASE.table||"live_telemetry")+"), dikirim oleh simulasi 3D. Setiap pembaruan berisi debit, vbat, rpmShaft, rpmGen, dan ts."
-      :"Data berasal dari Firebase Realtime Database di path "+(window.VX_FIREBASE.path||"vortexhydro/live")+", dikirim oleh simulasi 3D. Setiap pesan harus berisi debit, vbat, rpmShaft, rpmGen, dan ts."
-      :window.VX_DEMO_MODE
-      ?"Data berasal dari prototipe simulasi di halaman Teknologi, belum dari sensor asli. Gunakan tombol di atas untuk menguji gangguan."
-      :"Sensor mengirim data ke POST /api/ingest dengan header X-API-Key. Tanpa data sensor, dashboard admin menampilkan simulasi dengan label OFFLINE / DATA SIMULASI.";
     $("vhclr").textContent="Muat ulang";$("vhclr").onclick=refreshVisits;
     var historyNote=document.querySelector(".vhc .dnote");
     if(historyNote)historyNote.textContent=window.VX_DEMO_MODE
@@ -407,14 +360,14 @@ function setupDashboard(){
         notice.id="vx-demo-notice";
         notice.className="vx-demo-notice";
         notice.setAttribute("role","status");
-        notice.textContent=liveOn()?"MODE DEMO — Login tidak diverifikasi di versi publik ini. Angka Dashboard berasal dari "+liveSrc()+" (simulasi 3D).":"MODE DEMO — Dashboard ini hanya simulasi publik. Login tidak diverifikasi dan tidak ada data sensor realtime.";
+        notice.textContent="MODE DEMO — Dashboard ini hanya simulasi publik. Login tidak diverifikasi dan tidak ada data sensor realtime.";
         dashboardContent.insertBefore(notice,dashboardContent.firstChild);
       }
     }
     $("dtabs").onclick=function(event){var button=event.target.closest("button");if(!button)return;tab=button.dataset.k;this.querySelectorAll("button").forEach(function(item){item.setAttribute("aria-pressed",String(item===button))});chart()}
   }
   window.vxDashboard={push:function(reading){
-    if(window.VX_DEMO_MODE||liveOn()||!isAdminDashboard()||!reading||K.some(function(key){return typeof reading[key]!=="number"||!Number.isFinite(reading[key])}))return;
+    if(window.VX_DEMO_MODE||!isAdminDashboard()||!reading||K.some(function(key){return typeof reading[key]!=="number"||!Number.isFinite(reading[key])}))return;
     sensorOnline=true;lastSensorAt=Date.now();apply(reading);srcTxt="Data eksternal"
   }}
 }
@@ -426,7 +379,7 @@ function stopStreams(){
   sensorOnline=false
 }
 function resetDashboard(){
-  stopStreams();window.vxDashboard=undefined;initialized=false;tick=0;D={};flag={};act={};cnt={};cardLv={};liveStale=null;
+  stopStreams();window.vxDashboard=undefined;initialized=false;tick=0;D={};flag={};act={};cnt={};cardLv={};
   K.forEach(function(key){hist[key]=[]});
   var logList=$("dlog"),visitList=$("vhl");while(logList.firstChild)logList.removeChild(logList.firstChild);while(visitList.firstChild)visitList.removeChild(visitList.firstChild);
   $("vhs").textContent="";$("dch").textContent=""
@@ -434,7 +387,6 @@ function resetDashboard(){
 function dash(on){
   if(!authState||authState.role!=="admin"){stopStreams();window.vxDashboard=undefined;return}
   setupDashboard();
-  if(liveOn()){if(!window.VX_DEMO_MODE){if(!visitsSource)openVisitStream();if(on)refreshVisits()}startSimulation();return}
   if(window.VX_DEMO_MODE){sensorOnline=false;startSimulation();return}
   if(!sensorSource)openSensorStream();if(!visitsSource)openVisitStream();if(on)refreshVisits();loadLatest();startSimulation()
 }
