@@ -233,11 +233,35 @@ function render(){
     var lv=cardLv[k]||0;c.classList.toggle("warn",lv===1);c.classList.toggle("bad",lv===2)});
   $("grpm").style.strokeDashoffset=75-Math.min(1,D.rpmShaft/400)*75;$("grpmt").textContent=Math.round(D.rpmShaft);
   $("geff").style.strokeDashoffset=75-Math.min(1,D.rpmGen/900)*75;$("geft").textContent=Math.round(D.rpmGen);chart()}
-function chart(){var a=hist[tab],W=600,Hh=230,L=44,R=12,T=12,Bm=26,mn=Math.min.apply(0,a),mx=Math.max.apply(0,a),pad=(mx-mn||1)*.2;mn-=pad;mx+=pad;
-  var X=function(i){return L+i/(N-1)*(W-L-R)},Y=function(v){return T+(1-(v-mn)/(mx-mn))*(Hh-T-Bm)},g="",pts=a.map(function(v,i){return X(i+N-a.length).toFixed(1)+","+Y(v).toFixed(1)}),i;
-  for(i=0;i<=3;i++){var yy=T+i*(Hh-T-Bm)/3,val=mx-i*(mx-mn)/3;g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+yy+'" y2="'+yy+'" stroke="rgba(255,255,255,.08)"/><text x="'+(L-6)+'" y="'+(yy+4)+'" text-anchor="end">'+val.toFixed(val>100?0:1)+"</text>"}
-  var x0=X(N-a.length);
-  $("dch").innerHTML='<defs><linearGradient id="dg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--cyan)" stop-opacity=".4"/><stop offset="1" stop-color="var(--cyan)" stop-opacity="0"/></linearGradient></defs>'+g+'<polygon fill="url(#dg)" points="'+x0+","+(Hh-Bm)+" "+pts.join(" ")+" "+X(N-1)+","+(Hh-Bm)+'"/><polyline fill="none" stroke="var(--lite)" stroke-width="2.4" stroke-linejoin="round" points="'+pts.join(" ")+'"/><circle cx="'+X(N-1)+'" cy="'+Y(a[a.length-1])+'" r="4.5" fill="#fff" stroke="var(--cyan)" stroke-width="2"/><text x="'+L+'" y="'+(Hh-6)+'">-60 dtk</text><text x="'+(W-R)+'" y="'+(Hh-6)+'" text-anchor="end">sekarang</text>'}
+var CC={debit:"#0ea5e9",vbat:"#f59e0b",rpmShaft:"#8b5cf6",rpmGen:"#10b981"},CU={debit:"L/s",vbat:"V",rpmShaft:"RPM",rpmGen:"RPM"},CN={debit:"Debit air",vbat:"Tegangan baterai",rpmShaft:"RPM poros",rpmGen:"RPM generator"},hovX=null;
+/* Kurva mulus (bezier) yang tidak melampaui titik data, jadi tidak ada gelombang palsu. */
+function smooth(p){if(p.length<2)return p.length?"M"+p[0][0].toFixed(1)+","+p[0][1].toFixed(1):"";
+  var d="M"+p[0][0].toFixed(1)+","+p[0][1].toFixed(1),i,cl=function(v,x,y){return Math.max(Math.min(x,y),Math.min(Math.max(x,y),v))};
+  for(i=0;i<p.length-1;i++){var p0=p[i-1]||p[i],p1=p[i],p2=p[i+1],p3=p[i+2]||p2,t=.2,
+    c1y=cl(p1[1]+(p2[1]-p0[1])*t,p1[1],p2[1]),c2y=cl(p2[1]-(p3[1]-p1[1])*t,p1[1],p2[1]);
+    d+="C"+(p1[0]+(p2[0]-p0[0])*t).toFixed(1)+","+c1y.toFixed(1)+" "+(p2[0]-(p3[0]-p1[0])*t).toFixed(1)+","+c2y.toFixed(1)+" "+p2[0].toFixed(1)+","+p2[1].toFixed(1)}
+  return d}
+function chart(){var a=hist[tab];if(!a||!a.length)return;var W=600,Hh=250,L=50,R=16,T=16,Bm=30,col=CC[tab]||"#0ea5e9",dec=tab==="debit"||tab==="vbat"?2:0,
+  mn=Math.min.apply(0,a),mx=Math.max.apply(0,a),pad=(mx-mn||1)*.3;mn-=pad;mx+=pad;if(mn<0&&Math.min.apply(0,a)>=0)mn=0;
+  var X=function(i){return L+i/(N-1)*(W-L-R)},Y=function(v){return T+(1-(v-mn)/(mx-mn))*(Hh-T-Bm)},base=Hh-Bm,i,g="",
+  pts=a.map(function(v,j){return[X(j+N-a.length),Y(v)]}),ln=smooth(pts),xs=pts[0][0],xe=pts[pts.length-1][0],ye=pts[pts.length-1][1];
+  for(i=0;i<=4;i++){var yy=T+i*(Hh-T-Bm)/4,val=mx-i*(mx-mn)/4;g+='<line class="gl" x1="'+L+'" x2="'+(W-R)+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+'"/><text x="'+(L-8)+'" y="'+(yy+4).toFixed(1)+'" text-anchor="end">'+val.toFixed(Math.abs(val)>=100?0:dec>1&&Math.abs(val)<10?2:1)+"</text>"}
+  [["-60 dtk",0,"start"],["-40",(N-1)/3,"middle"],["-20",(N-1)*2/3,"middle"],["sekarang",N-1,"end"]].forEach(function(t){g+='<text x="'+X(t[1]).toFixed(1)+'" y="'+(Hh-8)+'" text-anchor="'+t[2]+'">'+t[0]+"</text>"});
+  var hv="";
+  if(hovX!=null){var k=0,dd=1e9;pts.forEach(function(q,j){var e=Math.abs(q[0]-hovX);if(e<dd){dd=e;k=j}});
+    var hx=pts[k][0],hy=pts[k][1],ago=a.length-1-k,tw=118,tx=Math.max(L,Math.min(W-R-tw,hx-tw/2)),ty=hy>T+64?hy-58:hy+14;
+    hv='<line class="cl" x1="'+hx.toFixed(1)+'" x2="'+hx.toFixed(1)+'" y1="'+T+'" y2="'+base+'"/><circle cx="'+hx.toFixed(1)+'" cy="'+hy.toFixed(1)+'" r="5" fill="#fff" stroke="'+col+'" stroke-width="2.4"/>'+
+    '<g class="tt"><rect x="'+tx.toFixed(1)+'" y="'+ty.toFixed(1)+'" width="'+tw+'" height="44" rx="10"/><text class="t1" x="'+(tx+12).toFixed(1)+'" y="'+(ty+19).toFixed(1)+'">'+a[k].toFixed(dec)+" "+CU[tab]+'</text><text class="t2" x="'+(tx+12).toFixed(1)+'" y="'+(ty+35).toFixed(1)+'">'+(ago?ago+" dtk lalu":"sekarang")+"</text></g>"}
+  $("dch").innerHTML='<defs><linearGradient id="dg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+col+'" stop-opacity=".38"/><stop offset=".7" stop-color="'+col+'" stop-opacity=".07"/><stop offset="1" stop-color="'+col+'" stop-opacity="0"/></linearGradient></defs>'+g+
+  '<path d="'+ln+"L"+xe.toFixed(1)+","+base+"L"+xs.toFixed(1)+","+base+'Z" fill="url(#dg)"/>'+
+  '<path d="'+ln+'" fill="none" stroke="'+col+'" stroke-opacity=".22" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>'+
+  '<path d="'+ln+'" fill="none" stroke="'+col+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>'+
+  '<circle class="pulse" cx="'+xe.toFixed(1)+'" cy="'+ye.toFixed(1)+'" r="5" fill="'+col+'"/><circle cx="'+xe.toFixed(1)+'" cy="'+ye.toFixed(1)+'" r="4.6" fill="#fff" stroke="'+col+'" stroke-width="2.4"/>'+hv+
+  '<rect x="'+L+'" y="'+T+'" width="'+(W-L-R)+'" height="'+(Hh-T-Bm)+'" fill="transparent" id="dchit"/>'}
+(function(){var c=$("dch");if(!c)return;
+  function px(e){var r=c.getBoundingClientRect();return(e.clientX-r.left)/r.width*600}
+  c.addEventListener("pointermove",function(e){hovX=px(e);chart()});
+  c.addEventListener("pointerleave",function(){hovX=null;chart()})})();
 function setSt(live,txt){var s=$("dst");s.classList.toggle("off",!live);s.lastChild.textContent=txt}
 var srcTxt="Prototipe (simulasi)";
 function showLevel(w){var s=$("dst");if(!s||!run)return;s.classList.remove("ok","warn","bad","off");s.classList.add(["ok","warn","bad"][w]);s.lastChild.textContent=(liveOn()?"LIVE · "+(useSb()?"SUPABASE":"FIREBASE"):sensorOnline?"LIVE · SENSOR":"LIVE · "+srcTxt.toUpperCase())+" · "+LVN[w]}

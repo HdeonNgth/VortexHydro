@@ -32,7 +32,7 @@ body.is-dash .dsb{display:flex;flex-direction:column;align-items:center;gap:10px
 
 /* ---------- kerangka halaman ---------- */
 body.is-dash main{margin-left:calc(var(--dsb-w) + 34px)}
-html:root body.is-dash .dash{display:flex;flex-direction:column;gap:16px;max-width:1320px;min-height:100vh;padding:16px clamp(12px,2.4vw,32px) 120px 0;background:none;color:var(--dk-ink)}
+html:root body.is-dash .dash{display:flex;flex-direction:column;gap:16px;max-width:none;width:auto;min-height:100vh;padding:16px clamp(14px,2vw,36px) 120px 0;background:none;color:var(--dk-ink)}
 html:root body.is-dash .dash>*{margin:0}
 .den{display:contents}
 .dash>.dtop{order:1}.dash>.dhead{order:2}.dash>.vx-demo-notice{order:3}.dash>.dsrc{order:4}
@@ -139,3 +139,22 @@ html:not([data-theme=dark]) body.is-dash .vx-demo-notice{border-color:rgba(217,1
   .dsb button,.dsb__exit,.dsb__lens{width:38px;height:38px}
 }
 @media(prefers-reduced-motion:reduce){.dsb__lens.on{transition:opacity .3s}}
+
+/* ---------- grafik ---------- */
+html:root body.is-dash .dash .dchart{width:100%;height:auto;max-height:340px;display:block;touch-action:pan-y;cursor:crosshair}
+html:root body.is-dash .dash :is(.dchart,.den__plot svg) text{fill:var(--dk-mut);font:500 11px var(--f-body,system-ui,sans-serif)}
+html:root body.is-dash .dash :is(.dchart,.den__plot svg) .gl{stroke:var(--dk-ln);stroke-width:1;stroke-dasharray:2 5}
+html:root body.is-dash .dash :is(.dchart,.den__plot svg) .cl{stroke:var(--dk-mut);stroke-opacity:.5;stroke-width:1;stroke-dasharray:3 3}
+.dchart .tt rect{fill:var(--deep);stroke:rgba(255,255,255,.14)}
+html:root body.is-dash .dash .dchart .tt text{fill:#fff;font-size:11px}
+html:root body.is-dash .dash .dchart .tt .t1{font-size:14px;font-weight:700}
+html:root body.is-dash .dash .dchart .tt .t2{fill:rgba(255,255,255,.65);font-size:10.5px}
+.dchart .pulse{transform-box:fill-box;transform-origin:center;animation:dpulse 2s ease-out infinite}
+@keyframes dpulse{0%{transform:scale(1);opacity:.55}100%{transform:scale(3.2);opacity:0}}
+@media(prefers-reduced-motion:reduce){.dchart .pulse{animation:none;opacity:0}}
+html:root body.is-dash .dash .dchart-card{padding-bottom:12px}
+html:root body.is-dash .dash .dtabs{padding:4px;border-radius:999px;background:rgba(127,127,127,.12)}
+html:root body.is-dash .dash .dtabs button{border-radius:999px;padding:6px 14px;font-weight:600}
+html:root body.is-dash .dash .dtabs button[aria-pressed=true]{background:var(--dk-card);color:var(--dk-ink);box-shadow:0 2px 8px -2px rgba(0,0,0,.35),inset 0 0 0 1px var(--dk-ln)}
+@media(max-width:700px){html:root body.is-dash .dash .dtabs{max-width:100%;overflow-x:auto;scrollbar-width:none}html:root body.is-dash .dash .dtabs button{white-space:nowrap;padding:6px 11px}}
+html:root body.is-dash .dash .den__plot svg{max-height:360px;cursor:crosshair}

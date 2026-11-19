@@ -126,11 +126,27 @@
     var yt = sv("text", { x: 12, y: PT + ih / 2, transform: "rotate(-90 12 " + (PT + ih / 2) + ")", "text-anchor": "middle" }); yt.textContent = "Daya (W)"; svg.appendChild(yt);
     xlabel(function (x, label) { var t2 = sv("text", { x: X(x), y: CH - 12, "text-anchor": X(x) > CW - PR - 24 ? "end" : (X(x) < PL + 24 ? "start" : "middle") }); t2.textContent = label; svg.appendChild(t2); svg.appendChild(sv("line", { x1: X(x), x2: X(x), y1: PT + ih, y2: PT + ih + 4, class: "gl" })); });
     if (!pts.length) { var e = sv("text", { x: CW / 2, y: CH / 2, "text-anchor": "middle" }); e.textContent = "Belum ada data untuk rentang ini"; svg.appendChild(e); return; }
-    function path(key) { return pts.map(function (p, i) { return (i ? "L" : "M") + X(p.x).toFixed(1) + " " + Y(p[key]).toFixed(1); }).join(""); }
+    /* kurva mulus yang tidak melampaui titik data */
+    function path(key) {
+      var q = pts.map(function (p) { return [X(p.x), Y(p[key])]; });
+      if (q.length < 3) return q.map(function (c, i) { return (i ? "L" : "M") + c[0].toFixed(1) + " " + c[1].toFixed(1); }).join("");
+      function cl(v, a, b) { return Math.max(Math.min(a, b), Math.min(Math.max(a, b), v)); }
+      var d = "M" + q[0][0].toFixed(1) + " " + q[0][1].toFixed(1);
+      for (var i = 0; i < q.length - 1; i++) {
+        var p0 = q[i - 1] || q[i], p1 = q[i], p2 = q[i + 1], p3 = q[i + 2] || p2, t = .2;
+        d += "C" + (p1[0] + (p2[0] - p0[0]) * t).toFixed(1) + " " + cl(p1[1] + (p2[1] - p0[1]) * t, p1[1], p2[1]).toFixed(1) + " " +
+          (p2[0] - (p3[0] - p1[0]) * t).toFixed(1) + " " + cl(p2[1] - (p3[1] - p1[1]) * t, p1[1], p2[1]).toFixed(1) + " " + p2[0].toFixed(1) + " " + p2[1].toFixed(1);
+      }
+      return d;
+    }
     function area(key) { return path(key) + "L" + X(pts[pts.length - 1].x).toFixed(1) + " " + (PT + ih) + "L" + X(pts[0].x).toFixed(1) + " " + (PT + ih) + "Z"; }
     svg.appendChild(sv("path", { d: area("a"), fill: "url(#den-gi)" })); svg.appendChild(sv("path", { d: area("b"), fill: "url(#den-go)" }));
-    svg.appendChild(sv("path", { d: path("a"), fill: "none", stroke: COL_IN, "stroke-width": 2.2, "stroke-linejoin": "round" }));
-    svg.appendChild(sv("path", { d: path("b"), fill: "none", stroke: COL_OUT, "stroke-width": 2.2, "stroke-linejoin": "round" }));
+    [["a", COL_IN], ["b", COL_OUT]].forEach(function (c) {
+      svg.appendChild(sv("path", { d: path(c[0]), fill: "none", stroke: c[1], "stroke-opacity": ".2", "stroke-width": 8, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+      svg.appendChild(sv("path", { d: path(c[0]), fill: "none", stroke: c[1], "stroke-width": 2.6, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+      var last = pts[pts.length - 1];
+      svg.appendChild(sv("circle", { cx: X(last.x), cy: Y(last[c[0]]), r: 4.2, fill: "#fff", stroke: c[1], "stroke-width": 2.4 }));
+    });
     var cur = sv("g", { id: "den-cur", visibility: "hidden" });
     cur.appendChild(sv("line", { id: "den-cl", y1: PT, y2: PT + ih, class: "cl" })); cur.appendChild(sv("circle", { id: "den-ca", r: 4, fill: COL_IN })); cur.appendChild(sv("circle", { id: "den-cb", r: 4, fill: COL_OUT }));
     svg.appendChild(cur);
