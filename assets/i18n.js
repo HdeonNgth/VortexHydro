@@ -99,6 +99,8 @@
     'Pulley menaikkan putaran, generator mengisi baterai untuk lampu LED.': 'The pulley speeds up rotation, the generator charges the battery for the LED lamp.',
     'Lihat Cara Kerja': 'See How It Works',
     'Buka Dashboard': 'Open Dashboard',
+    'Tim Vortex Hydro': 'Vortex Hydro Team',
+    'Proyek Kelas': 'Class Project',
     "Air dipompa dari tangki penampung ke headbox, ditenangkan, dialirkan lewat saluran miring ke kincir 6 sudu, lalu jatuh kembali ke tangki. Putaran kincir menggerakkan generator.": "Water is pumped from the reservoir tank to the headbox, calmed, sent down a sloped channel to the 6-blade wheel, then falls back into the tank. The wheel's rotation drives the generator.",
     "Penampang samping prototipe: tangki penampung, pompa, pipa dorong dengan flow meter, headbox, saluran miring, kincir air 6 sudu, terjunan air, dan zona kering": "Side section of the prototype: reservoir tank, pump, pressure pipe with flow meter, headbox, sloped channel, 6-blade waterwheel, tailrace, and dry zone",
     "Penampang samping prototipe (tidak berskala). Garis putus-putus: transmisi dan generator di zona kering, di balik sekat.": "Side section of the prototype (not to scale). Dashed lines: transmission and generator in the dry zone, behind the partition.",
