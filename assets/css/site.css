@@ -1629,36 +1629,65 @@ html[data-theme=dark] .lg__lang{background:transparent;border-color:rgba(255,255
 html[data-theme=dark] .dchips button{background:var(--card);color:var(--dtx)}
 html[data-theme=dark] .dinfo{background:var(--card)}
 
-/* ===== Daftar Peralatan & Komponen (halaman Tentang) ===== */
-.eqp__card{margin-top:32px;border:1px solid var(--line);border-radius:24px;background:var(--card,#fff);box-shadow:0 18px 40px -26px rgba(3,4,94,.3);overflow:hidden}
-.eqp__tbl{width:100%;border-collapse:collapse;text-align:left}
-.eqp__tbl thead th{padding:16px 24px;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--soft);border-bottom:1px solid var(--line)}
-.eqp__tbl tbody th,.eqp__tbl tbody td{padding:20px 24px;vertical-align:middle;border-bottom:1px solid var(--line);font-size:.96rem;color:var(--ink)}
-.eqp__tbl tbody tr:last-child>*{border-bottom:0}
-.eqp__tbl tbody tr{transition:background .2s}.eqp__tbl tbody tr:hover{background:var(--soft)}
-.eqp__tbl tbody th{font-weight:700;color:var(--navy)}
-.eqp__tbl tbody th>span:last-child{vertical-align:middle}
-.eqp__n{width:64px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
-.eqp__ic{display:inline-grid;place-items:center;width:40px;height:40px;margin-right:16px;border-radius:12px;background:var(--pale);color:var(--blue);vertical-align:middle}
-.eqp__ic svg{width:22px;height:22px}
-.eqp__q{display:inline-block;padding:4px 14px;border-radius:999px;background:var(--pale);color:var(--navy);font-weight:700;font-size:.86rem;white-space:nowrap}
-.eqp__s{color:var(--muted)!important;line-height:1.55}.eqp__s b{color:var(--ink);font-weight:700;white-space:nowrap}
-html[data-theme=dark] .eqp__card{background:var(--card);box-shadow:none}
-html[data-theme=dark] .eqp__tbl tbody th{color:var(--dtx)}
-html[data-theme=dark] .eqp__q{color:var(--dtx);background:rgba(144,224,239,.14)}
-html[data-theme=dark] .eqp__ic{background:rgba(144,224,239,.14);color:var(--sky)}
-@media(max-width:720px){
-  .eqp__tbl,.eqp__tbl tbody,.eqp__tbl tr,.eqp__tbl td,.eqp__tbl tbody th{display:block}
-  .eqp__tbl thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-  .eqp__tbl tbody tr{padding:16px 16px 8px;border-bottom:1px solid var(--line)}.eqp__tbl tbody tr:last-child{border-bottom:0}
-  .eqp__tbl tbody th,.eqp__tbl tbody td{padding:0 0 12px;border:0}
-  .eqp__n{width:auto;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}.eqp__n::before{content:"No. "}
-  .eqp__tbl td[data-l]:not(.eqp__n)::before{content:attr(data-l);display:block;margin-bottom:4px;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-  .eqp__tbl tbody th{font-size:1.02rem}
+/* ===== Daftar Peralatan & Komponen: kartu mengapung dengan bentuk berbeda ===== */
+.eqx__grid{list-style:none;margin:48px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 32px;counter-reset:none}
+.eqx__c{position:relative;isolation:isolate;display:grid;grid-template-columns:auto 1fr;grid-template-areas:"ic h" "ic q" "s s";gap:4px 20px;align-items:center;padding:32px 36px;min-height:210px;color:var(--ink);transition:border-radius .6s cubic-bezier(.3,.8,.3,1),scale .35s,box-shadow .35s,opacity .8s ease,transform 1s cubic-bezier(.2,.7,.2,1)}
+.eqx__c:nth-child(even){margin-top:36px;margin-bottom:-36px}
+.eqx__c h3{grid-area:h;margin:0;font-family:var(--f-body,system-ui,sans-serif);font-weight:700;font-size:1.15rem;line-height:1.25;color:inherit}
+.eqx__ic{grid-area:ic;display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.7);color:var(--blue);box-shadow:0 10px 24px -12px rgba(var(--blue-rgb),.5)}
+.eqx__ic svg{width:30px;height:30px}
+.eqx__no{position:absolute;right:28px;top:6px;z-index:-1;font:800 5rem/1 var(--f-display);opacity:.12;color:currentColor;pointer-events:none}
+.eqx__q{grid-area:q;margin:0;display:flex;align-items:center;gap:10px}
+.eqx__q small{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.65}
+.eqx__q b{padding:3px 14px;border-radius:999px;background:rgba(255,255,255,.75);color:var(--navy);font-size:.86rem}
+.eqx__s{grid-area:s;margin:14px 0 0;line-height:1.6;opacity:.88}.eqx__s b{font-weight:700;white-space:nowrap}
+/* bentuk */
+.eqx__c--1{border-radius:72px 16px 72px 16px;background:linear-gradient(135deg,var(--blue),var(--navy));color:#fff;box-shadow:0 30px 50px -28px rgba(var(--blue-rgb),.7)}
+.eqx__c--2{border-radius:999px 999px 999px 28px;padding-inline:44px;background:linear-gradient(160deg,var(--pale),#fff);border:1px solid var(--line);box-shadow:0 24px 44px -28px rgba(var(--blue-rgb),.5)}
+.eqx__c--3{border-radius:16px 72px 16px 72px;background:var(--sky);color:var(--navy);box-shadow:0 26px 46px -28px rgba(var(--blue-rgb),.55)}
+.eqx__c--4{border-radius:0;clip-path:polygon(28px 0,100% 0,100% calc(100% - 28px),calc(100% - 28px) 100%,0 100%,0 28px);background:var(--deep,#07122E);color:#fff}
+.eqx__c--1 .eqx__ic,.eqx__c--4 .eqx__ic{background:rgba(255,255,255,.14);color:var(--sky);box-shadow:none}
+.eqx__c--1 .eqx__q b,.eqx__c--4 .eqx__q b{background:rgba(255,255,255,.16);color:#fff}
+.eqx__c--3 .eqx__q b{background:rgba(255,255,255,.55)}
+.eqx__c:hover{scale:1.03}
+.eqx__c--1:hover{border-radius:16px 72px 16px 72px}.eqx__c--3:hover{border-radius:72px 16px 72px 16px}.eqx__c--2:hover{border-radius:28px 999px 999px 999px}
+/* gerak masuk berbeda tiap kartu (hanya bila JS siap) */
+.eqx[data-ready] .eqx__c{opacity:0}
+.eqx[data-ready] .eqx__c--1:not(.in){transform:translateX(-110px) rotate(-4deg)}
+.eqx[data-ready] .eqx__c--2:not(.in){transform:translateX(110px) scale(.9)}
+.eqx[data-ready] .eqx__c--3:not(.in){transform:translateY(80px) scale(.82) rotate(3deg)}
+.eqx[data-ready] .eqx__c--4:not(.in){transform:perspective(900px) rotateY(-50deg) translateX(60px);transform-origin:left center}
+.eqx[data-ready] .eqx__c.in{opacity:1;transform:none}
+@keyframes eqfloat{0%,100%{translate:0 0}50%{translate:0 -9px}}
+@media(prefers-reduced-motion:no-preference){.eqx__c.in{animation:eqfloat 6s ease-in-out 1.2s infinite}.eqx__c--2.in{animation-duration:7.5s}.eqx__c--3.in{animation-duration:6.7s}.eqx__c--4.in{animation-duration:8.3s}.eqx__c:nth-child(even).in{animation-delay:2.4s}}
+html[data-theme=dark] .eqx__c--2{background:linear-gradient(160deg,rgba(144,224,239,.14),var(--card));color:var(--dtx);border-color:var(--line)}
+html[data-theme=dark] .eqx__c--2 .eqx__ic,html[data-theme=dark] .eqx__c--3 .eqx__ic{background:rgba(255,255,255,.1);color:var(--sky)}
+html[data-theme=dark] .eqx__c--2 .eqx__q b{background:rgba(144,224,239,.16);color:var(--dtx)}
+html[data-theme=dark] .eqx__c--3{background:rgba(144,224,239,.2);color:var(--dtx)}
+html[data-theme=dark] .eqx__c--3 .eqx__q b{background:rgba(255,255,255,.14);color:var(--dtx)}
+html[data-theme=dark] .eqx__c--4{background:#0d1c3d}
+@media(max-width:860px){
+  .eqx__grid{grid-template-columns:minmax(0,1fr);gap:20px}
+  .eqx__c:nth-child(even){margin:0}
+  .eqx__c{padding:24px 24px;min-height:0;gap:4px 16px}
+  .eqx__c--2{padding-inline:28px;border-radius:56px 56px 56px 20px}
+  .eqx__c--1{border-radius:52px 14px 52px 14px}.eqx__c--3{border-radius:14px 52px 14px 52px}
+  .eqx__ic{width:52px;height:52px}.eqx__no{font-size:3.6rem}
+  .eqx__c--4{clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px)}
 }
-.eqp__tbl{min-width:0!important;table-layout:auto}
-.eqp__tbl tbody th{background:none!important;text-align:left;width:auto;text-transform:none;letter-spacing:0;white-space:normal}
-@media(max-width:720px){.eqp__tbl,.eqp__tbl tbody,.eqp__tbl tr,.eqp__tbl td,.eqp__tbl tbody th{width:100%;max-width:100%;box-sizing:border-box}}
-/* Dokumentasi: beri jarak tepi di desktop agar kartu tidak menempel ke sisi layar */
-.docfull .wrap,.docfull .wrap--wide{padding-inline:clamp(16px,3vw,48px)}
-.docfull .lines{padding-inline:0}
+@media(prefers-reduced-motion:reduce){.eqx[data-ready] .eqx__c{opacity:1;transform:none}}
+
+/* ===== Tentang: bentuk dan arah muncul yang bervariasi untuk "Mengapa" dan "Tujuan" ===== */
+.why .pcard:nth-child(1){border-radius:56px 14px 56px 14px!important}
+.why .pcard:nth-child(2){border-radius:14px 56px 14px 56px!important}
+.why .pcard:nth-child(3){border-radius:56px 56px 14px 56px!important}
+.goal__c:nth-child(1){border-radius:14px 48px 14px 48px}
+.goal__c:nth-child(2){border-radius:48px 14px 48px 14px}
+.goal__c:nth-child(3){border-radius:140px 140px 18px 18px/90px 90px 18px 18px;padding-top:44px}
+.why .pcard.fx-rise:not(.in):nth-child(1){transform:translateX(-90px) rotate(-3deg)!important}
+.why .pcard.fx-rise:not(.in):nth-child(2){transform:translateY(80px) scale(.9)!important}
+.why .pcard.fx-rise:not(.in):nth-child(3){transform:translateX(90px) rotate(3deg)!important}
+.goal__c.fx-rise:not(.in):nth-child(1){transform:translateX(-70px) scale(.94)!important}
+.goal__c.fx-rise:not(.in):nth-child(2){transform:translateY(70px)!important}
+.goal__c.fx-rise:not(.in):nth-child(3){transform:translateX(70px) scale(.94)!important}
+@media(max-width:860px){.goal__c:nth-child(3){border-radius:60px 60px 18px 18px/50px 50px 18px 18px}}
