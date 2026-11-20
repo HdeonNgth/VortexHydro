@@ -2,6 +2,18 @@
   'use strict';
 
   var idToEn = {
+    'Peralatan': 'Equipment',
+    'Daftar Peralatan & Komponen': 'Equipment & Components List',
+    'Komponen utama yang dipakai pada prototipe simulator.': 'Main components used in the simulator prototype.',
+    'No.': 'No.',
+    'Nama peralatan / komponen': 'Equipment / component',
+    'Jumlah': 'Quantity',
+    'Keterangan / spesifikasi utama': 'Description / main specifications',
+    'Generator XD 3240': 'Generator XD 3240',
+    '1 unit': '1 unit',
+    'Unit pembangkit daya': 'Power generating unit',
+    'Pompa Celup Air Wasser WD-101E': 'Wasser WD-101E submersible water pump',
+    'Pipa': 'Pipe',
     'Energi': 'Energy',
     'Energi dan Efisiensi': 'Energy and Efficiency',
     'Listrik PLN yang masuk ke pompa dibandingkan listrik yang dihasilkan generator.': 'Grid (PLN) electricity going into the pump compared with electricity produced by the generator.',
