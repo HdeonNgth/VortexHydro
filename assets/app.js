@@ -1168,7 +1168,7 @@
         short: 'Pulley 1:4 & V-Belt',
         tag: 'KOMPONEN 03 · TRANSMISI PUTARAN',
         title: 'Transmisi Pulley 4-Jari (1 : 4) & V-Belt',
-        img: 'assets/images/components/comp-pulley.jpg',
+        img: 'assets/images/components/comp-pulley.jpg?v=2',
         desc: 'Roda pulley besar berjari empat di sisi luar saluran yang dihubungkan sabuk V-belt ke pulley kecil generator.',
         func: 'Melipatgandakan kecepatan putaran poros kincir menjadi empat kali lebih cepat agar generator bekerja optimal.',
         extra: [

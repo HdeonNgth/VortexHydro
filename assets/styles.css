@@ -62,6 +62,23 @@ html[data-theme="dark"] {
   --sh-md: 0 18px 40px -14px rgba(0, 0, 0, 0.55);
   --sh-lg: 0 28px 64px -18px rgba(0, 0, 0, 0.72);
 }
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #050F1E;
+    --stone: #09182D;
+    --card: #0E223D;
+    --ink: #F4F8FC;
+    --ink-2: #DCE7F3;
+    --slate: #9AB0C9;
+    --muted: #7D95B0;
+    --line: rgba(255, 255, 255, 0.1);
+    --line-strong: rgba(255, 255, 255, 0.18);
+    --sh-sm: 0 2px 10px rgba(0, 0, 0, 0.35);
+    --sh-md: 0 18px 40px -14px rgba(0, 0, 0, 0.55);
+    --sh-lg: 0 28px 64px -18px rgba(0, 0, 0, 0.72);
+  }
+}
 
 /* Color Palettes (Restored Mode Warna) */
 html[data-pal="vokasi"] {
@@ -130,10 +147,55 @@ button, input, textarea { font: inherit; color: inherit; }
   padding-block: clamp(68px, 8vw, 128px);
   scroll-margin-top: var(--hdr-h);
 }
+/* Fixed Pure WebGL2 Metaball Water Fluid Background Layer (Always Behind Content) */
+.vx-fluid-bg {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+#site-main,
+.footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* CSS Gradient Fallback when WebGL2 is unavailable or shader fails */
+html.vx-fluid-fallback body {
+  background:
+    radial-gradient(circle at 52% 46%, rgba(158, 230, 242, 0.42) 0%, rgba(51, 158, 199, 0.14) 36%, transparent 66%),
+    var(--bg);
+  background-attachment: fixed;
+}
+html.vx-fluid-fallback[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at 52% 46%, rgba(41, 140, 168, 0.28) 0%, rgba(8, 56, 82, 0.18) 38%, transparent 68%),
+    var(--bg);
+  background-attachment: fixed;
+}
+@media (prefers-color-scheme: dark) {
+  html.vx-fluid-fallback:not([data-theme="light"]) body {
+    background:
+      radial-gradient(circle at 52% 46%, rgba(41, 140, 168, 0.28) 0%, rgba(8, 56, 82, 0.18) 38%, transparent 68%),
+      var(--bg);
+    background-attachment: fixed;
+  }
+}
+
 .sec--stone {
-  background: var(--stone);
+  background: rgba(237, 243, 248, 0.56);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+}
+html[data-theme="dark"] .sec--stone {
+  background: rgba(9, 24, 45, 0.58);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .sec--stone {
+    background: rgba(9, 24, 45, 0.58);
+  }
 }
 .sec--navy {
   background: linear-gradient(155deg, var(--navy) 0%, #07264A 100%);
@@ -1430,8 +1492,16 @@ html[data-theme="dark"] .vx3d__hint {
 /* Subpage Header */
 .pagehead {
   padding: calc(var(--hdr-h) + 44px) 0 40px;
-  background: var(--stone);
+  background: rgba(237, 243, 248, 0.62);
   border-bottom: 1px solid var(--line);
+}
+html[data-theme="dark"] .pagehead {
+  background: rgba(9, 24, 45, 0.62);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .pagehead {
+    background: rgba(9, 24, 45, 0.62);
+  }
 }
 .pagehead__row {
   display: flex;
@@ -3437,8 +3507,16 @@ html[data-theme="dark"] .vai__aform button { background: var(--blue); }
 /* ---------- Bottom "Didukung Perangkat Rekayasa" Section ---------- */
 .tools-bottom-sec {
   padding: clamp(48px, 6vw, 80px) 0;
-  background: linear-gradient(180deg, var(--bg) 0%, var(--stone) 100%);
+  background: linear-gradient(180deg, rgba(250, 251, 253, 0.45) 0%, rgba(237, 243, 248, 0.64) 100%);
   border-top: 1px solid var(--line);
+}
+html[data-theme="dark"] .tools-bottom-sec {
+  background: linear-gradient(180deg, rgba(5, 15, 30, 0.45) 0%, rgba(9, 24, 45, 0.64) 100%);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .tools-bottom-sec {
+    background: linear-gradient(180deg, rgba(5, 15, 30, 0.45) 0%, rgba(9, 24, 45, 0.64) 100%);
+  }
 }
 .tools-bottom {
   display: grid;
@@ -3513,7 +3591,7 @@ html[data-theme="dark"] .vai__aform button { background: var(--blue); }
 
 /* ---------- Mengapa Memilih Turbin Vortex? (.why-vx-sec) ---------- */
 .why-vx-sec {
-  background: var(--bg);
+  background: transparent;
 }
 .why-vx__head {
   margin-bottom: clamp(28px, 4vw, 44px);
