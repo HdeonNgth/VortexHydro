@@ -128,15 +128,22 @@ async function askGemini(history: { role: string; content: string }[], pageNote:
       },
     );
     if (!res.ok) {
-      console.error("gemini_http", res.status);
-      throw new Error(res.status === 429 ? "busy" : "gemini");
+      let msg = "";
+      try { msg = String((await res.json())?.error?.message ?? "").slice(0, 200); } catch { /* abaikan */ }
+      console.error("gemini_http", res.status, msg);
+      const err = new Error(res.status === 429 ? "busy" : "gemini") as Error & { detail?: string };
+      err.detail = `HTTP ${res.status}${msg ? ": " + msg : ""}`;
+      throw err;
     }
     const data = await res.json();
     const cand = data?.candidates?.[0];
     const text = (cand?.content?.parts ?? []).map((p: { text?: string }) => p.text ?? "").join("").trim();
     if (!text) {
-      console.error("gemini_empty", cand?.finishReason ?? data?.promptFeedback?.blockReason);
-      throw new Error("empty");
+      const why = String(cand?.finishReason ?? data?.promptFeedback?.blockReason ?? "unknown");
+      console.error("gemini_empty", why);
+      const err = new Error("empty") as Error & { detail?: string };
+      err.detail = "empty response: " + why;
+      throw err;
     }
     return text;
   } finally {
@@ -252,7 +259,7 @@ Deno.serve(async (req) => {
       await db.from("messages").update({ status: "error" }).eq("id", um.id);
       const code = (e as Error).message;
       const status = code === "busy" ? 429 : 502;
-      return json(req, { error: code === "busy" ? "ai_busy" : "ai_failed", conversation_id: id }, status);
+      return json(req, { error: code === "busy" ? "ai_busy" : "ai_failed", detail: (e as { detail?: string }).detail, conversation_id: id }, status);
     }
 
     // 6) simpan jawaban + tandai pesan pengguna berhasil

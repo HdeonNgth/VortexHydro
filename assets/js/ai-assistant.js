@@ -110,7 +110,7 @@
       signal: ctrl ? ctrl.signal : undefined
     }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (d) {
-        if (!r.ok) { var e = new Error(d.error || 'server_error'); e.code = d.error || 'server_error'; e.conv = d.conversation_id; throw e; }
+        if (!r.ok) { var e = new Error(d.error || 'server_error'); e.code = d.error || 'server_error'; e.conv = d.conversation_id; e.detail = d.detail; throw e; }
         return d;
       });
     }, function () { var e = new Error('network'); e.code = 'network'; throw e; }).finally(function () { clearTimeout(timer); });
@@ -171,10 +171,10 @@
     log.appendChild(w); scroll(); return w;
   }
 
-  function showError(code, retryPayload) {
+  function showError(code, retryPayload, detail) {
     var w = document.createElement('div'); w.className = 'vai__err'; w.setAttribute('role', 'alert');
     w.innerHTML = '<span></span><button type="button">Coba lagi</button>';
-    w.firstChild.textContent = ERR[code] || ERR.server_error;
+    w.firstChild.textContent = (ERR[code] || ERR.server_error) + (detail ? ' (' + detail + ')' : '');
     w.querySelector('button').addEventListener('click', function () { w.remove(); submit(retryPayload.text, true); });
     log.appendChild(w); scroll();
   }
@@ -198,7 +198,7 @@
       if (e.conv) { state.conv = e.conv; store.set('vxai_conv', state.conv); }
       if (e.code === 'not_found') { state.conv = null; store.del('vxai_conv'); }
       setStatus(e.code === 'network' ? 'off' : 'ok');
-      showError(e.code, { text: text });
+      showError(e.code, { text: text }, e.detail);
     }).finally(function () { setBusy(false); if (panel.hidden === false) input.focus(); });
   }
   function rebindCopy(w, content) {
