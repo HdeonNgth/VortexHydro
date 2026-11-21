@@ -1,5 +1,6 @@
 // Vortex Hydro Admin AI Chat Monitoring — Backend (Supabase Edge Function)
 // Strict server-side Supabase Auth JWT + Admin Role Verification + Audit Logging.
+// Monitors all anonymous sessions & conversations without exposing secret tokens.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -48,7 +49,6 @@ async function verifyAdmin(jwt: string) {
   if (authErr || !authData?.user) return { ok: false as const, status: 401, error: "unauthorized" };
 
   const user = authData.user;
-  // Check secure role table OR server-managed app_metadata (NEVER user_metadata!)
   const appRole = (user.app_metadata as Record<string, unknown> | undefined)?.role;
   let isAdmin = appRole === "admin";
 
@@ -79,37 +79,36 @@ async function logAudit(
       metadata,
     });
   } catch {
-    // Non-blocking audit failure guard
+    // Non-blocking audit guard
   }
 }
 
 async function buildUserMap(): Promise<Map<string, { email: string; ref: string }>> {
   const map = new Map<string, { email: string; ref: string }>();
   try {
-    let page = 1;
-    while (page <= 10) {
-      const { data, error } = await adminDb.auth.admin.listUsers({ page, perPage: 200 });
-      if (error || !data?.users?.length) break;
-      for (const u of data.users) {
-        map.set(u.id, {
-          email: u.email ?? "Pengguna Terdaftar",
-          ref: u.id.slice(0, 8),
-        });
-      }
-      if (data.users.length < 200) break;
-      page++;
+    const { data } = await adminDb.auth.admin.listUsers({ page: 1, perPage: 200 });
+    for (const u of data?.users ?? []) {
+      map.set(u.id, { email: u.email ?? "Pengguna", ref: u.id.slice(0, 8) });
     }
   } catch {
-    // Fallback to UUID prefix
+    // Fallback to short UUID
   }
   return map;
 }
 
-function ownerInfo(userId: string | null, userMap: Map<string, { email: string; ref: string }>) {
-  if (!userId) return { label: "Sesi Legacy (Anonim)", ref: "legacy" };
-  const found = userMap.get(userId);
-  if (found) return { label: found.email, ref: found.ref };
-  return { label: `User #${userId.slice(0, 8)}`, ref: userId.slice(0, 8) };
+function ownerInfo(
+  sessionId: string | null,
+  userId: string | null,
+  userMap: Map<string, { email: string; ref: string }>,
+) {
+  if (sessionId) {
+    return { label: `Pengunjung · Sesi #${sessionId.slice(0, 8)}`, ref: sessionId.slice(0, 8), kind: "session" };
+  }
+  if (userId) {
+    const found = userMap.get(userId);
+    return { label: found ? found.email : `Akun #${userId.slice(0, 8)}`, ref: userId.slice(0, 8), kind: "user" };
+  }
+  return { label: "Sesi Legacy", ref: "legacy", kind: "legacy" };
 }
 
 Deno.serve(async (req) => {
@@ -126,7 +125,6 @@ Deno.serve(async (req) => {
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch { return json(req, { error: "invalid_json" }, 400); }
 
-  // Reject spoofed user_id in request payload
   if (body.user_id !== undefined && body.user_id !== null && String(body.user_id) !== adminUser.id) {
     return json(req, { error: "forbidden_user_mismatch" }, 403);
   }
@@ -137,10 +135,7 @@ Deno.serve(async (req) => {
     if (action === "verify") {
       return json(req, {
         ok: true,
-        admin: {
-          id: adminUser.id,
-          email: adminUser.email ?? "Admin",
-        },
+        admin: { id: adminUser.id, email: adminUser.email ?? "Admin" },
       });
     }
 
@@ -149,39 +144,41 @@ Deno.serve(async (req) => {
       const startToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
       const sevenDaysAgo = new Date(startToday.getTime() - 6 * 86400000);
 
-      const [convRes, msgRes, auditRes] = await Promise.all([
-        adminDb.from("conversations").select("id,user_id,created_at,updated_at"),
+      const [sessRes, convRes, msgRes, auditRes] = await Promise.all([
+        adminDb.from("chat_sessions").select("id,created_at,last_activity_at"),
+        adminDb.from("conversations").select("id,session_id,user_id,created_at,updated_at"),
         adminDb.from("messages").select("id,conversation_id,role,model,status,created_at"),
         adminDb.from("admin_audit_logs").select("id", { count: "exact", head: true }),
       ]);
 
-      if (convRes.error || msgRes.error) throw new Error("db");
+      if (sessRes.error || convRes.error || msgRes.error) throw new Error("db");
+      const sessions = sessRes.data ?? [];
       const convs = convRes.data ?? [];
       const msgs = msgRes.data ?? [];
 
-      const uniqueUsers = new Set(convs.map((c) => c.user_id).filter(Boolean)).size;
+      const uniqueActors = new Set([
+        ...sessions.map((s) => "s:" + s.id),
+        ...convs.map((c) => c.session_id ? "s:" + c.session_id : (c.user_id ? "u:" + c.user_id : null)).filter(Boolean),
+      ]).size;
+
       const userMsgs = msgs.filter((m) => m.role === "user").length;
       const assistantMsgs = msgs.filter((m) => m.role === "assistant").length;
       const todayConvs = convs.filter((c) => new Date(c.created_at) >= startToday).length;
       const todayMsgs = msgs.filter((m) => new Date(m.created_at) >= startToday).length;
 
-      // 7-day daily activity buckets
       const daily: { date: string; conversations: number; messages: number }[] = [];
       for (let d = 0; d < 7; d++) {
         const dt = new Date(sevenDaysAgo.getTime() + d * 86400000);
-        const key = dt.toISOString().slice(0, 10);
-        daily.push({ date: key, conversations: 0, messages: 0 });
+        daily.push({ date: dt.toISOString().slice(0, 10), conversations: 0, messages: 0 });
       }
       const dailyMap = new Map(daily.map((d) => [d.date, d]));
       for (const c of convs) {
-        const k = String(c.created_at).slice(0, 10);
-        const bucket = dailyMap.get(k);
-        if (bucket) bucket.conversations++;
+        const b = dailyMap.get(String(c.created_at).slice(0, 10));
+        if (b) b.conversations++;
       }
       for (const m of msgs) {
-        const k = String(m.created_at).slice(0, 10);
-        const bucket = dailyMap.get(k);
-        if (bucket) bucket.messages++;
+        const b = dailyMap.get(String(m.created_at).slice(0, 10));
+        if (b) b.messages++;
       }
 
       const modelCounts: Record<string, number> = {};
@@ -195,11 +192,12 @@ Deno.serve(async (req) => {
 
       return json(req, {
         stats: {
+          total_sessions: sessions.length,
+          unique_users: uniqueActors,
           total_conversations: convs.length,
           total_messages: msgs.length,
           user_messages: userMsgs,
           assistant_messages: assistantMsgs,
-          unique_users: uniqueUsers,
           today_conversations: todayConvs,
           today_messages: todayMsgs,
           audit_logs_count: auditRes.count ?? 0,
@@ -211,28 +209,32 @@ Deno.serve(async (req) => {
 
     if (action === "list") {
       const q = String(body.q ?? "").trim().toLowerCase();
+      const sessionFilter = typeof body.session_id === "string" && UUID.test(body.session_id) ? body.session_id : null;
       const dateFrom = typeof body.date_from === "string" && ISO_DATE.test(body.date_from) ? body.date_from : null;
       const dateTo = typeof body.date_to === "string" && ISO_DATE.test(body.date_to) ? body.date_to : null;
-      const limit = Math.min(100, Math.max(1, Number(body.limit) || 50));
+      const limit = Math.min(100, Math.max(1, Number(body.limit) || 60));
       const offset = Math.max(0, Number(body.offset) || 0);
 
       let convQuery = adminDb
         .from("conversations")
-        .select("id,user_id,title,created_at,updated_at")
+        .select("id,session_id,user_id,title,created_at,updated_at")
         .order("updated_at", { ascending: false });
 
+      if (sessionFilter) convQuery = convQuery.eq("session_id", sessionFilter);
       if (dateFrom) convQuery = convQuery.gte("created_at", `${dateFrom}T00:00:00.000Z`);
       if (dateTo) convQuery = convQuery.lte("created_at", `${dateTo}T23:59:59.999Z`);
 
-      const [convRes, msgRes, userMap] = await Promise.all([
+      const [sessRes, convRes, msgRes, userMap] = await Promise.all([
+        adminDb.from("chat_sessions").select("id,created_at,last_activity_at").order("last_activity_at", { ascending: false }).limit(100),
         convQuery.limit(500),
         adminDb.from("messages").select("conversation_id,role,content,created_at").order("created_at", { ascending: true }).limit(5000),
         buildUserMap(),
       ]);
 
-      if (convRes.error || msgRes.error) throw new Error("db");
+      if (sessRes.error || convRes.error || msgRes.error) throw new Error("db");
       const allConvs = convRes.data ?? [];
       const allMsgs = msgRes.data ?? [];
+      const allSess = sessRes.data ?? [];
 
       const msgByConv = new Map<string, { count: number; preview: string; searchable: string }>();
       for (const m of allMsgs) {
@@ -243,9 +245,14 @@ Deno.serve(async (req) => {
         msgByConv.set(m.conversation_id, entry);
       }
 
+      const convCountBySess = new Map<string, number>();
+      for (const c of allConvs) {
+        if (c.session_id) convCountBySess.set(c.session_id, (convCountBySess.get(c.session_id) ?? 0) + 1);
+      }
+
       const filtered = allConvs.filter((c) => {
         if (!q) return true;
-        const owner = ownerInfo(c.user_id, userMap);
+        const owner = ownerInfo(c.session_id, c.user_id, userMap);
         const info = msgByConv.get(c.id);
         return (
           String(c.title ?? "").toLowerCase().includes(q) ||
@@ -256,10 +263,11 @@ Deno.serve(async (req) => {
       });
 
       const pageItems = filtered.slice(offset, offset + limit).map((c) => {
-        const owner = ownerInfo(c.user_id, userMap);
+        const owner = ownerInfo(c.session_id, c.user_id, userMap);
         const info = msgByConv.get(c.id);
         return {
           id: c.id,
+          session_id: c.session_id,
           title: c.title,
           owner_label: owner.label,
           owner_ref: owner.ref,
@@ -270,11 +278,26 @@ Deno.serve(async (req) => {
         };
       });
 
-      await logAudit(adminUser.id, "list_conversations", null, { q: q || null, date_from: dateFrom, date_to: dateTo, total: filtered.length });
+      const sessionsSummary = allSess.map((s) => ({
+        id: s.id,
+        ref: s.id.slice(0, 8),
+        conversation_count: convCountBySess.get(s.id) ?? 0,
+        created_at: s.created_at,
+        last_activity_at: s.last_activity_at,
+      }));
+
+      await logAudit(adminUser.id, "list_conversations", null, {
+        q: q || null,
+        session_id: sessionFilter,
+        date_from: dateFrom,
+        date_to: dateTo,
+        total: filtered.length,
+      });
 
       return json(req, {
         total: filtered.length,
         conversations: pageItems,
+        sessions: sessionsSummary,
       });
     }
 
@@ -283,7 +306,7 @@ Deno.serve(async (req) => {
       if (!UUID.test(convId)) return json(req, { error: "invalid_conversation" }, 400);
 
       const [convRes, msgRes, userMap] = await Promise.all([
-        adminDb.from("conversations").select("id,user_id,title,created_at,updated_at").eq("id", convId).maybeSingle(),
+        adminDb.from("conversations").select("id,session_id,user_id,title,created_at,updated_at").eq("id", convId).maybeSingle(),
         adminDb.from("messages").select("id,role,content,model,status,created_at").eq("conversation_id", convId).order("created_at", { ascending: true }).limit(500),
         buildUserMap(),
       ]);
@@ -291,12 +314,13 @@ Deno.serve(async (req) => {
       if (convRes.error || msgRes.error) throw new Error("db");
       if (!convRes.data) return json(req, { error: "not_found" }, 404);
 
-      const owner = ownerInfo(convRes.data.user_id, userMap);
+      const owner = ownerInfo(convRes.data.session_id, convRes.data.user_id, userMap);
       await logAudit(adminUser.id, "view_conversation", convId);
 
       return json(req, {
         conversation: {
           id: convRes.data.id,
+          session_id: convRes.data.session_id,
           title: convRes.data.title,
           owner_label: owner.label,
           owner_ref: owner.ref,
@@ -323,8 +347,26 @@ Deno.serve(async (req) => {
       if (delErr) throw new Error("db");
 
       await logAudit(adminUser.id, "delete_conversation", convId, { title: existing.title });
-
       return json(req, { ok: true, deleted_id: convId });
+    }
+
+    if (action === "delete_session") {
+      const sessId = String(body.session_id ?? "");
+      if (!UUID.test(sessId)) return json(req, { error: "invalid_session" }, 400);
+
+      const { data: existing, error: findErr } = await adminDb
+        .from("chat_sessions")
+        .select("id")
+        .eq("id", sessId)
+        .maybeSingle();
+      if (findErr) throw new Error("db");
+      if (!existing) return json(req, { error: "not_found" }, 404);
+
+      const { error: delErr } = await adminDb.from("chat_sessions").delete().eq("id", sessId);
+      if (delErr) throw new Error("db");
+
+      await logAudit(adminUser.id, "delete_session", null, { session_id: sessId });
+      return json(req, { ok: true, deleted_session_id: sessId });
     }
 
     if (action === "audit_logs") {
@@ -340,7 +382,7 @@ Deno.serve(async (req) => {
 
       const logs = (logsRes.data ?? []).map((l) => ({
         id: l.id,
-        admin_label: ownerInfo(l.admin_user_id, userMap).label,
+        admin_label: ownerInfo(null, l.admin_user_id, userMap).label,
         action: l.action,
         target_conversation_id: l.target_conversation_id,
         metadata: l.metadata,

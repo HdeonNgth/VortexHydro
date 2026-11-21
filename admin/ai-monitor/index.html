@@ -138,7 +138,7 @@
       <div class="stats">
         <div class="kpi"><small>Total Percakapan</small><b id="stConvs">0</b><span id="stTodayConv">0 hari ini</span></div>
         <div class="kpi"><small>Total Pesan</small><b id="stMsgs">0</b><span id="stMsgSplit">0 user · 0 AI</span></div>
-        <div class="kpi"><small>Pengguna Unik</small><b id="stUsers">0</b><span>Akun aktif di AI Chat</span></div>
+        <div class="kpi"><small>Total Sesi Pengunjung</small><b id="stUsers">0</b><span>Sesi unik terisolasi</span></div>
         <div class="kpi"><small>Audit Log Admin</small><b id="stAudit">0</b><span id="stTodayMsg">0 pesan hari ini</span></div>
       </div>
 
@@ -298,7 +298,7 @@
         $('stTodayConv').textContent = (st.today_conversations || 0) + ' dibuat hari ini';
         $('stMsgs').textContent = st.total_messages || 0;
         $('stMsgSplit').textContent = (st.user_messages || 0) + ' user · ' + (st.assistant_messages || 0) + ' AI';
-        $('stUsers').textContent = st.unique_users || 0;
+        $('stUsers').textContent = st.total_sessions != null ? st.total_sessions : (st.unique_users || 0);
         $('stAudit').textContent = st.audit_logs_count || 0;
         $('stTodayMsg').textContent = (st.today_messages || 0) + ' pesan hari ini';
 

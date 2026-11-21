@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="assets/styles.css?v=8">
+  <link rel="stylesheet" href="assets/styles.css?v=10">
 </head>
 <body>
   <!-- Scroll Progress Bar -->
@@ -37,7 +37,7 @@
         <a href="#tentang" data-nav-link data-k="tentang"><span>Cara Kerja</span></a>
         <a href="#dokumentasi" data-nav-link data-k="dokumentasi"><span>Dokumentasi</span></a>
         <a href="#tentang-kami" data-nav-link data-k="tentang-kami"><span>Tentang Kami</span></a>
-        <a href="#dashboard" data-nav-link data-k="dashboard"><span>Dashboard</span><i class="hdr__live" aria-hidden="true"></i></a>
+        <a href="#dashboard" data-nav-link data-k="dashboard" data-admin-only hidden><span>Dashboard</span><i class="hdr__live" aria-hidden="true"></i></a>
       </nav>
 
       <i class="hdr__sep hdr__sep--end" aria-hidden="true"></i>
@@ -66,30 +66,35 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M16 5a3 3 0 0 1 0 6M18 14c2 .6 3 2.4 3 5"/></svg>
       <span>Tentang Kami</span>
     </a>
-    <a href="#dashboard" data-nav-link data-k="dashboard">
+    <a href="#dashboard" data-nav-link data-k="dashboard" data-admin-only hidden>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
       <span>Dashboard</span>
     </a>
   </nav>
 
-  <!-- Dashboard Sidebar (Admin Mode) -->
-  <aside class="dsb" id="dsb" aria-label="Menu dashboard">
+  <!-- Dashboard Sidebar (Admin Mode — Dashboard V35 Slim Vertical Rail) -->
+  <aside class="dsb" id="dsb" aria-label="Menu dashboard admin">
     <div class="dsb__logo" aria-hidden="true">
       <svg viewBox="0 0 32 32" fill="none"><path d="M16 6.5a9.5 9.5 0 1 1-9.5 9.5 6.4 6.4 0 1 1 6.4 6.4 3.4 3.4 0 1 1 3.4-3.4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
     </div>
     <nav class="dsb__nav" id="dsbn" aria-label="Kategori dashboard">
       <span class="dsb__lens" id="dsbl"></span>
-      <div class="dsb__grp" role="group" aria-label="Pantau">
+      <div class="dsb__grp" role="group" aria-label="Prototipe">
         <button type="button" data-v="ringkasan" title="Ringkasan" aria-label="Ringkasan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg></button>
-        <button type="button" data-v="sensor" title="Sensor" aria-label="Sensor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 17a8.5 8.5 0 1 1 15 0"/><path d="m12 13 3.5-3.5"/><circle cx="12" cy="13" r="1"/></svg></button>
-        <button type="button" data-v="grafik" title="Grafik" aria-label="Grafik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h16"/><path d="m8 14 3-4 3 2 4-6"/></svg></button>
+        <button type="button" data-v="sensor" title="Sensor Langsung" aria-label="Sensor Langsung"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></button>
+        <button type="button" data-v="grafik" title="Grafik 60 Detik" aria-label="Grafik 60 Detik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h16"/><path d="m8 14 3-4 3 2 4-6"/></svg></button>
       </div>
       <i class="dsb__sep"></i>
-      <div class="dsb__grp" role="group" aria-label="Pengunjung">
-        <button type="button" data-v="riwayat" title="Riwayat kunjungan" aria-label="Riwayat kunjungan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></button>
+      <div class="dsb__grp" role="group" aria-label="AI Assistant Monitor">
+        <button type="button" data-v="ai-chat" title="Riwayat Chat AI" aria-label="Riwayat Chat AI">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        </button>
+        <button type="button" data-v="audit" title="Audit Log Admin" aria-label="Audit Log Admin">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V7l7-4z"/><path d="M9.5 12.2 11.3 14 14.8 10.5"/></svg>
+        </button>
       </div>
     </nav>
-    <a class="dsb__exit" href="#beranda" title="Keluar dari dashboard" aria-label="Keluar dari dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M15 8l4 4-4 4M19 12H9"/></svg></a>
+    <a class="dsb__exit" href="#beranda" title="Kembali ke situs" aria-label="Kembali ke situs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M15 8l4 4-4 4M19 12H9"/></svg></a>
   </aside>
 
   <main id="site-main">
@@ -663,7 +668,7 @@
             <details class="faq__item"><summary>Apakah sistem ini butuh bendungan besar?</summary><p>Tidak. Konsep turbin pusaran dirancang khusus untuk memanfaatkan aliran ber-head rendah tanpa bendungan besar.</p></details>
             <details class="faq__item"><summary>Apakah angka di Dashboard adalah sensor langsung?</summary><p>Pada versi situs statis, Dashboard memakai mesin simulasi prototipe di browser untuk mendemonstrasikan antarmuka pemantauan sambil menunggu integrasi sensor prototipe fisik asli.</p></details>
             <details class="faq__item"><summary>Faktor apa yang memengaruhi daya listrik?</summary><p>Debit aliran (Q), tinggi jatuh (H), serta efisiensi mekanis turbin dan generator (η) sesuai persamaan P = ρ·g·Q·H·η. Anda bisa mencobanya lewat Kalkulator Daya di tombol alat pojok kiri bawah.</p></details>
-            <details class="faq__item"><summary>Bagaimana cara mengakses Dashboard Admin?</summary><p>Klik menu Dashboard di navbar atau ikon kunci pada Toolsbar kiri bawah, lalu masukkan kata sandi demo (pakcikiniv2).</p></details>
+            <details class="faq__item"><summary>Bagaimana cara mengakses Dashboard Admin?</summary><p>Buka ikon kunci Login Admin pada Toolsbar pojok kiri bawah, lalu masuk menggunakan akun Administrator terverifikasi. Dashboard dan Riwayat Chat AI hanya dapat diakses oleh role admin.</p></details>
           </div>
         </div>
       </section>
@@ -693,58 +698,171 @@
       </section>
     </div>
 
-    <!-- ==================== PAGE 5: ADMIN DASHBOARD ==================== -->
+    <!-- ==================== PAGE 5: UNIFIED ADMIN DASHBOARD (V35 STYLE + INTEGRATED AI CHAT MONITOR) ==================== -->
     <div class="page dash-page" id="dashboard" data-title="Dashboard" hidden>
       <div class="dash" data-pane="ringkasan">
+        <!-- Top Utility Bar -->
         <div class="dtop">
-          <div class="dtop__crumb"><b>Vortex Hydro</b><span>·</span><span id="dcrumb">Ringkasan</span></div>
-          <span class="dpill" id="dclk">--:--:--</span>
-          <span class="dpill ok" id="dst"><i></i><span>LIVE · SIMULASI</span></span>
-          <button class="dpill" id="dpause" type="button">Jeda</button>
-          <a class="dpill" href="admin/ai-monitor/">Monitor AI →</a>
-          <div class="dtop__acc">
-            <span class="dtop__av" id="dav" aria-hidden="true">A</span>
-            <b id="dwho">Admin</b>
-            <button class="dtop__out" id="dlogout" type="button" aria-label="Keluar dari akun" title="Keluar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8"/><path d="M6.4 6.8a8 8 0 1 0 11.2 0"/></svg>
-            </button>
-          </div>
-        </div>
-        <header class="dhead">
-          <h1 id="dtitle">Ringkasan <em>sekilas</em></h1>
-          <p id="dsub">Kondisi prototipe saat ini: sensor, tren, dan peringatan. Diperbarui setiap detik.</p>
-        </header>
-        <div class="dgrid" data-sec="ringkasan sensor">
-          <div class="dc" data-c="debit"><small>Debit air</small><b><span>0</span><em>L/s</em></b><svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke-width="1.8" points=""/></svg></div>
-          <div class="dc" data-c="vbat"><small>Tegangan baterai</small><b><span>0</span><em>V</em></b><svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke-width="1.8" points=""/></svg></div>
-          <div class="dc" data-c="rpmShaft"><small>RPM poros utama</small><b><span>0</span><em>RPM</em></b><svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke-width="1.8" points=""/></svg></div>
-          <div class="dc" data-c="rpmGen"><small>RPM generator</small><b><span>0</span><em>RPM</em></b><svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke-width="1.8" points=""/></svg></div>
-        </div>
-        <div class="drow">
-          <div class="dc dchart-card" data-sec="ringkasan grafik">
-            <h3>Grafik 60 detik terakhir
-              <span class="dtabs" id="dtabs">
-                <button type="button" aria-pressed="true" data-k="debit">Debit</button>
-                <button type="button" aria-pressed="false" data-k="vbat">Baterai</button>
-                <button type="button" aria-pressed="false" data-k="rpmShaft">RPM poros</button>
-                <button type="button" aria-pressed="false" data-k="rpmGen">RPM generator</button>
-              </span>
-            </h3>
-            <svg class="dchart" id="dch" viewBox="0 0 600 250" role="img" aria-label="Grafik data sensor"></svg>
-          </div>
-          <div class="dc" data-sec="ringkasan sensor">
-            <h3 style="margin:0 0 12px">Indikator &amp; Log</h3>
-            <div class="dgau">
-              <div><svg viewBox="0 0 120 120"><circle class="arc" cx="60" cy="60" r="48" pathLength="100" stroke="rgba(127,127,127,.18)" stroke-dasharray="75 100"/><circle class="arc" id="grpm" cx="60" cy="60" r="48" pathLength="100" stroke="var(--cyan)" stroke-dasharray="75 100" stroke-dashoffset="75"/><text x="60" y="66" id="grpmt">0</text></svg><small>RPM poros</small></div>
-              <div><svg viewBox="0 0 120 120"><circle class="arc" cx="60" cy="60" r="48" pathLength="100" stroke="rgba(127,127,127,.18)" stroke-dasharray="75 100"/><circle class="arc" id="geff" cx="60" cy="60" r="48" pathLength="100" stroke="var(--ok)" stroke-dasharray="75 100" stroke-dashoffset="75"/><text x="60" y="66" id="geft">0</text></svg><small>RPM generator</small></div>
+          <div class="dtop__crumb"><b>Vortex Hydro</b><span>/</span><span id="dcrumb">Ringkasan</span></div>
+          <form class="dtop__search" id="dquickSearch">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+            <input type="search" id="dquickIn" placeholder="Cari percakapan AI atau sesi…">
+          </form>
+          <div class="dtop__right">
+            <span class="dpill ok" id="dst"><i></i><span>LIVE · SIMULASI</span></span>
+            <button class="dpill" id="dpause" type="button">Jeda</button>
+            <button class="dpill" type="button" data-theme-toggle aria-label="Ganti tema">Tema</button>
+            <div class="dtop__acc">
+              <span class="dtop__av" id="dav" aria-hidden="true">A</span>
+              <b id="dwho">Admin</b>
+              <button class="dtop__out" id="dlogout" type="button" aria-label="Keluar dari akun" title="Keluar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8"/><path d="M6.4 6.8a8 8 0 1 0 11.2 0"/></svg>
+              </button>
             </div>
-            <ul class="dlog" id="dlog"></ul>
           </div>
         </div>
-        <div class="dc" data-sec="riwayat">
-          <h3 style="margin:0 0 8px">Riwayat kunjungan</h3>
-          <p style="margin:0;color:var(--muted);font-size:.88rem">Mode demo statis: riwayat kunjungan server dinonaktifkan di GitHub Pages.</p>
+
+        <!-- Hero Greeting Row (Dashboard V35 Rhythm) -->
+        <header class="dhero">
+          <div class="dhead">
+            <h1 id="dtitle">Welcome Back, <em>Admin Vortex</em></h1>
+            <p id="dsub">Pantau telemetri prototipe turbin pusaran dan riwayat percakapan Vortex Hydro AI dalam satu ruang kerja terverifikasi.</p>
+          </div>
+          <div class="dhero__act">
+            <span class="dpill mono" id="dclk">--:--:--</span>
+            <button type="button" class="c-btn c-btn--navy dhero__btn" id="dopenAiBtn">Riwayat Chat AI →</button>
+          </div>
+        </header>
+
+        <!-- OVERVIEW / TELEMETRY BENTO (Dashboard V35 Left Main + Right Dark Live Monitor) -->
+        <div class="dbento" data-sec="ringkasan sensor grafik">
+          <div class="dbento__main">
+            <!-- 4 KPI Cards -->
+            <div class="dgrid" data-sec="ringkasan sensor">
+              <div class="dc" data-c="debit">
+                <div class="dc__top"><small>Debit Air</small><span class="dc__ic">Q</span></div>
+                <b><span>0</span><em>L/s</em></b>
+                <svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke-width="2" points=""/></svg>
+              </div>
+              <div class="dc" data-c="vbat">
+                <div class="dc__top"><small>Tegangan Baterai</small><span class="dc__ic">V</span></div>
+                <b><span>0</span><em>V</em></b>
+                <svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke-width="2" points=""/></svg>
+              </div>
+              <div class="dc" data-c="rpmShaft">
+                <div class="dc__top"><small>RPM Poros</small><span class="dc__ic">ω</span></div>
+                <b><span>0</span><em>RPM</em></b>
+                <svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke-width="2" points=""/></svg>
+              </div>
+              <button type="button" class="dc dc--btn" id="dkpiAi" title="Buka Riwayat Chat AI">
+                <div class="dc__top"><small>Percakapan AI</small><span class="dc__ic">AI</span></div>
+                <b><span id="dkpiAiCnt">0</span><em>chat</em></b>
+                <span class="dc__sub" id="dkpiAiSub">0 sesi · 0 pesan</span>
+              </button>
+            </div>
+
+            <!-- Insights Row -->
+            <div class="drow">
+              <div class="dc dchart-card" data-sec="ringkasan grafik">
+                <h3>Operational Insights · 60 Detik
+                  <span class="dtabs" id="dtabs">
+                    <button type="button" aria-pressed="true" data-k="debit">Debit</button>
+                    <button type="button" aria-pressed="false" data-k="vbat">Baterai</button>
+                    <button type="button" aria-pressed="false" data-k="rpmShaft">RPM poros</button>
+                    <button type="button" aria-pressed="false" data-k="rpmGen">RPM gen</button>
+                  </span>
+                </h3>
+                <svg class="dchart" id="dch" viewBox="0 0 600 250" role="img" aria-label="Grafik data sensor"></svg>
+              </div>
+
+              <div class="dc" data-sec="ringkasan sensor">
+                <h3 style="margin:0 0 14px">Kinerja Turbin</h3>
+                <div class="dgau">
+                  <div><svg viewBox="0 0 120 120"><circle class="arc" cx="60" cy="60" r="48" pathLength="100" stroke="rgba(127,127,127,.18)" stroke-dasharray="75 100"/><circle class="arc" id="grpm" cx="60" cy="60" r="48" pathLength="100" stroke="var(--cyan)" stroke-dasharray="75 100" stroke-dashoffset="75"/><text x="60" y="66" id="grpmt">0</text></svg><small>RPM poros</small></div>
+                  <div><svg viewBox="0 0 120 120"><circle class="arc" cx="60" cy="60" r="48" pathLength="100" stroke="rgba(127,127,127,.18)" stroke-dasharray="75 100"/><circle class="arc" id="geff" cx="60" cy="60" r="48" pathLength="100" stroke="var(--ok)" stroke-dasharray="75 100" stroke-dashoffset="75"/><text x="60" y="66" id="geft">0</text></svg><small>RPM generator</small></div>
+                </div>
+                <ul class="dlog" id="dlog"></ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Dark Live Monitor Rail (Matching Dashboard.mp4 V35 Dark Monitor Card) -->
+          <aside class="dbento__side" data-sec="ringkasan sensor">
+            <div class="dvitals">
+              <div class="dvitals__head">
+                <div><b>Vortex Live Monitor</b><small>Prototipe Sirkulasi Tertutup</small></div>
+                <span class="dvitals__live"><i></i>LIVE</span>
+              </div>
+              <div class="dvitals__grid">
+                <div class="dvit"><span>Debit Q</span><b id="dvDebit">0.00</b><small>L/s</small></div>
+                <div class="dvit"><span>RPM Gen</span><b id="dvRpmg">0</b><small>RPM</small></div>
+                <div class="dvit"><span>Baterai</span><b id="dvVbat">0.00</b><small>Volt</small></div>
+                <div class="dvit"><span>Daya Est.</span><b id="dvDaya">0.00</b><small>Watt</small></div>
+              </div>
+              <svg class="dvitals__wave" viewBox="0 0 280 56" fill="none" aria-hidden="true">
+                <path class="svg-chute-flow" d="M0 32 Q20 12 40 32 T80 32 T120 28 T160 16 T200 34 T240 24 T280 32" stroke="var(--cyan)" stroke-width="2.2" stroke-dasharray="8 6" stroke-linecap="round"/>
+                <path d="M0 42 Q35 28 70 42 T140 42 T210 38 T280 42" stroke="rgba(16,185,129,.55)" stroke-width="1.6"/>
+              </svg>
+            </div>
+
+            <div class="dc drecent">
+              <div class="drecent__head">
+                <h3>Chat AI Terbaru</h3>
+                <button type="button" class="drecent__all" id="dviewAllAi">Semua →</button>
+              </div>
+              <div class="drecent__list" id="drecentAi"><p style="margin:0;font-size:.82rem;color:var(--muted)">Memuat ringkasan AI…</p></div>
+            </div>
+          </aside>
         </div>
+
+        <!-- INTEGRATED AI CHAT MONITORING PANE (Sidebar Icon: Riwayat Chat AI) -->
+        <section class="dai" data-sec="ai-chat" hidden>
+          <div class="dgrid">
+            <div class="dc"><small>Total Sesi Pengunjung</small><b id="aiStSess">0</b><span class="dc__sub">Sesi unik terisolasi</span></div>
+            <div class="dc"><small>Total Percakapan</small><b id="aiStConv">0</b><span class="dc__sub" id="aiStTodayC">0 hari ini</span></div>
+            <div class="dc"><small>Total Pesan</small><b id="aiStMsg">0</b><span class="dc__sub" id="aiStSplit">0 user · 0 AI</span></div>
+            <div class="dc"><small>Audit Log Admin</small><b id="aiStAudit">0</b><span class="dc__sub" id="aiStTodayM">0 pesan hari ini</span></div>
+          </div>
+
+          <div class="dc dai__bar">
+            <form class="dai__filters" id="aiFilterForm">
+              <input type="search" id="aiQ" placeholder="Cari kata kunci judul, isi pesan, atau ID sesi…">
+              <select id="aiSessSel" aria-label="Filter berdasarkan sesi"><option value="">Semua Sesi</option></select>
+              <input type="date" id="aiFrom" aria-label="Dari tanggal">
+              <input type="date" id="aiTo" aria-label="Sampai tanggal">
+              <button type="submit" class="c-btn c-btn--navy dai__btn">Filter</button>
+              <button type="button" class="c-btn c-btn--outline dai__btn" id="aiReset">Reset</button>
+              <button type="button" class="c-btn c-btn--outline dai__btn" id="aiRefresh">Muat Ulang</button>
+            </form>
+          </div>
+
+          <div class="dai__split">
+            <div class="dai__col">
+              <div class="dai__meta" id="aiListMeta">Memuat percakapan…</div>
+              <div class="dai__list" id="aiConvList"></div>
+            </div>
+            <div class="dc dai__detail" id="aiDetailPane">
+              <div class="dai__empty">Pilih salah satu percakapan pengunjung di sebelah kiri untuk membaca pesan user dan respons AI secara berurutan.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- INTEGRATED ADMIN AUDIT LOG PANE (Sidebar Icon: Audit Log) -->
+        <section class="dc daudit" data-sec="audit" hidden>
+          <div class="daudit__head">
+            <h3>Riwayat Aktivitas Admin (50 Terbaru)</h3>
+            <div style="display:flex;gap:8px">
+              <button type="button" class="dpill" id="aiAuditRefresh">Segarkan</button>
+              <a class="dpill" href="admin/ai-monitor/">Buka Halaman Terpisah ↗</a>
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="daudit__tbl">
+              <thead><tr><th>Waktu</th><th>Admin</th><th>Aksi</th><th>Target</th></tr></thead>
+              <tbody id="aiAuditBody"><tr><td colspan="4" style="color:var(--muted)">Memuat audit log…</td></tr></tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </div>
   </main>
@@ -922,9 +1040,9 @@
   </div>
 
   <!-- Consolidated Scripts -->
-  <script src="assets/app.js?v=5"></script>
-  <script src="assets/dashboard.js?v=2"></script>
+  <script src="assets/app.js?v=6"></script>
+  <script src="assets/dashboard.js?v=3"></script>
   <script src="assets/i18n.js?v=17"></script>
-  <script src="assets/ai-assistant.js?v=7" defer></script>
+  <script src="assets/ai-assistant.js?v=8" defer></script>
 </body>
 </html>

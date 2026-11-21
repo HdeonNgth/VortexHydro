@@ -1,9 +1,11 @@
-// Vortex Hydro Private AI Assistant — Backend (Supabase Edge Function)
-// Strict Supabase Auth JWT verification + Postgres RLS defense-in-depth + Server-side Gemini API.
+// Vortex Hydro Public Private Anonymous AI Assistant — Backend (Supabase Edge Function)
+// No login required for visitors. Strict server-issued HMAC-signed session tokens + SHA-256 DB lookup.
+// Gemini API key stays strictly server-side in Supabase Secrets.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const SIGNING_SECRET = Deno.env.get("SESSION_SIGNING_SECRET") ?? SERVICE_KEY;
 const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY") ?? "";
 const MODELS = (Deno.env.get("GEMINI_MODELS") ?? Deno.env.get("GEMINI_MODEL") ?? "gemini-2.5-flash-lite,gemini-2.5-flash,gemini-3.8-flash")
   .split(",").map((m) => m.trim().replace(/^models\//, "")).filter((m) => /^[A-Za-z0-9._-]+$/.test(m));
@@ -15,6 +17,11 @@ const MAX_MESSAGE = 2000;
 const HISTORY_LIMIT = 10;
 const GEMINI_TIMEOUT_MS = 20000;
 const RATE_LIMIT = 20;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const db = createClient(SUPABASE_URL, SERVICE_KEY, {
+  auth: { persistSession: false, autoRefreshToken: false },
+});
 
 const SYSTEM_PROMPT = `You are Vortex Hydro AI, an advanced AI assistant integrated into the Vortex Hydro website with the personality of an Intelligent Companion.
 
@@ -54,7 +61,7 @@ const PAGES: Record<string, string> = {
   tentang: "Cara Kerja & Diagram",
   dokumentasi: "Dokumentasi & FAQ",
   "tentang-kami": "Tentang Kami (Tim Kepemimpinan)",
-  dashboard: "Dashboard Admin (simulasi)",
+  dashboard: "Dashboard Admin",
 };
 
 function corsFor(req: Request) {
@@ -62,7 +69,7 @@ function corsFor(req: Request) {
   const ok = ALLOWED.includes(origin);
   return {
     "Access-Control-Allow-Origin": ok ? origin : ALLOWED[0],
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-session-token",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Vary": "Origin",
   };
@@ -79,6 +86,84 @@ function json(req: Request, body: unknown, status = 200) {
   });
 }
 
+function toHex(buf: ArrayBuffer | Uint8Array): string {
+  const arr = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+  return Array.from(arr).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+async function sha256Hex(s: string): Promise<string> {
+  return toHex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)));
+}
+
+let hmacKeyPromise: Promise<CryptoKey> | null = null;
+function getHmacKey() {
+  if (!hmacKeyPromise) {
+    hmacKeyPromise = crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode("vxs-hmac:" + SIGNING_SECRET),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"],
+    );
+  }
+  return hmacKeyPromise;
+}
+
+async function signPayload(payload: string): Promise<string> {
+  const key = await getHmacKey();
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
+  return toHex(sig);
+}
+
+async function issueSession() {
+  const sessionId = crypto.randomUUID();
+  const rnd = new Uint8Array(32);
+  crypto.getRandomValues(rnd);
+  const secret = toHex(rnd);
+  const payload = `${sessionId}.${secret}`;
+  const sig = await signPayload(payload);
+  const token = `vxs1.${payload}.${sig}`;
+  const tokenHash = await sha256Hex(token);
+
+  const { error } = await db.from("chat_sessions").insert({
+    id: sessionId,
+    token_hash: tokenHash,
+  });
+  if (error) throw new Error("db");
+  return { sessionId, token };
+}
+
+async function verifySessionToken(rawToken: string): Promise<{ id: string } | null> {
+  const parts = rawToken.trim().split(".");
+  if (parts.length !== 4 || parts[0] !== "vxs1") return null;
+  const [, sid, secret, sig] = parts;
+  if (!UUID.test(sid) || !/^[0-9a-f]{64}$/i.test(secret) || !/^[0-9a-f]{64}$/i.test(sig)) return null;
+
+  const expectedSig = await signPayload(`${sid}.${secret}`);
+  if (!safeEqual(sig.toLowerCase(), expectedSig.toLowerCase())) return null;
+
+  const tokenHash = await sha256Hex(rawToken.trim());
+  const { data, error } = await db
+    .from("chat_sessions")
+    .select("id,expires_at")
+    .eq("id", sid)
+    .eq("token_hash", tokenHash)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  if (data.expires_at && new Date(data.expires_at).getTime() < Date.now()) return null;
+
+  await db.from("chat_sessions").update({ last_activity_at: new Date().toISOString() }).eq("id", data.id);
+  return { id: data.id };
+}
+
 const hits = new Map<string, number[]>();
 function limited(key: string) {
   const now = Date.now();
@@ -89,21 +174,6 @@ function limited(key: string) {
     for (const [k, v] of hits) if (!v.some((t) => now - t < 60000)) hits.delete(k);
   }
   return arr.length > RATE_LIMIT;
-}
-
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-function extractBearer(req: Request): string | null {
-  const auth = req.headers.get("authorization") ?? "";
-  const m = auth.match(/^Bearer\s+(.+)$/i);
-  return m?.[1]?.trim() || null;
-}
-
-function userScopedClient(jwt: string) {
-  return createClient(SUPABASE_URL, ANON_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false },
-    global: { headers: { Authorization: `Bearer ${jwt}` } },
-  });
 }
 
 async function askGemini(model: string, history: { role: string; content: string }[], pageNote: string) {
@@ -166,65 +236,67 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsFor(req) });
   if (req.method !== "POST") return json(req, { error: "method_not_allowed" }, 405);
 
-  // 1. Validate Supabase Auth Bearer JWT strictly on the backend
-  const jwt = extractBearer(req);
-  if (!jwt) return json(req, { error: "unauthorized" }, 401);
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (limited("ip:" + ip)) return json(req, { error: "rate_limited" }, 429);
 
-  const db = userScopedClient(jwt);
-  const { data: authData, error: authErr } = await db.auth.getUser(jwt);
-  if (authErr || !authData?.user?.id) {
-    return json(req, { error: "unauthorized" }, 401);
-  }
-  const userId = authData.user.id;
-
-  // 2. Parse JSON body & reject any attempt to spoof user_id
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch { return json(req, { error: "invalid_json" }, 400); }
 
-  if (body.user_id !== undefined && body.user_id !== null && String(body.user_id) !== userId) {
-    return json(req, { error: "forbidden_user_mismatch" }, 403);
-  }
-
-  // 3. Rate limiting per authenticated user + IP
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  if (limited("u:" + userId) || limited("ip:" + ip)) {
-    return json(req, { error: "rate_limited" }, 429);
-  }
-
   const action = String(body.action ?? "send");
-  const convId = body.conversation_id == null || body.conversation_id === "" ? null : String(body.conversation_id);
-  if (convId !== null && !UUID.test(convId)) return json(req, { error: "invalid_conversation" }, 400);
-
-  async function owned(id: string) {
-    const { data, error } = await db
-      .from("conversations")
-      .select("id,title,created_at,updated_at")
-      .eq("id", id)
-      .eq("user_id", userId)
-      .maybeSingle();
-    if (error) throw new Error("db");
-    return data;
-  }
 
   try {
-    // List ONLY authenticated user's conversations (enforced by query + Postgres RLS)
+    // 1. Issue a new cryptographically signed anonymous session
+    if (action === "init_session") {
+      const created = await issueSession();
+      return json(req, { session_token: created.token, session_id: created.sessionId });
+    }
+
+    // 2. Validate signed session token strictly on the backend
+    const rawToken = req.headers.get("x-session-token") ?? String(body.session_token ?? "");
+    if (!rawToken) return json(req, { error: "invalid_session" }, 401);
+
+    const session = await verifySessionToken(rawToken);
+    if (!session) return json(req, { error: "invalid_session" }, 401);
+
+    // Reject spoofed session_id if client tries to manipulate it
+    if (body.session_id !== undefined && body.session_id !== null && String(body.session_id) !== session.id) {
+      return json(req, { error: "forbidden_session_mismatch" }, 403);
+    }
+
+    if (limited("s:" + session.id)) return json(req, { error: "rate_limited" }, 429);
+
+    const convId = body.conversation_id == null || body.conversation_id === "" ? null : String(body.conversation_id);
+    if (convId !== null && !UUID.test(convId)) return json(req, { error: "invalid_conversation" }, 400);
+
+    async function owned(id: string) {
+      const { data, error } = await db
+        .from("conversations")
+        .select("id,title,created_at,updated_at")
+        .eq("id", id)
+        .eq("session_id", session!.id)
+        .maybeSingle();
+      if (error) throw new Error("db");
+      return data;
+    }
+
+    // List ONLY this session's conversations
     if (action === "list") {
       const { data, error } = await db
         .from("conversations")
         .select("id,title,created_at,updated_at")
-        .eq("user_id", userId)
+        .eq("session_id", session.id)
         .order("updated_at", { ascending: false })
         .limit(50);
       if (error) throw new Error("db");
       return json(req, { conversations: data ?? [] });
     }
 
-    // Delete ALL conversations owned by authenticated user
+    // Delete ALL conversations belonging to this session
     if (action === "delete_all") {
       const { error } = await db
         .from("conversations")
         .delete()
-        .eq("user_id", userId);
+        .eq("session_id", session.id);
       if (error) throw new Error("db");
       return json(req, { ok: true });
     }
@@ -240,7 +312,7 @@ Deno.serve(async (req) => {
           .from("conversations")
           .delete()
           .eq("id", convId)
-          .eq("user_id", userId);
+          .eq("session_id", session.id);
         if (error) throw new Error("db");
         return json(req, { ok: true });
       }
@@ -252,7 +324,7 @@ Deno.serve(async (req) => {
           .from("conversations")
           .update({ title })
           .eq("id", convId)
-          .eq("user_id", userId);
+          .eq("session_id", session.id);
         if (error) throw new Error("db");
         return json(req, { ok: true, title });
       }
@@ -261,7 +333,7 @@ Deno.serve(async (req) => {
         .from("messages")
         .select("id,role,content,created_at,status")
         .eq("conversation_id", convId)
-        .eq("user_id", userId)
+        .eq("session_id", session.id)
         .neq("status", "error")
         .order("created_at", { ascending: true })
         .limit(200);
@@ -287,18 +359,18 @@ Deno.serve(async (req) => {
           .from("messages")
           .select("id,role,status")
           .eq("conversation_id", id)
-          .eq("user_id", userId)
+          .eq("session_id", session.id)
           .order("created_at", { ascending: false })
           .limit(1);
         if (last?.[0]?.role === "user" && last[0].status === "error") {
-          await db.from("messages").delete().eq("id", last[0].id).eq("user_id", userId);
+          await db.from("messages").delete().eq("id", last[0].id).eq("session_id", session.id);
         }
       }
     } else {
       title = message.replace(/\s+/g, " ").slice(0, 60);
       const { data, error } = await db
         .from("conversations")
-        .insert({ user_id: userId, title })
+        .insert({ session_id: session.id, title })
         .select("id")
         .single();
       if (error || !data) throw new Error("db");
@@ -307,17 +379,17 @@ Deno.serve(async (req) => {
 
     const { data: um, error: ue } = await db
       .from("messages")
-      .insert({ conversation_id: id, user_id: userId, role: "user", content: message, status: "pending" })
+      .insert({ conversation_id: id, session_id: session.id, role: "user", content: message, status: "pending" })
       .select("id")
       .single();
     if (ue || !um) throw new Error("db");
 
-    // Context sent to Gemini is strictly restricted to THIS conversation & THIS user
+    // Gemini only sees messages belonging strictly to THIS verified session & conversation
     const { data: hist, error: he } = await db
       .from("messages")
       .select("role,content")
       .eq("conversation_id", id)
-      .eq("user_id", userId)
+      .eq("session_id", session.id)
       .in("status", ["completed", "pending"])
       .order("created_at", { ascending: false })
       .limit(HISTORY_LIMIT);
@@ -334,7 +406,7 @@ Deno.serve(async (req) => {
       answer = r.text;
       usedModel = r.model;
     } catch (e) {
-      await db.from("messages").update({ status: "error" }).eq("id", um.id).eq("user_id", userId);
+      await db.from("messages").update({ status: "error" }).eq("id", um.id).eq("session_id", session.id);
       const code = (e as Error).message;
       const status = code === "busy" ? 429 : 502;
       return json(
@@ -348,7 +420,7 @@ Deno.serve(async (req) => {
       .from("messages")
       .insert({
         conversation_id: id,
-        user_id: userId,
+        session_id: session.id,
         role: "assistant",
         content: answer,
         model: usedModel,
@@ -357,12 +429,12 @@ Deno.serve(async (req) => {
       .select("id,created_at")
       .single();
     if (ae || !am) {
-      await db.from("messages").update({ status: "error" }).eq("id", um.id).eq("user_id", userId);
+      await db.from("messages").update({ status: "error" }).eq("id", um.id).eq("session_id", session.id);
       throw new Error("db");
     }
 
-    await db.from("messages").update({ status: "completed" }).eq("id", um.id).eq("user_id", userId);
-    await db.from("conversations").update({ updated_at: new Date().toISOString() }).eq("id", id).eq("user_id", userId);
+    await db.from("messages").update({ status: "completed" }).eq("id", um.id).eq("session_id", session.id);
+    await db.from("conversations").update({ updated_at: new Date().toISOString() }).eq("id", id).eq("session_id", session.id);
 
     return json(req, {
       conversation_id: id,
