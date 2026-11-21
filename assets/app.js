@@ -974,7 +974,7 @@
     start();
   })();
 
-  /* ---------- 10. Fullscreen Interactive 3D Simulator (Three.js WebGL + Raycasting) ---------- */
+  /* ---------- 10. Fullscreen Interactive 3D Simulator (1:100 Millimetric CAD Three.js WebGL) ---------- */
   (function initVortexThreeSimulator() {
     var root = $('vx3d-root');
     var viewport = $('vx3d-viewport');
@@ -982,109 +982,81 @@
     if (!root || !viewport || !canvas || typeof window.THREE === 'undefined') return;
     var THREE = window.THREE;
 
-    /* Concise, general-friendly object information (NO math formulas or equations) */
+    /* 5 Pure Prototype Objects — Concise, Clear, Zero Math Formulas */
     var OBJECT_DATA = {
-      tank: {
-        tag: 'OBJEK 01 · SIRKULASI AIR',
-        title: 'Penampung Air 60 Liter & Pompa',
-        img: 'assets/images/components/comp-pump.jpg?v=2',
-        desc: 'Wadah silinder berkapasitas 60 liter di bagian kolong rangka bawah yang dilengkapi pompa sirkulasi celup.',
-        func: 'Menampung seluruh air yang jatuh dari ujung saluran keluar dan memompanya kembali ke bagian atas agar aliran air berlangsung terus-menerus tanpa terbuang.',
-        extra: [
-          '<strong>Kapasitas Penampung:</strong> 60 Liter di rak bawah',
-          '<strong>Penggerak Sirkulasi:</strong> Pompa air listrik 100 W',
-          '<strong>Sistem Operasi:</strong> Siklus air tertutup hemat air'
-        ],
-        anchor: [3.2, -1.5, 0.2],
-        cam: { theta: 0.62, phi: 1.12, radius: 9.2, target: [2.6, -1.2, 0.0] }
-      },
-      pipe: {
-        tag: 'OBJEK 02 · DISTRIBUSI HULU',
-        title: 'Pipa Sirkulasi & Bak Penenang Hulu',
-        img: 'assets/images/components/comp-pipe.jpg?v=2',
-        desc: 'Jalur pipa PVC pengantar air dari penampung bawah menuju bak penenang bagian atas (seksi hulu 500 mm) yang memiliki sekat pengarah aliran.',
-        func: 'Mengalirkan air naik ke bagian hulu dan menenangkan gejolak air sebelum meluncur ke bidang miring agar aliran lebih rata dan stabil.',
-        extra: [
-          '<strong>Jalur Pipa:</strong> Pipa PVC Ø 45 mm di sisi rangka',
-          '<strong>Dimensi Bak Hulu:</strong> Panjang 500 mm × Lebar 400 mm',
-          '<strong>Sekat Internal:</strong> Pengarah aliran 95 × 105 mm'
-        ],
-        anchor: [-4.6, 1.85, 0.0],
-        cam: { theta: -0.65, phi: 1.02, radius: 9.4, target: [-4.0, 1.3, 0.0] }
-      },
       chute: {
-        tag: 'OBJEK 03 · SALURAN UTAMA',
+        tag: 'OBJEK 01 · SALURAN UTAMA',
         title: 'Saluran Akrilik Miring (1700 × 400 mm)',
         img: 'assets/images/components/cad-prototype.png',
-        desc: 'Saluran terbuka berbahan akrilik transparan dengan bidang miring sepanjang 1016,97 mm yang menghubungkan bak hulu ke ruang kincir.',
-        func: 'Mengarahkan dan mempercepat luncuran air dari bagian atas menuju sudu-sudu kincir, sekaligus memudahkan pengamatan visual aliran air dari luar.',
+        desc: 'Saluran terbuka berbahan akrilik transparan yang terdiri dari bak penenang hulu, bidang luncur miring, dan ruang keluar hilir.',
+        func: 'Menampung air di bagian hulu lalu mengarahkan dan mempercepat luncuran air menuju sudu-sudu kincir sebelum keluar ke penampung bawah.',
         extra: [
           '<strong>Panjang Total:</strong> 1700 mm (Hulu 500 · Miring 1016,97 · Hilir 200 mm)',
-          '<strong>Lebar & Dinding:</strong> Lebar 400 mm × Tinggi dinding 250 mm',
-          '<strong>Material:</strong> Akrilik transparan dengan bukaan keluar bawah'
+          '<strong>Lebar &amp; Dinding:</strong> Lebar 400 mm × Tinggi dinding 250 mm',
+          '<strong>Sekat Hulu:</strong> Pengarah aliran internal 95 × 105 mm'
         ],
-        anchor: [-0.8, 1.05, 0.0],
-        cam: { theta: 0.48, phi: 1.00, radius: 10.6, target: [-0.6, 0.5, 0.0] }
+        anchor: [-1.8, 3.2, 0.0],
+        cam: { theta: 0.56, phi: 1.06, radius: 19.5, target: [-0.8, 2.2, 0.0] }
       },
       wheel: {
-        tag: 'OBJEK 04 · TURBIN UTAMA',
+        tag: 'OBJEK 02 · TURBIN UTAMA',
         title: 'Kincir Air 6 Sudu Melengkung',
         img: 'assets/images/components/comp-wheel.jpg',
-        desc: 'Rotor turbin berwarna biru dengan 6 bilah sudu melengkung yang terpasang pada poros utama stainless steel menembus dinding saluran.',
-        func: 'Menangkap dorongan aliran air yang meluncur dari saluran miring dan mengubahnya menjadi gerak putar pada poros utama.',
+        desc: 'Rotor turbin berwarna biru dengan 6 bilah sudu melengkung yang berada tepat di dalam dinding saluran miring pada poros stainless steel.',
+        func: 'Menangkap dorongan aliran air yang meluncur di dalam saluran dan mengubahnya menjadi gerak putar pada poros utama.',
         extra: [
           '<strong>Jumlah Bilah:</strong> 6 sudu melengkung penangkap arus',
-          '<strong>Dimensi Rotor:</strong> Diameter 330 mm × Lebar 250 mm',
-          '<strong>Poros Utama:</strong> Stainless steel Ø 30 mm tahan karat'
+          '<strong>Posisi Rotor:</strong> Presisi di dalam ruang saluran (tidak keluar dinding)',
+          '<strong>Poros Utama:</strong> Stainless steel Ø 30 mm menembus sisi saluran'
         ],
-        anchor: [1.65, 0.05, 0.0],
-        cam: { theta: 0.55, phi: 1.04, radius: 7.8, target: [1.65, 0.0, 0.0] }
+        anchor: [3.8, 2.35, 0.0],
+        cam: { theta: 0.48, phi: 1.04, radius: 11.5, target: [3.8, 2.1, 0.0] }
       },
       pulley: {
-        tag: 'OBJEK 05 · TRANSMISI PUTARAN',
+        tag: 'OBJEK 03 · TRANSMISI PUTARAN',
         title: 'Transmisi Pulley 4-Jari (1 : 4) & V-Belt',
         img: 'assets/images/components/comp-pulley.jpg',
         desc: 'Roda pulley besar berjari-jari empat di sisi luar dinding saluran yang dihubungkan sabuk V-belt ke pulley kecil pada poros generator.',
-        func: 'Melipatgandakan kecepatan putaran dari poros kincir menjadi empat kali lebih cepat agar generator dapat menghasilkan listrik secara optimal.',
+        func: 'Melipatgandakan kecepatan putaran dari poros kincir menjadi empat kali lebih cepat agar generator dapat membangkitkan listrik secara optimal.',
         extra: [
           '<strong>Pulley Penggerak:</strong> Roda 4-jari diameter 270 mm',
-          '<strong>Pulley Tujuan:</strong> Diameter 67,5 mm (perbandingan 1 : 4)',
-          '<strong>Penempatan:</strong> Sisi luar dinding saluran (bebas aliran air)'
+          '<strong>Pulley Tujuan:</strong> Diameter 67,5 mm (perbandingan putaran 1 : 4)',
+          '<strong>Penempatan:</strong> Sisi luar dinding saluran akrilik'
         ],
-        anchor: [2.4, -0.05, -1.65],
-        cam: { theta: 2.35, phi: 1.08, radius: 7.8, target: [2.8, -0.2, -1.5] }
+        anchor: [3.8, 2.18, -2.35],
+        cam: { theta: 2.45, phi: 1.12, radius: 12.2, target: [5.6, 1.7, -2.2] }
       },
       generator: {
-        tag: 'OBJEK 06 · PEMBANGKIT & BEBAN',
-        title: 'Generator DC XD 3240 & Lampu LED',
+        tag: 'OBJEK 04 · PEMBANGKIT LISTRIK',
+        title: 'Generator DC XD 3240',
         img: 'assets/images/components/comp-generator.jpg?v=2',
-        desc: 'Unit generator arus searah berbentuk silinder yang terpasang kokoh di ujung rangka depan beserta lampu indikator LED 12 V.',
-        func: 'Mengubah putaran cepat dari transmisi pulley menjadi energi listrik DC 12 V untuk menyalakan lampu LED sebagai indikator daya.',
+        desc: 'Unit generator arus searah (DC) berukuran kompak yang terpasang di bagian ujung hilir di luar jalur aliran air.',
+        func: 'Mengubah putaran cepat dari sabuk transmisi pulley menjadi energi listrik arus searah (DC).',
         extra: [
-          '<strong>Tipe Pembangkit:</strong> Generator magnet permanen DC XD 3240',
-          '<strong>Beban Listrik:</strong> 2 unit lampu LED (total 10 W / 12 V)',
-          '<strong>Keamanan:</strong> Terpasang di zona kering ujung rangka'
+          '<strong>Tipe Unit:</strong> Permanent Magnet Generator DC XD 3240',
+          '<strong>Penggerak:</strong> Terhubung langsung ke pulley kecil 67,5 mm',
+          '<strong>Posisi:</strong> Zona kering di ujung depan saluran'
         ],
-        anchor: [4.55, -0.45, -0.75],
-        cam: { theta: 1.85, phi: 1.05, radius: 7.5, target: [4.4, -0.5, -0.5] }
+        anchor: [8.85, 1.15, -1.35],
+        cam: { theta: 1.98, phi: 1.10, radius: 9.8, target: [8.4, 1.15, -1.4] }
       },
-      frame: {
-        tag: 'OBJEK 07 · STRUKTUR PENOPANG',
-        title: 'Rangka Besi Hollow Bertingkat',
-        img: 'assets/images/components/cad-prototype.png',
-        desc: 'Struktur meja rangka baja hollow dua tingkat berwarna gelap yang menopang seluruh saluran akrilik, transmisi, generator, dan tangki bawah.',
-        func: 'Memberikan kemiringan elevasi yang presisi bagi saluran air sekaligus menjaga kestabilan alat dari getaran saat beroperasi.',
+      tank: {
+        tag: 'OBJEK 05 · PENAMPUNG SIRKULASI',
+        title: 'Penampung Air 60 Liter & Pompa',
+        img: 'assets/images/components/comp-pump.jpg?v=2',
+        desc: 'Wadah penampung air silinder berkapasitas besar 60 liter yang ditempatkan tepat di bawah bukaan keluar ujung hilir saluran.',
+        func: 'Menampung seluruh air yang jatuh dari bukaan bawah saluran agar dapat disirkulasikan kembali secara tertutup.',
         extra: [
-          '<strong>Konstruksi:</strong> Rangka besi hollow bertingkat (dek atas & bawah)',
-          '<strong>Dimensi Rangka:</strong> Panjang 2,0 m × Lebar 0,8 m',
-          '<strong>Elevasi Hulu:</strong> Tinggi total saluran 485 mm'
+          '<strong>Kapasitas Wadah:</strong> 60 Liter (diameter 520 mm)',
+          '<strong>Kelengkapan:</strong> Pompa celup sirkulasi 100 W di dasar tangki',
+          '<strong>Posisi:</strong> Tepat di bawah bibir keluaran saluran 200 mm'
         ],
-        anchor: [-2.2, -0.8, 1.35],
-        cam: { theta: 0.72, phi: 1.08, radius: 13.0, target: [0.0, -0.3, 0.0] }
+        anchor: [7.2, -2.1, 0.0],
+        cam: { theta: 0.65, phi: 1.16, radius: 14.5, target: [6.8, -1.8, 0.0] }
       }
     };
 
-    var DEFAULT_CAM = { theta: 0.68, phi: 1.04, radius: 13.2, target: [0.1, -0.2, 0.0] };
+    var DEFAULT_CAM = { theta: 0.64, phi: 1.10, radius: 22.5, target: [0.6, 0.6, 0.0] };
 
     /* UI Elements */
     var panel = $('vx3d-panel');
@@ -1099,16 +1071,17 @@
     var hintEl = $('vx3d-hint');
     var hotspotsWrap = $('vx3d-hotspots');
     var spotBtns = {};
-    $$('[data-spot]', hotspotsWrap).forEach(function (b) {
-      spotBtns[b.getAttribute('data-spot')] = b;
-    });
-    var navPills = $$('[data-vx3d-select]', root);
+    if (hotspotsWrap) {
+      $$('[data-spot]', hotspotsWrap).forEach(function (b) {
+        spotBtns[b.getAttribute('data-spot')] = b;
+      });
+    }
 
-    /* Three.js Scene, Camera & Renderer Setup */
+    /* Three.js Scene, Camera & WebGLRenderer */
     var scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x020813, 0.024);
+    scene.fog = new THREE.FogExp2(0x020813, 0.014);
 
-    var camera = new THREE.PerspectiveCamera(42, 16 / 9, 0.1, 120);
+    var camera = new THREE.PerspectiveCamera(40, 16 / 9, 0.1, 160);
     var renderer = new THREE.WebGLRenderer({
       canvas: canvas,
       antialias: true,
@@ -1121,38 +1094,32 @@
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     }
 
-    /* Realistic Futuristic 3D Lighting */
-    var hemiLight = new THREE.HemisphereLight(0x90e0ef, 0x041226, 0.85);
-    scene.add(hemiLight);
+    /* Realistic Studio & Futuristic Rim Lighting */
+    scene.add(new THREE.HemisphereLight(0xbbeeff, 0x041226, 0.92));
 
-    var dirLight = new THREE.DirectionalLight(0xffffff, 1.15);
-    dirLight.position.set(8, 14, 10);
-    dirLight.castShadow = true;
-    scene.add(dirLight);
+    var keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    keyLight.position.set(12, 22, 16);
+    keyLight.castShadow = true;
+    scene.add(keyLight);
 
-    var rimLight = new THREE.DirectionalLight(0x00e5ff, 0.75);
-    rimLight.position.set(-10, 6, -9);
-    scene.add(rimLight);
+    var backRimLight = new THREE.DirectionalLight(0x00e5ff, 0.85);
+    backRimLight.position.set(-14, 10, -14);
+    scene.add(backRimLight);
 
-    var hydroGlowLight = new THREE.PointLight(0x00d4ff, 1.3, 18);
-    hydroGlowLight.position.set(0.5, 1.2, 0);
-    scene.add(hydroGlowLight);
+    var aquaFillLight = new THREE.PointLight(0x00d4ff, 1.1, 30);
+    aquaFillLight.position.set(2.0, 3.5, 4.0);
+    scene.add(aquaFillLight);
 
-    var ledPointLight = new THREE.PointLight(0xfbbf24, 1.6, 8);
-    ledPointLight.position.set(4.6, 0.1, 0.85);
-    scene.add(ledPointLight);
-
-    /* Subtle High-Tech Floor Grid */
-    var gridHelper = new THREE.GridHelper(26, 26, 0x00a8e8, 0x0b2545);
-    gridHelper.position.y = -2.38;
+    /* Subtle Reference Floor Grid under the 60L Tank */
+    var gridHelper = new THREE.GridHelper(34, 34, 0x00a8e8, 0x092242);
+    gridHelper.position.y = -4.22;
     if (gridHelper.material) {
       gridHelper.material.transparent = true;
-      gridHelper.material.opacity = 0.35;
+      gridHelper.material.opacity = 0.32;
     }
     scene.add(gridHelper);
 
-    /* Component Group Registry for Raycasting & Highlighting */
-    var componentGroups = {};
+    /* Registry for Raycasting & Emissive Highlighting */
     var interactiveMeshes = [];
     var originalEmissives = new Map();
 
@@ -1173,8 +1140,17 @@
       var g = new THREE.Group();
       g.userData.objKey = key;
       scene.add(g);
-      componentGroups[key] = g;
       return g;
+    }
+
+    function addEdges(mesh, color, opacity) {
+      var edges = new THREE.EdgesGeometry(mesh.geometry, 15);
+      var lineMat = new THREE.LineBasicMaterial({
+        color: color || 0x00e5ff,
+        transparent: true,
+        opacity: opacity == null ? 0.65 : opacity
+      });
+      mesh.add(new THREE.LineSegments(edges, lineMat));
     }
 
     function addBox(group, key, w, h, d, x, y, z, mat, rx, ry, rz) {
@@ -1190,282 +1166,327 @@
       return mesh;
     }
 
-    function addEdges(parentMesh, color, opacity) {
-      var edges = new THREE.EdgesGeometry(parentMesh.geometry);
-      var lineMat = new THREE.LineBasicMaterial({
-        color: color || 0x00e5ff,
-        transparent: true,
-        opacity: opacity == null ? 0.55 : opacity
-      });
-      var line = new THREE.LineSegments(edges, lineMat);
-      parentMesh.add(line);
-    }
-
     /* Materials */
-    var matFrame = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.65, roughness: 0.35 });
-    var matDeck  = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.5, roughness: 0.45 });
-    var matTankShell = new THREE.MeshPhysicalMaterial({
-      color: 0xdbeafe, transparent: true, opacity: 0.32, roughness: 0.15, metalness: 0.05, side: THREE.DoubleSide
-    });
-    var matTankWater = new THREE.MeshStandardMaterial({
-      color: 0x00a8e8, transparent: true, opacity: 0.72, roughness: 0.2, metalness: 0.1, emissive: 0x004e7c, emissiveIntensity: 0.35
-    });
-    var matPump = new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.45, roughness: 0.3 });
-    var matPipe = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.25, roughness: 0.3 });
     var matAcrylic = new THREE.MeshPhysicalMaterial({
-      color: 0xe0f7fc, transparent: true, opacity: 0.28, roughness: 0.1, metalness: 0.05, side: THREE.DoubleSide
+      color: 0xe0f7fc,
+      transparent: true,
+      opacity: 0.28,
+      roughness: 0.08,
+      metalness: 0.05,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+    var matAcrylicFloor = new THREE.MeshPhysicalMaterial({
+      color: 0xc8eef9,
+      transparent: true,
+      opacity: 0.38,
+      roughness: 0.12,
+      metalness: 0.05,
+      side: THREE.DoubleSide
+    });
+    var matWater = new THREE.MeshStandardMaterial({
+      color: 0x00a8e8,
+      transparent: true,
+      opacity: 0.72,
+      roughness: 0.18,
+      metalness: 0.08,
+      emissive: 0x004a77,
+      emissiveIntensity: 0.35
     });
     var matBlade = new THREE.MeshStandardMaterial({
-      color: 0x00b4d8, metalness: 0.3, roughness: 0.25, emissive: 0x005073, emissiveIntensity: 0.25
+      color: 0x00b4d8,
+      metalness: 0.28,
+      roughness: 0.24,
+      emissive: 0x00527a,
+      emissiveIntensity: 0.28
     });
-    var matShaft = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.85, roughness: 0.2 });
-    var matPulley = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.55, roughness: 0.3 });
-    var matBelt = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.2, roughness: 0.7 });
-    var matGen = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.7, roughness: 0.3 });
-
-    /* =====================================================================
-       BUILD 07: TWO-TIER DARK STEEL HOLLOW FRAME (Exact Match to CAD PNG)
-       ===================================================================== */
-    var gFrame = createGroup('frame');
-    /* Left Upper Tier Deck (X: -5.6..-1.8, Y: 0.15, Z: -1.4..1.4) */
-    var upperDeck = addBox(gFrame, 'frame', 3.8, 0.14, 2.8, -3.7, 0.15, 0, matDeck);
-    addEdges(upperDeck, 0x0f172a, 0.7);
-    /* Upper Left Brackets holding the Acrylic Flume */
-    addBox(gFrame, 'frame', 0.12, 0.9, 2.75, -5.55, 0.65, 0, matFrame);
-    addBox(gFrame, 'frame', 1.4, 0.75, 0.12, -3.1, 0.58, 1.32, matFrame);
-    addBox(gFrame, 'frame', 1.4, 0.75, 0.12, -3.1, 0.58, -1.32, matFrame);
-
-    /* Right Lower Tier Deck (X: -1.8..4.8, Y: -1.05) with Center Cutout for 60L Tank Outlet */
-    addBox(gFrame, 'frame', 6.6, 0.14, 0.55, 1.5, -1.05, 1.12, matDeck);
-    addBox(gFrame, 'frame', 6.6, 0.14, 0.55, 1.5, -1.05, -1.12, matDeck);
-    addBox(gFrame, 'frame', 1.5, 0.14, 1.7, -1.05, -1.05, 0, matDeck);
-    addBox(gFrame, 'frame', 0.7, 0.14, 1.7, 4.45, -1.05, 0, matDeck);
-
-    /* Bottom Base Frame Rails (Y: -2.3) */
-    addBox(gFrame, 'frame', 10.4, 0.14, 0.14, -0.4, -2.3, 1.33, matFrame);
-    addBox(gFrame, 'frame', 10.4, 0.14, 0.14, -0.4, -2.3, -1.33, matFrame);
-    addBox(gFrame, 'frame', 0.14, 0.14, 2.8, -5.55, -2.3, 0, matFrame);
-    addBox(gFrame, 'frame', 0.14, 0.14, 2.8, 4.75, -2.3, 0, matFrame);
-    /* Middle Longitudinal Support Bars */
-    addBox(gFrame, 'frame', 10.4, 0.12, 0.12, -0.4, -1.65, 1.33, matFrame);
-    addBox(gFrame, 'frame', 10.4, 0.12, 0.12, -0.4, -1.65, -1.33, matFrame);
-
-    /* Vertical Hollow Legs */
-    [-1.33, 1.33].forEach(function (zPos) {
-      addBox(gFrame, 'frame', 0.15, 2.5, 0.15, -5.55, -1.05, zPos, matFrame);
-      addBox(gFrame, 'frame', 0.15, 2.5, 0.15, -1.85, -1.05, zPos, matFrame);
-      addBox(gFrame, 'frame', 0.15, 1.3, 0.15, 4.75, -1.65, zPos, matFrame);
+    var matShaft = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.88, roughness: 0.18 });
+    var matPulley = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.55, roughness: 0.28 });
+    var matBelt = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.15, roughness: 0.75 });
+    var matGenBody = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.72, roughness: 0.28 });
+    var matGenCap  = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.6, roughness: 0.35 });
+    var matTankShell = new THREE.MeshPhysicalMaterial({
+      color: 0xdbeafe,
+      transparent: true,
+      opacity: 0.30,
+      roughness: 0.12,
+      metalness: 0.06,
+      side: THREE.DoubleSide,
+      depthWrite: false
     });
+    var matPump = new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.45, roughness: 0.28 });
 
     /* =====================================================================
-       BUILD 01: 60-LITER CYLINDRICAL WATER RESERVOIR TANK & SUBMERGED PUMP
-       Positioned directly underneath the lower outlet opening
-       ===================================================================== */
-    var gTank = createGroup('tank');
-    var tankWaterMesh = new THREE.Mesh(
-      new THREE.CylinderGeometry(1.28, 1.28, 0.95, 32),
-      matTankWater.clone()
-    );
-    tankWaterMesh.position.set(3.0, -1.78, 0);
-    gTank.add(tankWaterMesh);
-    registerMesh(tankWaterMesh, 'tank');
-
-    var tankShellMesh = new THREE.Mesh(
-      new THREE.CylinderGeometry(1.36, 1.36, 1.25, 32, 1, true),
-      matTankShell.clone()
-    );
-    tankShellMesh.position.set(3.0, -1.64, 0);
-    addEdges(tankShellMesh, 0x00e5ff, 0.45);
-    gTank.add(tankShellMesh);
-    registerMesh(tankShellMesh, 'tank');
-
-    /* Tank Top & Bottom Rim Rings */
-    var rimGeom = new THREE.TorusGeometry(1.36, 0.035, 12, 36);
-    var topRim = new THREE.Mesh(rimGeom, matPipe.clone());
-    topRim.rotation.x = Math.PI / 2;
-    topRim.position.set(3.0, -1.02, 0);
-    gTank.add(topRim);
-    registerMesh(topRim, 'tank');
-
-    /* Submerged 100W Circulation Pump inside 60L Tank */
-    var pumpMesh = addBox(gTank, 'tank', 0.65, 0.52, 0.55, 2.65, -1.96, 0.25, matPump);
-    addEdges(pumpMesh, 0x7ceeff, 0.6);
-
-    /* =====================================================================
-       BUILD 02: RISING PVC PIPE (Ø 45 mm) & UPPER HEADBOX (500 x 400 mm)
-       ===================================================================== */
-    var gPipe = createGroup('pipe');
-    /* Horizontal Lower PVC Pipe from 60L Tank to Back-Left Leg */
-    var pipeHoriz = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 8.0, 16), matPipe.clone());
-    pipeHoriz.rotation.z = Math.PI / 2;
-    pipeHoriz.position.set(-1.35, -1.5, 1.05);
-    gPipe.add(pipeHoriz);
-    registerMesh(pipeHoriz, 'pipe');
-
-    /* Vertical Rising PVC Pipe up the Back-Left Corner */
-    var pipeVert = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 3.9, 16), matPipe.clone());
-    pipeVert.position.set(-5.35, 0.45, 1.05);
-    gPipe.add(pipeVert);
-    registerMesh(pipeVert, 'pipe');
-
-    /* Top Elbow & Inlet Pipe into the 500mm Upper Headbox */
-    var pipeInlet = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 1.1, 16), matPipe.clone());
-    pipeInlet.rotation.x = Math.PI / 2;
-    pipeInlet.position.set(-5.35, 2.4, 0.5);
-    gPipe.add(pipeInlet);
-    registerMesh(pipeInlet, 'pipe');
-
-    /* Upper Headbox Section (500 x 400 x 250 mm + Internal 95 x 105 mm Weir Baffle) */
-    var hbFloor = addBox(gPipe, 'pipe', 2.2, 0.06, 1.76, -4.3, 1.15, 0, matAcrylic);
-    var hbBack  = addBox(gPipe, 'pipe', 0.06, 1.1, 1.76, -5.38, 1.7, 0, matAcrylic);
-    var hbSideF = addBox(gPipe, 'pipe', 2.2, 1.1, 0.06, -4.3, 1.7, 0.86, matAcrylic);
-    var hbSideB = addBox(gPipe, 'pipe', 2.2, 1.1, 0.06, -4.3, 1.7, -0.86, matAcrylic);
-    /* Internal Weir Baffle Box (95 x 105 mm from PDF Drawing) */
-    var hbBaffle = addBox(gPipe, 'pipe', 0.45, 0.48, 1.7, -5.12, 1.96, 0, matAcrylic);
-    [hbFloor, hbBack, hbSideF, hbSideB, hbBaffle].forEach(function (m) { addEdges(m, 0x00e5ff, 0.65); });
-
-    /* =====================================================================
-       BUILD 03: INCLINED ACRYLIC FLUME (1700 x 400 mm, Slope 1016.97 mm, Outlet 200 mm)
+       OBJECT 01: SALURAN AKRILIK MIRING (1:100 True Millimetric Scale from PDF)
+       - Total Length: 1700.00 mm -> 17.00 units (X: -8.50 to +8.50)
+       - Width: 400.00 mm -> 4.00 units (Z: -2.00 to +2.00)
+       - Upper Horizontal Section: 500.00 mm (X: -8.50 to -3.50), Floor Y=2.35, Top Y=4.85 (250 mm wall)
+       - Internal Headbox Weir Baffle: 95.00 x 105.00 mm (X: -8.50 to -7.55, Y: 3.80 to 4.85)
+       - Middle Inclined Section: 1000.00 mm horiz / 1016.97 mm sloped (X: -3.50 to +6.50),
+         Floor Y: 2.35 -> 0.50, Top Y: 4.85 -> 3.00 (250 mm wall height)
+       - Lower Horizontal Outlet Section: 200.00 mm (X: +6.50 to +8.50),
+         Top Y=3.00, Drop Lip Bottom Y=0.00 (250 mm + 50 mm drop lip)
        ===================================================================== */
     var gChute = createGroup('chute');
-    /* Inclined Middle Slope Section (X: -3.2..2.5, sloping from Y=1.15 down to Y=-0.72) */
-    var slopeLen = 6.02;
-    var slopeAngle = -0.318; /* ~18.2 deg matching 235mm drop over 1016.97mm */
-    var slopeGroup = new THREE.Group();
-    slopeGroup.position.set(-0.35, 0.21, 0);
-    slopeGroup.rotation.z = slopeAngle;
-    gChute.add(slopeGroup);
 
-    var slFloor = addBox(slopeGroup, 'chute', slopeLen, 0.06, 1.76, 0, 0, 0, matAcrylic);
-    var slWallF = addBox(slopeGroup, 'chute', slopeLen, 1.1, 0.06, 0, 0.55, 0.86, matAcrylic);
-    var slWallB = addBox(slopeGroup, 'chute', slopeLen, 1.1, 0.06, 0, 0.55, -0.86, matAcrylic);
-    /* Flowing Translucent Water Sheet inside Slope */
-    var slWater = addBox(slopeGroup, 'chute', slopeLen - 0.1, 0.16, 1.66, 0, 0.11, 0, matTankWater);
-    [slFloor, slWallF, slWallB].forEach(function (m) { addEdges(m, 0x00e5ff, 0.65); });
+    /* Seamless 1-Piece Extruded Side Wall Profile matching PDF Side Elevation */
+    var wallShape = new THREE.Shape();
+    wallShape.moveTo(-8.50, 2.35);
+    wallShape.lineTo(-3.50, 2.35);
+    wallShape.lineTo(6.50, 0.50);
+    wallShape.lineTo(6.50, 0.00);
+    wallShape.lineTo(8.50, 0.00);
+    wallShape.lineTo(8.50, 3.00);
+    wallShape.lineTo(6.50, 3.00);
+    wallShape.lineTo(-3.50, 4.85);
+    wallShape.lineTo(-8.50, 4.85);
+    wallShape.closePath();
 
-    /* Lower Horizontal Outlet Section (200 mm long + 50 mm bottom drop lip over 60L Tank) */
-    var outWallF = addBox(gChute, 'chute', 1.15, 1.25, 0.06, 3.05, -0.22, 0.86, matAcrylic);
-    var outWallB = addBox(gChute, 'chute', 1.15, 1.25, 0.06, 3.05, -0.22, -0.86, matAcrylic);
-    var outEnd   = addBox(gChute, 'chute', 0.06, 1.25, 1.76, 3.62, -0.22, 0, matAcrylic);
-    [outWallF, outWallB, outEnd].forEach(function (m) { addEdges(m, 0x00e5ff, 0.65); });
+    var wallGeom = new THREE.ExtrudeGeometry(wallShape, { depth: 0.08, bevelEnabled: false });
+
+    /* Front Side Wall (Z = +1.92..+2.00) */
+    var sideWallFront = new THREE.Mesh(wallGeom, matAcrylic.clone());
+    sideWallFront.position.z = 1.92;
+    addEdges(sideWallFront, 0x00e5ff, 0.72);
+    gChute.add(sideWallFront);
+    registerMesh(sideWallFront, 'chute');
+
+    /* Back Side Wall (Z = -2.00..-1.92) */
+    var sideWallBack = new THREE.Mesh(wallGeom, matAcrylic.clone());
+    sideWallBack.position.z = -2.00;
+    addEdges(sideWallBack, 0x00e5ff, 0.72);
+    gChute.add(sideWallBack);
+    registerMesh(sideWallBack, 'chute');
+
+    /* Upper 500 mm Horizontal Floor Plate (X: -8.50..-3.50, Y: 2.35) */
+    var floorUpper = addBox(gChute, 'chute', 5.00, 0.08, 3.84, -6.00, 2.39, 0, matAcrylicFloor);
+    addEdges(floorUpper, 0x00e5ff, 0.55);
+
+    /* Middle 1016.97 mm Inclined Floor Plate (X: -3.50..+6.50, Y: 2.35 -> 0.50) */
+    var slopeAngle = -Math.atan2(1.85, 10.00); /* -10.48 deg, hypotenuse = 10.1697 units (1016.97 mm) */
+    var floorSlope = addBox(gChute, 'chute', 10.1697, 0.08, 3.84, 1.50, 1.465, 0, matAcrylicFloor, 0, 0, slopeAngle);
+    addEdges(floorSlope, 0x00e5ff, 0.55);
+
+    /* Back End Wall at X = -8.50 (250 mm tall x 400 mm wide) */
+    var endWallBack = addBox(gChute, 'chute', 0.08, 2.50, 3.84, -8.46, 3.60, 0, matAcrylic);
+    addEdges(endWallBack, 0x00e5ff, 0.7);
+
+    /* Front Lower End Wall at X = +8.50 (300 mm tall including 50 mm drop lip) */
+    var endWallFront = addBox(gChute, 'chute', 0.08, 3.00, 3.84, 8.46, 1.50, 0, matAcrylic);
+    addEdges(endWallFront, 0x00e5ff, 0.7);
+
+    /* Drop-lip vertical step wall at X = +6.50 (Y: 0.00..0.50) */
+    var dropStepWall = addBox(gChute, 'chute', 0.08, 0.50, 3.84, 6.50, 0.25, 0, matAcrylic);
+    addEdges(dropStepWall, 0x00e5ff, 0.55);
+
+    /* Internal Headbox Weir / Baffle Box at Top-Back (95.00 mm x 105.00 mm from PDF) */
+    var weirBaffle = addBox(gChute, 'chute', 0.95, 1.05, 3.84, -8.025, 4.325, 0, matAcrylicFloor);
+    addEdges(weirBaffle, 0x00e5ff, 0.75);
+
+    /* Translucent Flowing Water Layer along Upper 500 mm Floor & 1016.97 mm Slope */
+    addBox(gChute, 'chute', 4.90, 0.24, 3.80, -6.00, 2.54, 0, matWater);
+    addBox(gChute, 'chute', 10.12, 0.22, 3.80, 1.50, 1.60, 0, matWater, 0, 0, slopeAngle);
 
     /* =====================================================================
-       BUILD 04: 6-BLADE CURVED BRIGHT-BLUE WATERWHEEL & STAINLESS SHAFT
+       OBJECT 02: KINCIR AIR 6 SUDU MELENGKUNG (Proportionally Inside Channel!)
+       - Placed at X = +3.80 along the slope
+       - At X = +3.80: Channel floor Y = 1.00, Channel top rim Y = 3.50 (height 2.50)
+       - Rotor Center: (X = 3.80, Y = 2.18, Z = 0.00), Outer Radius R = 1.05 (Ø 210 mm)
+       - Bottom tip = 1.13 (clears floor 1.00), Top tip = 3.23 (below top rim 3.50 — NEVER OVER!)
        ===================================================================== */
     var gWheel = createGroup('wheel');
     var rotorPivot = new THREE.Group();
-    rotorPivot.position.set(1.65, -0.02, 0);
+    rotorPivot.position.set(3.80, 2.18, 0.0);
     gWheel.add(rotorPivot);
 
-    /* Horizontal Stainless Steel Main Shaft (Ø 30 mm) protruding through both walls */
-    var mainShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 3.4, 20), matShaft.clone());
+    /* Stainless Steel Main Shaft (Ø 30 mm -> R = 0.15) protruding cleanly out both sides */
+    var mainShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 5.20, 24), matShaft.clone());
     mainShaft.rotation.x = Math.PI / 2;
     rotorPivot.add(mainShaft);
     registerMesh(mainShaft, 'wheel');
 
-    /* Central Blue Rotor Hub */
-    var hubMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 1.56, 24), matPump.clone());
-    hubMesh.rotation.x = Math.PI / 2;
-    rotorPivot.add(hubMesh);
-    registerMesh(hubMesh, 'wheel');
+    /* Central Blue Rotor Drum Hub */
+    var rotorHub = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 3.68, 24), matPump.clone());
+    rotorHub.rotation.x = Math.PI / 2;
+    rotorPivot.add(rotorHub);
+    registerMesh(rotorHub, 'wheel');
 
-    /* 6 Curved Bright-Blue Blades (2-segment curved paddle per blade matching CAD PNG) */
+    /* 6 Curved Hydro-Bucket Blades (Extruded Crescent Arcs fitting cleanly inside channel) */
+    var bladeShape = new THREE.Shape();
+    bladeShape.moveTo(0.32, -0.04);
+    bladeShape.quadraticCurveTo(0.72, -0.02, 1.04, 0.26);
+    bladeShape.lineTo(0.99, 0.34);
+    bladeShape.quadraticCurveTo(0.68, 0.07, 0.32, 0.05);
+    bladeShape.closePath();
+
+    var bladeGeom = new THREE.ExtrudeGeometry(bladeShape, { depth: 3.64, bevelEnabled: false });
+    bladeGeom.translate(0, 0, -1.82);
+
     for (var bi = 0; bi < 6; bi++) {
-      var bHolder = new THREE.Group();
-      bHolder.rotation.z = (bi * Math.PI) / 3;
-      rotorPivot.add(bHolder);
-
-      var innerBlade = addBox(bHolder, 'wheel', 0.48, 0.06, 1.52, 0.52, 0, 0, matBlade);
-      var outerBlade = addBox(bHolder, 'wheel', 0.36, 0.06, 1.52, 0.88, 0.12, 0, matBlade, 0, 0, 0.52);
-      addEdges(innerBlade, 0x7ceeff, 0.7);
-      addEdges(outerBlade, 0x7ceeff, 0.7);
+      var bladeMesh = new THREE.Mesh(bladeGeom, matBlade.clone());
+      bladeMesh.rotation.z = (bi * Math.PI) / 3;
+      addEdges(bladeMesh, 0x80f0ff, 0.65);
+      rotorPivot.add(bladeMesh);
+      registerMesh(bladeMesh, 'wheel');
     }
 
     /* =====================================================================
-       BUILD 05: 4-SPOKE LARGE PULLEY (Ø 270 mm) + V-BELT + SMALL PULLEY (1:4)
-       Mounted on the outer side of the acrylic channel wall (Z = -1.35)
+       OBJECT 03: TRANSMISI PULLEY 4-JARI (Ø 270 mm) & V-BELT (1 : 4)
+       Mounted on outer side of back acrylic wall (Z = -2.32)
        ===================================================================== */
     var gPulley = createGroup('pulley');
+    var pulleyZ = -2.32;
+
     var pulley1Pivot = new THREE.Group();
-    pulley1Pivot.position.set(1.65, -0.02, -1.35);
+    pulley1Pivot.position.set(3.80, 2.18, pulleyZ);
     gPulley.add(pulley1Pivot);
 
-    /* Large Pulley Outer Ring (Ø 270 mm) */
-    var p1Ring = new THREE.Mesh(new THREE.TorusGeometry(0.96, 0.07, 14, 36), matPulley.clone());
+    /* Large Pulley Outer Ring (Ø 270 mm -> R = 1.35) */
+    var p1Ring = new THREE.Mesh(new THREE.TorusGeometry(1.32, 0.08, 16, 44), matPulley.clone());
     pulley1Pivot.add(p1Ring);
     registerMesh(p1Ring, 'pulley');
 
-    /* 4 Cross Spokes (Exact 4-spoke geometry from PDF Drawing & CAD PNG) */
-    var spoke1 = addBox(pulley1Pivot, 'pulley', 1.88, 0.11, 0.08, 0, 0, 0, matPulley);
-    var spoke2 = addBox(pulley1Pivot, 'pulley', 0.11, 1.88, 0.08, 0, 0, 0, matPulley);
-    addEdges(spoke1, 0x0f172a, 0.5);
-    addEdges(spoke2, 0x0f172a, 0.5);
+    /* Center Hub Boss of Large Pulley */
+    var p1Boss = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.16, 20), matPulley.clone());
+    p1Boss.rotation.x = Math.PI / 2;
+    pulley1Pivot.add(p1Boss);
+    registerMesh(p1Boss, 'pulley');
 
-    /* Small Driven Pulley (Ø 67.5 mm — Step-Up 1:4) at Generator Shaft */
+    /* 4 Slim Spokes (Matching PDF Drawing 4-spoke wheel) */
+    var spokeH = addBox(pulley1Pivot, 'pulley', 2.52, 0.12, 0.09, 0, 0, 0, matPulley);
+    var spokeV = addBox(pulley1Pivot, 'pulley', 0.12, 2.52, 0.09, 0, 0, 0, matPulley);
+    addEdges(spokeH, 0x0f172a, 0.5);
+    addEdges(spokeV, 0x0f172a, 0.5);
+
+    /* Small Driven Pulley (Ø 67.5 mm -> R = 0.34, 1:4 Step-Up) at Generator Shaft (X = 8.85, Y = 1.15) */
+    var p2X = 8.85, p2Y = 1.15, p2R = 0.34, p1R = 1.32;
     var pulley2Pivot = new THREE.Group();
-    pulley2Pivot.position.set(4.35, -0.62, -1.35);
+    pulley2Pivot.position.set(p2X, p2Y, pulleyZ);
     gPulley.add(pulley2Pivot);
 
-    var p2Wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.12, 24), matPulley.clone());
+    var p2Wheel = new THREE.Mesh(new THREE.CylinderGeometry(p2R, p2R, 0.16, 24), matPulley.clone());
     p2Wheel.rotation.x = Math.PI / 2;
     pulley2Pivot.add(p2Wheel);
     registerMesh(p2Wheel, 'pulley');
 
-    /* Dual V-Belt Strands connecting Large Pulley to Small Pulley */
-    var beltTop = addBox(gPulley, 'pulley', 2.82, 0.06, 0.08, 3.0, 0.08, -1.35, matBelt, 0, 0, -0.44);
-    var beltBot = addBox(gPulley, 'pulley', 2.82, 0.06, 0.08, 3.0, -0.62, -1.35, matBelt, 0, 0, -0.01);
+    /* Exact Tangent V-Belt Strands connecting Large Pulley (3.80, 2.18, R=1.32) to Small Pulley (8.85, 1.15, R=0.34) */
+    var dxP = p2X - 3.80;
+    var dyP = p2Y - 2.18;
+    var distP = Math.hypot(dxP, dyP);
+    var baseAng = Math.atan2(dyP, dxP);
+    var spreadAng = Math.asin((p1R - p2R) / distP);
+
+    var nTopAngle = baseAng + Math.PI / 2 - spreadAng;
+    var t1TopX = 3.80 + Math.cos(nTopAngle) * p1R;
+    var t1TopY = 2.18 + Math.sin(nTopAngle) * p1R;
+    var t2TopX = p2X + Math.cos(nTopAngle) * p2R;
+    var t2TopY = p2Y + Math.sin(nTopAngle) * p2R;
+    var lenTop = Math.hypot(t2TopX - t1TopX, t2TopY - t1TopY);
+    var angTop = Math.atan2(t2TopY - t1TopY, t2TopX - t1TopX);
+    addBox(gPulley, 'pulley', lenTop, 0.07, 0.10, (t1TopX + t2TopX) * 0.5, (t1TopY + t2TopY) * 0.5, pulleyZ, matBelt, 0, 0, angTop);
+
+    var nBotAngle = baseAng - Math.PI / 2 + spreadAng;
+    var t1BotX = 3.80 + Math.cos(nBotAngle) * p1R;
+    var t1BotY = 2.18 + Math.sin(nBotAngle) * p1R;
+    var t2BotX = p2X + Math.cos(nBotAngle) * p2R;
+    var t2BotY = p2Y + Math.sin(nBotAngle) * p2R;
+    var lenBot = Math.hypot(t2BotX - t1BotX, t2BotY - t1BotY);
+    var angBot = Math.atan2(t2BotY - t1BotY, t2BotX - t1BotX);
+    addBox(gPulley, 'pulley', lenBot, 0.07, 0.10, (t1BotX + t2BotX) * 0.5, (t1BotY + t2BotY) * 0.5, pulleyZ, matBelt, 0, 0, angBot);
 
     /* =====================================================================
-       BUILD 06: GENERATOR DC XD 3240 & LED INDICATOR MODULE
+       OBJECT 04: COMPACT GENERATOR DC XD 3240 (Properly Scaled, No LED Load)
+       Mounted at the front-right end of the 200 mm lower channel section
        ===================================================================== */
     var gGen = createGroup('generator');
-    /* Horizontal Cylindrical Generator Body */
-    var genBody = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 1.05, 28), matGen.clone());
+    /* Compact Cylindrical Generator Body (R = 0.36, Length = 1.10) */
+    var genBody = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 1.10, 28), matGenBody.clone());
     genBody.rotation.x = Math.PI / 2;
-    genBody.position.set(4.35, -0.62, -0.68);
-    addEdges(genBody, 0x00e5ff, 0.4);
+    genBody.position.set(p2X, p2Y, -1.42);
+    addEdges(genBody, 0x00e5ff, 0.45);
     gGen.add(genBody);
     registerMesh(genBody, 'generator');
 
-    /* Generator Square Mounting Flanges (as seen in CAD PNG) */
-    var flange1 = addBox(gGen, 'generator', 0.88, 0.88, 0.1, 4.35, -0.62, -1.18, matDeck);
-    var flange2 = addBox(gGen, 'generator', 0.88, 0.88, 0.1, 4.35, -0.62, -0.18, matDeck);
-    addEdges(flange1, 0x0f172a, 0.7);
-    addEdges(flange2, 0x0f172a, 0.7);
+    /* Compact Square Mounting End-Caps (0.78 x 0.78 x 0.10) */
+    var genCap1 = addBox(gGen, 'generator', 0.78, 0.78, 0.10, p2X, p2Y, -1.94, matGenCap);
+    var genCap2 = addBox(gGen, 'generator', 0.78, 0.78, 0.10, p2X, p2Y, -0.90, matGenCap);
+    addEdges(genCap1, 0x0f172a, 0.7);
+    addEdges(genCap2, 0x0f172a, 0.7);
 
-    /* Glowing 2x 5W LED Output Indicator Module on Front Right Corner */
-    var ledBase = addBox(gGen, 'generator', 0.55, 0.35, 0.65, 4.55, -0.8, 0.75, matFrame);
-    var matBulb = new THREE.MeshStandardMaterial({
-      color: 0xfef08a, emissive: 0xf59e0b, emissiveIntensity: 1.4, roughness: 0.15
-    });
-    var bulb1 = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 20), matBulb);
-    bulb1.position.set(4.55, -0.48, 0.58);
-    gGen.add(bulb1);
-    registerMesh(bulb1, 'generator');
-
-    var bulb2 = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 20), matBulb.clone());
-    bulb2.position.set(4.55, -0.48, 0.92);
-    gGen.add(bulb2);
-    registerMesh(bulb2, 'generator');
+    /* Generator Shaft connecting to Small Pulley */
+    var genShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.55, 16), matShaft.clone());
+    genShaft.rotation.x = Math.PI / 2;
+    genShaft.position.set(p2X, p2Y, -2.14);
+    gGen.add(genShaft);
+    registerMesh(genShaft, 'generator');
 
     /* =====================================================================
-       3D ANIMATED WATER FLOW PARTICLES (Closed-Loop Hydro Stream)
+       OBJECT 05: PENAMPUNG AIR 60 LITER & POMPA (Proper Large 60L Scale!)
+       Positioned directly underneath the 200 mm lower outlet opening (X = 7.20)
+       - Diameter: 520 mm -> Radius = 2.60 units (Diameter 5.20 units, wider than 4.00 channel!)
+       - Height: 380 mm -> 3.80 units (Y: -4.15 to -0.35)
        ===================================================================== */
-    var PARTICLE_COUNT = 110;
+    var gTank = createGroup('tank');
+    var tankX = 7.20, tankZ = 0.0, tankR = 2.60, tankH = 3.80;
+    var tankCenterY = -2.25;
+
+    /* 60-Liter Water Volume inside Reservoir */
+    var waterH = 2.85;
+    var tankWater = new THREE.Mesh(
+      new THREE.CylinderGeometry(tankR - 0.08, tankR - 0.08, waterH, 40),
+      matWater.clone()
+    );
+    tankWater.position.set(tankX, -4.15 + waterH * 0.5 + 0.06, tankZ);
+    gTank.add(tankWater);
+    registerMesh(tankWater, 'tank');
+
+    /* Outer Translucent 60-Liter Cylindrical Tank Shell */
+    var tankShell = new THREE.Mesh(
+      new THREE.CylinderGeometry(tankR, tankR, tankH, 40, 1, true),
+      matTankShell.clone()
+    );
+    tankShell.position.set(tankX, tankCenterY, tankZ);
+    addEdges(tankShell, 0x00e5ff, 0.45);
+    gTank.add(tankShell);
+    registerMesh(tankShell, 'tank');
+
+    /* Tank Bottom Base Disc & Top Rim Ring */
+    var tankBottom = new THREE.Mesh(
+      new THREE.CylinderGeometry(tankR, tankR, 0.08, 40),
+      matAcrylicFloor.clone()
+    );
+    tankBottom.position.set(tankX, -4.15, tankZ);
+    gTank.add(tankBottom);
+    registerMesh(tankBottom, 'tank');
+
+    var tankRim = new THREE.Mesh(new THREE.TorusGeometry(tankR, 0.07, 14, 44), matPulley.clone());
+    tankRim.rotation.x = Math.PI / 2;
+    tankRim.position.set(tankX, -0.35, tankZ);
+    gTank.add(tankRim);
+    registerMesh(tankRim, 'tank');
+
+    /* Submerged Circulation Pump inside 60L Tank */
+    var pumpBody = addBox(gTank, 'tank', 0.95, 0.78, 0.78, tankX - 0.7, -3.70, 0.3, matPump);
+    addEdges(pumpBody, 0x80f0ff, 0.65);
+
+    /* =====================================================================
+       3D ANIMATED WATER STREAM PARTICLES (Headbox -> 1016.97mm Slope -> 6-Blade Wheel -> 60L Tank)
+       ===================================================================== */
+    var PARTICLE_COUNT = 120;
     var pGeom = new THREE.BufferGeometry();
     var pPositions = new Float32Array(PARTICLE_COUNT * 3);
     var pPhases = new Float32Array(PARTICLE_COUNT);
     var pLanes = new Float32Array(PARTICLE_COUNT);
     for (var pi = 0; pi < PARTICLE_COUNT; pi++) {
       pPhases[pi] = pi / PARTICLE_COUNT;
-      pLanes[pi] = (Math.random() - 0.5) * 1.3;
+      pLanes[pi] = (Math.random() - 0.5) * 3.3;
     }
     pGeom.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
     var pMat = new THREE.PointsMaterial({
-      color: 0x7ceeff,
-      size: 0.14,
+      color: 0x80f0ff,
+      size: 0.16,
       transparent: true,
-      opacity: 0.88
+      opacity: 0.9
     });
     var waterParticles = new THREE.Points(pGeom, pMat);
     scene.add(waterParticles);
@@ -1473,30 +1494,24 @@
     function updateWaterParticles(time) {
       var posArr = pGeom.attributes.position.array;
       for (var i = 0; i < PARTICLE_COUNT; i++) {
-        var t = (pPhases[i] + time * 0.18) % 1;
+        var t = (pPhases[i] + time * 0.22) % 1;
         var lane = pLanes[i];
         var x = 0, y = 0, z = lane;
         if (t < 0.22) {
-          /* Rising up the back-left PVC pipe */
-          var u = t / 0.22;
-          x = -5.35;
-          y = -1.5 + u * 3.9;
-          z = 1.05;
-        } else if (t < 0.36) {
-          /* Calm flow across 500mm upper headbox */
-          var u2 = (t - 0.22) / 0.14;
-          x = -5.2 + u2 * 2.0;
-          y = 1.32;
-        } else if (t < 0.82) {
-          /* Fast flow down 1016.97mm inclined acrylic chute through 6-blade wheel */
-          var u3 = (t - 0.36) / 0.46;
-          x = -3.2 + u3 * 5.8;
-          y = 1.25 - u3 * 1.92;
+          /* Calm flow across 500 mm upper headbox (X: -8.2 -> -3.5) */
+          var u1 = t / 0.22;
+          x = -8.2 + u1 * 4.7;
+          y = 2.68;
+        } else if (t < 0.76) {
+          /* Accelerating flow down 1016.97 mm inclined chute (X: -3.5 -> +6.5, Y: 2.68 -> 0.82) */
+          var u2 = (t - 0.22) / 0.54;
+          x = -3.5 + u2 * 10.0;
+          y = 2.68 - u2 * 1.86;
         } else {
-          /* Waterfall dropping from 200mm outlet straight into the 60L bottom reservoir tank */
-          var u4 = (t - 0.82) / 0.18;
-          x = 2.8 + (i % 3) * 0.14;
-          y = -0.68 - u4 * 1.15;
+          /* Waterfall dropping from 200 mm outlet section (X: 6.6..8.2) straight into the 60L Tank */
+          var u3 = (t - 0.76) / 0.24;
+          x = 6.7 + (i % 5) * 0.32;
+          y = 0.55 - u3 * 2.15;
         }
         posArr[i * 3] = x;
         posArr[i * 3 + 1] = y;
@@ -1506,7 +1521,7 @@
     }
 
     /* =====================================================================
-       CAMERA ORBIT, ZOOM, PAN & SMOOTH FLY-TO SYSTEM
+       CAMERA ORBIT, ZOOM, PAN, RAYCASTING & DYNAMIC GLASSMORPHISM PANEL
        ===================================================================== */
     var camState = {
       theta: DEFAULT_CAM.theta,
@@ -1523,8 +1538,6 @@
 
     var selectedKey = null;
     var hoveredKey = null;
-    var flowRunning = true;
-    var pinsVisible = true;
 
     function dismissHint() {
       if (hintEl && !hintEl.classList.contains('is-dismissed')) {
@@ -1539,10 +1552,10 @@
         var k = m.userData.objKey;
         if (k === selectedKey) {
           m.material.emissive.setHex(0x00e5ff);
-          m.material.emissiveIntensity = 0.52;
+          m.material.emissiveIntensity = 0.55;
         } else if (k === hoveredKey) {
           m.material.emissive.setHex(0x00b4d8);
-          m.material.emissiveIntensity = 0.36;
+          m.material.emissiveIntensity = 0.38;
         } else {
           m.material.emissive.setHex(orig.hex);
           m.material.emissiveIntensity = orig.intensity;
@@ -1554,11 +1567,6 @@
         if (!b) return;
         b.classList.toggle('is-active', k === selectedKey);
         b.classList.toggle('is-hover', k === hoveredKey && k !== selectedKey);
-      });
-
-      navPills.forEach(function (p) {
-        var pk = p.getAttribute('data-vx3d-select');
-        p.classList.toggle('is-active', (selectedKey ? pk === selectedKey : pk === 'all'));
       });
     }
 
@@ -1629,9 +1637,9 @@
 
         if (dragMode === 'orbit') {
           camGoal.theta -= dx * 0.0075;
-          camGoal.phi = Math.max(0.28, Math.min(1.48, camGoal.phi - dy * 0.0065));
+          camGoal.phi = Math.max(0.26, Math.min(1.48, camGoal.phi - dy * 0.0065));
         } else {
-          var panScale = camGoal.radius * 0.0018;
+          var panScale = camGoal.radius * 0.0016;
           var right = new THREE.Vector3();
           var up = new THREE.Vector3(0, 1, 0);
           camera.getWorldDirection(right);
@@ -1686,20 +1694,14 @@
     canvas.addEventListener('wheel', function (e) {
       e.preventDefault();
       dismissHint();
-      camGoal.radius = Math.max(5.2, Math.min(20.0, camGoal.radius + e.deltaY * 0.008));
+      camGoal.radius = Math.max(7.5, Math.min(34.0, camGoal.radius + e.deltaY * 0.012));
     }, { passive: false });
 
-    /* Hotspot & Header Button Listeners */
+    /* Hotspot & Corner Control Listeners */
     Object.keys(spotBtns).forEach(function (k) {
       spotBtns[k].addEventListener('click', function (e) {
         e.stopPropagation();
         selectObject(k);
-      });
-    });
-
-    navPills.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        selectObject(btn.getAttribute('data-vx3d-select'));
       });
     });
 
@@ -1713,28 +1715,12 @@
     var btnZoomIn = $('vx3d-zoom-in');
     var btnZoomOut = $('vx3d-zoom-out');
     var btnResetCam = $('vx3d-reset-cam');
-    var btnTogglePins = $('vx3d-toggle-pins');
-    var btnToggleFlow = $('vx3d-toggle-flow');
     var btnFullscreen = $('vx3d-fullscreen');
 
-    if (btnZoomIn) btnZoomIn.addEventListener('click', function () { camGoal.radius = Math.max(5.2, camGoal.radius - 1.3); });
-    if (btnZoomOut) btnZoomOut.addEventListener('click', function () { camGoal.radius = Math.min(20.0, camGoal.radius + 1.3); });
+    if (btnZoomIn) btnZoomIn.addEventListener('click', function () { camGoal.radius = Math.max(7.5, camGoal.radius - 2.0); });
+    if (btnZoomOut) btnZoomOut.addEventListener('click', function () { camGoal.radius = Math.min(34.0, camGoal.radius + 2.0); });
     if (btnResetCam) btnResetCam.addEventListener('click', function () { selectObject('all'); });
 
-    if (btnTogglePins && hotspotsWrap) {
-      btnTogglePins.addEventListener('click', function () {
-        pinsVisible = !pinsVisible;
-        btnTogglePins.classList.toggle('is-on', pinsVisible);
-        hotspotsWrap.classList.toggle('is-hidden', !pinsVisible);
-      });
-    }
-    if (btnToggleFlow) {
-      btnToggleFlow.addEventListener('click', function () {
-        flowRunning = !flowRunning;
-        btnToggleFlow.classList.toggle('is-on', flowRunning);
-        waterParticles.visible = flowRunning;
-      });
-    }
     if (btnFullscreen) {
       btnFullscreen.addEventListener('click', function () {
         if (!document.fullscreenElement) {
@@ -1764,7 +1750,6 @@
     /* Project 3D Hotspot World Anchors to 2D Overlay Coordinates */
     var projVec = new THREE.Vector3();
     function updateHotspots() {
-      if (!pinsVisible) return;
       Object.keys(OBJECT_DATA).forEach(function (k) {
         var btn = spotBtns[k];
         if (!btn) return;
@@ -1778,7 +1763,7 @@
         var sx = (projVec.x * 0.5 + 0.5) * vw;
         var sy = (-projVec.y * 0.5 + 0.5) * vh;
         sx = Math.max(64, Math.min(vw - 64, sx));
-        sy = Math.max(76, Math.min(vh - 46, sy));
+        sy = Math.max(32, Math.min(vh - 46, sy));
         btn.style.left = sx.toFixed(1) + 'px';
         btn.style.top = sy.toFixed(1) + 'px';
       });
@@ -1791,11 +1776,11 @@
       var beranda = $('beranda');
       if (beranda && beranda.hidden) return;
 
-      if (flowRunning && !reducedMotion) {
+      if (!reducedMotion) {
         simClock += 0.016;
-        rotorPivot.rotation.z -= 0.045;
-        pulley1Pivot.rotation.z -= 0.045;
-        pulley2Pivot.rotation.z -= 0.18; /* 1:4 Step-Up ratio */
+        rotorPivot.rotation.z -= 0.042;
+        pulley1Pivot.rotation.z -= 0.042;
+        pulley2Pivot.rotation.z -= 0.168; /* 1:4 Step-Up ratio */
         updateWaterParticles(simClock);
       }
 
