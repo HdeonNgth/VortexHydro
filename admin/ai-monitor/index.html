@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <script>try{var t=localStorage.getItem('vxt');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;var p=localStorage.getItem('vxpal');if(p&&/^(vortex|vokasi|emerald|sakura)$/.test(p))document.documentElement.dataset.pal=p;}catch(e){}</script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23041B36'/%3E%3Cpath d='M16 6a10 10 0 1 1-10 10 6.8 6.8 0 1 1 6.8 6.8 3.6 3.6 0 1 1 3.6-3.6' fill='none' stroke='%2300A8E8' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <title>Admin AI Monitor | Vortex Hydro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+  <style>
+    :root{--navy:#041B36;--navy-2:#0A2A4F;--blue:#0077B6;--cyan:#00A8E8;--teal:#00C6B8;--sky:#90E0EF;--bg:#FAFBFD;--stone:#EDF3F8;--card:#FFFFFF;--ink:#121B26;--slate:#526377;--muted:#76889E;--line:rgba(18,27,38,.09);--line-s:rgba(18,27,38,.16);--ok:#10B981;--bad:#EF4444;--f-sans:'Source Sans 3',system-ui,sans-serif;--f-mono:'JetBrains Mono',monospace;--sh:0 16px 40px -14px rgba(4,27,54,.14)}
+    html[data-theme="dark"]{--bg:#050F1E;--stone:#09182D;--card:#0E223D;--ink:#F4F8FC;--slate:#9AB0C9;--muted:#7D95B0;--line:rgba(255,255,255,.1);--line-s:rgba(255,255,255,.18);--sh:0 18px 44px -14px rgba(0,0,0,.6)}
+    html[data-pal="vokasi"]{--navy:#111827;--blue:#EA580C;--cyan:#F97316;--sky:#FDBA74}
+    html[data-pal="emerald"]{--navy:#0F4338;--blue:#0D9488;--cyan:#10B981;--sky:#6EE7B7}
+    html[data-pal="sakura"]{--navy:#1E1B4B;--blue:#DB2777;--cyan:#EC4899;--sky:#F9A8D4}
+    *,*::before,*::after{box-sizing:border-box}
+    body{margin:0;font-family:var(--f-sans);background:var(--bg);color:var(--ink);line-height:1.5;min-height:100vh}
+    a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit}[hidden]{display:none!important}
+    .top{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+    .top__in{max-width:1340px;margin:0 auto;padding:12px clamp(16px,3vw,32px);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .brand{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:1rem}
+    .brand svg{width:30px;height:30px;color:var(--cyan)}
+    .badge{font-family:var(--f-mono);font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--cyan) 14%,transparent);color:var(--blue)}
+    html[data-theme="dark"] .badge{color:var(--sky)}
+    .top__act{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:7px 14px;border-radius:10px;border:1px solid var(--line-s);background:var(--card);font-size:.84rem;font-weight:600;cursor:pointer;transition:.18s}
+    .btn:hover{border-color:var(--blue);color:var(--blue)}
+    .btn--pri{background:var(--blue);border-color:var(--blue);color:#fff}.btn--pri:hover{background:var(--navy);border-color:var(--navy);color:#fff}
+    .btn--bad{border-color:rgba(239,68,68,.4);color:var(--bad);background:rgba(239,68,68,.07)}.btn--bad:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
+    .wrap{max-width:1340px;margin:0 auto;padding:24px clamp(16px,3vw,32px) 64px}
+    .gate{max-width:440px;margin:clamp(36px,9vh,96px) auto;padding:32px 28px;border-radius:22px;background:var(--card);border:1px solid var(--line);box-shadow:var(--sh)}
+    .gate__ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--cyan) 15%,transparent);color:var(--blue);margin-bottom:14px}
+    .gate__ic svg{width:24px;height:24px}
+    .gate h1{margin:0 0 6px;font-size:1.5rem;font-weight:700}.gate p{margin:0 0 18px;font-size:.9rem;color:var(--slate)}
+    .field{margin-bottom:12px}.field label{display:block;font-size:.8rem;font-weight:600;margin-bottom:5px;color:var(--slate)}
+    .field input{width:100%;height:42px;padding:0 13px;border-radius:11px;border:1px solid var(--line-s);background:var(--bg)}
+    .flash{margin:0 0 14px;padding:10px 12px;border-radius:10px;font-size:.84rem;background:#FEF2F2;color:#991B1B;border:1px solid rgba(239,68,68,.25)}
+    html[data-theme="dark"] .flash{background:rgba(239,68,68,.15);color:#FCA5A5}
+    .denied{text-align:center}
+    .denied .gate__ic{margin-inline:auto;background:rgba(239,68,68,.14);color:var(--bad)}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+    .kpi{padding:18px 20px;border-radius:18px;background:var(--card);border:1px solid var(--line);box-shadow:0 4px 16px -8px rgba(4,27,54,.08)}
+    .kpi small{display:block;font-size:.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+    .kpi b{display:block;margin-top:6px;font-family:var(--f-mono);font-size:1.85rem;line-height:1.1}
+    .kpi span{display:block;margin-top:4px;font-size:.78rem;color:var(--slate)}
+    .chart-strip{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-bottom:20px}
+    .card{padding:18px 20px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+    .card h3{margin:0 0 12px;font-size:.92rem;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+    .bars{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:108px;padding-top:10px}
+    .bar-col{display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+    .bar-fill{width:100%;max-width:34px;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,var(--cyan),var(--blue));min-height:4px;transition:height .35s}
+    .bar-col small{font-family:var(--f-mono);font-size:.68rem;color:var(--muted)}
+    .bar-col b{font-family:var(--f-mono);font-size:.7rem;color:var(--ink)}
+    .pills{display:flex;flex-wrap:wrap;gap:7px}.pill{padding:5px 10px;border-radius:999px;background:var(--stone);border:1px solid var(--line);font-family:var(--f-mono);font-size:.75rem}
+    .tabs{display:inline-flex;gap:4px;padding:4px;border-radius:12px;background:var(--stone);border:1px solid var(--line);margin-bottom:16px}
+    .tabs button{border:0;border-radius:9px;padding:7px 14px;background:transparent;font-size:.84rem;font-weight:600;cursor:pointer;color:var(--slate)}
+    .tabs button.is-on{background:var(--card);color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    html[data-theme="dark"] .tabs button.is-on{color:var(--sky)}
+    .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
+    .filters input{height:38px;padding:0 12px;border-radius:10px;border:1px solid var(--line-s);background:var(--card);font-size:.86rem}
+    .filters input[type="search"]{flex:1;min-width:220px}
+    .split{display:grid;grid-template-columns:minmax(300px,0.92fr) minmax(0,1.28fr);gap:16px;align-items:start}
+    .split > *{min-width:0}
+    .conv-list{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;max-height:68vh;overflow-y:auto;padding-right:2px}
+    .c-item{width:100%;min-width:0;max-width:100%;text-align:left;padding:14px 16px;border-radius:14px;border:1px solid var(--line);background:var(--card);cursor:pointer;transition:.18s;overflow:hidden}
+    .c-item:hover,.c-item.is-on{border-color:var(--cyan);background:color-mix(in srgb,var(--cyan) 7%,var(--card))}
+    .c-item__top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px;min-width:0}
+    .c-item__owner{font-family:var(--f-mono);font-size:.73rem;color:var(--blue);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+    html[data-theme="dark"] .c-item__owner{color:var(--sky)}
+    .c-item__cnt{font-family:var(--f-mono);font-size:.7rem;padding:2px 7px;border-radius:999px;background:var(--stone);color:var(--slate);flex-shrink:0}
+    .c-item strong{display:block;font-size:.94rem;line-height:1.3;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .c-item p{margin:0 0 6px;font-size:.8rem;color:var(--slate);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .c-item time{font-family:var(--f-mono);font-size:.7rem;color:var(--muted)}
+    .detail{padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--line);min-height:420px;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+    .detail__head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:16px}
+    .detail__head > div{min-width:0;flex:1 1 200px}
+    .detail__head h2{margin:0 0 4px;font-size:1.18rem;overflow-wrap:anywhere}.detail__meta{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);overflow-wrap:anywhere}
+    .msgs{display:flex;flex-direction:column;gap:12px;max-height:56vh;overflow-y:auto;padding-right:4px}
+    .msg{padding:12px 14px;border-radius:14px;border:1px solid var(--line);font-size:.9rem;white-space:pre-wrap;overflow-wrap:anywhere}
+    .msg--user{background:color-mix(in srgb,var(--blue) 10%,var(--card));border-color:color-mix(in srgb,var(--blue) 28%,var(--line));align-self:flex-end;max-width:86%}
+    .msg--assistant{background:var(--stone);align-self:flex-start;max-width:92%}
+    .msg__hd{display:flex;justify-content:space-between;gap:10px;font-family:var(--f-mono);font-size:.7rem;color:var(--muted);margin-bottom:5px}
+    .empty{margin:auto;text-align:center;color:var(--muted);padding:36px 12px;font-size:.9rem}
+    .audit-tbl{width:100%;border-collapse:collapse;font-size:.84rem}
+    .audit-tbl th,.audit-tbl td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left}
+    .audit-tbl th{font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+    .mono{font-family:var(--f-mono)}
+    @media (max-width:960px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.chart-strip,.split{grid-template-columns:minmax(0,1fr)}}
+    @media (max-width:560px){.stats{grid-template-columns:minmax(0,1fr)}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top__in">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="currentColor" fill-opacity=".15"/><path d="M16 6.5a9.5 9.5 0 1 1-9.5 9.5 6.4 6.4 0 1 1 6.4 6.4 3.4 3.4 0 1 1 3.4-3.4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg>
+        <span>Vortex Hydro</span>
+        <span class="badge">ADMIN AI MONITOR</span>
+      </div>
+      <div class="top__act">
+        <span class="mono" id="adminWho" style="font-size:.78rem;color:var(--muted)" hidden></span>
+        <button type="button" class="btn" id="themeBtn">Tema</button>
+        <a class="btn" href="../../index.html#beranda">← Kembali ke Situs</a>
+        <button type="button" class="btn btn--bad" id="logoutBtn" hidden>Keluar</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Login Gate -->
+    <section class="gate" id="loginGate">
+      <div class="gate__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+      <h1>Admin AI Monitor</h1>
+      <p>Masuk menggunakan akun Administrator Supabase Auth yang terverifikasi di backend untuk memantau percakapan AI Assistant.</p>
+      <div class="flash" id="loginErr" hidden></div>
+      <form id="loginForm">
+        <div class="field"><label for="admEmail">Email Administrator</label><input id="admEmail" type="email" required autocomplete="email" placeholder="admin@vortexhydro.um.ac.id"></div>
+        <div class="field"><label for="admPass">Kata Sandi</label><input id="admPass" type="password" required autocomplete="current-password" placeholder="••••••••"></div>
+        <button type="submit" class="btn btn--pri" id="loginSubmit" style="width:100%;justify-content:center;min-height:44px">Verifikasi &amp; Masuk</button>
+      </form>
+    </section>
+
+    <!-- 403 Forbidden Gate (for authenticated non-admin users) -->
+    <section class="gate denied" id="deniedGate" hidden>
+      <div class="gate__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/></svg></div>
+      <h1>Akses Ditolak (403)</h1>
+      <p>Akun <b id="deniedEmail"></b> tidak memiliki role <code>admin</code>. Endpoint monitoring dilindungi verifikasi role di backend.</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button type="button" class="btn btn--bad" id="deniedLogout">Keluar &amp; Ganti Akun</button>
+        <a class="btn" href="../../index.html#beranda">Kembali ke Beranda</a>
+      </div>
+    </section>
+
+    <!-- Verified Admin Dashboard -->
+    <section id="monitorApp" hidden>
+      <div class="stats">
+        <div class="kpi"><small>Total Percakapan</small><b id="stConvs">0</b><span id="stTodayConv">0 hari ini</span></div>
+        <div class="kpi"><small>Total Pesan</small><b id="stMsgs">0</b><span id="stMsgSplit">0 user · 0 AI</span></div>
+        <div class="kpi"><small>Pengguna Unik</small><b id="stUsers">0</b><span>Akun aktif di AI Chat</span></div>
+        <div class="kpi"><small>Audit Log Admin</small><b id="stAudit">0</b><span id="stTodayMsg">0 pesan hari ini</span></div>
+      </div>
+
+      <div class="chart-strip">
+        <div class="card">
+          <h3>Aktivitas 7 Hari Terakhir <small class="mono" style="color:var(--muted)">Pesan / hari</small></h3>
+          <div class="bars" id="dailyBars"></div>
+        </div>
+        <div class="card">
+          <h3>Distribusi Model Gemini</h3>
+          <div class="pills" id="modelPills"><span class="pill">Memuat…</span></div>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button type="button" class="is-on" data-tab="convs">Seluruh Percakapan</button>
+        <button type="button" data-tab="audit">Audit Log Admin</button>
+      </div>
+
+      <!-- Conversations Tab -->
+      <div id="tabConvs">
+        <form class="filters" id="filterForm">
+          <input type="search" id="fQuery" placeholder="Cari judul, isi pesan, atau email pengguna…">
+          <input type="date" id="fFrom" aria-label="Dari tanggal">
+          <input type="date" id="fTo" aria-label="Sampai tanggal">
+          <button type="submit" class="btn btn--pri">Filter</button>
+          <button type="button" class="btn" id="fReset">Reset</button>
+          <button type="button" class="btn" id="fRefresh">Muat Ulang</button>
+        </form>
+
+        <div class="split">
+          <div>
+            <div style="font-size:.8rem;color:var(--muted);margin:0 0 8px" id="listMeta">Memuat percakapan…</div>
+            <div class="conv-list" id="convList"></div>
+          </div>
+
+          <div class="detail" id="detailPane">
+            <div class="empty">Pilih salah satu percakapan di sebelah kiri untuk melihat detail pesan pengguna dan respons AI secara berurutan.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit Log Tab -->
+      <div id="tabAudit" class="card" hidden>
+        <h3>Riwayat Aktivitas Admin (50 Terbaru) <button type="button" class="btn" id="auditRefresh">Segarkan</button></h3>
+        <div style="overflow-x:auto">
+          <table class="audit-tbl">
+            <thead><tr><th>Waktu</th><th>Admin</th><th>Aksi</th><th>Target ID</th></tr></thead>
+            <tbody id="auditBody"><tr><td colspan="4" style="color:var(--muted)">Memuat…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+  (function () {
+    'use strict';
+    var SUPA_URL = 'https://gzzwjmcedymcdazckgbc.supabase.co';
+    var PUB_KEY = 'sb_publishable_7jdLcpH7rK8GX1uxN8dSxw_9utM-GG9';
+    var ADMIN_API = SUPA_URL + '/functions/v1/admin-ai-monitor';
+    var SESSION_KEY = 'vx_admin_monitor_session';
+
+    var $ = function (id) { return document.getElementById(id); };
+    var loginGate = $('loginGate'), deniedGate = $('deniedGate'), monitorApp = $('monitorApp'),
+        loginErr = $('loginErr'), adminWho = $('adminWho'), logoutBtn = $('logoutBtn');
+
+    var state = { session: null, selectedId: null };
+
+    $('themeBtn').addEventListener('click', function () {
+      var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      try { localStorage.setItem('vxt', next); } catch (e) {}
+    });
+
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function fmtTime(iso) {
+      if (!iso) return '-';
+      try { return new Date(iso).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }); } catch (e) { return iso; }
+    }
+
+    function readSession() {
+      try {
+        var raw = sessionStorage.getItem(SESSION_KEY) || localStorage.getItem('vx_auth_session');
+        if (!raw) return null;
+        var s = JSON.parse(raw);
+        return s && s.access_token ? s : null;
+      } catch (e) { return null; }
+    }
+    function saveSession(d) {
+      var s = {
+        access_token: d.access_token,
+        refresh_token: d.refresh_token || '',
+        expires_at: d.expires_at || (Math.floor(Date.now() / 1000) + (d.expires_in || 3600)),
+        user: { id: d.user.id, email: d.user.email || '' }
+      };
+      try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(s)); } catch (e) {}
+      state.session = s;
+      return s;
+    }
+    function clearSession() {
+      var cur = state.session || readSession();
+      state.session = null;
+      state.selectedId = null;
+      try { sessionStorage.removeItem(SESSION_KEY); localStorage.removeItem('vx_auth_session'); } catch (e) {}
+      $('convList').innerHTML = '';
+      $('detailPane').innerHTML = '<div class="empty">Pilih salah satu percakapan di sebelah kiri.</div>';
+      if (cur && cur.access_token) {
+        fetch(SUPA_URL + '/auth/v1/logout', { method: 'POST', headers: { apikey: PUB_KEY, Authorization: 'Bearer ' + cur.access_token } }).catch(function () {});
+      }
+    }
+
+    function getJwt() {
+      var s = state.session || readSession();
+      if (!s) return Promise.resolve(null);
+      state.session = s;
+      var now = Math.floor(Date.now() / 1000);
+      if (s.expires_at && s.expires_at - now > 45) return Promise.resolve(s.access_token);
+      if (!s.refresh_token) return Promise.resolve(null);
+      return fetch(SUPA_URL + '/auth/v1/token?grant_type=refresh_token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', apikey: PUB_KEY },
+        body: JSON.stringify({ refresh_token: s.refresh_token })
+      }).then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+        .then(function (d) { return saveSession(d).access_token; })
+        .catch(function () { clearSession(); return null; });
+    }
+
+    function adminApi(payload) {
+      return getJwt().then(function (jwt) {
+        if (!jwt) { var e = new Error('unauthorized'); e.status = 401; throw e; }
+        return fetch(ADMIN_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', apikey: PUB_KEY, Authorization: 'Bearer ' + jwt },
+          body: JSON.stringify(payload)
+        }).then(function (r) {
+          return r.json().catch(function () { return {}; }).then(function (d) {
+            if (!r.ok) { var e = new Error(d.error || 'error'); e.status = r.status; throw e; }
+            return d;
+          });
+        });
+      });
+    }
+
+    function showView(view) {
+      loginGate.hidden = view !== 'login';
+      deniedGate.hidden = view !== 'denied';
+      monitorApp.hidden = view !== 'app';
+      logoutBtn.hidden = view !== 'app';
+      adminWho.hidden = view !== 'app';
+    }
+
+    function loadStats() {
+      return adminApi({ action: 'stats' }).then(function (d) {
+        var st = d.stats || {};
+        $('stConvs').textContent = st.total_conversations || 0;
+        $('stTodayConv').textContent = (st.today_conversations || 0) + ' dibuat hari ini';
+        $('stMsgs').textContent = st.total_messages || 0;
+        $('stMsgSplit').textContent = (st.user_messages || 0) + ' user · ' + (st.assistant_messages || 0) + ' AI';
+        $('stUsers').textContent = st.unique_users || 0;
+        $('stAudit').textContent = st.audit_logs_count || 0;
+        $('stTodayMsg').textContent = (st.today_messages || 0) + ' pesan hari ini';
+
+        var daily = st.daily || [];
+        var maxM = Math.max(1, daily.reduce(function (m, x) { return Math.max(m, x.messages || 0); }, 0));
+        $('dailyBars').innerHTML = daily.map(function (x) {
+          var h = Math.max(6, Math.round(((x.messages || 0) / maxM) * 76));
+          return '<div class="bar-col"><b>' + (x.messages || 0) + '</b><div class="bar-fill" style="height:' + h + 'px"></div><small>' + esc(x.date.slice(5)) + '</small></div>';
+        }).join('');
+
+        var models = st.models || {};
+        var keys = Object.keys(models);
+        $('modelPills').innerHTML = keys.length
+          ? keys.map(function (k) { return '<span class="pill">' + esc(k) + ': <b>' + models[k] + '</b></span>'; }).join('')
+          : '<span class="pill">Belum ada data model</span>';
+      });
+    }
+
+    function loadList() {
+      var payload = {
+        action: 'list',
+        q: ($('fQuery').value || '').trim(),
+        date_from: $('fFrom').value || undefined,
+        date_to: $('fTo').value || undefined,
+        limit: 80
+      };
+      $('listMeta').textContent = 'Memuat percakapan…';
+      return adminApi(payload).then(function (d) {
+        var list = d.conversations || [];
+        $('listMeta').textContent = 'Menampilkan ' + list.length + ' dari ' + (d.total || 0) + ' percakapan';
+        var el = $('convList');
+        if (!list.length) { el.innerHTML = '<div class="card empty">Tidak ada percakapan yang cocok dengan filter.</div>'; return; }
+        el.innerHTML = list.map(function (c) {
+          return '<button type="button" class="c-item' + (c.id === state.selectedId ? ' is-on' : '') + '" data-cid="' + esc(c.id) + '">' +
+            '<div class="c-item__top"><span class="c-item__owner">' + esc(c.owner_label) + ' · #' + esc(c.owner_ref) + '</span><span class="c-item__cnt">' + c.message_count + ' pesan</span></div>' +
+            '<strong>' + esc(c.title) + '</strong>' +
+            '<p>' + esc(c.last_preview || '—') + '</p>' +
+            '<time>' + esc(fmtTime(c.updated_at)) + '</time>' +
+          '</button>';
+        }).join('');
+      });
+    }
+
+    function loadDetail(id) {
+      state.selectedId = id;
+      $('convList').querySelectorAll('.c-item').forEach(function (b) { b.classList.toggle('is-on', b.getAttribute('data-cid') === id); });
+      $('detailPane').innerHTML = '<div class="empty">Memuat detail percakapan…</div>';
+      adminApi({ action: 'detail', conversation_id: id }).then(function (d) {
+        var c = d.conversation, msgs = d.messages || [];
+        $('detailPane').innerHTML =
+          '<div class="detail__head">' +
+            '<div><h2>' + esc(c.title) + '</h2><div class="detail__meta">' + esc(c.owner_label) + ' (#' + esc(c.owner_ref) + ') · ' + esc(fmtTime(c.created_at)) + '</div></div>' +
+            '<button type="button" class="btn btn--bad" id="delConvBtn">Hapus Percakapan</button>' +
+          '</div>' +
+          '<div class="msgs">' +
+            (msgs.length ? msgs.map(function (m) {
+              var isU = m.role === 'user';
+              return '<div class="msg msg--' + (isU ? 'user' : 'assistant') + '">' +
+                '<div class="msg__hd"><span>' + (isU ? 'USER' : 'VORTEX AI' + (m.model ? ' · ' + esc(m.model) : '')) + '</span><time>' + esc(fmtTime(m.created_at)) + '</time></div>' +
+                '<div>' + esc(m.content) + '</div>' +
+              '</div>';
+            }).join('') : '<div class="empty">Belum ada pesan dalam percakapan ini.</div>') +
+          '</div>';
+
+        $('delConvBtn').addEventListener('click', function () {
+          if (!confirm('Hapus percakapan "' + c.title + '" secara permanen? Tindakan ini tercatat di audit log.')) return;
+          adminApi({ action: 'delete', conversation_id: id }).then(function () {
+            state.selectedId = null;
+            $('detailPane').innerHTML = '<div class="empty">Percakapan berhasil dihapus dan dicatat ke audit log.</div>';
+            loadStats();
+            loadList();
+          });
+        });
+      }).catch(function () {
+        $('detailPane').innerHTML = '<div class="empty">Gagal memuat percakapan.</div>';
+      });
+    }
+
+    function loadAudit() {
+      $('auditBody').innerHTML = '<tr><td colspan="4" style="color:var(--muted)">Memuat…</td></tr>';
+      adminApi({ action: 'audit_logs' }).then(function (d) {
+        var rows = d.logs || [];
+        if (!rows.length) { $('auditBody').innerHTML = '<tr><td colspan="4" style="color:var(--muted)">Belum ada catatan audit.</td></tr>'; return; }
+        $('auditBody').innerHTML = rows.map(function (r) {
+          return '<tr><td class="mono">' + esc(fmtTime(r.created_at)) + '</td><td>' + esc(r.admin_label) + '</td><td class="mono">' + esc(r.action) + '</td><td class="mono">' + esc(r.target_conversation_id ? r.target_conversation_id.slice(0, 8) + '…' : '—') + '</td></tr>';
+        }).join('');
+      });
+    }
+
+    function verifyAndBoot() {
+      adminApi({ action: 'verify' }).then(function (d) {
+        adminWho.textContent = d.admin.email;
+        showView('app');
+        loadStats();
+        loadList();
+      }).catch(function (e) {
+        if (e.status === 403) {
+          var s = state.session || readSession();
+          $('deniedEmail').textContent = (s && s.user && s.user.email) || 'akun Anda';
+          showView('denied');
+        } else {
+          showView('login');
+        }
+      });
+    }
+
+    $('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      loginErr.hidden = true;
+      var btn = $('loginSubmit');
+      btn.disabled = true; btn.textContent = 'Memverifikasi…';
+      fetch(SUPA_URL + '/auth/v1/token?grant_type=password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', apikey: PUB_KEY },
+        body: JSON.stringify({ email: $('admEmail').value.trim(), password: $('admPass').value })
+      }).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (d) {
+          if (!r.ok) throw new Error(d.error_description || d.msg || 'Email atau kata sandi salah.');
+          saveSession(d);
+          verifyAndBoot();
+        });
+      }).catch(function (err) {
+        loginErr.textContent = err.message || 'Gagal masuk.';
+        loginErr.hidden = false;
+      }).finally(function () {
+        btn.disabled = false; btn.textContent = 'Verifikasi & Masuk';
+      });
+    });
+
+    logoutBtn.addEventListener('click', function () { clearSession(); showView('login'); });
+    $('deniedLogout').addEventListener('click', function () { clearSession(); showView('login'); });
+    $('filterForm').addEventListener('submit', function (e) { e.preventDefault(); loadList(); });
+    $('fReset').addEventListener('click', function () { $('fQuery').value = ''; $('fFrom').value = ''; $('fTo').value = ''; loadList(); });
+    $('fRefresh').addEventListener('click', function () { loadStats(); loadList(); });
+    $('auditRefresh').addEventListener('click', loadAudit);
+    $('convList').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-cid]');
+      if (b) loadDetail(b.getAttribute('data-cid'));
+    });
+
+    document.querySelectorAll('[data-tab]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var t = btn.getAttribute('data-tab');
+        document.querySelectorAll('[data-tab]').forEach(function (x) { x.classList.toggle('is-on', x === btn); });
+        $('tabConvs').hidden = t !== 'convs';
+        $('tabAudit').hidden = t !== 'audit';
+        if (t === 'audit') loadAudit();
+      });
+    });
+
+    if (readSession()) verifyAndBoot();
+    else showView('login');
+  })();
+  </script>
+</body>
+</html>

@@ -1,9 +1,9 @@
-// Vortex Hydro AI Assistant — backend (Supabase Edge Function)
-// Komunikasi ke Gemini terjadi di sisi server agar API key tetap aman.
+// Vortex Hydro Private AI Assistant — Backend (Supabase Edge Function)
+// Strict Supabase Auth JWT verification + Postgres RLS defense-in-depth + Server-side Gemini API.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY") ?? "";
 const MODELS = (Deno.env.get("GEMINI_MODELS") ?? Deno.env.get("GEMINI_MODEL") ?? "gemini-2.5-flash-lite,gemini-2.5-flash,gemini-3.8-flash")
   .split(",").map((m) => m.trim().replace(/^models\//, "")).filter((m) => /^[A-Za-z0-9._-]+$/.test(m));
@@ -71,13 +71,12 @@ function corsFor(req: Request) {
 function json(req: Request, body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsFor(req), "Content-Type": "application/json" },
+    headers: {
+      ...corsFor(req),
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store",
+    },
   });
-}
-
-async function sha256Hex(s: string) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 const hits = new Map<string, number[]>();
@@ -86,20 +85,25 @@ function limited(key: string) {
   const arr = (hits.get(key) ?? []).filter((t) => now - t < 60000);
   arr.push(now);
   hits.set(key, arr);
-  if (hits.size > 5000) for (const [k, v] of hits) if (!v.some((t) => now - t < 60000)) hits.delete(k);
+  if (hits.size > 5000) {
+    for (const [k, v] of hits) if (!v.some((t) => now - t < 60000)) hits.delete(k);
+  }
   return arr.length > RATE_LIMIT;
 }
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const TOKEN = /^[A-Za-z0-9-]{32,80}$/;
 
-const db = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false } });
+function extractBearer(req: Request): string | null {
+  const auth = req.headers.get("authorization") ?? "";
+  const m = auth.match(/^Bearer\s+(.+)$/i);
+  return m?.[1]?.trim() || null;
+}
 
-async function owned(id: string, hash: string) {
-  const { data, error } = await db.from("conversations").select("id,title")
-    .eq("id", id).eq("session_token_hash", hash).maybeSingle();
-  if (error) throw new Error("db");
-  return data;
+function userScopedClient(jwt: string) {
+  return createClient(SUPABASE_URL, ANON_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: { headers: { Authorization: `Bearer ${jwt}` } },
+  });
 }
 
 async function askGemini(model: string, history: { role: string; content: string }[], pageNote: string) {
@@ -118,13 +122,13 @@ async function askGemini(model: string, history: { role: string; content: string
             role: m.role === "assistant" ? "model" : "user",
             parts: [{ text: m.content }],
           })),
-          generationConfig: { temperature: 0.7, maxOutputTokens: 900 },
+          generationConfig: { temperature: 0.78, maxOutputTokens: 900 },
         }),
       },
     );
     if (!res.ok) {
       let msg = "";
-      try { msg = String((await res.json())?.error?.message ?? "").slice(0, 200); } catch { /* abaikan */ }
+      try { msg = String((await res.json())?.error?.message ?? "").slice(0, 200); } catch { /* ignore */ }
       const err = new Error(res.status === 429 ? "busy" : "gemini") as Error & { detail?: string };
       err.detail = `HTTP ${res.status}${msg ? ": " + msg : ""}`;
       throw err;
@@ -162,47 +166,107 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsFor(req) });
   if (req.method !== "POST") return json(req, { error: "method_not_allowed" }, 405);
 
+  // 1. Validate Supabase Auth Bearer JWT strictly on the backend
+  const jwt = extractBearer(req);
+  if (!jwt) return json(req, { error: "unauthorized" }, 401);
+
+  const db = userScopedClient(jwt);
+  const { data: authData, error: authErr } = await db.auth.getUser(jwt);
+  if (authErr || !authData?.user?.id) {
+    return json(req, { error: "unauthorized" }, 401);
+  }
+  const userId = authData.user.id;
+
+  // 2. Parse JSON body & reject any attempt to spoof user_id
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch { return json(req, { error: "invalid_json" }, 400); }
 
-  const token = String(body.token ?? "");
-  if (!TOKEN.test(token)) return json(req, { error: "invalid_session" }, 400);
-  const hash = await sha256Hex(token);
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "";
-  if (limited(hash) || limited("ip:" + ip)) return json(req, { error: "rate_limited" }, 429);
+  if (body.user_id !== undefined && body.user_id !== null && String(body.user_id) !== userId) {
+    return json(req, { error: "forbidden_user_mismatch" }, 403);
+  }
+
+  // 3. Rate limiting per authenticated user + IP
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (limited("u:" + userId) || limited("ip:" + ip)) {
+    return json(req, { error: "rate_limited" }, 429);
+  }
 
   const action = String(body.action ?? "send");
-  const convId = body.conversation_id == null ? null : String(body.conversation_id);
+  const convId = body.conversation_id == null || body.conversation_id === "" ? null : String(body.conversation_id);
   if (convId !== null && !UUID.test(convId)) return json(req, { error: "invalid_conversation" }, 400);
 
+  async function owned(id: string) {
+    const { data, error } = await db
+      .from("conversations")
+      .select("id,title,created_at,updated_at")
+      .eq("id", id)
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (error) throw new Error("db");
+    return data;
+  }
+
   try {
+    // List ONLY authenticated user's conversations (enforced by query + Postgres RLS)
     if (action === "list") {
-      const { data, error } = await db.from("conversations").select("id,title,updated_at")
-        .eq("session_token_hash", hash).order("updated_at", { ascending: false }).limit(50);
+      const { data, error } = await db
+        .from("conversations")
+        .select("id,title,created_at,updated_at")
+        .eq("user_id", userId)
+        .order("updated_at", { ascending: false })
+        .limit(50);
       if (error) throw new Error("db");
-      return json(req, { conversations: data });
+      return json(req, { conversations: data ?? [] });
     }
 
+    // Delete ALL conversations owned by authenticated user
+    if (action === "delete_all") {
+      const { error } = await db
+        .from("conversations")
+        .delete()
+        .eq("user_id", userId);
+      if (error) throw new Error("db");
+      return json(req, { ok: true });
+    }
+
+    // History / Delete / Rename single conversation
     if (action === "history" || action === "delete" || action === "rename") {
       if (!convId) return json(req, { error: "invalid_conversation" }, 400);
-      const conv = await owned(convId, hash);
+      const conv = await owned(convId);
       if (!conv) return json(req, { error: "not_found" }, 404);
+
       if (action === "delete") {
-        const { error } = await db.from("conversations").delete().eq("id", convId);
+        const { error } = await db
+          .from("conversations")
+          .delete()
+          .eq("id", convId)
+          .eq("user_id", userId);
         if (error) throw new Error("db");
         return json(req, { ok: true });
       }
+
       if (action === "rename") {
         const title = String(body.title ?? "").replace(/\s+/g, " ").trim().slice(0, 80);
         if (!title) return json(req, { error: "invalid_title" }, 400);
-        const { error } = await db.from("conversations").update({ title }).eq("id", convId);
+        const { error } = await db
+          .from("conversations")
+          .update({ title })
+          .eq("id", convId)
+          .eq("user_id", userId);
         if (error) throw new Error("db");
         return json(req, { ok: true, title });
       }
-      const { data, error } = await db.from("messages").select("id,role,content,created_at,status")
-        .eq("conversation_id", convId).neq("status", "error").order("created_at", { ascending: true }).limit(200);
+
+      const { data, error } = await db
+        .from("messages")
+        .select("id,role,content,created_at,status")
+        .eq("conversation_id", convId)
+        .eq("user_id", userId)
+        .neq("status", "error")
+        .order("created_at", { ascending: true })
+        .limit(200);
       if (error) throw new Error("db");
-      return json(req, { conversation: conv, messages: data });
+      return json(req, { conversation: conv, messages: data ?? [] });
     }
 
     if (action !== "send") return json(req, { error: "unknown_action" }, 400);
@@ -215,32 +279,48 @@ Deno.serve(async (req) => {
     let id = convId;
     let title = "";
     if (id) {
-      const conv = await owned(id, hash);
+      const conv = await owned(id);
       if (!conv) return json(req, { error: "not_found" }, 404);
       title = conv.title;
       if (body.retry === true) {
-        const { data: last } = await db.from("messages").select("id,role,status")
-          .eq("conversation_id", id).order("created_at", { ascending: false }).limit(1);
+        const { data: last } = await db
+          .from("messages")
+          .select("id,role,status")
+          .eq("conversation_id", id)
+          .eq("user_id", userId)
+          .order("created_at", { ascending: false })
+          .limit(1);
         if (last?.[0]?.role === "user" && last[0].status === "error") {
-          await db.from("messages").delete().eq("id", last[0].id);
+          await db.from("messages").delete().eq("id", last[0].id).eq("user_id", userId);
         }
       }
     } else {
       title = message.replace(/\s+/g, " ").slice(0, 60);
-      const { data, error } = await db.from("conversations")
-        .insert({ session_token_hash: hash, title }).select("id").single();
+      const { data, error } = await db
+        .from("conversations")
+        .insert({ user_id: userId, title })
+        .select("id")
+        .single();
       if (error || !data) throw new Error("db");
       id = data.id;
     }
 
-    const { data: um, error: ue } = await db.from("messages")
-      .insert({ conversation_id: id, role: "user", content: message, status: "pending" })
-      .select("id").single();
+    const { data: um, error: ue } = await db
+      .from("messages")
+      .insert({ conversation_id: id, user_id: userId, role: "user", content: message, status: "pending" })
+      .select("id")
+      .single();
     if (ue || !um) throw new Error("db");
 
-    const { data: hist, error: he } = await db.from("messages").select("role,content")
-      .eq("conversation_id", id).in("status", ["completed", "pending"])
-      .order("created_at", { ascending: false }).limit(HISTORY_LIMIT);
+    // Context sent to Gemini is strictly restricted to THIS conversation & THIS user
+    const { data: hist, error: he } = await db
+      .from("messages")
+      .select("role,content")
+      .eq("conversation_id", id)
+      .eq("user_id", userId)
+      .in("status", ["completed", "pending"])
+      .order("created_at", { ascending: false })
+      .limit(HISTORY_LIMIT);
     if (he || !hist) throw new Error("db");
     const history = hist.reverse();
 
@@ -254,21 +334,35 @@ Deno.serve(async (req) => {
       answer = r.text;
       usedModel = r.model;
     } catch (e) {
-      await db.from("messages").update({ status: "error" }).eq("id", um.id);
+      await db.from("messages").update({ status: "error" }).eq("id", um.id).eq("user_id", userId);
       const code = (e as Error).message;
       const status = code === "busy" ? 429 : 502;
-      return json(req, { error: code === "busy" ? "ai_busy" : "ai_failed", detail: (e as { detail?: string }).detail, conversation_id: id }, status);
+      return json(
+        req,
+        { error: code === "busy" ? "ai_busy" : "ai_failed", detail: (e as { detail?: string }).detail, conversation_id: id },
+        status,
+      );
     }
 
-    const { data: am, error: ae } = await db.from("messages")
-      .insert({ conversation_id: id, role: "assistant", content: answer, model: usedModel, status: "completed" })
-      .select("id,created_at").single();
+    const { data: am, error: ae } = await db
+      .from("messages")
+      .insert({
+        conversation_id: id,
+        user_id: userId,
+        role: "assistant",
+        content: answer,
+        model: usedModel,
+        status: "completed",
+      })
+      .select("id,created_at")
+      .single();
     if (ae || !am) {
-      await db.from("messages").update({ status: "error" }).eq("id", um.id);
+      await db.from("messages").update({ status: "error" }).eq("id", um.id).eq("user_id", userId);
       throw new Error("db");
     }
-    await db.from("messages").update({ status: "completed" }).eq("id", um.id);
-    await db.from("conversations").update({ updated_at: new Date().toISOString() }).eq("id", id);
+
+    await db.from("messages").update({ status: "completed" }).eq("id", um.id).eq("user_id", userId);
+    await db.from("conversations").update({ updated_at: new Date().toISOString() }).eq("id", id).eq("user_id", userId);
 
     return json(req, {
       conversation_id: id,
