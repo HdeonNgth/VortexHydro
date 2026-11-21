@@ -632,6 +632,7 @@
       'muhammad-farrel-caesar': 'assets/team/electrical/muhammad-farrel-caesar.jpg',
       'muhammad-nur-faizin': 'assets/team/electrical/muhammad-nur-faizin.jpg',
       'khalidatul-aliyah-safitri': 'assets/team/mat-model/khalidatul-aliyah-safitri.jpg',
+      'muhamad-ferly-farnando': 'assets/team/mat-model/muhamad-ferly-farnando.jpg',
       'muhammad-alfian-firmansyah': 'assets/team/mat-model/muhammad-alfian-firmansyah.jpg',
       'muhammad-iqbal-maulana': 'assets/team/mat-model/muhammad-iqbal-maulana.jpg',
       'febrian-patria-yoni': 'assets/team/mekanikal/febrian-patria-yoni.jpg',
@@ -642,13 +643,23 @@
       'kristoforus-rizkiano-tembang-langit': 'assets/team/modeling/kristoforus-rizkiano-tembang-langit.jpg',
       'lutfi-ahmad-suriyana': 'assets/team/modeling/lutfi-ahmad-suriyana.jpg',
       'm-rangga-satria-noorfando': 'assets/team/modeling/m-rangga-satria-noorfando.jpg',
+      'muhammad-firdhie-andalas': 'assets/team/modeling/muhammad-firdhie-andalas.jpg',
+      'rakha-aribawa-rahman': 'assets/team/modeling/rakha-aribawa-rahman.jpg',
+      'legison-satria-manik-allo': 'assets/team/pdd/legison-satria-manik-allo.jpg',
       'maritza-aprilia-putri': 'assets/team/pdd/maritza-aprilia-putri.jpg',
+      'mohammad-miftah-yusron-hana-i': 'assets/team/pdd/mohammad-miftah-yusron-hana-i.jpg',
+      'mochammad-ardiansyah-tri-wicaksono': 'assets/team/pengurus/mochammad-ardiansyah-tri-wicaksono.jpg',
       'mohamad-supriyadi': 'assets/team/pengurus/mohamad-supriyadi.jpg',
       'muhamad-supriyadi': 'assets/team/pengurus/mohamad-supriyadi.jpg',
+      'girendra-hangestubrata': 'assets/team/perlengkapan/girendra-hangestubrata.jpg',
       'handhika-hidayatullah': 'assets/team/perlengkapan/handhika-hidayatullah.jpg',
       'jalalludin-satriya-nayaka': 'assets/team/perlengkapan/jalalludin-satriya-nayaka.jpg',
       'keihan-daafa-parsya': 'assets/team/perlengkapan/keihan-daafa-parsya.jpg',
-      'loudy-firza-aulia': 'assets/team/perlengkapan/loudy-firza-aulia.jpg'
+      'loudy-firza-aulia': 'assets/team/perlengkapan/loudy-firza-aulia.jpg',
+      'fattar-davino-aulia-rahman': 'assets/team/software/fattar-davino-aulia-rahman.jpg',
+      'haudh-al-maa-uun': 'assets/team/software/haudh-al-maa-uun.jpg',
+      'm-nauval-al-ghafary-wardoyo': 'assets/team/software/m-nauval-al-ghafary-wardoyo.jpg',
+      'muhammad-aryaputra-manda': 'assets/team/software/muhammad-aryaputra-manda.jpg'
     };
 
     function slug(s) { return s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
