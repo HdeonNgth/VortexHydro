@@ -23,8 +23,10 @@
 
   function updateHeaderState(routeId) {
     if (!hdr) return;
-    var solid = routeId !== 'beranda' || window.scrollY > 40;
+    var darkTop = routeId === 'beranda' || routeId === 'tentang-kami';
+    var solid = !darkTop || window.scrollY > 40;
     hdr.classList.toggle('is-scrolled', solid);
+    hdr.classList.toggle('is-dark-page', routeId === 'tentang-kami');
   }
 
   function route() {
@@ -195,17 +197,19 @@
     show(1);
   })();
 
-  /* ---------- 6. Tentang Kami: Leader-Only Cards -> Click to Show Division Members ---------- */
+  /* ---------- 6. Tentang Kami: ON.Energy Portrait Grid + Right Slide-Over Drawer ---------- */
   (function initTentangKami() {
     var grid = $('leader-grid'), ov = $('tmod-ov'), closeBtn = $('tmod-close');
-    var mBadge = $('tmod-badge'), mTitle = $('tmod-title'), mDesc = $('tmod-desc'), mBody = $('tmod-body');
+    var prevBtn = $('tmod-prev'), nextBtn = $('tmod-next');
+    var mPhoto = $('tmod-photo'), mName = $('tmod-name'), mRole = $('tmod-role'),
+        mDesc = $('tmod-desc'), mBadge = $('tmod-badge'), mCnt = $('tmod-cnt'), mBody = $('tmod-body');
     if (!grid) return;
 
     var DIVISIONS = [
       {
-        id: 'pengurus', badge: 'Pimpinan & Pengurus Inti', division: 'Pengurus Inti',
+        id: 'pengurus', badge: 'Pengurus Inti', division: 'Pengurus Inti',
         leader: 'Mochammad Ardiansyah Tri Wicaksono', leaderRole: 'Ketua Tim',
-        desc: 'Koordinasi utama seluruh divisi, administrasi surat-menyurat, serta manajemen anggaran proyek kelas.',
+        desc: 'Memimpin koordinasi seluruh divisi, administrasi proyek kelas, serta pengelolaan jadwal dan anggaran prototipe Vortex Hydro.',
         members: [
           { name: "Mohammad Miftah Yusron Hana'i", role: 'Sekretaris Tim 1' },
           { name: 'Mohamad Supriyadi', role: 'Sekretaris Tim 2' },
@@ -215,81 +219,81 @@
         ]
       },
       {
-        id: 'modeling', badge: 'Divisi 01', division: 'Modeling',
-        leader: 'Kristoforus Rizkiano Tembang Langit', leaderRole: 'Ketua Divisi Modeling',
-        desc: 'Pemodelan geometri 3D dan simulasi CFD perilaku aliran air untuk evaluasi rancangan turbin vortex.',
+        id: 'modeling', badge: 'Divisi Modeling', division: 'Modeling',
+        leader: 'Kristoforus Rizkiano Tembang Langit', leaderRole: 'Ketua Divisi · Modeling',
+        desc: 'Memimpin pemodelan geometri 3D saluran dan simulasi CFD perilaku aliran air untuk mengevaluasi rancangan turbin pusaran.',
         members: [
-          { name: 'Muhammad Firdhie Andalas', role: 'Anggota' },
-          { name: 'M. Rangga Satria Noorfando', role: 'Anggota' },
-          { name: 'Rakha Aribawa Rahman', role: 'Anggota' },
-          { name: 'Lutfi Ahmad Suriyana', role: 'Anggota' }
+          { name: 'Muhammad Firdhie Andalas', role: 'Anggota Modeling' },
+          { name: 'M. Rangga Satria Noorfando', role: 'Anggota Modeling' },
+          { name: 'Rakha Aribawa Rahman', role: 'Anggota Modeling' },
+          { name: 'Lutfi Ahmad Suriyana', role: 'Anggota Modeling' }
         ]
       },
       {
-        id: 'mat-model', badge: 'Divisi 02', division: 'Mat Model',
-        leader: 'Muhammad Alfian Firmansyah', leaderRole: 'Ketua Divisi Mat Model',
-        desc: 'Pemodelan matematis hidrodinamika dan kajian material komponen prototipe.',
+        id: 'mat-model', badge: 'Divisi Mat Model', division: 'Mat Model',
+        leader: 'Muhammad Alfian Firmansyah', leaderRole: 'Ketua Divisi · Mat Model',
+        desc: 'Memimpin pemodelan matematis hidrodinamika, perhitungan teoritis debit-head-daya, serta kajian pemilihan material komponen.',
         members: [
-          { name: 'Muhammad Iqbal Maulana', role: 'Anggota' },
-          { name: 'Khalidatul Aliyah Safitri', role: 'Anggota' },
-          { name: 'Muhamad Ferly Farnando', role: 'Anggota' }
+          { name: 'Muhammad Iqbal Maulana', role: 'Anggota Mat Model' },
+          { name: 'Khalidatul Aliyah Safitri', role: 'Anggota Mat Model' },
+          { name: 'Muhamad Ferly Farnando', role: 'Anggota Mat Model' }
         ]
       },
       {
-        id: 'software', badge: 'Divisi 03', division: 'Software',
-        leader: 'Fattar Davino Aulia Rahman', leaderRole: 'Ketua Divisi Software',
-        desc: 'Pengembangan website interaktif, dashboard pemantauan telemetri, dan integrasi Vortex AI.',
+        id: 'software', badge: 'Divisi Software', division: 'Software',
+        leader: 'Fattar Davino Aulia Rahman', leaderRole: 'Ketua Divisi · Software',
+        desc: 'Memimpin pengembangan website Vortex Hydro, antarmuka dashboard pemantauan telemetri, serta integrasi asisten Vortex AI.',
         members: [
-          { name: 'Muhamad Supriyadi', role: 'Anggota' },
-          { name: 'Muhammad Aryaputra Manda', role: 'Anggota' },
-          { name: 'M. Nauval Al-Ghafary Wardoyo', role: 'Anggota' },
-          { name: "Haudh Al Maa'uun", role: 'Anggota' }
+          { name: 'Muhamad Supriyadi', role: 'Anggota Software' },
+          { name: 'Muhammad Aryaputra Manda', role: 'Anggota Software' },
+          { name: 'M. Nauval Al-Ghafary Wardoyo', role: 'Anggota Software' },
+          { name: "Haudh Al Maa'uun", role: 'Anggota Software' }
         ]
       },
       {
-        id: 'electrical', badge: 'Divisi 04', division: 'Electrical',
-        leader: 'Muhammad Nur Faizin', leaderRole: 'Ketua Divisi Electrical',
-        desc: 'Perancangan sistem pembangkitan DC, pengkondisian daya, sensor instrumentasi, dan beban LED.',
+        id: 'electrical', badge: 'Divisi Electrical', division: 'Electrical',
+        leader: 'Muhammad Nur Faizin', leaderRole: 'Ketua Divisi · Electrical',
+        desc: 'Memimpin perancangan sistem pembangkitan Generator DC XD 3240, pengkondisian daya baterai 12 V, sensor, dan beban 2× LED 5 W.',
         members: [
-          { name: 'Muhammad Farrel Caesar', role: 'Anggota' },
-          { name: 'Mokhamad Rayhan Faturahman', role: 'Anggota' },
-          { name: 'Dava Maulana Yudha', role: 'Anggota' },
-          { name: 'Iltizamul Haqqi', role: 'Anggota' },
-          { name: 'Mexcelino Perwira Dirganesia', role: 'Anggota' },
-          { name: 'Mochammad Ardiansyah Tri Wicaksono', role: 'Anggota' }
+          { name: 'Muhammad Farrel Caesar', role: 'Anggota Electrical' },
+          { name: 'Mokhamad Rayhan Faturahman', role: 'Anggota Electrical' },
+          { name: 'Dava Maulana Yudha', role: 'Anggota Electrical' },
+          { name: 'Iltizamul Haqqi', role: 'Anggota Electrical' },
+          { name: 'Mexcelino Perwira Dirganesia', role: 'Anggota Electrical' },
+          { name: 'Mochammad Ardiansyah Tri Wicaksono', role: 'Anggota Electrical' }
         ]
       },
       {
-        id: 'mekanikal', badge: 'Divisi 05', division: 'Mekanikal',
-        leader: 'M. Salman Alfarizi Ramadani', leaderRole: 'Ketua Divisi Mekanikal',
-        desc: 'Fabrikasi rangka 2 × 0,8 m, kincir 6 sudu, poros stainless Ø 30 mm, serta transmisi pulley 1:4.',
+        id: 'mekanikal', badge: 'Divisi Mekanikal', division: 'Mekanikal',
+        leader: 'M. Salman Alfarizi Ramadani', leaderRole: 'Ketua Divisi · Mekanikal',
+        desc: 'Memimpin fabrikasi rangka utama 2 × 0,8 m, perakitan kincir 6 sudu Ø 330 mm, poros stainless Ø 30 mm, dan transmisi pulley 1:4.',
         members: [
-          { name: 'Mukhamad Nur Alfan', role: 'Anggota' },
-          { name: "Mohammad Miftah Yusron Hana'i", role: 'Anggota' },
-          { name: 'Febrian Patria Yoni', role: 'Anggota' },
-          { name: 'Muhammad Fadil', role: 'Anggota' },
-          { name: 'Mohamad Rizky Fadilah', role: 'Anggota' },
-          { name: 'Mohammad Hisyam Rifai', role: 'Anggota' }
+          { name: 'Mukhamad Nur Alfan', role: 'Anggota Mekanikal' },
+          { name: "Mohammad Miftah Yusron Hana'i", role: 'Anggota Mekanikal' },
+          { name: 'Febrian Patria Yoni', role: 'Anggota Mekanikal' },
+          { name: 'Muhammad Fadil', role: 'Anggota Mekanikal' },
+          { name: 'Mohamad Rizky Fadilah', role: 'Anggota Mekanikal' },
+          { name: 'Mohammad Hisyam Rifai', role: 'Anggota Mekanikal' }
         ]
       },
       {
-        id: 'perlengkapan', badge: 'Divisi 06', division: 'Perlengkapan',
-        leader: 'Handhika Hidayatullah', leaderRole: 'Ketua Divisi Perlengkapan',
-        desc: 'Pengadaan komponen teknik, logistik laboratorium, dan kesiapan peralatan uji prototipe.',
+        id: 'perlengkapan', badge: 'Divisi Perlengkapan', division: 'Perlengkapan',
+        leader: 'Handhika Hidayatullah', leaderRole: 'Ketua Divisi · Perlengkapan',
+        desc: 'Mengelola pengadaan komponen teknis, kesiapan pompa dan perpipaan Ø 45 mm, serta logistik pengujian laboratorium.',
         members: [
-          { name: 'Loudy Firza Aulia', role: 'Anggota' },
-          { name: 'Keihan Daafa Parsya', role: 'Anggota' },
-          { name: 'Girendra Hangestubrata', role: 'Anggota' },
-          { name: 'Jalalludin Satriya Nayaka', role: 'Anggota' }
+          { name: 'Loudy Firza Aulia', role: 'Anggota Perlengkapan' },
+          { name: 'Keihan Daafa Parsya', role: 'Anggota Perlengkapan' },
+          { name: 'Girendra Hangestubrata', role: 'Anggota Perlengkapan' },
+          { name: 'Jalalludin Satriya Nayaka', role: 'Anggota Perlengkapan' }
         ]
       },
       {
-        id: 'pdd', badge: 'Divisi 07', division: 'PDD',
-        leader: "Mohammad Miftah Yusron Hana'i", leaderRole: 'Ketua Divisi PDD',
-        desc: 'Publikasi, desain visual, serta dokumentasi foto dan video selama perakitan dan pengujian.',
+        id: 'pdd', badge: 'Divisi PDD', division: 'PDD',
+        leader: "Mohammad Miftah Yusron Hana'i", leaderRole: 'Ketua Divisi · PDD',
+        desc: 'Mengelola publikasi media, desain visual proyek, serta dokumentasi foto dan video selama tahap perakitan hingga uji coba.',
         members: [
-          { name: 'Legison Satria Manik Allo', role: 'Anggota' },
-          { name: 'Maritza Aprilia Putri', role: 'Anggota' }
+          { name: 'Legison Satria Manik Allo', role: 'Anggota PDD' },
+          { name: 'Maritza Aprilia Putri', role: 'Anggota PDD' }
         ]
       }
     ];
@@ -322,54 +326,87 @@
     function slug(s) { return s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
     function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
     function init(s) { var p = s.replace(/[^A-Za-z\s]/g, '').trim().split(/\s+/).filter(Boolean); return p.length > 1 ? (p[0][0] + p[p.length - 1][0]).toUpperCase() : (p[0] || 'VH').slice(0, 2).toUpperCase(); }
-    function avHtml(name, big) {
-      var p = PHOTOS[slug(name)];
-      var cls = big ? 'leader-av' : 't-av';
-      return p
-        ? '<span class="' + cls + '"><img src="' + p + '" alt="' + esc(name) + '" loading="lazy" decoding="async"></span>'
-        : '<span class="' + cls + ' is-init" aria-hidden="true">' + esc(init(name)) + '</span>';
+
+    function portraitHtml(name, role) {
+      var src = PHOTOS[slug(name)];
+      if (src) return '<img src="' + src + '" alt="' + esc(name) + '" loading="lazy" decoding="async">';
+      return '<div class="on-monogram" aria-hidden="true">' +
+        '<svg class="on-monogram__bg" viewBox="0 0 120 120" fill="none"><circle cx="60" cy="60" r="46" stroke="currentColor" stroke-opacity=".14" stroke-width="1.5"/><path d="M60 22a38 38 0 1 1-38 38 25 25 0 1 1 25 25 13 13 0 1 1 13-13" stroke="currentColor" stroke-opacity=".2" stroke-width="2" stroke-linecap="round"/></svg>' +
+        '<span>' + esc(init(name)) + '</span>' +
+        '<small>' + esc(role) + '</small>' +
+      '</div>';
     }
 
+    function memberAv(name) {
+      var src = PHOTOS[slug(name)];
+      return src
+        ? '<span class="on-mav"><img src="' + src + '" alt="' + esc(name) + '" loading="lazy" decoding="async"></span>'
+        : '<span class="on-mav is-init" aria-hidden="true">' + esc(init(name)) + '</span>';
+    }
+
+    var PLUS_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+
     grid.innerHTML = DIVISIONS.map(function (d, idx) {
-      return '<button type="button" class="leader-card" data-idx="' + idx + '">' +
-        '<div class="leader-card__top">' +
-          '<span class="leader-card__badge">' + esc(d.badge) + '</span>' +
-          '<span class="leader-card__cnt">+' + d.members.length + ' anggota</span>' +
+      return '<button type="button" class="on-card" data-idx="' + idx + '" aria-label="Lihat anggota ' + esc(d.division) + ', diketuai ' + esc(d.leader) + '">' +
+        '<div class="on-card__frame">' +
+          portraitHtml(d.leader, d.division) +
+          '<span class="on-card__plus" aria-hidden="true">' + PLUS_SVG + '</span>' +
         '</div>' +
-        '<div class="leader-card__who">' +
-          avHtml(d.leader, true) +
-          '<div><strong>' + esc(d.leader) + '</strong><span>' + esc(d.leaderRole) + '</span></div>' +
+        '<div class="on-card__meta">' +
+          '<strong>' + esc(d.leader) + '</strong>' +
+          '<span>' + esc(d.leaderRole) + '</span>' +
         '</div>' +
-        '<p class="leader-card__desc">' + esc(d.desc) + '</p>' +
-        '<span class="leader-card__cta">Lihat seluruh anggota divisi →</span>' +
       '</button>';
     }).join('');
 
-    function openDivision(d) {
-      if (!ov) return;
-      mBadge.textContent = d.badge;
-      mTitle.textContent = d.division;
+    var curIdx = 0;
+    function renderDrawer(idx) {
+      curIdx = (idx + DIVISIONS.length) % DIVISIONS.length;
+      var d = DIVISIONS[curIdx];
+      if (!d || !ov) return;
+      mPhoto.innerHTML = portraitHtml(d.leader, d.division);
+      mName.textContent = d.leader;
+      mRole.textContent = d.leaderRole;
       mDesc.textContent = d.desc;
-      var all = [{ name: d.leader, role: d.leaderRole, lead: true }].concat(d.members);
-      mBody.innerHTML = all.map(function (m) {
-        return '<div class="t-person' + (m.lead ? ' is-lead' : '') + '">' + avHtml(m.name, false) +
+      mBadge.textContent = 'Anggota · ' + d.badge;
+      mCnt.textContent = d.members.length + ' anggota';
+      mBody.innerHTML = d.members.map(function (m) {
+        return '<div class="on-member">' + memberAv(m.name) +
           '<div><strong>' + esc(m.name) + '</strong><span>' + esc(m.role) + '</span></div></div>';
       }).join('');
+      var sc = ov.querySelector('.on-drawer__scroll');
+      if (sc) sc.scrollTop = 0;
+    }
+
+    function openDrawer(idx) {
+      renderDrawer(idx);
       ov.hidden = false;
+      requestAnimationFrame(function () { ov.classList.add('is-open'); });
+      document.body.style.overflow = 'hidden';
       if (closeBtn) closeBtn.focus();
     }
 
-    function closeDivision() { if (ov) ov.hidden = true; }
+    function closeDrawer() {
+      if (!ov || ov.hidden) return;
+      ov.classList.remove('is-open');
+      document.body.style.overflow = '';
+      setTimeout(function () { ov.hidden = true; }, reducedMotion ? 0 : 220);
+    }
 
     grid.addEventListener('click', function (e) {
-      var card = e.target.closest('.leader-card');
-      if (!card) return;
-      var d = DIVISIONS[+card.dataset.idx];
-      if (d) openDivision(d);
+      var card = e.target.closest('.on-card');
+      if (card) openDrawer(+card.dataset.idx);
     });
-    if (closeBtn) closeBtn.addEventListener('click', closeDivision);
-    if (ov) ov.addEventListener('mousedown', function (e) { if (e.target === ov) closeDivision(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && ov && !ov.hidden) closeDivision(); });
+    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+    if (prevBtn) prevBtn.addEventListener('click', function () { renderDrawer(curIdx - 1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { renderDrawer(curIdx + 1); });
+    if (ov) ov.addEventListener('mousedown', function (e) { if (e.target === ov) closeDrawer(); });
+    document.addEventListener('keydown', function (e) {
+      if (!ov || ov.hidden) return;
+      if (e.key === 'Escape') closeDrawer();
+      else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); renderDrawer(curIdx - 1); }
+      else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); renderDrawer(curIdx + 1); }
+    });
   })();
 
   /* ---------- 7. Site Search Modal (Ctrl+K / /) ---------- */

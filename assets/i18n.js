@@ -351,7 +351,10 @@
     'Buka halaman →': 'Open page →',
     'Jelajahi Proyek': 'Explore Project',
     'Akses halaman': 'Access pages',
-    'sesuai kebutuhan': 'as needed'
+    'sesuai kebutuhan': 'as needed',
+    'Tim Kepemimpinan': 'Leadership Team',
+    'Klik ketua divisi untuk melihat seluruh anggota': 'Click a division lead to view all members',
+    'Kami adalah perancang': 'We are builders'
   };
 
   var enToId = Object.create(null);

@@ -360,19 +360,26 @@
       </section>
     </div>
 
-    <!-- ==================== PAGE 4: TENTANG KAMI (KETUA ONLY -> KLIK LIHAT ANGGOTA) ==================== -->
-    <div class="page" id="tentang-kami" data-title="Tentang Kami" hidden>
-      <section class="pagehead">
+    <!-- ==================== PAGE 4: TENTANG KAMI (ON.ENERGY EDITORIAL STYLE) ==================== -->
+    <div class="page about-dark" id="tentang-kami" data-title="Tentang Kami" hidden>
+      <section class="about-hero">
         <div class="wrap">
-          <span class="eyebrow">Tentang Kami · Universitas Negeri Malang</span>
-          <h1 class="h-sec">Ketua Tim &amp; <em>Ketua Divisi</em></h1>
-          <p class="lead">Teknologi Rekayasa Pembangkit Energi, Fakultas Vokasi. Klik kartu ketua divisi untuk melihat seluruh anggota dan tugas divisinya.</p>
+          <figure class="about-banner">
+            <img src="assets/images/documentation/t-tim.jpg" alt="Tim Vortex Hydro Universitas Negeri Malang" loading="lazy" decoding="async">
+          </figure>
+          <p class="about-manifesto">
+            <strong>Kami adalah perancang</strong> — membangun sistem pembangkit listrik mikro-hidro pusaran air di Fakultas Vokasi, Universitas Negeri Malang. Kolaborasi lintas disiplin menjadi inti kami, menyatukan pengurus inti dan tujuh divisi teknis dari simulasi fluida, mekanikal, kelistrikan, hingga perangkat lunak.
+          </p>
         </div>
       </section>
 
-      <section class="sec">
+      <section class="about-leaders">
         <div class="wrap">
-          <div class="leader-grid" id="leader-grid"></div>
+          <div class="about-leaders__head">
+            <h1 class="about-leaders__title">Tim Kepemimpinan</h1>
+            <span class="about-leaders__hint">Klik ketua divisi untuk melihat seluruh anggota</span>
+          </div>
+          <div class="on-grid" id="leader-grid"></div>
         </div>
       </section>
     </div>
@@ -509,18 +516,40 @@
     </button>
   </div>
 
-  <!-- Division Members Modal (Opens when clicking a Division Leader on Tentang Kami) -->
-  <div class="tmod-ov" id="tmod-ov" hidden role="dialog" aria-modal="true" aria-labelledby="tmod-title">
-    <div class="tmod-pan">
-      <header class="tmod-head">
-        <div>
-          <span class="eyebrow" id="tmod-badge">Divisi</span>
-          <h2 id="tmod-title">Nama Divisi</h2>
-          <p id="tmod-desc"></p>
+  <!-- Division Leader & Members Slide-Over Drawer (ON.Energy Style) -->
+  <div class="on-drawer-ov" id="tmod-ov" hidden role="dialog" aria-modal="true" aria-labelledby="tmod-name">
+    <div class="on-drawer-wrap">
+      <div class="on-drawer__rail">
+        <button type="button" class="on-rail-btn" id="tmod-close" aria-label="Tutup panel" title="Tutup (Esc)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <div class="on-rail-nav">
+          <button type="button" class="on-rail-btn" id="tmod-prev" aria-label="Ketua divisi sebelumnya" title="Sebelumnya (←)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>
+          </button>
+          <button type="button" class="on-rail-btn" id="tmod-next" aria-label="Ketua divisi berikutnya" title="Berikutnya (→)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m6-6-6 6-6-6"/></svg>
+          </button>
         </div>
-        <button type="button" class="tmod-close" id="tmod-close" aria-label="Tutup">×</button>
-      </header>
-      <div class="tmod-body" id="tmod-body"></div>
+      </div>
+
+      <aside class="on-drawer">
+        <div class="on-drawer__scroll">
+          <div class="on-drawer__photo" id="tmod-photo"></div>
+          <div class="on-drawer__info">
+            <h2 id="tmod-name">Nama Ketua</h2>
+            <p class="on-drawer__role" id="tmod-role">Ketua Divisi</p>
+            <p class="on-drawer__desc" id="tmod-desc"></p>
+          </div>
+          <div class="on-drawer__members">
+            <div class="on-drawer__mhead">
+              <span id="tmod-badge">Anggota Divisi</span>
+              <b id="tmod-cnt">0 orang</b>
+            </div>
+            <div class="on-drawer__list" id="tmod-body"></div>
+          </div>
+        </div>
+      </aside>
     </div>
   </div>
 
