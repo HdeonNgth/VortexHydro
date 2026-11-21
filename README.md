@@ -34,3 +34,6 @@ Saat ini Dashboard hanya memakai satu sumber data:
 - **Simulasi prototipe**: mesin `assets/js/vx-engine.js` yang juga menggerakkan halaman Tentang. Angkanya dibuat di browser, jadi tidak ada database atau koneksi realtime. Fokus pengembangan sekarang ada di tampilan (UI).
 
 Jalur database realtime (Firebase dan Supabase), pengirim data dari simulasi 3D, dan halaman Energi serta Laporan Excel sudah dihapus dari kode. Semuanya masih ada di riwayat Git bila dibutuhkan lagi.
+
+## AI Assistant
+Asisten AI (Gemini via Supabase Edge Function) ada di pojok kiri bawah. Panduan, konfigurasi `GEMINI_API_KEY`, dan checklist uji: `docs/ai-assistant.md`.
