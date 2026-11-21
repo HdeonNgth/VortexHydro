@@ -7,8 +7,8 @@ body.is-dash{--dsb-w:62px;--dk-ink:var(--deep);--dk-mut:var(--slate);--dk-card:r
 html[data-theme=dark] body.is-dash{--dk-ink:#fff;--dk-mut:var(--dmu2);--dk-card:rgba(255,255,255,.06);--dk-ln:rgba(255,255,255,.09);--dk-sh:0 22px 40px -28px rgba(0,0,0,.7);--dk-ac:var(--lite)}
 html:not([data-theme=dark]) body.is-dash{background:radial-gradient(780px 480px at 88% -8%,rgba(var(--cyan-rgb),.2),transparent 70%),radial-gradient(720px 520px at 4% 105%,rgba(var(--blue-rgb),.11),transparent 70%),var(--soft) no-repeat}
 html[data-theme=dark] body.is-dash{background:radial-gradient(780px 480px at 88% -8%,rgba(var(--blue-rgb),.32),transparent 70%),var(--abyss) no-repeat}
-/* bar navigasi atas milik situs publik disembunyikan; dashboard punya sidebar sendiri */
-body.is-dash .lg{display:none!important}
+/* bar navigasi atas & bawah milik situs publik disembunyikan; dashboard punya sidebar sendiri */
+body.is-dash .lg,body.is-dash .mnav{display:none!important}
 
 /* ---------- sidebar ---------- */
 .dsb{display:none}

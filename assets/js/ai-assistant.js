@@ -30,7 +30,13 @@
   function inline(s) {
     var codes = [];
     s = s.replace(/`([^`\n]+)`/g, function (_, c) { codes.push('<code>' + c + '</code>'); return '\u0000' + (codes.length - 1) + '\u0000'; });
-    s = s.replace(/\$\$?([^$\n]+?)\$\$?/g, function (_, c) { codes.push('<span class="vai-math">' + c.replace(/\^(\{[^}]+\}|[\w+-]+)/g, function (_, x) { return '<sup>' + x.replace(/^\{|\}$/g, '') + '</sup>'; }).replace(/_(\{[^}]+\}|\w+)/g, function (_, x) { return '<sub>' + x.replace(/^\{|\}$/g, '') + '</sub>'; }) + '</span>'); return '\u0000' + (codes.length - 1) + '\u0000'; });
+    s = s.replace(/\$\$?([^$\n]+?)\$\$?/g, function (_, c) {
+      var clean = c.replace(/\\rightarrow/g, '→').replace(/\\times/g, '×').replace(/\\cdot/g, '·')
+        .replace(/\^(\{[^}]+\}|[\w+-]+)/g, function (_, x) { return '<sup>' + x.replace(/^\{|\}$/g, '') + '</sup>'; })
+        .replace(/_(\{[^}]+\}|\w+)/g, function (_, x) { return '<sub>' + x.replace(/^\{|\}$/g, '') + '</sub>'; });
+      codes.push('<span class="vai-math">' + clean + '</span>');
+      return '\u0000' + (codes.length - 1) + '\u0000';
+    });
     s = s.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
          .replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>')
          .replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
@@ -42,10 +48,12 @@
     text = text.replace(/```[^\n]*\n([\s\S]*?)```/g, function (_, c) { blocks.push('<pre><code>' + c.replace(/\n$/, '') + '</code></pre>'); return '\n\u0001' + (blocks.length - 1) + '\u0001\n'; });
     var lines = text.split('\n'), out = [], i = 0;
     function isRow(l) { return /^\s*\|.*\|\s*$/.test(l); }
+    function isHr(l) { return /^\s*(?:---+|___+|\*\*\*+)\s*$/.test(l); }
     while (i < lines.length) {
       var l = lines[i], m;
       if ((m = l.match(/^\u0001(\d+)\u0001$/))) { out.push(blocks[+m[1]]); i++; continue; }
       if (!l.trim()) { i++; continue; }
+      if (isHr(l)) { out.push('<hr class="vai-hr">'); i++; continue; }
       if ((m = l.match(/^(#{1,4})\s+(.*)$/))) { var h = Math.min(m[1].length + 2, 6); out.push('<h' + h + '>' + inline(m[2]) + '</h' + h + '>'); i++; continue; }
       if (isRow(l) && lines[i + 1] && /^\s*\|[\s:|-]+\|\s*$/.test(lines[i + 1])) {
         var cells = function (r) { return r.trim().replace(/^\||\|$/g, '').split('|').map(function (c) { return inline(c.trim()); }); };
@@ -54,10 +62,10 @@
         while (i < lines.length && isRow(lines[i])) { html += '<tr>' + cells(lines[i]).map(function (c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; i++; }
         out.push(html + '</tbody></table></div>'); continue;
       }
-      if (/^\s*[-*]\s+/.test(l)) { var ul = '<ul>'; while (i < lines.length && /^\s*[-*]\s+/.test(lines[i])) { ul += '<li>' + inline(lines[i].replace(/^\s*[-*]\s+/, '')) + '</li>'; i++; } out.push(ul + '</ul>'); continue; }
+      if (/^\s*[-*]\s+/.test(l)) { var ul = '<ul>'; while (i < lines.length && /^\s*[-*]\s+/.test(lines[i]) && !isHr(lines[i])) { ul += '<li>' + inline(lines[i].replace(/^\s*[-*]\s+/, '')) + '</li>'; i++; } out.push(ul + '</ul>'); continue; }
       if (/^\s*\d+[.)]\s+/.test(l)) { var ol = '<ol>'; while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) { ol += '<li>' + inline(lines[i].replace(/^\s*\d+[.)]\s+/, '')) + '</li>'; i++; } out.push(ol + '</ol>'); continue; }
       var p = [];
-      while (i < lines.length && lines[i].trim() && !/^(#{1,4}\s|\s*[-*]\s|\s*\d+[.)]\s|\u0001)/.test(lines[i]) && !isRow(lines[i])) { p.push(lines[i]); i++; }
+      while (i < lines.length && lines[i].trim() && !isHr(lines[i]) && !/^(#{1,4}\s|\s*[-*]\s|\s*\d+[.)]\s|\u0001)/.test(lines[i]) && !isRow(lines[i])) { p.push(lines[i]); i++; }
       if (!p.length) { p.push(lines[i]); i++; }
       out.push('<p>' + inline(p.join('<br>')) + '</p>');
     }
@@ -65,21 +73,25 @@
   }
 
   /* ---------- DOM ---------- */
-  var ICON = '<svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16 4c-6.6 0-12 5.4-12 12s5.4 12 12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M16 9c-3.9 0-7 3.1-7 7s3.1 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="16" r="2.6" fill="currentColor"/><path d="M22 6.5c3.1 2.2 5 5.7 5 9.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity=".55"/></svg>';
+  var ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>';
+  var EDIT_ICON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
   var root = document.createElement('div');
   root.className = 'vai';
   root.innerHTML =
-    '<button type="button" class="vai__fab" id="vaiFab" aria-label="Ask Vortex AI" aria-expanded="false" aria-controls="vaiPanel">' + ICON + '<span class="vai__tip" role="tooltip">Ask Vortex AI</span></button>' +
+    '<button type="button" class="vai__fab" id="vaiFab" aria-label="Tanya Vortex AI" aria-expanded="false" aria-controls="vaiPanel">' +
+      '<span class="vai__fab-ic">' + ICON + '</span>' +
+      '<span class="vai__fab-lbl">Tanya AI</span>' +
+    '</button>' +
     '<section class="vai__panel" id="vaiPanel" role="dialog" aria-label="Vortex Hydro AI Assistant" hidden>' +
       '<header class="vai__head"><span class="vai__logo">' + ICON + '</span><div class="vai__id"><b>Vortex Hydro AI</b><small><i class="vai__dot" id="vaiDot"></i><span id="vaiStatus">Online</span></small></div>' +
         '<button type="button" class="vai__ib" id="vaiHist" aria-label="Riwayat percakapan" title="Riwayat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2M3.5 12a8.5 8.5 0 1 0 2.6-6.1M3.5 4v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
-        '<button type="button" class="vai__ib" id="vaiNew" aria-label="New Chat" title="New Chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>' +
+        '<button type="button" class="vai__ib" id="vaiNew" aria-label="Percakapan baru" title="Percakapan baru"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>' +
         '<button type="button" class="vai__ib" id="vaiClose" aria-label="Tutup panel" title="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></header>' +
       '<div class="vai__body"><div class="vai__log" id="vaiLog" role="log" aria-live="polite"></div>' +
-        '<aside class="vai__drawer" id="vaiDrawer" hidden><div class="vai__dh"><b>Riwayat</b><button type="button" class="vai__ib" id="vaiDrawerClose" aria-label="Tutup riwayat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><ul id="vaiList"></ul></aside></div>' +
-      '<form class="vai__form" id="vaiForm"><label class="vai__sr" for="vaiInput">Pesan</label><textarea id="vaiInput" rows="1" maxlength="2000" placeholder="Tanya apa saja…" autocomplete="off"></textarea>' +
+        '<aside class="vai__drawer" id="vaiDrawer" hidden><div class="vai__dh"><b>Riwayat Percakapan</b><button type="button" class="vai__ib" id="vaiDrawerClose" aria-label="Tutup riwayat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><ul id="vaiList"></ul></aside></div>' +
+      '<form class="vai__form" id="vaiForm"><label class="vai__sr" for="vaiInput">Pesan</label><textarea id="vaiInput" rows="1" maxlength="2000" placeholder="Tanya seputar Vortex Hydro…" autocomplete="off"></textarea>' +
         '<button type="submit" class="vai__send" id="vaiSend" aria-label="Kirim"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5L4 12z" fill="currentColor"/></svg></button></form>' +
-      '<p class="vai__note">AI dapat keliru. Periksa informasi penting.</p>' +
+      '<p class="vai__note">Didukung Gemini · Periksa kembali informasi teknis penting.</p>' +
     '</section>';
   document.body.appendChild(root);
 
@@ -123,17 +135,22 @@
   function scroll() { log.scrollTop = log.scrollHeight; }
 
   function welcome() {
-    log.innerHTML = '<div class="vai__empty"><span class="vai__badge">' + ICON + '</span><h3>Hello! I’m Vortex Hydro AI.</h3>' +
-      '<p>Your intelligent companion for exploring vortex technology, renewable energy, and the science behind our world.</p>' +
+    log.innerHTML = '<div class="vai__empty"><span class="vai__badge">' + ICON + '</span><h3>Halo, saya Vortex Hydro AI</h3>' +
+      '<p>Asisten teknis untuk membantu memahami cara kerja turbin pusaran air, spesifikasi prototipe laboratorium, dan konsep mekanika fluida.</p>' +
       '<div class="vai__sug"></div></div>';
     var box = log.querySelector('.vai__sug');
-    ['What is a Vortex Turbine?', 'How does hydropower generate electricity?', 'Explain the science behind water vortex.', 'Tell me about Vortex Hydro.'].forEach(function (q) {
+    [
+      'Bagaimana cara kerja simulator Vortex Hydro?',
+      'Apa saja komponen utama pada prototipe ini?',
+      'Mengapa turbin vortex cocok untuk head rendah?',
+      'Bagaimana rumus menghitung daya mikro-hidro?'
+    ].forEach(function (q) {
       var b = document.createElement('button'); b.type = 'button'; b.textContent = q;
       b.addEventListener('click', function () { submit(q); }); box.appendChild(b);
     });
   }
 
-  function addMsg(role, content, opts) {
+  function addMsg(role, content) {
     var empty = log.querySelector('.vai__empty'); if (empty) log.innerHTML = '';
     var w = document.createElement('div'); w.className = 'vai__m vai__m--' + role;
     if (role === 'assistant') {
@@ -151,16 +168,15 @@
   }
 
   function typeInto(w, content) {
-    // Efek mengetik; dilewati jika reduced-motion. Isi akhir selalu dirender penuh.
     var t = w.querySelector('.vai__txt');
     if (reduce || content.length > 1800) { t.innerHTML = md(content); scroll(); return Promise.resolve(); }
     return new Promise(function (res) {
-      var i = 0, step = Math.max(2, Math.ceil(content.length / 110));
+      var i = 0, step = Math.max(4, Math.ceil(content.length / 80));
       (function tick() {
         i = Math.min(content.length, i + step);
         t.innerHTML = md(content.slice(0, i)); scroll();
         if (i >= content.length) return res();
-        setTimeout(tick, 16);
+        setTimeout(tick, 14);
       })();
     });
   }
@@ -236,7 +252,7 @@
         var li = document.createElement('li'); if (c.id === state.conv) li.className = 'is-on';
         var open = document.createElement('button'); open.type = 'button'; open.className = 'vai__open'; open.textContent = c.title;
         open.addEventListener('click', function () { if (state.busy) return; closeDrawer(); loadConversation(c.id); });
-        var rn = document.createElement('button'); rn.type = 'button'; rn.className = 'vai__mini'; rn.setAttribute('aria-label', 'Ganti judul'); rn.textContent = '✎';
+        var rn = document.createElement('button'); rn.type = 'button'; rn.className = 'vai__mini'; rn.setAttribute('aria-label', 'Ganti judul'); rn.innerHTML = EDIT_ICON;
         rn.addEventListener('click', function () {
           var t = prompt('Judul baru', c.title); if (t === null) return;
           api({ action: 'rename', conversation_id: c.id, title: t }).then(function (r) { c.title = r.title; open.textContent = r.title; }).catch(function (e) { alert(ERR[e.code] || ERR.server_error); });
@@ -263,7 +279,7 @@
   }
   function closePanel() {
     panel.classList.remove('is-in'); root.classList.remove('is-open'); fab.setAttribute('aria-expanded', 'false');
-    setTimeout(function () { panel.hidden = true; }, reduce ? 0 : 220); fab.focus();
+    setTimeout(function () { panel.hidden = true; }, reduce ? 0 : 180); fab.focus();
   }
 
   fab.addEventListener('click', function () { panel.hidden ? openPanel() : closePanel(); });
@@ -280,6 +296,6 @@
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('vaiForm').requestSubmit(); }
   });
-  function autosize() { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 140) + 'px'; }
+  function autosize() { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 120) + 'px'; }
   input.addEventListener('input', autosize);
 })();

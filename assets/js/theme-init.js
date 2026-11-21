@@ -1,2 +1,5 @@
-if(location.hash==="#teknologi")location.replace("#tentang");try{var t=localStorage.getItem("vxt");if(t)document.documentElement.dataset.theme=t;var pp=localStorage.getItem("vxpal");if(pp&&/^(carousel|sakura|teratai)$/.test(pp))document.documentElement.dataset.pal=pp}catch(e){}
-if(window.matchMedia&&window.matchMedia("(max-width:760px)").matches)document.documentElement.classList.add("vx-noanim");
+if (location.hash === "#teknologi") location.replace("#tentang");
+try {
+  var t = localStorage.getItem("vxt");
+  if (t === "dark" || t === "light") document.documentElement.dataset.theme = t;
+} catch (e) {}
