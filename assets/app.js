@@ -974,7 +974,7 @@
     start();
   })();
 
-  /* ---------- 10. Fullscreen Interactive 3D Simulator (1:100 Millimetric CAD Three.js WebGL) ---------- */
+  /* ---------- 10. Fullscreen Interactive 3D Simulator (Single Fixed Perspective · Transparent Theme Background) ---------- */
   (function initVortexThreeSimulator() {
     var root = $('vx3d-root');
     var viewport = $('vx3d-viewport');
@@ -989,14 +989,13 @@
         title: 'Saluran Akrilik Miring (1700 × 400 mm)',
         img: 'assets/images/components/cad-prototype.png',
         desc: 'Saluran terbuka berbahan akrilik transparan yang terdiri dari bak penenang hulu, bidang luncur miring, dan ruang keluar hilir.',
-        func: 'Menampung air di bagian hulu lalu mengarahkan dan mempercepat luncuran air menuju sudu-sudu kincir sebelum keluar ke penampung bawah.',
+        func: 'Menampung air di bagian hulu lalu mengarahkan dan mempercepat luncuran air menuju sudu-sudu kincir sebelum keluar ke ember penampung bawah.',
         extra: [
           '<strong>Panjang Total:</strong> 1700 mm (Hulu 500 · Miring 1016,97 · Hilir 200 mm)',
           '<strong>Lebar &amp; Dinding:</strong> Lebar 400 mm × Tinggi dinding 250 mm',
           '<strong>Sekat Hulu:</strong> Pengarah aliran internal 95 × 105 mm'
         ],
-        anchor: [-1.8, 3.2, 0.0],
-        cam: { theta: 0.56, phi: 1.06, radius: 19.5, target: [-0.8, 2.2, 0.0] }
+        anchor: [-3.2, 3.55, 0.9]
       },
       wheel: {
         tag: 'OBJEK 02 · TURBIN UTAMA',
@@ -1009,8 +1008,7 @@
           '<strong>Posisi Rotor:</strong> Presisi di dalam ruang saluran (tidak keluar dinding)',
           '<strong>Poros Utama:</strong> Stainless steel Ø 30 mm menembus sisi saluran'
         ],
-        anchor: [3.8, 2.35, 0.0],
-        cam: { theta: 0.48, phi: 1.04, radius: 11.5, target: [3.8, 2.1, 0.0] }
+        anchor: [3.6, 2.05, 1.25]
       },
       pulley: {
         tag: 'OBJEK 03 · TRANSMISI PUTARAN',
@@ -1023,8 +1021,7 @@
           '<strong>Pulley Tujuan:</strong> Diameter 67,5 mm (perbandingan putaran 1 : 4)',
           '<strong>Penempatan:</strong> Sisi luar dinding saluran akrilik'
         ],
-        anchor: [3.8, 2.18, -2.35],
-        cam: { theta: 2.45, phi: 1.12, radius: 12.2, target: [5.6, 1.7, -2.2] }
+        anchor: [3.9, 3.55, -2.32]
       },
       generator: {
         tag: 'OBJEK 04 · PEMBANGKIT LISTRIK',
@@ -1037,26 +1034,25 @@
           '<strong>Penggerak:</strong> Terhubung langsung ke pulley kecil 67,5 mm',
           '<strong>Posisi:</strong> Zona kering di ujung depan saluran'
         ],
-        anchor: [8.85, 1.15, -1.35],
-        cam: { theta: 1.98, phi: 1.10, radius: 9.8, target: [8.4, 1.15, -1.4] }
+        anchor: [8.85, 1.45, -1.25]
       },
       tank: {
         tag: 'OBJEK 05 · PENAMPUNG SIRKULASI',
-        title: 'Penampung Air 60 Liter & Pompa',
+        title: 'Ember Penampung Air 60 Liter & Pompa',
         img: 'assets/images/components/comp-pump.jpg?v=2',
-        desc: 'Wadah penampung air silinder berkapasitas besar 60 liter yang ditempatkan tepat di bawah bukaan keluar ujung hilir saluran.',
-        func: 'Menampung seluruh air yang jatuh dari bukaan bawah saluran agar dapat disirkulasikan kembali secara tertutup.',
+        desc: 'Ember penampung air silinder berwarna hijau berkapasitas 60 liter yang ditempatkan tepat di bawah bukaan keluar ujung hilir saluran.',
+        func: 'Menampung seluruh air yang jatuh dari bukaan bawah saluran agar dapat disirkulasikan kembali oleh pompa celup di dasar ember.',
         extra: [
-          '<strong>Kapasitas Wadah:</strong> 60 Liter (diameter 520 mm)',
-          '<strong>Kelengkapan:</strong> Pompa celup sirkulasi 100 W di dasar tangki',
+          '<strong>Wadah Penampung:</strong> Ember silinder hijau kapasitas 60 Liter',
+          '<strong>Kelengkapan:</strong> Pompa celup sirkulasi 100 W di dasar ember',
           '<strong>Posisi:</strong> Tepat di bawah bibir keluaran saluran 200 mm'
         ],
-        anchor: [7.2, -2.1, 0.0],
-        cam: { theta: 0.65, phi: 1.16, radius: 14.5, target: [6.8, -1.8, 0.0] }
+        anchor: [7.35, -2.05, 1.42]
       }
     };
 
-    var DEFAULT_CAM = { theta: 0.64, phi: 1.10, radius: 22.5, target: [0.6, 0.6, 0.0] };
+    /* Single Fixed Optimal Perspective — Shows all 5 objects clearly at once */
+    var FIXED_CAM = { theta: 0.60, phi: 1.05, radius: 21.2, target: [0.55, 0.35, 0.0] };
 
     /* UI Elements */
     var panel = $('vx3d-panel');
@@ -1077,47 +1073,43 @@
       });
     }
 
-    /* Three.js Scene, Camera & WebGLRenderer */
+    /* Three.js Scene (Transparent Background merging with Website Theme) */
     var scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x020813, 0.014);
+    scene.background = null;
 
-    var camera = new THREE.PerspectiveCamera(40, 16 / 9, 0.1, 160);
+    var camera = new THREE.PerspectiveCamera(39, 16 / 9, 0.1, 140);
+    var camTarget = new THREE.Vector3(FIXED_CAM.target[0], FIXED_CAM.target[1], FIXED_CAM.target[2]);
+
+    function applyFixedCamera() {
+      var sinPhi = Math.sin(FIXED_CAM.phi);
+      camera.position.set(
+        camTarget.x + FIXED_CAM.radius * sinPhi * Math.sin(FIXED_CAM.theta),
+        camTarget.y + FIXED_CAM.radius * Math.cos(FIXED_CAM.phi),
+        camTarget.z + FIXED_CAM.radius * sinPhi * Math.cos(FIXED_CAM.theta)
+      );
+      camera.lookAt(camTarget);
+    }
+    applyFixedCamera();
+
     var renderer = new THREE.WebGLRenderer({
       canvas: canvas,
       antialias: true,
       alpha: true,
       powerPreference: 'high-performance'
     });
-    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
-    if (renderer.shadowMap) {
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    }
+    renderer.setClearColor(0x000000, 0);
+    renderer.setPixelRatio(Math.min(1.75, window.devicePixelRatio || 1));
 
-    /* Realistic Studio & Futuristic Rim Lighting */
-    scene.add(new THREE.HemisphereLight(0xbbeeff, 0x041226, 0.92));
+    /* Clean Studio Lighting (Works seamlessly on both Light and Dark Website Themes) */
+    scene.add(new THREE.HemisphereLight(0xdff6ff, 0x0b2545, 1.05));
 
-    var keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    var keyLight = new THREE.DirectionalLight(0xffffff, 1.15);
     keyLight.position.set(12, 22, 16);
-    keyLight.castShadow = true;
     scene.add(keyLight);
 
-    var backRimLight = new THREE.DirectionalLight(0x00e5ff, 0.85);
+    var backRimLight = new THREE.DirectionalLight(0x00d4ff, 0.78);
     backRimLight.position.set(-14, 10, -14);
     scene.add(backRimLight);
-
-    var aquaFillLight = new THREE.PointLight(0x00d4ff, 1.1, 30);
-    aquaFillLight.position.set(2.0, 3.5, 4.0);
-    scene.add(aquaFillLight);
-
-    /* Subtle Reference Floor Grid under the 60L Tank */
-    var gridHelper = new THREE.GridHelper(34, 34, 0x00a8e8, 0x092242);
-    gridHelper.position.y = -4.22;
-    if (gridHelper.material) {
-      gridHelper.material.transparent = true;
-      gridHelper.material.opacity = 0.32;
-    }
-    scene.add(gridHelper);
 
     /* Registry for Raycasting & Emissive Highlighting */
     var interactiveMeshes = [];
@@ -1125,8 +1117,6 @@
 
     function registerMesh(mesh, key) {
       mesh.userData.objKey = key;
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
       if (mesh.material && mesh.material.emissive) {
         originalEmissives.set(mesh.uuid, {
           hex: mesh.material.emissive.getHex(),
@@ -1146,9 +1136,9 @@
     function addEdges(mesh, color, opacity) {
       var edges = new THREE.EdgesGeometry(mesh.geometry, 15);
       var lineMat = new THREE.LineBasicMaterial({
-        color: color || 0x00e5ff,
+        color: color || 0x0284c7,
         transparent: true,
-        opacity: opacity == null ? 0.65 : opacity
+        opacity: opacity == null ? 0.72 : opacity
       });
       mesh.add(new THREE.LineSegments(edges, lineMat));
     }
@@ -1168,30 +1158,30 @@
 
     /* Materials */
     var matAcrylic = new THREE.MeshPhysicalMaterial({
-      color: 0xe0f7fc,
+      color: 0xbceeff,
       transparent: true,
-      opacity: 0.28,
-      roughness: 0.08,
+      opacity: 0.34,
+      roughness: 0.1,
       metalness: 0.05,
       side: THREE.DoubleSide,
       depthWrite: false
     });
     var matAcrylicFloor = new THREE.MeshPhysicalMaterial({
-      color: 0xc8eef9,
+      color: 0x93dff7,
       transparent: true,
-      opacity: 0.38,
-      roughness: 0.12,
+      opacity: 0.44,
+      roughness: 0.14,
       metalness: 0.05,
       side: THREE.DoubleSide
     });
     var matWater = new THREE.MeshStandardMaterial({
       color: 0x00a8e8,
       transparent: true,
-      opacity: 0.72,
+      opacity: 0.74,
       roughness: 0.18,
       metalness: 0.08,
       emissive: 0x004a77,
-      emissiveIntensity: 0.35
+      emissiveIntensity: 0.32
     });
     var matBlade = new THREE.MeshStandardMaterial({
       color: 0x00b4d8,
@@ -1200,19 +1190,29 @@
       emissive: 0x00527a,
       emissiveIntensity: 0.28
     });
-    var matShaft = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.88, roughness: 0.18 });
-    var matPulley = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.55, roughness: 0.28 });
+    var matShaft = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.85, roughness: 0.2 });
+    var matPulley = new THREE.MeshStandardMaterial({ color: 0xcbd5e1, metalness: 0.55, roughness: 0.28 });
     var matBelt = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.15, roughness: 0.75 });
-    var matGenBody = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.72, roughness: 0.28 });
-    var matGenCap  = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.6, roughness: 0.35 });
-    var matTankShell = new THREE.MeshPhysicalMaterial({
-      color: 0xdbeafe,
+    var matGenBody = new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.72, roughness: 0.28 });
+    var matGenCap  = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.6, roughness: 0.35 });
+
+    /* Green 60-Liter Bucket Materials ("warna embernya hijau, jangan terlalu lebar") */
+    var matBucketGreen = new THREE.MeshStandardMaterial({
+      color: 0x16a34a,
       transparent: true,
-      opacity: 0.30,
-      roughness: 0.12,
-      metalness: 0.06,
-      side: THREE.DoubleSide,
-      depthWrite: false
+      opacity: 0.86,
+      roughness: 0.32,
+      metalness: 0.08,
+      emissive: 0x064e22,
+      emissiveIntensity: 0.18,
+      side: THREE.DoubleSide
+    });
+    var matBucketRim = new THREE.MeshStandardMaterial({
+      color: 0x15803d,
+      roughness: 0.28,
+      metalness: 0.12,
+      emissive: 0x052e16,
+      emissiveIntensity: 0.15
     });
     var matPump = new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.45, roughness: 0.28 });
 
@@ -1220,16 +1220,9 @@
        OBJECT 01: SALURAN AKRILIK MIRING (1:100 True Millimetric Scale from PDF)
        - Total Length: 1700.00 mm -> 17.00 units (X: -8.50 to +8.50)
        - Width: 400.00 mm -> 4.00 units (Z: -2.00 to +2.00)
-       - Upper Horizontal Section: 500.00 mm (X: -8.50 to -3.50), Floor Y=2.35, Top Y=4.85 (250 mm wall)
-       - Internal Headbox Weir Baffle: 95.00 x 105.00 mm (X: -8.50 to -7.55, Y: 3.80 to 4.85)
-       - Middle Inclined Section: 1000.00 mm horiz / 1016.97 mm sloped (X: -3.50 to +6.50),
-         Floor Y: 2.35 -> 0.50, Top Y: 4.85 -> 3.00 (250 mm wall height)
-       - Lower Horizontal Outlet Section: 200.00 mm (X: +6.50 to +8.50),
-         Top Y=3.00, Drop Lip Bottom Y=0.00 (250 mm + 50 mm drop lip)
        ===================================================================== */
     var gChute = createGroup('chute');
 
-    /* Seamless 1-Piece Extruded Side Wall Profile matching PDF Side Elevation */
     var wallShape = new THREE.Shape();
     wallShape.moveTo(-8.50, 2.35);
     wallShape.lineTo(-3.50, 2.35);
@@ -1244,74 +1237,58 @@
 
     var wallGeom = new THREE.ExtrudeGeometry(wallShape, { depth: 0.08, bevelEnabled: false });
 
-    /* Front Side Wall (Z = +1.92..+2.00) */
     var sideWallFront = new THREE.Mesh(wallGeom, matAcrylic.clone());
     sideWallFront.position.z = 1.92;
-    addEdges(sideWallFront, 0x00e5ff, 0.72);
+    addEdges(sideWallFront, 0x0284c7, 0.8);
     gChute.add(sideWallFront);
     registerMesh(sideWallFront, 'chute');
 
-    /* Back Side Wall (Z = -2.00..-1.92) */
     var sideWallBack = new THREE.Mesh(wallGeom, matAcrylic.clone());
     sideWallBack.position.z = -2.00;
-    addEdges(sideWallBack, 0x00e5ff, 0.72);
+    addEdges(sideWallBack, 0x0284c7, 0.8);
     gChute.add(sideWallBack);
     registerMesh(sideWallBack, 'chute');
 
-    /* Upper 500 mm Horizontal Floor Plate (X: -8.50..-3.50, Y: 2.35) */
     var floorUpper = addBox(gChute, 'chute', 5.00, 0.08, 3.84, -6.00, 2.39, 0, matAcrylicFloor);
-    addEdges(floorUpper, 0x00e5ff, 0.55);
+    addEdges(floorUpper, 0x0284c7, 0.65);
 
-    /* Middle 1016.97 mm Inclined Floor Plate (X: -3.50..+6.50, Y: 2.35 -> 0.50) */
-    var slopeAngle = -Math.atan2(1.85, 10.00); /* -10.48 deg, hypotenuse = 10.1697 units (1016.97 mm) */
+    var slopeAngle = -Math.atan2(1.85, 10.00);
     var floorSlope = addBox(gChute, 'chute', 10.1697, 0.08, 3.84, 1.50, 1.465, 0, matAcrylicFloor, 0, 0, slopeAngle);
-    addEdges(floorSlope, 0x00e5ff, 0.55);
+    addEdges(floorSlope, 0x0284c7, 0.65);
 
-    /* Back End Wall at X = -8.50 (250 mm tall x 400 mm wide) */
     var endWallBack = addBox(gChute, 'chute', 0.08, 2.50, 3.84, -8.46, 3.60, 0, matAcrylic);
-    addEdges(endWallBack, 0x00e5ff, 0.7);
+    addEdges(endWallBack, 0x0284c7, 0.75);
 
-    /* Front Lower End Wall at X = +8.50 (300 mm tall including 50 mm drop lip) */
     var endWallFront = addBox(gChute, 'chute', 0.08, 3.00, 3.84, 8.46, 1.50, 0, matAcrylic);
-    addEdges(endWallFront, 0x00e5ff, 0.7);
+    addEdges(endWallFront, 0x0284c7, 0.75);
 
-    /* Drop-lip vertical step wall at X = +6.50 (Y: 0.00..0.50) */
     var dropStepWall = addBox(gChute, 'chute', 0.08, 0.50, 3.84, 6.50, 0.25, 0, matAcrylic);
-    addEdges(dropStepWall, 0x00e5ff, 0.55);
+    addEdges(dropStepWall, 0x0284c7, 0.65);
 
-    /* Internal Headbox Weir / Baffle Box at Top-Back (95.00 mm x 105.00 mm from PDF) */
     var weirBaffle = addBox(gChute, 'chute', 0.95, 1.05, 3.84, -8.025, 4.325, 0, matAcrylicFloor);
-    addEdges(weirBaffle, 0x00e5ff, 0.75);
+    addEdges(weirBaffle, 0x0284c7, 0.8);
 
-    /* Translucent Flowing Water Layer along Upper 500 mm Floor & 1016.97 mm Slope */
     addBox(gChute, 'chute', 4.90, 0.24, 3.80, -6.00, 2.54, 0, matWater);
     addBox(gChute, 'chute', 10.12, 0.22, 3.80, 1.50, 1.60, 0, matWater, 0, 0, slopeAngle);
 
     /* =====================================================================
-       OBJECT 02: KINCIR AIR 6 SUDU MELENGKUNG (Proportionally Inside Channel!)
-       - Placed at X = +3.80 along the slope
-       - At X = +3.80: Channel floor Y = 1.00, Channel top rim Y = 3.50 (height 2.50)
-       - Rotor Center: (X = 3.80, Y = 2.18, Z = 0.00), Outer Radius R = 1.05 (Ø 210 mm)
-       - Bottom tip = 1.13 (clears floor 1.00), Top tip = 3.23 (below top rim 3.50 — NEVER OVER!)
+       OBJECT 02: KINCIR AIR 6 SUDU MELENGKUNG (Proportionally Inside Channel)
        ===================================================================== */
     var gWheel = createGroup('wheel');
     var rotorPivot = new THREE.Group();
     rotorPivot.position.set(3.80, 2.18, 0.0);
     gWheel.add(rotorPivot);
 
-    /* Stainless Steel Main Shaft (Ø 30 mm -> R = 0.15) protruding cleanly out both sides */
-    var mainShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 5.20, 24), matShaft.clone());
+    var mainShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 5.20, 20), matShaft.clone());
     mainShaft.rotation.x = Math.PI / 2;
     rotorPivot.add(mainShaft);
     registerMesh(mainShaft, 'wheel');
 
-    /* Central Blue Rotor Drum Hub */
-    var rotorHub = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 3.68, 24), matPump.clone());
+    var rotorHub = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 3.68, 20), matPump.clone());
     rotorHub.rotation.x = Math.PI / 2;
     rotorPivot.add(rotorHub);
     registerMesh(rotorHub, 'wheel');
 
-    /* 6 Curved Hydro-Bucket Blades (Extruded Crescent Arcs fitting cleanly inside channel) */
     var bladeShape = new THREE.Shape();
     bladeShape.moveTo(0.32, -0.04);
     bladeShape.quadraticCurveTo(0.72, -0.02, 1.04, 0.26);
@@ -1325,14 +1302,13 @@
     for (var bi = 0; bi < 6; bi++) {
       var bladeMesh = new THREE.Mesh(bladeGeom, matBlade.clone());
       bladeMesh.rotation.z = (bi * Math.PI) / 3;
-      addEdges(bladeMesh, 0x80f0ff, 0.65);
+      addEdges(bladeMesh, 0x00e5ff, 0.7);
       rotorPivot.add(bladeMesh);
       registerMesh(bladeMesh, 'wheel');
     }
 
     /* =====================================================================
        OBJECT 03: TRANSMISI PULLEY 4-JARI (Ø 270 mm) & V-BELT (1 : 4)
-       Mounted on outer side of back acrylic wall (Z = -2.32)
        ===================================================================== */
     var gPulley = createGroup('pulley');
     var pulleyZ = -2.32;
@@ -1341,35 +1317,30 @@
     pulley1Pivot.position.set(3.80, 2.18, pulleyZ);
     gPulley.add(pulley1Pivot);
 
-    /* Large Pulley Outer Ring (Ø 270 mm -> R = 1.35) */
-    var p1Ring = new THREE.Mesh(new THREE.TorusGeometry(1.32, 0.08, 16, 44), matPulley.clone());
+    var p1Ring = new THREE.Mesh(new THREE.TorusGeometry(1.32, 0.08, 14, 36), matPulley.clone());
     pulley1Pivot.add(p1Ring);
     registerMesh(p1Ring, 'pulley');
 
-    /* Center Hub Boss of Large Pulley */
-    var p1Boss = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.16, 20), matPulley.clone());
+    var p1Boss = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.16, 18), matPulley.clone());
     p1Boss.rotation.x = Math.PI / 2;
     pulley1Pivot.add(p1Boss);
     registerMesh(p1Boss, 'pulley');
 
-    /* 4 Slim Spokes (Matching PDF Drawing 4-spoke wheel) */
     var spokeH = addBox(pulley1Pivot, 'pulley', 2.52, 0.12, 0.09, 0, 0, 0, matPulley);
     var spokeV = addBox(pulley1Pivot, 'pulley', 0.12, 2.52, 0.09, 0, 0, 0, matPulley);
-    addEdges(spokeH, 0x0f172a, 0.5);
-    addEdges(spokeV, 0x0f172a, 0.5);
+    addEdges(spokeH, 0x334155, 0.6);
+    addEdges(spokeV, 0x334155, 0.6);
 
-    /* Small Driven Pulley (Ø 67.5 mm -> R = 0.34, 1:4 Step-Up) at Generator Shaft (X = 8.85, Y = 1.15) */
-    var p2X = 8.85, p2Y = 1.15, p2R = 0.34, p1R = 1.32;
+    var p2X = 8.85, p2Y = 1.35, p2R = 0.34, p1R = 1.32;
     var pulley2Pivot = new THREE.Group();
     pulley2Pivot.position.set(p2X, p2Y, pulleyZ);
     gPulley.add(pulley2Pivot);
 
-    var p2Wheel = new THREE.Mesh(new THREE.CylinderGeometry(p2R, p2R, 0.16, 24), matPulley.clone());
+    var p2Wheel = new THREE.Mesh(new THREE.CylinderGeometry(p2R, p2R, 0.16, 20), matPulley.clone());
     p2Wheel.rotation.x = Math.PI / 2;
     pulley2Pivot.add(p2Wheel);
     registerMesh(p2Wheel, 'pulley');
 
-    /* Exact Tangent V-Belt Strands connecting Large Pulley (3.80, 2.18, R=1.32) to Small Pulley (8.85, 1.15, R=0.34) */
     var dxP = p2X - 3.80;
     var dyP = p2Y - 2.18;
     var distP = Math.hypot(dxP, dyP);
@@ -1395,95 +1366,99 @@
     addBox(gPulley, 'pulley', lenBot, 0.07, 0.10, (t1BotX + t2BotX) * 0.5, (t1BotY + t2BotY) * 0.5, pulleyZ, matBelt, 0, 0, angBot);
 
     /* =====================================================================
-       OBJECT 04: COMPACT GENERATOR DC XD 3240 (Properly Scaled, No LED Load)
-       Mounted at the front-right end of the 200 mm lower channel section
+       OBJECT 04: COMPACT GENERATOR DC XD 3240
        ===================================================================== */
     var gGen = createGroup('generator');
-    /* Compact Cylindrical Generator Body (R = 0.36, Length = 1.10) */
-    var genBody = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 1.10, 28), matGenBody.clone());
+    var genBody = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 1.10, 24), matGenBody.clone());
     genBody.rotation.x = Math.PI / 2;
     genBody.position.set(p2X, p2Y, -1.42);
-    addEdges(genBody, 0x00e5ff, 0.45);
+    addEdges(genBody, 0x0284c7, 0.55);
     gGen.add(genBody);
     registerMesh(genBody, 'generator');
 
-    /* Compact Square Mounting End-Caps (0.78 x 0.78 x 0.10) */
     var genCap1 = addBox(gGen, 'generator', 0.78, 0.78, 0.10, p2X, p2Y, -1.94, matGenCap);
     var genCap2 = addBox(gGen, 'generator', 0.78, 0.78, 0.10, p2X, p2Y, -0.90, matGenCap);
     addEdges(genCap1, 0x0f172a, 0.7);
     addEdges(genCap2, 0x0f172a, 0.7);
 
-    /* Generator Shaft connecting to Small Pulley */
-    var genShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.55, 16), matShaft.clone());
+    var genShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.55, 14), matShaft.clone());
     genShaft.rotation.x = Math.PI / 2;
     genShaft.position.set(p2X, p2Y, -2.14);
     gGen.add(genShaft);
     registerMesh(genShaft, 'generator');
 
     /* =====================================================================
-       OBJECT 05: PENAMPUNG AIR 60 LITER & POMPA (Proper Large 60L Scale!)
-       Positioned directly underneath the 200 mm lower outlet opening (X = 7.20)
-       - Diameter: 520 mm -> Radius = 2.60 units (Diameter 5.20 units, wider than 4.00 channel!)
-       - Height: 380 mm -> 3.80 units (Y: -4.15 to -0.35)
+       OBJECT 05: EMBER PENAMPUNG AIR 60 LITER HIJAU & POMPA
+       - Green bucket ("warna embernya hijau, jngn dibuat terlalu lebar")
+       - Top Radius = 1.42, Bottom Radius = 1.24, Height = 3.25 (Y: -3.60 to -0.35)
        ===================================================================== */
     var gTank = createGroup('tank');
-    var tankX = 7.20, tankZ = 0.0, tankR = 2.60, tankH = 3.80;
-    var tankCenterY = -2.25;
+    var tankX = 7.35, tankZ = 0.0;
+    var tankTopR = 1.42, tankBotR = 1.24, tankH = 3.25;
+    var tankBottomY = -3.60;
+    var tankCenterY = tankBottomY + tankH * 0.5;
 
-    /* 60-Liter Water Volume inside Reservoir */
-    var waterH = 2.85;
+    /* Water inside Green 60L Bucket */
+    var waterH = 2.45;
     var tankWater = new THREE.Mesh(
-      new THREE.CylinderGeometry(tankR - 0.08, tankR - 0.08, waterH, 40),
+      new THREE.CylinderGeometry(tankTopR - 0.10, tankBotR - 0.06, waterH, 32),
       matWater.clone()
     );
-    tankWater.position.set(tankX, -4.15 + waterH * 0.5 + 0.06, tankZ);
+    tankWater.position.set(tankX, tankBottomY + waterH * 0.5 + 0.06, tankZ);
     gTank.add(tankWater);
     registerMesh(tankWater, 'tank');
 
-    /* Outer Translucent 60-Liter Cylindrical Tank Shell */
+    /* Outer Tapered Green Bucket Body */
     var tankShell = new THREE.Mesh(
-      new THREE.CylinderGeometry(tankR, tankR, tankH, 40, 1, true),
-      matTankShell.clone()
+      new THREE.CylinderGeometry(tankTopR, tankBotR, tankH, 36, 1, true),
+      matBucketGreen.clone()
     );
     tankShell.position.set(tankX, tankCenterY, tankZ);
-    addEdges(tankShell, 0x00e5ff, 0.45);
+    addEdges(tankShell, 0x22c55e, 0.55);
     gTank.add(tankShell);
     registerMesh(tankShell, 'tank');
 
-    /* Tank Bottom Base Disc & Top Rim Ring */
+    /* Green Bucket Solid Bottom Base */
     var tankBottom = new THREE.Mesh(
-      new THREE.CylinderGeometry(tankR, tankR, 0.08, 40),
-      matAcrylicFloor.clone()
+      new THREE.CylinderGeometry(tankBotR, tankBotR, 0.08, 36),
+      matBucketRim.clone()
     );
-    tankBottom.position.set(tankX, -4.15, tankZ);
+    tankBottom.position.set(tankX, tankBottomY, tankZ);
     gTank.add(tankBottom);
     registerMesh(tankBottom, 'tank');
 
-    var tankRim = new THREE.Mesh(new THREE.TorusGeometry(tankR, 0.07, 14, 44), matPulley.clone());
+    /* Green Bucket Top Lip & Upper Reinforcement Rib */
+    var tankRim = new THREE.Mesh(new THREE.TorusGeometry(tankTopR + 0.02, 0.075, 12, 36), matBucketRim.clone());
     tankRim.rotation.x = Math.PI / 2;
-    tankRim.position.set(tankX, -0.35, tankZ);
+    tankRim.position.set(tankX, tankBottomY + tankH, tankZ);
     gTank.add(tankRim);
     registerMesh(tankRim, 'tank');
 
-    /* Submerged Circulation Pump inside 60L Tank */
-    var pumpBody = addBox(gTank, 'tank', 0.95, 0.78, 0.78, tankX - 0.7, -3.70, 0.3, matPump);
+    var tankRib = new THREE.Mesh(new THREE.TorusGeometry(tankTopR - 0.01, 0.045, 10, 36), matBucketRim.clone());
+    tankRib.rotation.x = Math.PI / 2;
+    tankRib.position.set(tankX, tankBottomY + tankH - 0.28, tankZ);
+    gTank.add(tankRib);
+    registerMesh(tankRib, 'tank');
+
+    /* Submerged Circulation Pump inside 60L Green Bucket */
+    var pumpBody = addBox(gTank, 'tank', 0.72, 0.62, 0.62, tankX - 0.25, tankBottomY + 0.36, 0.15, matPump);
     addEdges(pumpBody, 0x80f0ff, 0.65);
 
     /* =====================================================================
-       3D ANIMATED WATER STREAM PARTICLES (Headbox -> 1016.97mm Slope -> 6-Blade Wheel -> 60L Tank)
+       LIGHTWEIGHT 3D WATER STREAM PARTICLES (Headbox -> Slope -> Wheel -> Green Bucket)
        ===================================================================== */
-    var PARTICLE_COUNT = 120;
+    var PARTICLE_COUNT = 75;
     var pGeom = new THREE.BufferGeometry();
     var pPositions = new Float32Array(PARTICLE_COUNT * 3);
     var pPhases = new Float32Array(PARTICLE_COUNT);
     var pLanes = new Float32Array(PARTICLE_COUNT);
     for (var pi = 0; pi < PARTICLE_COUNT; pi++) {
       pPhases[pi] = pi / PARTICLE_COUNT;
-      pLanes[pi] = (Math.random() - 0.5) * 3.3;
+      pLanes[pi] = (Math.random() - 0.5) * 2.1;
     }
     pGeom.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
     var pMat = new THREE.PointsMaterial({
-      color: 0x80f0ff,
+      color: 0x38bdf8,
       size: 0.16,
       transparent: true,
       opacity: 0.9
@@ -1498,20 +1473,19 @@
         var lane = pLanes[i];
         var x = 0, y = 0, z = lane;
         if (t < 0.22) {
-          /* Calm flow across 500 mm upper headbox (X: -8.2 -> -3.5) */
           var u1 = t / 0.22;
           x = -8.2 + u1 * 4.7;
           y = 2.68;
         } else if (t < 0.76) {
-          /* Accelerating flow down 1016.97 mm inclined chute (X: -3.5 -> +6.5, Y: 2.68 -> 0.82) */
           var u2 = (t - 0.22) / 0.54;
           x = -3.5 + u2 * 10.0;
           y = 2.68 - u2 * 1.86;
         } else {
-          /* Waterfall dropping from 200 mm outlet section (X: 6.6..8.2) straight into the 60L Tank */
+          /* Drop straight into the narrower green 60L bucket (X ~ 7.35) */
           var u3 = (t - 0.76) / 0.24;
-          x = 6.7 + (i % 5) * 0.32;
-          y = 0.55 - u3 * 2.15;
+          x = 6.95 + (i % 4) * 0.24;
+          y = 0.55 - u3 * 1.95;
+          z = lane * 0.48;
         }
         posArr[i * 3] = x;
         posArr[i * 3 + 1] = y;
@@ -1521,21 +1495,8 @@
     }
 
     /* =====================================================================
-       CAMERA ORBIT, ZOOM, PAN, RAYCASTING & DYNAMIC GLASSMORPHISM PANEL
+       RAYCASTING & DYNAMIC GLASSMORPHISM PANEL (Fixed Single Perspective)
        ===================================================================== */
-    var camState = {
-      theta: DEFAULT_CAM.theta,
-      phi: DEFAULT_CAM.phi,
-      radius: DEFAULT_CAM.radius,
-      target: new THREE.Vector3(DEFAULT_CAM.target[0], DEFAULT_CAM.target[1], DEFAULT_CAM.target[2])
-    };
-    var camGoal = {
-      theta: DEFAULT_CAM.theta,
-      phi: DEFAULT_CAM.phi,
-      radius: DEFAULT_CAM.radius,
-      target: new THREE.Vector3(DEFAULT_CAM.target[0], DEFAULT_CAM.target[1], DEFAULT_CAM.target[2])
-    };
-
     var selectedKey = null;
     var hoveredKey = null;
 
@@ -1555,7 +1516,7 @@
           m.material.emissiveIntensity = 0.55;
         } else if (k === hoveredKey) {
           m.material.emissive.setHex(0x00b4d8);
-          m.material.emissiveIntensity = 0.38;
+          m.material.emissiveIntensity = 0.36;
         } else {
           m.material.emissive.setHex(orig.hex);
           m.material.emissiveIntensity = orig.intensity;
@@ -1575,10 +1536,6 @@
       if (!key || key === 'all' || !OBJECT_DATA[key]) {
         selectedKey = null;
         if (panel) panel.hidden = true;
-        camGoal.theta = DEFAULT_CAM.theta;
-        camGoal.phi = DEFAULT_CAM.phi;
-        camGoal.radius = DEFAULT_CAM.radius;
-        camGoal.target.set(DEFAULT_CAM.target[0], DEFAULT_CAM.target[1], DEFAULT_CAM.target[2]);
         applyHighlightState();
         return;
       }
@@ -1594,18 +1551,12 @@
         pExtra.innerHTML = d.extra.map(function (item) { return '<li>' + item + '</li>'; }).join('');
       }
       if (panel) panel.hidden = false;
-
-      camGoal.theta = d.cam.theta;
-      camGoal.phi = d.cam.phi;
-      camGoal.radius = d.cam.radius;
-      camGoal.target.set(d.cam.target[0], d.cam.target[1], d.cam.target[2]);
       applyHighlightState();
     }
 
-    /* Pointer Raycasting + Orbit / Pan / Zoom */
+    /* Pointer Raycasting (Click & Hover Only — Camera stays locked at fixed perspective) */
     var raycaster = new THREE.Raycaster();
     var pointerNDC = new THREE.Vector2();
-    var isDragging = false, dragMode = 'orbit', dragMoved = 0, prevX = 0, prevY = 0;
 
     function updatePointerNDC(e) {
       var rect = canvas.getBoundingClientRect();
@@ -1614,44 +1565,8 @@
       return rect;
     }
 
-    canvas.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-
-    canvas.addEventListener('pointerdown', function (e) {
-      isDragging = true;
-      dragMoved = 0;
-      prevX = e.clientX;
-      prevY = e.clientY;
-      dragMode = (e.button === 2 || e.shiftKey) ? 'pan' : 'orbit';
-      if (canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
-    });
-
     canvas.addEventListener('pointermove', function (e) {
       var rect = updatePointerNDC(e);
-      if (isDragging) {
-        var dx = e.clientX - prevX;
-        var dy = e.clientY - prevY;
-        dragMoved += Math.abs(dx) + Math.abs(dy);
-        prevX = e.clientX;
-        prevY = e.clientY;
-        if (dragMoved > 4) dismissHint();
-
-        if (dragMode === 'orbit') {
-          camGoal.theta -= dx * 0.0075;
-          camGoal.phi = Math.max(0.26, Math.min(1.48, camGoal.phi - dy * 0.0065));
-        } else {
-          var panScale = camGoal.radius * 0.0016;
-          var right = new THREE.Vector3();
-          var up = new THREE.Vector3(0, 1, 0);
-          camera.getWorldDirection(right);
-          right.cross(up).normalize();
-          camGoal.target.addScaledVector(right, -dx * panScale);
-          camGoal.target.y += dy * panScale;
-        }
-        if (tooltip) tooltip.hidden = true;
-        return;
-      }
-
-      /* Hover Raycast Highlight */
       raycaster.setFromCamera(pointerNDC, camera);
       var hits = raycaster.intersectObjects(interactiveMeshes, false);
       var hitKey = (hits.length > 0 && hits[0].object.userData.objKey) ? hits[0].object.userData.objKey : null;
@@ -1673,31 +1588,27 @@
       }
     });
 
-    function handlePointerUp(e) {
-      if (!isDragging) return;
-      isDragging = false;
-      if (dragMoved < 6 && e.button === 0) {
-        updatePointerNDC(e);
-        raycaster.setFromCamera(pointerNDC, camera);
-        var hits = raycaster.intersectObjects(interactiveMeshes, false);
-        if (hits.length > 0 && hits[0].object.userData.objKey) {
-          selectObject(hits[0].object.userData.objKey);
-        } else if (selectedKey) {
-          selectObject('all');
-        }
+    canvas.addEventListener('pointerleave', function () {
+      if (hoveredKey) {
+        hoveredKey = null;
+        canvas.classList.remove('is-hovering');
+        applyHighlightState();
       }
-    }
-    canvas.addEventListener('pointerup', handlePointerUp);
-    canvas.addEventListener('pointercancel', function () { isDragging = false; });
+      if (tooltip) tooltip.hidden = true;
+    });
 
-    /* Wheel Zoom */
-    canvas.addEventListener('wheel', function (e) {
-      e.preventDefault();
-      dismissHint();
-      camGoal.radius = Math.max(7.5, Math.min(34.0, camGoal.radius + e.deltaY * 0.012));
-    }, { passive: false });
+    canvas.addEventListener('click', function (e) {
+      updatePointerNDC(e);
+      raycaster.setFromCamera(pointerNDC, camera);
+      var hits = raycaster.intersectObjects(interactiveMeshes, false);
+      if (hits.length > 0 && hits[0].object.userData.objKey) {
+        selectObject(hits[0].object.userData.objKey);
+      } else if (selectedKey) {
+        selectObject('all');
+      }
+    });
 
-    /* Hotspot & Corner Control Listeners */
+    /* Hotspot & Panel Close Listeners */
     Object.keys(spotBtns).forEach(function (k) {
       spotBtns[k].addEventListener('click', function (e) {
         e.stopPropagation();
@@ -1712,44 +1623,12 @@
       if (e.key === 'Escape' && selectedKey) selectObject('all');
     });
 
-    var btnZoomIn = $('vx3d-zoom-in');
-    var btnZoomOut = $('vx3d-zoom-out');
-    var btnResetCam = $('vx3d-reset-cam');
-    var btnFullscreen = $('vx3d-fullscreen');
-
-    if (btnZoomIn) btnZoomIn.addEventListener('click', function () { camGoal.radius = Math.max(7.5, camGoal.radius - 2.0); });
-    if (btnZoomOut) btnZoomOut.addEventListener('click', function () { camGoal.radius = Math.min(34.0, camGoal.radius + 2.0); });
-    if (btnResetCam) btnResetCam.addEventListener('click', function () { selectObject('all'); });
-
-    if (btnFullscreen) {
-      btnFullscreen.addEventListener('click', function () {
-        if (!document.fullscreenElement) {
-          if (root.requestFullscreen) root.requestFullscreen().catch(function () {});
-          else root.classList.toggle('is-fullscreen');
-        } else if (document.exitFullscreen) {
-          document.exitFullscreen().catch(function () {});
-        }
-      });
-    }
-
-    /* Resize Handler */
+    /* Project 3D Hotspot World Anchors to 2D Overlay Coordinates (Once on Init & Resize) */
     var vw = 1000, vh = 650;
-    function handleResize() {
-      var r = viewport.getBoundingClientRect();
-      if (!r.width || !r.height) return;
-      vw = r.width;
-      vh = r.height;
-      camera.aspect = vw / vh;
-      camera.updateProjectionMatrix();
-      renderer.setSize(vw, vh, false);
-    }
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    document.addEventListener('fullscreenchange', function () { setTimeout(handleResize, 60); });
-
-    /* Project 3D Hotspot World Anchors to 2D Overlay Coordinates */
     var projVec = new THREE.Vector3();
+
     function updateHotspots() {
+      camera.updateMatrixWorld();
       Object.keys(OBJECT_DATA).forEach(function (k) {
         var btn = spotBtns[k];
         if (!btn) return;
@@ -1769,11 +1648,36 @@
       });
     }
 
-    /* Main WebGL Animation Loop (Desktop Only; Paused on Mobile <= 768px) */
+    function handleResize() {
+      var r = viewport.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      vw = r.width;
+      vh = r.height;
+      camera.aspect = vw / vh;
+      camera.updateProjectionMatrix();
+      renderer.setSize(vw, vh, false);
+      applyFixedCamera();
+      updateHotspots();
+    }
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    /* Pause WebGL Rendering When Scrolled Off-Screen to Save GPU/CPU */
+    var isInView = true;
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          isInView = entry.isIntersecting;
+        });
+      }, { threshold: 0.05 });
+      io.observe(root);
+    }
+
+    /* Main WebGL Animation Loop (Desktop Only; Paused on Mobile <= 768px or Off-Screen) */
     var simClock = 0;
     function animate() {
       requestAnimationFrame(animate);
-      if (window.innerWidth <= 768) return;
+      if (!isInView || window.innerWidth <= 768) return;
       var beranda = $('beranda');
       if (beranda && beranda.hidden) return;
 
@@ -1785,20 +1689,7 @@
         updateWaterParticles(simClock);
       }
 
-      /* Smooth Camera Spring Interpolation */
-      camState.theta += (camGoal.theta - camState.theta) * 0.09;
-      camState.phi += (camGoal.phi - camState.phi) * 0.09;
-      camState.radius += (camGoal.radius - camState.radius) * 0.09;
-      camState.target.lerp(camGoal.target, 0.09);
-
-      var sinPhi = Math.sin(camState.phi);
-      camera.position.x = camState.target.x + camState.radius * sinPhi * Math.sin(camState.theta);
-      camera.position.y = camState.target.y + camState.radius * Math.cos(camState.phi);
-      camera.position.z = camState.target.z + camState.radius * sinPhi * Math.cos(camState.theta);
-      camera.lookAt(camState.target);
-
       renderer.render(scene, camera);
-      updateHotspots();
     }
 
     requestAnimationFrame(animate);
