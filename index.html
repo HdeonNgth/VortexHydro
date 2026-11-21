@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="assets/styles.css?v=13">
+  <link rel="stylesheet" href="assets/styles.css?v=14">
 </head>
 <body>
   <!-- Scroll Progress Bar -->
@@ -244,84 +244,129 @@
         </div>
       </section>
 
-      <!-- Interactive 3D 3-Stage Hydro Conversion Rig + Stage Information Inspector -->
+      <!-- Interactive 3D Physics Book & CAD Prototype Lab (Video Pop-Up Book Style + CAD 1700x400mm + 60L Tank) -->
       <section class="sec stepper-sec" id="alur-konversi">
         <div class="wrap">
           <header class="stepper-sec__head" data-reveal>
-            <span class="eyebrow">Alur Konversi Energi · Model 3D Interaktif</span>
+            <span class="eyebrow">Alur Konversi Energi · Buku Fisika 3D Interaktif</span>
             <h2 class="h-sec">Tiga tahap dari <em>aliran air ke listrik</em></h2>
-            <p class="lead">Klik setiap tahapan atau putar model 3D secara langsung untuk memeriksa detail mekanisme, komponen, dan parameter konversi energi menuju daya DC 12 V.</p>
+            <p class="lead">Klik setiap bab tahapan, buka kartu perhitungan (*lift the flap*), atau putar model 3D prototipe secara langsung untuk mempelajari konversi energi dari penampung 60 liter hingga daya DC 12 V.</p>
           </header>
 
-          <div class="stepper" id="hydro-stepper" data-stage="1">
-            <div class="stepper__list" role="tablist" aria-label="Tahapan konversi energi">
-              <button type="button" class="step-item is-active" data-step="1" role="tab" aria-selected="true">
-                <span class="step-item__no">01</span>
-                <div class="step-item__body">
-                  <div class="step-item__head">
-                    <h3>Sirkulasi Air Tertutup</h3>
-                    <span class="step-item__tag">Klik untuk detail 3D</span>
-                  </div>
-                  <p>Pompa celup 100 W mengangkat air dari tangki Ø 520 mm melalui pipa PVC Ø 45 mm dan flow meter menuju bak penenang atas.</p>
-                  <span class="step-item__meta mono">Tangki Ø 520 mm → Pipa Ø 45 mm</span>
-                  <div class="step-item__drawer">
-                    <div class="step-item__specs">
-                      <div><small>Konversi Fisika</small><strong>Listrik → Potensial Air</strong></div>
-                      <div><small>Debit &amp; Pipa</small><strong>Pipa PVC Ø 45 mm + Flow Meter</strong></div>
-                      <div><small>Tangki Bawah</small><strong>Reservoir Silinder Ø 520 mm</strong></div>
-                      <div><small>Daya Penggerak</small><strong>220 V / 50 Hz · Input 100 W</strong></div>
-                    </div>
-                  </div>
+          <!-- Interactive 3D Physics Book Spread -->
+          <div class="pbook stepper" id="hydro-stepper" data-stage="1">
+            <!-- Floating Calculation & Component Flap Card (Like Video Top-Left Flap Popover) -->
+            <div class="pbook__calc-pop" id="pbook-calc-pop" hidden aria-live="polite">
+              <div class="pbook__calc-head">
+                <span class="pbook__calc-tag mono" id="pbook-calc-tag">PERHITUNGAN &amp; SPESIFIKASI · TAHAP 01</span>
+                <button type="button" class="pbook__calc-close" id="pbook-calc-close" aria-label="Tutup kartu perhitungan">×</button>
+              </div>
+              <div class="pbook__calc-body">
+                <div class="pbook__calc-math mono" id="pbook-calc-math">
+                  E_p = m · g · h = 60 · 9,81 · 0,485 = 285,5 J<br>
+                  P_pompa = 100 W (220 V / 50 Hz) → Tangki 60 L
                 </div>
-              </button>
-
-              <button type="button" class="step-item" data-step="2" role="tab" aria-selected="false">
-                <span class="step-item__no">02</span>
-                <div class="step-item__body">
-                  <div class="step-item__head">
-                    <h3>Fokus Aliran &amp; Kincir 6 Sudu</h3>
-                    <span class="step-item__tag">Klik untuk detail 3D</span>
-                  </div>
-                  <p>Saluran miring akrilik menyempit dari 0,416 m ke 0,28 m agar energi kinetik air menumbuk kincir Ø 330 mm secara optimal dan memutar poros stainless Ø 30 mm.</p>
-                  <span class="step-item__meta mono">Saluran 0,416 → 0,28 m · Kincir Ø 330 mm</span>
-                  <div class="step-item__drawer">
-                    <div class="step-item__specs">
-                      <div><small>Konversi Fisika</small><strong>Kinetik Air → Torsi Mekanis</strong></div>
-                      <div><small>Geometri Saluran</small><strong>Menyempit 0,416 m → 0,28 m</strong></div>
-                      <div><small>Dimensi Rotor</small><strong>6 Sudu · Ø 330 mm × L 250 mm</strong></div>
-                      <div><small>Poros Utama</small><strong>Stainless Steel Solid Ø 30 mm</strong></div>
-                    </div>
-                  </div>
-                </div>
-              </button>
-
-              <button type="button" class="step-item" data-step="3" role="tab" aria-selected="false">
-                <span class="step-item__no">03</span>
-                <div class="step-item__body">
-                  <div class="step-item__head">
-                    <h3>Transmisi 1:4 &amp; Pembangkit DC</h3>
-                    <span class="step-item__tag">Klik untuk detail 3D</span>
-                  </div>
-                  <p>Di balik sekat zona kering, pulley step-up 1:4 (Ø 270 → Ø 67,5 mm) memutar Generator DC XD 3240 untuk menyuplai baterai 12 V dan beban 2× LED 5 W.</p>
-                  <span class="step-item__meta mono">Pulley 1:4 · Generator DC XD 3240 · 10 W LED</span>
-                  <div class="step-item__drawer">
-                    <div class="step-item__specs">
-                      <div><small>Konversi Fisika</small><strong>Torsi 1:4 → Listrik DC 12 V</strong></div>
-                      <div><small>Transmisi Pulley</small><strong>Ø 270 mm → Ø 67,5 mm (4× RPM)</strong></div>
-                      <div><small>Unit Pembangkit</small><strong>Generator DC XD 3240 (Zona Kering)</strong></div>
-                      <div><small>Beban &amp; Penyimpan</small><strong>Baterai 12 V + 2 × 5 W LED (10 W)</strong></div>
-                    </div>
-                  </div>
-                </div>
-              </button>
+                <p class="pbook__calc-note" id="pbook-calc-note">Air dari penampung bawah 60 liter dipompa naik setinggi 485 mm menuju bak penenang hulu (500 × 400 mm).</p>
+              </div>
             </div>
 
-            <div class="stepper__vis">
-              <div class="stage-card stage-card--3d">
+            <!-- LEFT PAGE: Physics Textbook Concept, Formula Box, 3 Stages & Lift-Flap -->
+            <div class="pbook__page pbook__page--left">
+              <div class="pbook__pghead">
+                <span class="pbook__chap mono" id="pbook-chap">BAB 01 / 03 · ENERGI POTENSIAL &amp; SIRKULASI</span>
+                <h3 class="pbook__title" id="pbook-title">Sirkulasi Penampung 60 L</h3>
+                <p class="pbook__intro" id="pbook-intro">Di kolong rangka bawah terdapat <strong>penampung air 60 liter</strong>. Pompa celup mengangkat air menuju bak penenang atas untuk menciptakan energi potensial gravitasi.</p>
+              </div>
+
+              <!-- Highlighted Formula Card (Physics Textbook Style) -->
+              <div class="pbook__fbox">
+                <div class="pbook__fbox-eq mono" id="stage-info-formula">E_p = m · g · h &nbsp;|&nbsp; P_h = ρ · g · Q · H</div>
+                <ul class="pbook__fbox-vars" id="pbook-vars">
+                  <li><strong>V_tangki</strong> = Penampung bawah 60 Liter (Ø 520 mm)</li>
+                  <li><strong>H_total</strong> = Elevasi saluran 485 mm (235 + 250 mm)</li>
+                  <li><strong>P_pompa</strong> = Pompa sirkulasi 100 W via pipa Ø 45 mm</li>
+                </ul>
+              </div>
+
+              <!-- 3 Interactive Stage Chapters -->
+              <div class="stepper__list pbook__steps" role="tablist" aria-label="Tahapan konversi energi">
+                <button type="button" class="step-item is-active" data-step="1" role="tab" aria-selected="true">
+                  <span class="step-item__no">01</span>
+                  <div class="step-item__body">
+                    <div class="step-item__head">
+                      <h3>Penampung 60 L &amp; Sirkulasi Atas</h3>
+                      <span class="step-item__tag">Tahap 01</span>
+                    </div>
+                    <p>Air dari <strong>penampung 60 liter</strong> di rak bawah dipompa (100 W) lewat pipa PVC Ø 45 mm naik ke bak penenang atas (500 × 400 mm, sekat 95 × 105 mm).</p>
+                    <span class="step-item__meta mono">Tangki 60 L → Pipa Ø 45 mm → Bak Hulu 500 mm</span>
+                  </div>
+                </button>
+
+                <button type="button" class="step-item" data-step="2" role="tab" aria-selected="false">
+                  <span class="step-item__no">02</span>
+                  <div class="step-item__body">
+                    <div class="step-item__head">
+                      <h3>Saluran 1700 mm &amp; Kincir 6 Sudu</h3>
+                      <span class="step-item__tag">Tahap 02</span>
+                    </div>
+                    <p>Air meluncur pada bidang miring saluran akrilik sepanjang <strong>1016,97 mm</strong> (total 1700 × 400 mm, dinding 250 mm), menumbuk kincir 6 sudu melengkung biru dan jatuh kembali dari ujung hilir 200 mm ke tangki 60 L.</p>
+                    <span class="step-item__meta mono">Saluran 1700 × 400 mm · Lereng 1016,97 mm · Kincir 6 Sudu</span>
+                  </div>
+                </button>
+
+                <button type="button" class="step-item" data-step="3" role="tab" aria-selected="false">
+                  <span class="step-item__no">03</span>
+                  <div class="step-item__body">
+                    <div class="step-item__head">
+                      <h3>Pulley 4-Jari (1:4) &amp; Generator DC</h3>
+                      <span class="step-item__tag">Tahap 03</span>
+                    </div>
+                    <p>Poros kincir menembus dinding saluran ke <strong>pulley besar 4-jari (Ø 270 mm)</strong> yang dihubungkan V-belt ke pulley kecil (Ø 67,5 mm) pada Generator DC XD 3240 di ujung rangka untuk menyalakan beban LED 12 V.</p>
+                    <span class="step-item__meta mono">Pulley 1:4 · Generator DC XD 3240 · 2× LED 5 W</span>
+                  </div>
+                </button>
+              </div>
+
+              <!-- "Lift the flap to see the answer" Interactive Flap Button & Drawer -->
+              <div class="pbook__flap-wrap">
+                <button type="button" class="pbook__flap-btn" id="pbook-flap-btn" aria-expanded="true">
+                  <span class="pbook__flap-ic" aria-hidden="true">📖</span>
+                  <span>Buka Flap Informasi &amp; Dimensi CAD Tahap Ini</span>
+                  <span class="pbook__flap-arr" aria-hidden="true">▾</span>
+                </button>
+
+                <div class="stage-info" id="stage-info-panel" aria-live="polite">
+                  <div class="stage-info__head">
+                    <img class="stage-info__thumb" id="stage-info-img" src="assets/images/components/comp-pump.jpg?v=2" alt="Komponen Tahap 01" loading="lazy" decoding="async">
+                    <div class="stage-info__titles">
+                      <span class="stage-info__chain mono" id="stage-info-chain">ENERGI LISTRIK 100 W → ENERGI POTENSIAL GRAVITASI (60 L)</span>
+                      <h4 class="stage-info__title" id="stage-info-title">01 · Penampung Air 60 Liter &amp; Pompa Sirkulasi</h4>
+                      <p class="stage-info__desc" id="stage-info-desc">Penampung air 60 liter ditempatkan di bawah ujung keluar saluran (200 mm) agar air jatuh langsung kembali ke tangki dan dipompa naik secara tertutup menuju bak hulu 500 mm.</p>
+                    </div>
+                  </div>
+                  <div class="stage-info__metrics" id="stage-info-metrics">
+                    <div class="stage-info__metric"><span>Penampung Bawah</span><strong>Tangki Air 60 Liter</strong></div>
+                    <div class="stage-info__metric"><span>Bak Hulu Atas</span><strong>500 × 400 × 250 mm</strong></div>
+                    <div class="stage-info__metric"><span>Sekat Pengarah</span><strong>95 mm · Step 105 mm</strong></div>
+                    <div class="stage-info__metric"><span>Elevasi Saluran</span><strong>Tinggi Total 485 mm</strong></div>
+                  </div>
+                  <div class="stage-info__foot">
+                    <a class="stage-info__link" id="stage-info-link" href="#tentang" data-go-hotspot="2">Lihat Titik Komponen di Cara Kerja ▸</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Book Center Spine Crease -->
+            <div class="pbook__spine" aria-hidden="true"></div>
+
+            <!-- RIGHT PAGE: 3D Pop-Up CAD Apparatus + 3D Energy Store Cylinders + Interactive Slider -->
+            <div class="pbook__page pbook__page--right stepper__vis">
+              <div class="stage-card stage-card--3d pbook__stage">
                 <div class="stage-card__top">
                   <div class="stage-card__title-group">
-                    <span class="stage-card__pill" id="stage-badge">TAHAP 01 · SIRKULASI TERTUTUP</span>
-                    <span class="stage-card__sub" id="stage-sub">Klik pin 3D atau geser kanvas untuk memutar sudut kamera</span>
+                    <span class="stage-card__pill" id="stage-badge">TAHAP 01 · PENAMPUNG 60 L &amp; SIRKULASI</span>
+                    <span class="stage-card__sub" id="stage-sub">Putar 3D 360° · Klik komponen 3D untuk membuka kartu perhitungan</span>
                   </div>
                   <div class="stage-card__right">
                     <div class="stage-3d-tabs" role="group" aria-label="Fokus kamera 3D">
@@ -330,64 +375,54 @@
                       <button type="button" class="stage-3d-tab" data-3d-stage="2">02</button>
                       <button type="button" class="stage-3d-tab" data-3d-stage="3">03</button>
                     </div>
-                    <span class="stage-card__pulse"><i></i>3D Live</span>
                   </div>
                 </div>
 
-                <!-- 3D Interactive Canvas Viewport -->
+                <!-- 3D Pop-Up Canvas Viewport (Includes 3D Energy Store Beakers + CAD Rig + 60L Tank) -->
                 <div class="stage-3d-viewport" id="hydro-3d-viewport">
-                  <canvas id="hydro-3d-canvas" width="680" height="400" aria-label="Simulasi 3D Interaktif Alur Konversi Energi Vortex Hydro"></canvas>
+                  <canvas id="hydro-3d-canvas" width="720" height="470" aria-label="Dunia 3D Interaktif Prototipe Vortex Hydro 1700x400mm dengan Penampung 60 Liter"></canvas>
 
                   <!-- Floating 3D-Projected Hotspot Pins -->
                   <div class="stage-3d-pins" id="hydro-3d-pins">
-                    <button type="button" class="stage-3d-pin is-active" data-pin-step="1" aria-label="Tahap 01 Pompa dan Tangki Sirkulasi">
+                    <button type="button" class="stage-3d-pin is-active" data-pin-step="1" aria-label="Tahap 01 Penampung 60 Liter dan Pompa">
                       <span class="stage-3d-pin__no">01</span>
-                      <span class="stage-3d-pin__txt">Pompa &amp; Tangki</span>
+                      <span class="stage-3d-pin__txt">Tangki 60 L &amp; Pompa</span>
                     </button>
-                    <button type="button" class="stage-3d-pin" data-pin-step="2" aria-label="Tahap 02 Saluran dan Kincir 6 Sudu">
+                    <button type="button" class="stage-3d-pin" data-pin-step="2" aria-label="Tahap 02 Saluran 1700 mm dan Kincir 6 Sudu">
                       <span class="stage-3d-pin__no">02</span>
-                      <span class="stage-3d-pin__txt">Kincir 6 Sudu</span>
+                      <span class="stage-3d-pin__txt">Saluran 1,7m &amp; Kincir</span>
                     </button>
-                    <button type="button" class="stage-3d-pin" data-pin-step="3" aria-label="Tahap 03 Transmisi 1 banding 4 dan Generator DC">
+                    <button type="button" class="stage-3d-pin" data-pin-step="3" aria-label="Tahap 03 Pulley 1 banding 4 dan Generator DC">
                       <span class="stage-3d-pin__no">03</span>
-                      <span class="stage-3d-pin__txt">Zona Kering 1:4</span>
+                      <span class="stage-3d-pin__txt">Pulley 1:4 &amp; Generator</span>
                     </button>
                   </div>
 
-                  <!-- 3D Camera Controls Bar -->
-                  <div class="stage-3d-bar">
-                    <span class="stage-3d-hint">
-                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 12 21 3"/><path d="M16 3h5v5"/></svg>
-                      Drag: Putar 3D · Klik objek untuk info
-                    </span>
-                    <div class="stage-3d-ctrls">
-                      <button type="button" class="stage-3d-btn" id="h3d-zoom-in" aria-label="Perbesar 3D" title="Perbesar">+</button>
-                      <button type="button" class="stage-3d-btn" id="h3d-zoom-out" aria-label="Perkecil 3D" title="Perkecil">−</button>
-                      <button type="button" class="stage-3d-btn stage-3d-btn--wide" id="h3d-reset" aria-label="Reset sudut kamera 3D">Reset 3D</button>
-                    </div>
+                  <!-- Top-Right 3D Zoom & Reset Controls -->
+                  <div class="stage-3d-ctrls stage-3d-ctrls--top">
+                    <button type="button" class="stage-3d-btn" id="h3d-zoom-in" aria-label="Perbesar 3D" title="Perbesar">+</button>
+                    <button type="button" class="stage-3d-btn" id="h3d-zoom-out" aria-label="Perkecil 3D" title="Perkecil">−</button>
+                    <button type="button" class="stage-3d-btn stage-3d-btn--wide" id="h3d-reset" aria-label="Reset sudut kamera 3D">Reset 3D</button>
+                  </div>
+
+                  <!-- Interactive Flow Scrubber (Like Dragging the Ball/Apparatus in the Video) -->
+                  <div class="pbook__scrubber">
+                    <label for="h3d-flow-range" class="mono">Debit Aliran &amp; Putaran:</label>
+                    <input type="range" id="h3d-flow-range" min="0" max="100" value="85" aria-label="Atur debit aliran air simulasi 3D">
+                    <span class="mono" id="h3d-flow-val">85%</span>
                   </div>
                 </div>
 
-                <!-- Interactive Stage Detail Information Panel (Updates on Stage Click) -->
-                <div class="stage-info" id="stage-info-panel" aria-live="polite">
-                  <div class="stage-info__head">
-                    <img class="stage-info__thumb" id="stage-info-img" src="assets/images/components/comp-pump.jpg?v=2" alt="Komponen Tahap 01" loading="lazy" decoding="async">
-                    <div class="stage-info__titles">
-                      <span class="stage-info__chain mono" id="stage-info-chain">ENERGI LISTRIK 100 W → ENERGI POTENSIAL &amp; HIDROLIK</span>
-                      <h4 class="stage-info__title" id="stage-info-title">01 · Sirkulasi Air Tertutup &amp; Elevasi Head</h4>
-                      <p class="stage-info__desc" id="stage-info-desc">Pompa sirkulasi menyedot air dari tangki bawah Ø 520 mm dan memompanya naik melalui pipa PVC Ø 45 mm melewati flow meter menuju bak penenang atas untuk menjaga debit konstan.</p>
-                    </div>
+                <!-- Floating Bottom Pill Navigation Bar (Exact Video Bottom Pill Bar Style) -->
+                <div class="pbook__pillbar" role="navigation" aria-label="Navigasi bab buku 3D">
+                  <button type="button" class="pbook__pbtn" id="pbook-prev" aria-label="Tahap sebelumnya">‹</button>
+                  <div class="pbook__plabel" id="pbook-pill-label">
+                    <strong>1 / 3</strong> · Penampung 60 L &amp; Sirkulasi
                   </div>
-                  <div class="stage-info__metrics" id="stage-info-metrics">
-                    <div class="stage-info__metric"><span>Komponen Utama</span><strong>Pompa 100 W &amp; Tangki</strong></div>
-                    <div class="stage-info__metric"><span>Dimensi Teknis</span><strong>Tangki Ø 520 mm · Pipa Ø 45 mm</strong></div>
-                    <div class="stage-info__metric"><span>Instrumen Ukur</span><strong>Flow Meter Digital</strong></div>
-                    <div class="stage-info__metric"><span>Output Tahap</span><strong>Debit &amp; Head Stabil</strong></div>
-                  </div>
-                  <div class="stage-info__foot">
-                    <span class="stage-info__formula mono" id="stage-info-formula">P_hidrolik = ρ · g · Q · H</span>
-                    <a class="stage-info__link" id="stage-info-link" href="#tentang" data-go-hotspot="2">Lihat Titik Komponen di Cara Kerja ▸</a>
-                  </div>
+                  <button type="button" class="pbook__pbtn" id="pbook-next" aria-label="Tahap berikutnya">›</button>
+                  <span class="pbook__psep" aria-hidden="true"></span>
+                  <button type="button" class="pbook__pbtn pbook__pbtn--play is-playing" id="pbook-play" aria-label="Jeda atau putar aliran 3D" title="Jeda / Putar Aliran">❚❚</button>
+                  <button type="button" class="pbook__pbtn" id="pbook-calc-toggle" aria-label="Tampilkan kartu perhitungan" title="Kartu Perhitungan">∑ Rumus</button>
                 </div>
               </div>
             </div>
@@ -1090,7 +1125,7 @@
   </div>
 
   <!-- Consolidated Scripts -->
-  <script src="assets/app.js?v=9"></script>
+  <script src="assets/app.js?v=10"></script>
   <script src="assets/dashboard.js?v=3"></script>
   <script src="assets/i18n.js?v=17"></script>
   <script src="assets/ai-assistant.js?v=8" defer></script>

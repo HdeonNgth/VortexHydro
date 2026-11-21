@@ -192,52 +192,88 @@
     var stageBadge = $('stage-badge');
     var stepItems = stepper ? $$('.step-item', stepper) : [];
     var STAGE_LABELS = {
-      'all': 'MODEL 3D PENUH · SELURUH PROTOTIPE VORTEX HYDRO',
-      '1': 'TAHAP 01 · SIRKULASI TERTUTUP & POMPA 100 W',
-      '2': 'TAHAP 02 · FOKUS ALIRAN & KINCIR 6 SUDU',
-      '3': 'TAHAP 03 · TRANSMISI 1:4 & PEMBANGKIT DC 12 V'
+      'all': 'MODEL 3D CAD · PROTOTIPE 1700 × 400 MM + TANGKI 60 L',
+      '1': 'TAHAP 01 · PENAMPUNG AIR 60 LITER & SIRKULASI ATAS',
+      '2': 'TAHAP 02 · SALURAN 1700 MM (LERENG 1016,97 MM) & KINCIR',
+      '3': 'TAHAP 03 · PULLEY 4-JARI (1:4) & GENERATOR DC XD 3240'
     };
     var STAGE_DETAILS = {
       '1': {
+        chap: 'BAB 01 / 03 · ENERGI POTENSIAL & SIRKULASI',
+        bookTitle: 'Sirkulasi Penampung 60 L',
+        bookIntro: 'Di kolong rangka bawah terdapat <strong>penampung air 60 liter</strong>. Pompa celup mengangkat air menuju bak penenang atas (500 × 400 mm) untuk menciptakan energi potensial gravitasi.',
+        pill: '<strong>1 / 3</strong> · Penampung 60 L &amp; Sirkulasi',
         img: 'assets/images/components/comp-pump.jpg?v=2',
-        chain: 'ENERGI LISTRIK 100 W → ENERGI POTENSIAL & HIDROLIK',
-        title: '01 · Sirkulasi Air Tertutup & Elevasi Head',
-        desc: 'Pompa sirkulasi menyedot air dari tangki bawah Ø 520 mm dan memompanya naik melalui pipa PVC Ø 45 mm melewati flow meter menuju bak penenang atas untuk menjaga debit konstan.',
+        chain: 'ENERGI LISTRIK 100 W → ENERGI POTENSIAL GRAVITASI (60 L)',
+        title: '01 · Penampung Air 60 Liter & Pompa Sirkulasi',
+        desc: 'Penampung air 60 liter ditempatkan tepat di bawah ujung keluar saluran (200 mm) agar air jatuh langsung kembali ke tangki dan dipompa naik secara tertutup menuju bak hulu 500 mm.',
         metrics: [
-          ['Komponen Utama', 'Pompa 100 W & Tangki'],
-          ['Dimensi Teknis', 'Tangki Ø 520 · Pipa Ø 45 mm'],
-          ['Instrumen Ukur', 'Flow Meter Digital'],
-          ['Output Tahap', 'Debit & Head Stabil']
+          ['Penampung Bawah', 'Tangki Air 60 Liter'],
+          ['Bak Hulu Atas', '500 × 400 × 250 mm'],
+          ['Sekat Pengarah', '95 mm · Step 105 mm'],
+          ['Elevasi Saluran', 'Tinggi Total 485 mm']
         ],
-        formula: 'P_hidrolik = ρ · g · Q · H',
+        formula: 'E_p = m · g · h   |   P_h = ρ · g · Q · H',
+        vars: [
+          '<strong>V_tangki</strong> = Penampung bawah 60 Liter (Ø 520 mm)',
+          '<strong>H_total</strong> = Elevasi saluran 485 mm (235 + 250 mm)',
+          '<strong>P_pompa</strong> = Pompa sirkulasi 100 W via pipa Ø 45 mm'
+        ],
+        calcTag: 'PERHITUNGAN ENERGI POTENSIAL · TAHAP 01',
+        calcMath: 'E_p = m · g · h = 60 kg · 9,81 m/s² · 0,485 m = 285,47 J\nH_hulu = 235 mm (kolong) + 250 mm (dinding) = 485 mm',
+        calcNote: 'Air dari penampung bawah 60 liter dipompa naik setinggi 485 mm menuju seksi hulu saluran (500 × 400 mm).',
         hotspot: '2'
       },
       '2': {
-        img: 'assets/images/components/comp-wheel.jpg',
-        chain: 'ENERGI KINETIK ALIRAN → TORSI MEKANIS POROS',
-        title: '02 · Fokus Aliran Akrilik & Kincir 6 Sudu Ø 330 mm',
-        desc: 'Dari bak penenang, air meluncur pada saluran miring akrilik yang menyempit (0,416 m → 0,28 m) sehingga kecepatan arus meningkat tajam saat menumbuk 6 sudu kincir dan memutar poros stainless Ø 30 mm.',
+        chap: 'BAB 02 / 03 · ENERGI KINETIK & HIDRODINAMIKA',
+        bookTitle: 'Saluran 1700 mm & Kincir 6 Sudu',
+        bookIntro: 'Air dari bak hulu (500 mm) meluncur turun melewati bidang miring sepanjang <strong>1016,97 mm</strong> dan menumbuk <strong>kincir 6 sudu melengkung biru</strong> sebelum keluar melalui ujung hilir (200 mm) kembali ke penampung 60 L.',
+        pill: '<strong>2 / 3</strong> · Saluran 1700 mm &amp; Kincir 6 Sudu',
+        img: 'assets/images/components/cad-prototype.png',
+        chain: 'ENERGI KINETIK ALIRAN → TORSI MEKANIS KINCIR 6 SUDU',
+        title: '02 · Saluran Akrilik 1700 × 400 mm & Kincir 6 Sudu Biru',
+        desc: 'Sesuai gambar kerja PDF, saluran memiliki panjang total 1700 mm (hulu 500 mm, bidang miring 1016,97 mm, hilir 200 mm, lebar 400 mm, tinggi dinding 250 mm) yang mengarahkan aliran tepat ke sudu kincir.',
         metrics: [
-          ['Saluran Akrilik', 'Menyempit 0,416 → 0,28 m'],
-          ['Kincir Turbin', '6 Sudu · Ø 330 × 250 mm'],
-          ['Poros Utama', 'Stainless Steel Ø 30 mm'],
-          ['Output Tahap', 'Putaran & Torsi Poros']
+          ['Dimensi Saluran', '1700 × 400 × 250 mm'],
+          ['Bidang Miring', 'Panjang Lereng 1016,97 mm'],
+          ['Seksi Hulu & Hilir', 'Hulu 500 mm · Hilir 200 mm'],
+          ['Rotor Turbin', '6 Sudu Melengkung · Ø 330 mm']
         ],
-        formula: 'P_mekanik = τ · ω_turbin',
+        formula: 'E_k = ½ · m · v²   |   P_m = τ · ω_turbin',
+        vars: [
+          '<strong>L_total</strong> = 1700,00 mm (500 + 1016,97 miring + 200 mm)',
+          '<strong>W × H</strong> = Lebar 400,00 mm × Dinding 250,00 mm',
+          '<strong>Bibir Buang</strong> = Drop bawah 50,00 mm ke Tangki 60 L'
+        ],
+        calcTag: 'PERHITUNGAN KINETIK & DIMENSI CAD · TAHAP 02',
+        calcMath: 'v = √(2 · g · Δh) = √(2 · 9,81 · 0,235) ≈ 2,15 m/s\nL_saluran = 500 (hulu) + 1016,97 (miring) + 200 (hilir)',
+        calcNote: 'Aliran air menumbuk 6 sudu melengkung lalu langsung jatuh dari bukaan bawah seksi 200 mm kembali ke penampung 60 liter.',
         hotspot: '6'
       },
       '3': {
+        chap: 'BAB 03 / 03 · TRANSMISI MEKANIK & DAYA LISTRIK',
+        bookTitle: 'Pulley 4-Jari (1:4) & Generator DC',
+        bookIntro: 'Poros kincir menembus dinding samping saluran menuju <strong>pulley besar berjari-jari 4 (Ø 270 mm)</strong> yang memutar pulley kecil (Ø 67,5 mm) dan <strong>Generator DC XD 3240</strong> di ujung depan rangka.',
+        pill: '<strong>3 / 3</strong> · Pulley 1:4 &amp; Generator DC',
         img: 'assets/images/components/comp-generator.jpg?v=2',
-        chain: 'TRANSMISI STEP-UP 1:4 → ENERGI LISTRIK DC 12 V',
-        title: '03 · Zona Kering, Pulley 1:4 & Generator DC XD 3240',
-        desc: 'Di balik sekat zona kering bebas cipratan, pulley besar Ø 270 mm memutar pulley kecil Ø 67,5 mm via V-belt (rasio 1:4) untuk melipatgandakan RPM Generator DC XD 3240, menyuplai baterai 12 V dan beban 2× LED 5 W.',
+        chain: 'TRANSMISI STEP-UP 1:4 → ENERGI LISTRIK DC 12 V (2×5W LED)',
+        title: '03 · Pulley 4-Jari 1:4, Generator DC XD 3240 & Beban LED',
+        desc: 'Transmisi V-belt di sisi luar dinding akrilik melipatgandakan putaran poros 4 kali lipat ke Generator DC XD 3240 yang terpasang di rangka depan untuk menyalakan beban lampu LED 12 V.',
         metrics: [
-          ['Rasio Transmisi', 'Step-Up 1 : 4 (Ø 270 → 67,5)'],
-          ['Pembangkit', 'Generator DC XD 3240'],
-          ['Penyimpanan', 'Baterai 12 V + Controller'],
+          ['Pulley Penggerak', 'Roda 4-Jari Ø 270 mm'],
+          ['Pulley Generator', 'Ø 67,5 mm (Step-Up 1 : 4)'],
+          ['Unit Pembangkit', 'Generator DC XD 3240'],
           ['Beban Output', '2 × 5 W Lampu LED (10 W)']
         ],
-        formula: 'ω_gen = 4 · ω_turbin  |  P_out = V · I (10 W)',
+        formula: 'ω_gen = 4 · ω_kincir   |   η = P_output / P_input',
+        vars: [
+          '<strong>Rasio Pulley</strong> = Ø 270 mm : Ø 67,5 mm = 1 : 4 (4× RPM)',
+          '<strong>Generator</strong> = Permanent Magnet DC XD 3240 (12–24 V)',
+          '<strong>Output Beban</strong> = Baterai 12 V & 2 × 5 W Lampu LED'
+        ],
+        calcTag: 'PERHITUNGAN TRANSMISI & LISTRIK · TAHAP 03',
+        calcMath: 'N_gen = 4 × N_kincir  (Step-up Ø 270 → Ø 67,5 mm)\nP_out = V · I = 12 V × 0,83 A ≈ 10 W (2 × 5 W LED)',
+        calcNote: 'Generator DC terpasang di rangka depan kanan di luar jalur air sehingga bebas cipratan (zona kering).',
         hotspot: '8'
       }
     };
@@ -295,7 +331,7 @@
       if (bucket.length) wordBlocks.push({ el: el, words: bucket });
     });
 
-    /* 3c. Stepper Activation (scroll + click + 3D pin/object click) */
+    /* 3c. Stepper Activation (scroll + click + 3D pin/object click + Physics Book UI) */
     var manualStepUntil = 0;
     var curStage = '';
     var infoPanel = $('stage-info-panel');
@@ -306,12 +342,29 @@
     var infoMetrics = $('stage-info-metrics');
     var infoFormula = $('stage-info-formula');
     var infoLink = $('stage-info-link');
+    var bookChap = $('pbook-chap');
+    var bookTitle = $('pbook-title');
+    var bookIntro = $('pbook-intro');
+    var bookVars = $('pbook-vars');
+    var pillLabel = $('pbook-pill-label');
+    var calcPop = $('pbook-calc-pop');
+    var calcTag = $('pbook-calc-tag');
+    var calcMath = $('pbook-calc-math');
+    var calcNote = $('pbook-calc-note');
+    var calcClose = $('pbook-calc-close');
+    var calcToggle = $('pbook-calc-toggle');
+    var flapBtn = $('pbook-flap-btn');
+    var prevStageBtn = $('pbook-prev');
+    var nextStageBtn = $('pbook-next');
 
     function setStage(stage, fromUser) {
       if (!stepper) return;
       var s = String(stage);
-      if (fromUser) manualStepUntil = Date.now() + 9000;
-      if (curStage === s) return;
+      if (fromUser) manualStepUntil = Date.now() + 11000;
+      if (curStage === s) {
+        if (fromUser && calcPop) calcPop.hidden = false;
+        return;
+      }
       curStage = s;
       stepper.setAttribute('data-stage', s);
       if (stageBadge && STAGE_LABELS[s]) stageBadge.textContent = STAGE_LABELS[s];
@@ -330,7 +383,25 @@
       });
 
       var d = STAGE_DETAILS[activeStep];
+      if (d) {
+        if (bookChap) bookChap.textContent = d.chap;
+        if (bookTitle) bookTitle.textContent = d.bookTitle;
+        if (bookIntro) bookIntro.innerHTML = d.bookIntro;
+        if (pillLabel) pillLabel.innerHTML = d.pill;
+        if (infoFormula) infoFormula.textContent = d.formula;
+        if (bookVars && d.vars) {
+          bookVars.innerHTML = d.vars.map(function (v) { return '<li>' + v + '</li>'; }).join('');
+        }
+        if (calcTag) calcTag.textContent = d.calcTag;
+        if (calcMath) calcMath.innerHTML = d.calcMath.replace(/\n/g, '<br>');
+        if (calcNote) calcNote.textContent = d.calcNote;
+        if (fromUser && calcPop) calcPop.hidden = false;
+      }
       if (d && infoPanel) {
+        if (fromUser && flapBtn) {
+          infoPanel.hidden = false;
+          flapBtn.setAttribute('aria-expanded', 'true');
+        }
         infoPanel.classList.add('is-switching');
         setTimeout(function () {
           if (infoImg) { infoImg.src = d.img; infoImg.alt = d.title; }
@@ -342,7 +413,6 @@
               return '<div class="stage-info__metric"><span>' + m[0] + '</span><strong>' + m[1] + '</strong></div>';
             }).join('');
           }
-          if (infoFormula) infoFormula.textContent = d.formula;
           if (infoLink) infoLink.setAttribute('data-go-hotspot', d.hotspot);
           infoPanel.classList.remove('is-switching');
         }, 90);
@@ -369,6 +439,31 @@
         setStage(p.getAttribute('data-pin-step'), true);
       });
     });
+    if (flapBtn && infoPanel) {
+      flapBtn.addEventListener('click', function () {
+        var open = !infoPanel.hidden;
+        infoPanel.hidden = open;
+        flapBtn.setAttribute('aria-expanded', open ? 'false' : 'true');
+      });
+    }
+    if (calcClose && calcPop) {
+      calcClose.addEventListener('click', function () { calcPop.hidden = true; });
+    }
+    if (calcToggle && calcPop) {
+      calcToggle.addEventListener('click', function () { calcPop.hidden = !calcPop.hidden; });
+    }
+    if (prevStageBtn) {
+      prevStageBtn.addEventListener('click', function () {
+        var n = curStage === '2' ? '1' : (curStage === '3' ? '2' : '3');
+        setStage(n, true);
+      });
+    }
+    if (nextStageBtn) {
+      nextStageBtn.addEventListener('click', function () {
+        var n = curStage === '1' ? '2' : (curStage === '2' ? '3' : '1');
+        setStage(n, true);
+      });
+    }
 
     /* Smooth scroll cue button inside Hero (does not hijack SPA hash) */
     var cue = document.querySelector('.hero__scroll-cue');
@@ -1119,7 +1214,7 @@
     start();
   })();
 
-  /* ---------- 10. Interactive 3D Energy Conversion Rig (#hydro-3d-canvas) ---------- */
+  /* ---------- 10. Interactive 3D Physics Book & CAD Prototype Lab (#hydro-3d-canvas) ---------- */
   (function initHydro3DRig() {
     var canvas = $('hydro-3d-canvas');
     var viewport = $('hydro-3d-viewport');
@@ -1133,17 +1228,17 @@
       '3': viewport.querySelector('[data-pin-step="3"]')
     };
 
-    /* Camera presets per stage */
+    /* Camera presets tuned to match the CAD isometric view & stage close-ups */
     var PRESETS = {
-      'all': { yaw: -0.52, pitch: 0.36, zoom: 1.02, tx: 0, ty: -4, tz: 0 },
-      '1':   { yaw: -0.34, pitch: 0.34, zoom: 1.24, tx: -72, ty: 8, tz: -10 },
-      '2':   { yaw: -0.55, pitch: 0.38, zoom: 1.28, tx: 10, ty: -14, tz: -14 },
-      '3':   { yaw: -0.78, pitch: 0.33, zoom: 1.30, tx: 64, ty: -6, tz: 36 }
+      'all': { yaw: -0.54, pitch: 0.42, zoom: 1.00, tx: -4,  ty: -6, tz: 0 },
+      '1':   { yaw: -0.42, pitch: 0.38, zoom: 1.16, tx: 36,  ty: 24, tz: 4 },
+      '2':   { yaw: -0.56, pitch: 0.44, zoom: 1.20, tx: -12, ty: -14, tz: 0 },
+      '3':   { yaw: -0.76, pitch: 0.38, zoom: 1.28, tx: 68,  ty: 2,  tz: -14 }
     };
 
     var activeStage = '1';
-    var cam = { yaw: -0.34, pitch: 0.34, zoom: 1.24, tx: -72, ty: 8, tz: -10 };
-    var target = { yaw: -0.34, pitch: 0.34, zoom: 1.24, tx: -72, ty: 8, tz: -10 };
+    var cam = { yaw: -0.54, pitch: 0.42, zoom: 1.00, tx: -4, ty: -6, tz: 0 };
+    var target = { yaw: -0.42, pitch: 0.38, zoom: 1.16, tx: 36, ty: 24, tz: 4 };
 
     window.__vxFocus3DStage = function (s) {
       activeStage = String(s || '1');
@@ -1156,8 +1251,30 @@
       target.tz = p.tz;
     };
 
+    /* Flow Rate Scrubber & Play/Pause Controls (Video Interactive Scrubber) */
+    var flowRate = 0.85;
+    var isPlaying = true;
+    var flowInput = $('h3d-flow-range');
+    var flowVal = $('h3d-flow-val');
+    var playBtn = $('pbook-play');
+
+    if (flowInput) {
+      flowInput.addEventListener('input', function () {
+        var v = Math.max(0, Math.min(100, Number(flowInput.value) || 0));
+        flowRate = v / 100;
+        if (flowVal) flowVal.textContent = v + '%';
+      });
+    }
+    if (playBtn) {
+      playBtn.addEventListener('click', function () {
+        isPlaying = !isPlaying;
+        playBtn.classList.toggle('is-playing', isPlaying);
+        playBtn.textContent = isPlaying ? '❚❚' : '▶';
+      });
+    }
+
     /* High-DPI resize */
-    var cw = 680, ch = 400, dpr = 1;
+    var cw = 720, ch = 470, dpr = 1;
     function resize() {
       var r = viewport.getBoundingClientRect();
       if (!r.width || !r.height) return;
@@ -1180,17 +1297,16 @@
       var z1 = dx * sinY + dz * cosY;
       var y2 = dy * cosP - z1 * sinP;
       var z2 = dy * sinP + z1 * cosP;
-      var fov = 560;
-      var persp = fov / Math.max(140, fov + z2);
+      var fov = 620;
+      var persp = fov / Math.max(160, fov + z2);
       return {
         x: cw * 0.5 + x1 * scale * persp,
-        y: ch * 0.52 + y2 * scale * persp,
+        y: ch * 0.50 + y2 * scale * persp,
         z: z2,
         p: persp * scale
       };
     }
 
-    /* Draw a 3D Box extruded into 6 faces */
     function pushBox(faces, cx, cy, cz, wx, wy, wz, cols, stageTag, alpha) {
       var hx = wx * 0.5, hy = wy * 0.5, hz = wz * 0.5;
       var v = [
@@ -1204,12 +1320,12 @@
         project(cx - hx, cy + hy, cz + hz)
       ];
       var defs = [
-        { idx: [0, 1, 5, 4], fill: cols.top,    stroke: cols.stroke }, // Top (-Y)
-        { idx: [3, 2, 6, 7], fill: cols.bottom, stroke: cols.stroke }, // Bottom (+Y)
-        { idx: [4, 5, 6, 7], fill: cols.front,  stroke: cols.stroke }, // Front (+Z)
-        { idx: [0, 1, 2, 3], fill: cols.back,   stroke: cols.stroke }, // Back (-Z)
-        { idx: [1, 5, 6, 2], fill: cols.right,  stroke: cols.stroke }, // Right (+X)
-        { idx: [0, 4, 7, 3], fill: cols.left,   stroke: cols.stroke }  // Left (-X)
+        { idx: [0, 1, 5, 4], fill: cols.top,    stroke: cols.stroke },
+        { idx: [3, 2, 6, 7], fill: cols.bottom, stroke: cols.stroke },
+        { idx: [4, 5, 6, 7], fill: cols.front,  stroke: cols.stroke },
+        { idx: [0, 1, 2, 3], fill: cols.back,   stroke: cols.stroke },
+        { idx: [1, 5, 6, 2], fill: cols.right,  stroke: cols.stroke },
+        { idx: [0, 4, 7, 3], fill: cols.left,   stroke: cols.stroke }
       ];
       for (var i = 0; i < defs.length; i++) {
         var f = defs[i], pts = [v[f.idx[0]], v[f.idx[1]], v[f.idx[2]], v[f.idx[3]]];
@@ -1225,15 +1341,14 @@
       }
     }
 
-    /* Draw a 3D Polygonal Quad */
-    function pushQuad(faces, p1, p2, p3, p4, fill, stroke, stageTag, alpha) {
+    function pushQuad(faces, p1, p2, p3, p4, fill, stroke, stageTag, alpha, zBias) {
       var a = project(p1[0], p1[1], p1[2]);
       var b = project(p2[0], p2[1], p2[2]);
       var c = project(p3[0], p3[1], p3[2]);
       var d = project(p4[0], p4[1], p4[2]);
       faces.push({
         pts: [a, b, c, d],
-        z: (a.z + b.z + c.z + d.z) * 0.25,
+        z: (a.z + b.z + c.z + d.z) * 0.25 + (zBias || 0),
         fill: fill,
         stroke: stroke,
         stage: stageTag,
@@ -1241,14 +1356,13 @@
       });
     }
 
-    /* Draw a 3D Cylinder along Y or Z axis */
-    function pushCylinderY(faces, cx, yTop, yBot, rad, segs, fillSide, fillTop, stroke, stageTag, alpha) {
+    function pushCylinderY(faces, cx, cz, yTop, yBot, rad, segs, fillSide, fillTop, stroke, stageTag, alpha) {
       var topPts = [];
       for (var i = 0; i < segs; i++) {
         var a1 = (i / segs) * Math.PI * 2;
         var a2 = ((i + 1) / segs) * Math.PI * 2;
-        var x1 = cx + Math.cos(a1) * rad, z1 = Math.sin(a1) * rad;
-        var x2 = cx + Math.cos(a2) * rad, z2 = Math.sin(a2) * rad;
+        var x1 = cx + Math.cos(a1) * rad, z1 = cz + Math.sin(a1) * rad;
+        var x2 = cx + Math.cos(a2) * rad, z2 = cz + Math.sin(a2) * rad;
         pushQuad(faces, [x1, yTop, z1], [x2, yTop, z2], [x2, yBot, z2], [x1, yBot, z1], fillSide, stroke, stageTag, alpha);
         topPts.push(project(x1, yTop, z1));
       }
@@ -1256,7 +1370,7 @@
       for (var k = 0; k < topPts.length; k++) zSum += topPts[k].z;
       faces.push({
         pts: topPts,
-        z: zSum / topPts.length - 1,
+        z: zSum / topPts.length - 1.5,
         fill: fillTop,
         stroke: stroke,
         stage: stageTag,
@@ -1282,21 +1396,21 @@
       faces.push({ pts: frontPts, z: zF / segs - 1, fill: fillCap, stroke: stroke, stage: stageTag, alpha: alpha == null ? 1 : alpha });
     }
 
-    /* 3D Hotspot World Anchors for Stage 01, 02, 03 */
+    /* 3D Hotspot World Anchors for Stage 01 (60L Tank), Stage 02 (1700mm Flume & Blue Wheel), Stage 03 (4-Spoke Pulley & Generator DC) */
     var STAGE_ANCHORS = {
-      '1': [-108, 42, -16],
-      '2': [16, -8, -16],
-      '3': [78, -12, 56]
+      '1': [74, 66, 18],
+      '2': [8, -18, 24],
+      '3': [88, 12, -36]
     };
     var projectedAnchors = {};
 
     /* Pointer Orbit Drag + Direct 3D Stage Picking */
-    var dragging = false, startX = 0, startY = 0, moved = 0, lastX = 0, lastY = 0;
+    var dragging = false, moved = 0, lastX = 0, lastY = 0;
     canvas.addEventListener('pointerdown', function (e) {
       dragging = true;
       moved = 0;
-      startX = lastX = e.clientX;
-      startY = lastY = e.clientY;
+      lastX = e.clientX;
+      lastY = e.clientY;
       if (canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
     });
     canvas.addEventListener('pointermove', function (e) {
@@ -1307,7 +1421,7 @@
       lastX = e.clientX;
       lastY = e.clientY;
       target.yaw += dx * 0.0075;
-      target.pitch = Math.max(-0.15, Math.min(0.88, target.pitch + dy * 0.006));
+      target.pitch = Math.max(-0.1, Math.min(0.88, target.pitch + dy * 0.006));
     });
     function endDrag(e) {
       if (!dragging) return;
@@ -1316,7 +1430,7 @@
         var r = canvas.getBoundingClientRect();
         var mx = e.clientX - r.left;
         var my = e.clientY - r.top;
-        var bestS = null, bestD = 92;
+        var bestS = null, bestD = 96;
         ['1', '2', '3'].forEach(function (k) {
           var pt = projectedAnchors[k];
           if (!pt) return;
@@ -1334,19 +1448,18 @@
     /* Zoom & Reset Buttons */
     var btnIn = $('h3d-zoom-in'), btnOut = $('h3d-zoom-out'), btnReset = $('h3d-reset');
     if (btnIn) btnIn.addEventListener('click', function () { target.zoom = Math.min(1.65, target.zoom + 0.14); });
-    if (btnOut) btnOut.addEventListener('click', function () { target.zoom = Math.max(0.75, target.zoom - 0.14); });
+    if (btnOut) btnOut.addEventListener('click', function () { target.zoom = Math.max(0.72, target.zoom - 0.14); });
     if (btnReset) btnReset.addEventListener('click', function () {
       if (typeof window.__vxSelectStage === 'function') window.__vxSelectStage('all');
       else window.__vxFocus3DStage('all');
     });
 
-    /* Main 60fps 3D Render Loop */
     var wheelAngle = 0;
     var flowPhase = 0;
 
     function stageAlpha(st) {
       if (!st || activeStage === 'all') return 1;
-      return String(st) === activeStage ? 1 : 0.34;
+      return String(st) === activeStage ? 1 : 0.42;
     }
 
     function draw3DLine(p1, p2, color, width, dash, alpha) {
@@ -1365,13 +1478,32 @@
       ctx.restore();
     }
 
+    function draw3DLabel(pt3d, text, sub, color) {
+      var p = project(pt3d[0], pt3d[1], pt3d[2]);
+      ctx.save();
+      ctx.font = '700 10px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = color || '#EAF4FF';
+      ctx.fillText(text, p.x, p.y);
+      if (sub) {
+        ctx.font = '500 9px "Source Sans 3", sans-serif';
+        ctx.fillStyle = 'rgba(226, 232, 240, 0.78)';
+        ctx.fillText(sub, p.x, p.y + 11);
+      }
+      ctx.restore();
+    }
+
+    var FRAME_COLS = {
+      top: '#64748B', bottom: '#1E293B', front: '#475569', back: '#334155', right: '#475569', left: '#334155',
+      stroke: '#0F172A'
+    };
+
     function renderFrame() {
       requestAnimationFrame(renderFrame);
       var beranda = $('beranda');
       if (beranda && beranda.hidden) return;
 
-      /* Smooth camera lerp */
-      var idleSpin = dragging ? 0 : Math.sin(flowPhase * 0.35) * 0.0008;
+      var idleSpin = dragging ? 0 : Math.sin(flowPhase * 0.3) * 0.0006;
       cam.yaw += (target.yaw - cam.yaw) * 0.11 + idleSpin;
       cam.pitch += (target.pitch - cam.pitch) * 0.11;
       cam.zoom += (target.zoom - cam.zoom) * 0.11;
@@ -1381,30 +1513,15 @@
 
       cosY = Math.cos(cam.yaw); sinY = Math.sin(cam.yaw);
       cosP = Math.cos(cam.pitch); sinP = Math.sin(cam.pitch);
-      scale = Math.min(cw / 420, ch / 270) * cam.zoom;
+      scale = Math.min(cw / 440, ch / 290) * cam.zoom;
 
-      if (!reducedMotion) {
-        wheelAngle += 0.042;
-        flowPhase += 0.036;
-      }
+      var spd = (isPlaying && !reducedMotion) ? (0.15 + flowRate * 0.85) : 0;
+      wheelAngle += 0.048 * spd;
+      flowPhase += 0.040 * spd;
 
       ctx.save();
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, cw, ch);
-
-      /* 1. 3D Engineering Floor Grid & 2.0 x 0.8 m Base Frame */
-      var floorY = 82;
-      for (var gx = -160; gx <= 160; gx += 32) {
-        draw3DLine([gx, floorY, -75], [gx, floorY, 75], 'rgba(144,224,239,0.10)', 1, null, 1);
-      }
-      for (var gz = -75; gz <= 75; gz += 25) {
-        draw3DLine([-160, floorY, gz], [160, floorY, gz], 'rgba(144,224,239,0.10)', 1, null, 1);
-      }
-      /* Outer Structural Base Rails (2,0 x 0,8 m) */
-      draw3DLine([-152, floorY, -62], [136, floorY, -62], 'rgba(144,224,239,0.34)', 2, null, 1);
-      draw3DLine([136, floorY, -62], [136, floorY, 68], 'rgba(144,224,239,0.34)', 2, null, 1);
-      draw3DLine([136, floorY, 68], [-152, floorY, 68], 'rgba(144,224,239,0.34)', 2, null, 1);
-      draw3DLine([-152, floorY, 68], [-152, floorY, -62], 'rgba(144,224,239,0.34)', 2, null, 1);
 
       var faces = [];
       var a1 = stageAlpha('1');
@@ -1412,143 +1529,204 @@
       var a3 = stageAlpha('3');
 
       /* =====================================================================
-         STAGE 01: RESERVOIR TANK (Ø 520 mm) + PUMP (100 W) + PIPE (Ø 45 mm)
+         0. VIDEO-STYLE 3D ENERGY STORE CYLINDERS (Floating Top Rack)
+         Just like the 3 glass beakers in the Physics Book video (E_p, E_k, E_DC)
          ===================================================================== */
-      /* Cylindrical Water Volume inside Tank */
-      var waveDy = Math.sin(flowPhase * 2) * 2.2;
+      var stores = [
+        { x: -56, label: 'E_p · Potensial', sub: 'Tangki 60 L', lvl: 0.35 + flowRate * 0.58, side: 'rgba(139, 92, 246, 0.55)', top: 'rgba(167, 139, 250, 0.85)', st: '1' },
+        { x: -12, label: 'E_k · Kinetik',   sub: 'Kincir 6 Sudu', lvl: (0.20 + flowRate * 0.68) * (isPlaying ? 1 : 0.35), side: 'rgba(0, 168, 232, 0.58)', top: 'rgba(56, 189, 248, 0.88)', st: '2' },
+        { x: 32,  label: 'E_DC · Listrik',  sub: 'Pulley 1:4 · 12V', lvl: (0.15 + flowRate * 0.76) * (isPlaying ? 1 : 0.25), side: 'rgba(245, 158, 11, 0.62)', top: 'rgba(251, 191, 36, 0.92)', st: '3' }
+      ];
+      /* Glass Beaker Rack Stand */
+      pushBox(faces, -12, -74, -52, 132, 4, 28, {
+        top: 'rgba(226, 232, 240, 0.28)', bottom: 'rgba(15, 23, 42, 0.5)',
+        front: 'rgba(148, 163, 184, 0.35)', back: 'rgba(100, 116, 139, 0.3)',
+        right: 'rgba(148, 163, 184, 0.3)', left: 'rgba(100, 116, 139, 0.3)',
+        stroke: 'rgba(226, 232, 240, 0.5)'
+      }, null, 0.9);
+
+      for (var si = 0; si < stores.length; si++) {
+        var st = stores[si];
+        var bBot = -76, bTop = -114;
+        var fillY = bBot - (bBot - bTop - 3) * st.lvl;
+        /* Colored Energy Liquid inside Beaker */
+        pushCylinderY(faces, st.x, -52, fillY, bBot, 13, 12, st.side, st.top, 'rgba(255,255,255,0.35)', st.st, 0.95);
+        /* Outer Glass Cylinder Beaker */
+        pushCylinderY(faces, st.x, -52, bTop, bBot, 14.5, 12, 'rgba(255,255,255,0.10)', 'rgba(255,255,255,0.16)', 'rgba(226,232,240,0.55)', st.st, 0.85);
+      }
+
+      /* =====================================================================
+         1. TWO-TIER DARK STEEL HOLLOW FRAME (Exact Match to CAD PNG)
+         ===================================================================== */
+      /* Left Upper Tier Deck Panel (Supports 500 mm Headbox + Upper Slope) */
+      pushBox(faces, -94, -4, 0, 92, 5, 68, FRAME_COLS, null, 0.92);
+      /* Upper Left Guide Brackets on Deck (as shown in CAD PNG) */
+      pushBox(faces, -138, -18, 0, 4, 24, 66, FRAME_COLS, null, 0.92);
+      pushBox(faces, -78, -14, 28, 36, 18, 4, FRAME_COLS, null, 0.92);
+
+      /* Right Lower Tier Deck Panel (Around Outlet & Generator Mount) */
+      pushBox(faces, 38, 36, -27, 152, 5, 14, FRAME_COLS, null, 0.92);
+      pushBox(faces, 38, 36, 27, 152, 5, 14, FRAME_COLS, null, 0.92);
+      pushBox(faces, 108, 36, 0, 14, 5, 40, FRAME_COLS, null, 0.92);
+      pushBox(faces, -22, 36, 0, 32, 5, 40, FRAME_COLS, null, 0.92);
+
+      /* Bottom Base Shelf Frame (Y = 86, holds the 60-Liter Water Reservoir Tank) */
+      pushBox(faces, -14, 86, -32, 256, 5, 5, FRAME_COLS, null, 0.9);
+      pushBox(faces, -14, 86, 32, 256, 5, 5, FRAME_COLS, null, 0.9);
+      pushBox(faces, -140, 86, 0, 5, 5, 64, FRAME_COLS, null, 0.9);
+      pushBox(faces, 112, 86, 0, 5, 5, 64, FRAME_COLS, null, 0.9);
+
+      /* Vertical Hollow Steel Frame Legs */
+      [-31, 31].forEach(function (lz) {
+        pushBox(faces, -138, 41, lz, 5, 90, 5, FRAME_COLS, null, 0.9);
+        pushBox(faces, -48,  41, lz, 5, 90, 5, FRAME_COLS, null, 0.9);
+        pushBox(faces, 112,  61, lz, 5, 50, 5, FRAME_COLS, null, 0.9);
+      });
+
+      /* =====================================================================
+         2. STAGE 01: 60-LITER WATER RESERVOIR TANK (Underneath Outlet) + PIPE
+         ===================================================================== */
+      var tX = 68, tZ = 0, tR = 34;
+      var waveDy = Math.sin(flowPhase * 2) * 1.8;
+      /* 60-Liter Water Volume inside Bottom Cylindrical Tank */
       pushCylinderY(
-        faces, -108, 22 + waveDy, 78, 38, 16,
-        'rgba(0, 168, 232, 0.42)', 'rgba(0, 198, 184, 0.58)', 'rgba(144, 224, 239, 0.45)', '1', a1
+        faces, tX, tZ, 52 + waveDy, 85, tR - 2.5, 16,
+        'rgba(0, 168, 232, 0.50)', 'rgba(0, 198, 184, 0.68)', 'rgba(144, 224, 239, 0.55)', '1', a1
       );
-      /* Translucent Outer Cylindrical Tank (Ø 520 mm) */
+      /* 60-Liter Cylindrical Tank Shell (Penampung Air 60 Liter) */
       pushCylinderY(
-        faces, -108, 4, 80, 42, 16,
-        'rgba(14, 58, 104, 0.24)', 'rgba(144, 224, 239, 0.12)', 'rgba(144, 224, 239, 0.65)', '1', a1
+        faces, tX, tZ, 41, 86, tR, 16,
+        'rgba(226, 232, 240, 0.24)', 'rgba(144, 224, 239, 0.14)', 'rgba(144, 224, 239, 0.72)', '1', a1
       );
-      /* Submerged Pump Unit (100 W) inside Tank */
-      pushBox(faces, -108, 58, -12, 26, 22, 22, {
+      /* Submerged 100W Circulation Pump inside 60L Tank */
+      pushBox(faces, tX - 8, 74, tZ, 18, 16, 16, {
         top: '#0096C7', bottom: '#023E8A', front: '#0077B6', back: '#005F92', right: '#0084B8', left: '#00669E',
         stroke: '#90E0EF'
       }, '1', a1);
-      /* Digital Flow Meter Box on Rising Pipe */
-      pushBox(faces, -108, -22, -12, 18, 18, 16, {
-        top: '#00C6B8', bottom: '#065F5B', front: '#0D9488', back: '#0F766E', right: '#14B8A6', left: '#0F766E',
-        stroke: '#A7F3D0'
-      }, '1', a1);
 
       /* =====================================================================
-         STAGE 02: HEADBOX + NARROWING CHUTE (0,416 -> 0,28 m) + 6-BLADE WHEEL
+         3. STAGE 02: EXACT CAD ACRYLIC FLUME (1700 x 400 x 250 mm) + 6-BLADE ROTOR
+         - Upper Horizontal Headbox: 500 mm (X: -134..-76, Y_bot: -48, Y_top: -86)
+         - Internal Weir Baffle: 95 x 105 mm (X: -134..-116, Y: -86..-66)
+         - Inclined Middle Slope: 1016.97 mm (X: -76..+60, Y_bot: -48..+24, Y_top: -86..-14)
+         - Lower Horizontal Outlet: 200 mm (X: +60..+88, Y_bot: +24, Y_top: -14, +50mm drop)
          ===================================================================== */
-      /* Upper Calming Basin (Bak Penenang Atas) */
-      pushBox(faces, -60, -64, -18, 34, 26, 40, {
-        top: 'rgba(0, 168, 232, 0.36)', bottom: 'rgba(4, 36, 72, 0.6)',
-        front: 'rgba(0, 136, 204, 0.34)', back: 'rgba(0, 119, 182, 0.28)',
-        right: 'rgba(0, 168, 232, 0.32)', left: 'rgba(0, 119, 182, 0.32)',
-        stroke: 'rgba(144, 224, 239, 0.75)'
+      var fZ1 = -22, fZ2 = 22;
+
+      /* Flowing Water Sheet along 500mm Headbox & 1016.97mm Slope */
+      pushQuad(faces,
+        [-132, -55, fZ1 + 1], [-76, -55, fZ1 + 1],
+        [-76, -55, fZ2 - 1],  [-132, -55, fZ2 - 1],
+        'rgba(0, 180, 236, 0.50)', 'rgba(144, 224, 239, 0.5)', '2', a2
+      );
+      pushQuad(faces,
+        [-76, -55, fZ1 + 1], [60, 18, fZ1 + 1],
+        [60, 18, fZ2 - 1],   [-76, -55, fZ2 - 1],
+        'rgba(0, 168, 232, 0.54)', 'rgba(144, 224, 239, 0.6)', '2', a2
+      );
+
+      /* Acrylic Flume Floor Plates (500mm Upper, 1016.97mm Slope, 200mm Lower) */
+      pushQuad(faces, [-134, -48, fZ1], [-76, -48, fZ1], [-76, -48, fZ2], [-134, -48, fZ2], 'rgba(226, 238, 248, 0.28)', '#0F172A', '2', a2);
+      pushQuad(faces, [-76, -48, fZ1],  [60, 24, fZ1],   [60, 24, fZ2],   [-76, -48, fZ2],  'rgba(226, 238, 248, 0.28)', '#0F172A', '2', a2);
+      pushQuad(faces, [60, 24, fZ1],    [88, 24, fZ1],   [88, 24, fZ2],   [60, 24, fZ2],    'rgba(226, 238, 248, 0.24)', '#0F172A', '2', a2);
+
+      /* Internal Headbox Weir / Baffle Box (95 x 105 mm from PDF Drawing) */
+      pushBox(faces, -125, -75, 0, 18, 20, 44, {
+        top: 'rgba(241, 245, 249, 0.48)', bottom: 'rgba(148, 163, 184, 0.42)',
+        front: 'rgba(226, 232, 240, 0.40)', back: 'rgba(203, 213, 225, 0.40)',
+        right: 'rgba(226, 232, 240, 0.45)', left: 'rgba(203, 213, 225, 0.45)',
+        stroke: '#0F172A'
       }, '2', a2);
 
-      /* Narrowing Inclined Acrylic Chute (0.416 m wide at top -> 0.28 m narrow at turbine) */
-      var cX1 = -43, cY1 = -62, cW1 = 18;
-      var cX2 = 16,  cY2 = -36, cW2 = 11;
-      var cZ = -18, cH = 12;
-      /* Chute Floor (Water Bed) */
-      pushQuad(faces,
-        [cX1, cY1, cZ - cW1], [cX2, cY2, cZ - cW2],
-        [cX2, cY2, cZ + cW2], [cX1, cY1, cZ + cW1],
-        'rgba(0, 180, 236, 0.52)', '#90E0EF', '2', a2
-      );
-      /* Chute Front & Back Acrylic Side Walls */
-      pushQuad(faces,
-        [cX1, cY1 - cH, cZ + cW1], [cX2, cY2 - cH, cZ + cW2],
-        [cX2, cY2, cZ + cW2],      [cX1, cY1, cZ + cW1],
-        'rgba(144, 224, 239, 0.24)', '#90E0EF', '2', a2
-      );
-      pushQuad(faces,
-        [cX1, cY1 - cH, cZ - cW1], [cX2, cY2 - cH, cZ - cW2],
-        [cX2, cY2, cZ - cW2],      [cX1, cY1, cZ - cW1],
-        'rgba(0, 119, 182, 0.24)', 'rgba(144, 224, 239, 0.65)', '2', a2
-      );
-
-      /* 3D 6-Blade Waterwheel Rotor (Ø 330 mm, 6 curved/radial paddles) */
-      var wX = 32, wY = 8, wZ = -18, wR = 42;
-      /* Stainless Steel Main Shaft (Ø 30 mm) spanning from wet zone across dry-zone wall */
+      /* 6-Blade Curved Bright-Blue Waterwheel (Exact Match to Blue Rotor in CAD PNG) */
+      var wX = 36, wY = 2, wZ = 0, wR = 23;
+      /* Protruding Stainless Steel Main Shaft (Ø 30 mm) through both side walls */
       pushCylinderZ(
-        faces, wX, wY, -44, 38, 5.5, 10,
-        '#94A3B8', '#E2E8F0', '#CBD5E1', '2', Math.max(a2, a3), wheelAngle
+        faces, wX, wY, -40, 38, 3.2, 10,
+        '#94A3B8', '#F8FAFC', '#0F172A', '2', Math.max(a2, a3), wheelAngle
       );
-      /* 6 Rotating 3D Turbine Blades */
+      /* Central Rotor Hub */
+      pushCylinderZ(
+        faces, wX, wY, fZ1 + 3, fZ2 - 3, 7, 12,
+        '#0284C7', '#38BDF8', '#0F172A', '2', a2, wheelAngle
+      );
+      /* 6 Curved Cyan-Blue Paddles */
       for (var b = 0; b < 6; b++) {
         var ang = wheelAngle + (b * Math.PI) / 3;
-        var rIn = 12, rOut = wR;
+        var rIn = 7, rMid = 16, rOut = wR;
         var xIn = wX + Math.cos(ang) * rIn, yIn = wY + Math.sin(ang) * rIn;
-        var xOut = wX + Math.cos(ang) * rOut, yOut = wY + Math.sin(ang) * rOut;
-        var pAng = ang + 0.34;
-        var xTip = wX + Math.cos(pAng) * (rOut - 4), yTip = wY + Math.sin(pAng) * (rOut - 4);
-        /* Blade main paddle face */
+        var xMid = wX + Math.cos(ang + 0.16) * rMid, yMid = wY + Math.sin(ang + 0.16) * rMid;
+        var xOut = wX + Math.cos(ang + 0.38) * rOut, yOut = wY + Math.sin(ang + 0.38) * rOut;
         pushQuad(faces,
-          [xIn, yIn, wZ - 13], [xOut, yOut, wZ - 13],
-          [xOut, yOut, wZ + 13], [xIn, yIn, wZ + 13],
-          '#00A8E8', '#90E0EF', '2', a2
+          [xIn, yIn, fZ1 + 3], [xMid, yMid, fZ1 + 3],
+          [xMid, yMid, fZ2 - 3], [xIn, yIn, fZ2 - 3],
+          '#0096C7', '#041B36', '2', a2
         );
-        /* Blade curved bucket lip */
         pushQuad(faces,
-          [xOut, yOut, wZ - 13], [xTip, yTip, wZ - 13],
-          [xTip, yTip, wZ + 13], [xOut, yOut, wZ + 13],
-          '#00C6B8', '#E0F7FC', '2', a2
+          [xMid, yMid, fZ1 + 3], [xOut, yOut, fZ1 + 3],
+          [xOut, yOut, fZ2 - 3], [xMid, yMid, fZ2 - 3],
+          '#00B4D8', '#041B36', '2', a2
         );
       }
-      /* Turbine Hub */
-      pushCylinderZ(
-        faces, wX, wY, wZ - 15, wZ + 15, 12, 12,
-        '#023E8A', '#0077B6', '#90E0EF', '2', a2, wheelAngle
-      );
+
+      /* Translucent Acrylic Side Walls (Back Z = -22 & Front Z = +22) + End Walls */
+      [fZ1, fZ2].forEach(function (wz) {
+        var wFill = wz === fZ2 ? 'rgba(241, 245, 249, 0.22)' : 'rgba(203, 213, 225, 0.25)';
+        var bias = wz === fZ2 ? -4 : 4;
+        /* 500mm Upper Wall */
+        pushQuad(faces, [-134, -86, wz], [-76, -86, wz], [-76, -48, wz], [-134, -48, wz], wFill, '#0F172A', '2', a2, bias);
+        /* 1016.97mm Inclined Wall */
+        pushQuad(faces, [-76, -86, wz], [60, -14, wz], [60, 24, wz], [-76, -48, wz], wFill, '#0F172A', '2', a2, bias);
+        /* 200mm Lower Wall + 50mm Drop Lip */
+        pushQuad(faces, [60, -14, wz], [88, -14, wz], [88, 32, wz], [60, 32, wz], wFill, '#0F172A', '2', a2, bias);
+      });
+      /* Back End Wall (X = -134) & Front Lower End Wall (X = +88) */
+      pushQuad(faces, [-134, -86, fZ1], [-134, -86, fZ2], [-134, -48, fZ2], [-134, -48, fZ1], 'rgba(226, 232, 240, 0.34)', '#0F172A', '2', a2);
+      pushQuad(faces, [88, -14, fZ1],   [88, -14, fZ2],   [88, 32, fZ2],    [88, 32, fZ1],    'rgba(226, 232, 240, 0.30)', '#0F172A', '2', a2);
 
       /* =====================================================================
-         STAGE 03: DRY-ZONE PARTITION + 1:4 PULLEY + GENERATOR DC + 2x5W LED
+         4. STAGE 03: 4-SPOKE LARGE PULLEY (Ø 270 mm) + V-BELT + GENERATOR DC + BULB
+         Exact match to PDF Drawing & CAD PNG
          ===================================================================== */
-      /* Translucent Dry-Zone Splash Partition Wall (Sekat Zona Kering) */
-      pushQuad(faces,
-        [-8, -74, 18], [124, -74, 18],
-        [124, 80, 18],  [-8, 80, 18],
-        'rgba(144, 224, 239, 0.11)', 'rgba(144, 224, 239, 0.48)', '3', a3
-      );
-
-      /* Large Driver Pulley (Ø 270 mm) on Front End of Main Shaft (Z = 34) */
-      var p1X = wX, p1Y = wY, pZ = 34, p1R = 29;
+      var pZ = -34;
+      var p1X = wX, p1Y = wY, p1R = 22;
+      /* Large Driver Pulley Rim (Ø 270 mm, 4-spoke wheel on outer side of channel) */
       pushCylinderZ(
-        faces, p1X, p1Y, pZ - 3, pZ + 3, p1R, 16,
-        '#0F766E', 'rgba(0, 198, 184, 0.35)', '#2DD4BF', '3', a3, wheelAngle
+        faces, p1X, p1Y, pZ - 2.5, pZ + 2.5, p1R, 18,
+        '#CBD5E1', 'rgba(248, 250, 252, 0.28)', '#0F172A', '3', a3, wheelAngle
       );
 
-      /* Small Driven Pulley (Ø 67.5 mm — 1:4 Ratio, spins 4x faster!) */
-      var p2X = 96, p2Y = -28, p2R = 9.5;
+      /* Small Driven Pulley (Ø 67.5 mm — 1:4 Step-Up, spins 4x faster) */
+      var p2X = 98, p2Y = 18, p2R = 7.5;
       pushCylinderZ(
-        faces, p2X, p2Y, pZ - 3, pZ + 3, p2R, 12,
-        '#0D9488', '#5EEAD4', '#99F6E4', '3', a3, wheelAngle * 4
+        faces, p2X, p2Y, pZ - 2.5, pZ + 2.5, p2R, 14,
+        '#94A3B8', '#F1F5F9', '#0F172A', '3', a3, wheelAngle * 4
       );
 
-      /* Generator DC XD 3240 (Mounted behind Small Pulley in Dry Zone) */
+      /* Horizontal Cylindrical Generator DC XD 3240 (Mounted on front-right frame beam) */
       pushCylinderZ(
-        faces, p2X, p2Y, 40, 68, 15, 14,
-        '#1E293B', '#334155', '#00C6B8', '3', a3, 0
+        faces, p2X, p2Y, -28, -4, 10.5, 14,
+        '#94A3B8', '#CBD5E1', '#0F172A', '3', a3, 0
       );
-
-      /* 12 V Battery & Charge Controller Module */
-      pushBox(faces, 96, 36, 52, 34, 24, 22, {
-        top: '#1E3A5F', bottom: '#0A192F', front: '#172A45', back: '#0F223D', right: '#233554', left: '#112240',
-        stroke: '#38BDF8'
+      /* Generator Mounting End-Brackets (Square flanges as in CAD PNG) */
+      pushBox(faces, p2X, p2Y, -28, 22, 22, 3, {
+        top: '#94A3B8', bottom: '#475569', front: '#CBD5E1', back: '#64748B', right: '#94A3B8', left: '#64748B',
+        stroke: '#0F172A'
+      }, '3', a3);
+      pushBox(faces, p2X, p2Y, -4, 22, 22, 3, {
+        top: '#94A3B8', bottom: '#475569', front: '#CBD5E1', back: '#64748B', right: '#94A3B8', left: '#64748B',
+        stroke: '#0F172A'
       }, '3', a3);
 
-      /* 2x 5W LED Output Load Base & Lamps */
-      pushBox(faces, 96, 6, 54, 32, 12, 14, {
-        top: '#334155', bottom: '#0F172A', front: '#1E293B', back: '#0F172A', right: '#334155', left: '#1E293B',
+      /* 3D Output Lamp Stand (Like the glowing bulb apparatus in the video at 00:32) */
+      pushBox(faces, 114, 26, 22, 18, 14, 18, {
+        top: '#475569', bottom: '#0F172A', front: '#334155', back: '#1E293B', right: '#334155', left: '#1E293B',
         stroke: '#FBBF24'
       }, '3', a3);
 
-      /* Depth-Sort all 3D polygons (Painter's Algorithm back-to-front) */
+      /* Depth-Sort all 3D Polygons (Painter's Algorithm) */
       faces.sort(function (a, b) { return b.z - a.z; });
 
-      /* Render Sorted 3D Faces */
       for (var fIdx = 0; fIdx < faces.length; fIdx++) {
         var face = faces[fIdx];
         var pts = face.pts;
@@ -1566,117 +1744,128 @@
         }
         if (face.stroke) {
           ctx.strokeStyle = face.stroke;
-          ctx.lineWidth = (activeStage === face.stage || activeStage === 'all') ? 1.35 : 0.85;
+          ctx.lineWidth = (activeStage === face.stage || activeStage === 'all') ? 1.3 : 0.85;
           ctx.stroke();
         }
         ctx.restore();
       }
 
-      /* 3D Turbine Wheel Side Shroud Rings & Spokes (for crisp 3D depth) */
-      [-13, 13].forEach(function (dz) {
-        ctx.save();
-        ctx.globalAlpha = a2;
-        ctx.strokeStyle = '#90E0EF';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        for (var s = 0; s <= 28; s++) {
-          var a = (s / 28) * Math.PI * 2;
-          var pt = project(wX + Math.cos(a) * wR, wY + Math.sin(a) * wR, wZ + dz);
-          if (s === 0) ctx.moveTo(pt.x, pt.y);
-          else ctx.lineTo(pt.x, pt.y);
-        }
-        ctx.stroke();
-        ctx.restore();
-      });
-
-      /* 3D Rising PVC Pipe (Ø 45 mm) + Flowing 3D Water Particles (Stage 01) */
-      var pipeNodes = [
-        [-108, 48, -12],
-        [-108, -68, -12],
-        [-64, -68, -12]
-      ];
-      draw3DLine(pipeNodes[0], pipeNodes[1], 'rgba(144, 224, 239, 0.42)', 9 * cam.zoom, null, a1);
-      draw3DLine(pipeNodes[1], pipeNodes[2], 'rgba(144, 224, 239, 0.42)', 9 * cam.zoom, null, a1);
-      draw3DLine(pipeNodes[0], pipeNodes[1], '#00A8E8', 4 * cam.zoom, null, a1);
-      draw3DLine(pipeNodes[1], pipeNodes[2], '#00A8E8', 4 * cam.zoom, null, a1);
-
-      /* Animated 3D Water Droplets inside Rising Pipe (Stage 01) */
-      for (var wp = 0; wp < 9; wp++) {
-        var tPipe = ((wp / 9) + flowPhase * 0.25) % 1;
-        var px, py, pz = -12;
-        if (tPipe < 0.72) {
-          var u = tPipe / 0.72;
-          px = -108;
-          py = 48 - u * 116;
-        } else {
-          var u2 = (tPipe - 0.72) / 0.28;
-          px = -108 + u2 * 44;
-          py = -68;
-        }
-        var sp = project(px, py, pz);
-        ctx.save();
-        ctx.globalAlpha = a1;
-        ctx.fillStyle = '#E0F7FC';
-        ctx.beginPath();
-        ctx.arc(sp.x, sp.y, Math.max(2, 3.2 * sp.p), 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      /* Animated 3D Water Stream & Splash Particles on Chute & Wheel (Stage 02) */
-      for (var cp = 0; cp < 10; cp++) {
-        var tc = ((cp / 10) + flowPhase * 0.38) % 1;
-        var cxP = cX1 + (cX2 - cX1) * tc;
-        var cyP = cY1 + (cY2 - cY1) * tc - 3;
-        var czP = cZ + ((cp % 3) - 1) * (5 * (1 - tc * 0.4));
-        var scp = project(cxP, cyP, czP);
-        ctx.save();
-        ctx.globalAlpha = a2;
-        ctx.fillStyle = '#90E0EF';
-        ctx.beginPath();
-        ctx.arc(scp.x, scp.y, Math.max(2, 3 * scp.p), 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-      /* Return Water Cascade from Wheel bottom back to Reservoir Tank */
-      draw3DLine([wX, wY + wR + 4, wZ], [wX, 66, wZ], 'rgba(0, 198, 184, 0.55)', 3.5, [6, 6], a2);
-      draw3DLine([wX, 66, wZ], [-70, 66, wZ], 'rgba(0, 198, 184, 0.55)', 3.5, [6, 6], a2);
-
-      /* 3D Step-Up 1:4 V-Belt Loops & Pulley Rotation Spokes (Stage 03) */
-      var beltTop1 = [p1X - 10, p1Y - p1R + 2, pZ];
-      var beltTop2 = [p2X - 4, p2Y - p2R + 1, pZ];
-      var beltBot1 = [p1X + 12, p1Y + p1R - 2, pZ];
-      var beltBot2 = [p2X + 5, p2Y + p2R - 1, pZ];
-      draw3DLine(beltTop1, beltTop2, '#2DD4BF', 2.6, [7, 5], a3);
-      draw3DLine(beltBot1, beltBot2, '#2DD4BF', 2.6, [7, 5], a3);
-
-      /* Pulley 1 Spokes */
+      /* 4 Spokes of the Large Pulley Wheel (Exact 4-cross spokes from PDF Drawing & PNG) */
       for (var spk = 0; spk < 4; spk++) {
         var sa = wheelAngle + (spk * Math.PI) / 2;
-        draw3DLine([p1X, p1Y, pZ + 3], [p1X + Math.cos(sa) * (p1R - 3), p1Y + Math.sin(sa) * (p1R - 3), pZ + 3], '#5EEAD4', 1.8, null, a3);
+        draw3DLine(
+          [p1X, p1Y, pZ],
+          [p1X + Math.cos(sa) * (p1R - 2), p1Y + Math.sin(sa) * (p1R - 2), pZ],
+          '#E2E8F0', 3.2, null, a3
+        );
       }
 
-      /* Glowing Dual 5W LED Lamps in Dry Zone (Stage 03) */
-      var ledPulse = 0.75 + Math.sin(flowPhase * 3) * 0.25;
-      [88, 104].forEach(function (lx) {
-        var lp = project(lx, -2, 54);
-        ctx.save();
-        ctx.globalAlpha = a3;
-        var grad = ctx.createRadialGradient(lp.x, lp.y, 1, lp.x, lp.y, 18 * lp.p * ledPulse);
+      /* Black V-Belt connecting Large 4-Spoke Pulley (Ø 270) to Small Generator Pulley (Ø 67.5) */
+      var beltTop1 = [p1X + 4, p1Y - p1R + 1, pZ];
+      var beltTop2 = [p2X + 1, p2Y - p2R + 1, pZ];
+      var beltBot1 = [p1X - 4, p1Y + p1R - 1, pZ];
+      var beltBot2 = [p2X - 1, p2Y + p2R - 1, pZ];
+      draw3DLine(beltTop1, beltTop2, '#0F172A', 3.5, null, a3);
+      draw3DLine(beltBot1, beltBot2, '#0F172A', 3.5, null, a3);
+      draw3DLine(beltTop1, beltTop2, '#38BDF8', 1.4, [6, 5], a3);
+      draw3DLine(beltBot1, beltBot2, '#38BDF8', 1.4, [6, 5], a3);
+
+      /* Rising PVC Circulation Pipe from 60L Bottom Tank along Lower Frame up to 500mm Headbox (Stage 01) */
+      var pipePts = [
+        [tX - 12, 72, 24],
+        [-130, 56, 24],
+        [-130, -90, 24],
+        [-124, -90, 8],
+        [-124, -78, 8]
+      ];
+      for (var pi = 0; pi < pipePts.length - 1; pi++) {
+        draw3DLine(pipePts[pi], pipePts[pi + 1], 'rgba(226, 232, 240, 0.72)', 6.5 * cam.zoom, null, a1);
+        draw3DLine(pipePts[pi], pipePts[pi + 1], '#00A8E8', 2.8 * cam.zoom, null, a1);
+      }
+
+      /* Animated 3D Water Droplets inside Rising PVC Pipe (Stage 01) */
+      if (flowRate > 0.02) {
+        for (var wp = 0; wp < 10; wp++) {
+          var tp = ((wp / 10) + flowPhase * 0.22) % 1;
+          var px, py, pz = 24;
+          if (tp < 0.45) {
+            var u1 = tp / 0.45;
+            px = (tX - 12) + (-130 - (tX - 12)) * u1;
+            py = 72 + (56 - 72) * u1;
+          } else if (tp < 0.88) {
+            var u2 = (tp - 0.45) / 0.43;
+            px = -130;
+            py = 56 + (-90 - 56) * u2;
+          } else {
+            var u3 = (tp - 0.88) / 0.12;
+            px = -124;
+            py = -90 + u3 * 16;
+            pz = 24 - u3 * 16;
+          }
+          var sp = project(px, py, pz);
+          ctx.save();
+          ctx.globalAlpha = a1;
+          ctx.fillStyle = '#E0F7FC';
+          ctx.beginPath();
+          ctx.arc(sp.x, sp.y, Math.max(2, 3 * sp.p), 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        /* Animated 3D Water Stream & Splash Particles down the 1016.97 mm Slope & into 60L Tank (Stage 02) */
+        for (var cp = 0; cp < 14; cp++) {
+          var tc = ((cp / 14) + flowPhase * 0.36) % 1;
+          var cxP, cyP, czP = ((cp % 3) - 1) * 9;
+          if (tc < 0.78) {
+            var uSlope = tc / 0.78;
+            cxP = -76 + (60 - (-76)) * uSlope;
+            cyP = -54 + (20 - (-54)) * uSlope;
+          } else {
+            /* Waterfall dropping from 200mm outlet straight down into the 60-Liter Reservoir Tank */
+            var uFall = (tc - 0.78) / 0.22;
+            cxP = 68 + (cp % 2) * 5;
+            cyP = 24 + uFall * 32;
+          }
+          var scp = project(cxP, cyP, czP);
+          ctx.save();
+          ctx.globalAlpha = a2;
+          ctx.fillStyle = '#90E0EF';
+          ctx.beginPath();
+          ctx.arc(scp.x, scp.y, Math.max(2, 3.1 * scp.p), 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      /* Glowing Bulb Apparatus (Video 00:32 Style Glowing Energy Sphere + Bulb Halo) */
+      var bulbPt = project(114, 10, 22);
+      var glowRadius = (10 + flowRate * 24) * bulbPt.p * (0.85 + Math.sin(flowPhase * 3) * 0.15);
+      ctx.save();
+      ctx.globalAlpha = a3;
+      if (flowRate > 0.02) {
+        var grad = ctx.createRadialGradient(bulbPt.x, bulbPt.y, 2, bulbPt.x, bulbPt.y, glowRadius);
         grad.addColorStop(0, 'rgba(254, 240, 138, 0.98)');
-        grad.addColorStop(0.45, 'rgba(251, 191, 36, 0.55)');
+        grad.addColorStop(0.45, 'rgba(251, 191, 36, 0.58)');
         grad.addColorStop(1, 'rgba(251, 191, 36, 0)');
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(lp.x, lp.y, 18 * lp.p * ledPulse, 0, Math.PI * 2);
+        ctx.arc(bulbPt.x, bulbPt.y, glowRadius, 0, Math.PI * 2);
         ctx.fill();
+      }
+      ctx.fillStyle = flowRate > 0.02 ? '#FEF08A' : '#64748B';
+      ctx.strokeStyle = '#0F172A';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.arc(bulbPt.x, bulbPt.y, Math.max(5, 7 * bulbPt.p), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
 
-        ctx.fillStyle = '#FEF08A';
-        ctx.beginPath();
-        ctx.arc(lp.x, lp.y, Math.max(3.5, 4.8 * lp.p), 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      });
+      /* 3D Labels for Energy Store Cylinders & 60L Tank */
+      for (var li = 0; li < stores.length; li++) {
+        draw3DLabel([stores[li].x, -124, -52], stores[li].label, stores[li].sub, '#F8FAFC');
+      }
+      draw3DLabel([tX, 98, tZ], 'PENAMPUNG 60 LITER', 'Sirkulasi Bawah', '#90E0EF');
 
       /* Update Floating 3D Hotspot Pin Positions */
       ['1', '2', '3'].forEach(function (k) {
@@ -1685,8 +1874,8 @@
         projectedAnchors[k] = pr;
         var pinEl = pins[k];
         if (pinEl) {
-          var clampedX = Math.max(58, Math.min(cw - 58, pr.x));
-          var clampedY = Math.max(24, Math.min(ch - 48, pr.y));
+          var clampedX = Math.max(64, Math.min(cw - 64, pr.x));
+          var clampedY = Math.max(26, Math.min(ch - 56, pr.y));
           pinEl.style.left = clampedX.toFixed(1) + 'px';
           pinEl.style.top = clampedY.toFixed(1) + 'px';
         }
