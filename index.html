@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <script>try{var t=localStorage.getItem('vxt');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;var p=localStorage.getItem('vxpal');if(p&&/^(vortex|vokasi|emerald|sakura)$/.test(p))document.documentElement.dataset.pal=p;}catch(e){}</script>
-  <link rel="icon" type="image/png" href="assets/images/vortex-mark.png">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M52 10C28 11 14 31 18 54C21 67 30 75 41 79C31 69 27 56 30 43C33 29 44 20 58 17C56 13 54 11 52 10Z' fill='%2338A9C9'/%3E%3Cpath d='M16 47C15 68 30 84 51 86C40 79 34 69 35 58C26 57 20 53 16 47Z' fill='%235AC8DF'/%3E%3Cpath d='M48 16C67 16 83 31 84 51C85 69 72 84 53 88C64 78 69 65 67 51C65 36 56 26 42 23C44 19 46 17 48 16Z' fill='%23164B8A'/%3E%3Cpath d='M36 29C49 22 68 27 76 42C80 51 80 61 75 70C74 56 68 44 56 38C47 34 40 34 33 38C33 34 34 31 36 29Z' fill='%232D8EC8'/%3E%3Cpath d='M25 74C38 86 60 88 74 75C61 78 46 77 36 69C31 65 28 60 26 55C23 62 23 68 25 74Z' fill='%230F3A70'/%3E%3Ccircle cx='22' cy='24' r='4.2' fill='%235AC8DF'/%3E%3Ccircle cx='30' cy='15' r='3' fill='%2338A9C9'/%3E%3Ccircle cx='85' cy='60' r='4' fill='%2338A9C9'/%3E%3Ccircle cx='78' cy='76' r='3' fill='%232D8EC8'/%3E%3C/svg%3E">
   <title>Vortex Hydro — Pembangkit Listrik Mikro-Hidro Pusaran Air</title>
   <meta name="description" content="Prototipe pembangkit listrik mikro-hidro berbasis pusaran air skala laboratorium, Fakultas Vokasi, Universitas Negeri Malang.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="assets/styles.css?v=18">
+  <link rel="stylesheet" href="assets/styles.css?v=19">
 </head>
 <body>
   <!-- Scroll Progress Bar -->
@@ -21,7 +21,17 @@
     <div class="hdr__dock">
       <a class="hdr__brand" href="#beranda" aria-label="Vortex Hydro, ke beranda">
         <span class="vxlogo" aria-hidden="true">
-          <img src="assets/images/vortex-mark.png" alt="" class="vxlogo__img">
+          <svg class="vxlogo__svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M52 10C28 11 14 31 18 54C21 67 30 75 41 79C31 69 27 56 30 43C33 29 44 20 58 17C56 13 54 11 52 10Z" fill="#3FA9C7"/>
+            <path d="M16 47C15 68 30 84 51 86C40 79 34 69 35 58C26 57 20 53 16 47Z" fill="#63CEE3"/>
+            <path d="M48 16C67 16 83 31 84 51C85 69 72 84 53 88C64 78 69 65 67 51C65 36 56 26 42 23C44 19 46 17 48 16Z" fill="var(--logo-deep, #1B63B2)"/>
+            <path d="M36 29C49 22 68 27 76 42C80 51 80 61 75 70C74 56 68 44 56 38C47 34 40 34 33 38C33 34 34 31 36 29Z" fill="#3298D4"/>
+            <path d="M25 74C38 86 60 88 74 75C61 78 46 77 36 69C31 65 28 60 26 55C23 62 23 68 25 74Z" fill="var(--logo-mid, #154E8F)"/>
+            <path d="M21 28C18 22 20 17 24 19C26 20 26 26 21 28Z" fill="#63CEE3"/>
+            <path d="M29 18C28 13 31 10 34 12C35 14 33 17 29 18Z" fill="#3FA9C7"/>
+            <path d="M84 56C88 60 88 67 83 69C80 68 81 61 84 56Z" fill="#3FA9C7"/>
+            <path d="M79 72C82 76 80 81 75 81C74 78 76 74 79 72Z" fill="#3298D4"/>
+          </svg>
         </span>
         <span class="hdr__brand-txt">Vortex Hydro</span>
       </a>
@@ -64,7 +74,17 @@
   <!-- Dashboard Sidebar (Admin Mode — Dashboard V35 Slim Vertical Rail) -->
   <aside class="dsb" id="dsb" aria-label="Menu dashboard admin">
     <div class="dsb__logo" aria-hidden="true">
-      <img src="assets/images/vortex-mark.png" alt="" class="vxlogo__img">
+      <svg class="vxlogo__svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M52 10C28 11 14 31 18 54C21 67 30 75 41 79C31 69 27 56 30 43C33 29 44 20 58 17C56 13 54 11 52 10Z" fill="#3FA9C7"/>
+        <path d="M16 47C15 68 30 84 51 86C40 79 34 69 35 58C26 57 20 53 16 47Z" fill="#63CEE3"/>
+        <path d="M48 16C67 16 83 31 84 51C85 69 72 84 53 88C64 78 69 65 67 51C65 36 56 26 42 23C44 19 46 17 48 16Z" fill="var(--logo-deep, #1B63B2)"/>
+        <path d="M36 29C49 22 68 27 76 42C80 51 80 61 75 70C74 56 68 44 56 38C47 34 40 34 33 38C33 34 34 31 36 29Z" fill="#3298D4"/>
+        <path d="M25 74C38 86 60 88 74 75C61 78 46 77 36 69C31 65 28 60 26 55C23 62 23 68 25 74Z" fill="var(--logo-mid, #154E8F)"/>
+        <path d="M21 28C18 22 20 17 24 19C26 20 26 26 21 28Z" fill="#63CEE3"/>
+        <path d="M29 18C28 13 31 10 34 12C35 14 33 17 29 18Z" fill="#3FA9C7"/>
+        <path d="M84 56C88 60 88 67 83 69C80 68 81 61 84 56Z" fill="#3FA9C7"/>
+        <path d="M79 72C82 76 80 81 75 81C74 78 76 74 79 72Z" fill="#3298D4"/>
+      </svg>
     </div>
     <nav class="dsb__nav" id="dsbn" aria-label="Kategori dashboard">
       <span class="dsb__lens" id="dsbl"></span>
@@ -224,130 +244,86 @@
         </div>
       </section>
 
-      <!-- Fullscreen Interactive 3D Simulator (Three.js WebGL + Raycasting + Dynamic Glassmorphism Panel) -->
-      <section class="vx3d-sec" id="alur-konversi">
-        <div class="vx3d" id="vx3d-root">
-          <!-- Fullscreen 3D WebGL Canvas Stage (No Top Header Clutter, No Split-Screen) -->
-          <div class="vx3d__stage" id="vx3d-viewport">
-            <canvas id="vx3d-canvas" aria-label="Visualisasi 3D Interaktif Prototipe Vortex Hydro"></canvas>
-
-            <!-- 3D Projected Interactive Hotspots (5 Pure Prototype Objects) -->
-            <div class="vx3d__hotspots" id="vx3d-hotspots">
-              <button type="button" class="vx3d__spot" data-spot="chute" aria-label="Saluran Akrilik Miring 1700 mm">
-                <span class="vx3d__spot-no">01</span>
-                <span class="vx3d__spot-lbl">Saluran Akrilik</span>
-              </button>
-              <button type="button" class="vx3d__spot" data-spot="wheel" aria-label="Kincir Air 6 Sudu">
-                <span class="vx3d__spot-no">02</span>
-                <span class="vx3d__spot-lbl">Kincir 6 Sudu</span>
-              </button>
-              <button type="button" class="vx3d__spot" data-spot="pulley" aria-label="Transmisi Pulley 1 banding 4">
-                <span class="vx3d__spot-no">03</span>
-                <span class="vx3d__spot-lbl">Pulley 1:4</span>
-              </button>
-              <button type="button" class="vx3d__spot" data-spot="generator" aria-label="Generator DC XD 3240">
-                <span class="vx3d__spot-no">04</span>
-                <span class="vx3d__spot-lbl">Generator DC</span>
-              </button>
-              <button type="button" class="vx3d__spot" data-spot="tank" aria-label="Ember Penampung Air 60 Liter">
-                <span class="vx3d__spot-no">05</span>
-                <span class="vx3d__spot-lbl">Ember 60 L</span>
-              </button>
-            </div>
-
-            <!-- Hover Object Highlight Tooltip -->
-            <div class="vx3d__tooltip" id="vx3d-tooltip" hidden></div>
-
-            <!-- Dynamic Glassmorphism Information Panel (Hidden until an object is clicked) -->
-            <aside class="vx3d__panel" id="vx3d-panel" hidden aria-live="polite">
-              <div class="vx3d__panel-top">
-                <span class="vx3d__panel-tag" id="vx3d-p-tag">OBJEK 01 · SALURAN</span>
-                <button type="button" class="vx3d__panel-close" id="vx3d-p-close" aria-label="Tutup panel informasi">×</button>
-              </div>
-
-              <div class="vx3d__panel-hero">
-                <img class="vx3d__panel-img" id="vx3d-p-img" src="assets/images/components/cad-prototype.png" alt="Foto komponen" loading="lazy" decoding="async">
-                <div>
-                  <h3 class="vx3d__panel-title" id="vx3d-p-title">Saluran Akrilik Miring</h3>
-                  <p class="vx3d__panel-desc" id="vx3d-p-desc">Saluran terbuka berbahan akrilik transparan yang mengarahkan luncuran air menuju sudu kincir.</p>
-                </div>
-              </div>
-
-              <div class="vx3d__panel-block">
-                <span class="vx3d__panel-lbl">Fungsi Utama</span>
-                <p class="vx3d__panel-func" id="vx3d-p-func">Menampung air di bagian hulu lalu meluncurkannya melalui bidang miring agar mendorong kincir secara optimal.</p>
-              </div>
-
-              <div class="vx3d__panel-block">
-                <span class="vx3d__panel-lbl">Informasi Tambahan</span>
-                <ul class="vx3d__panel-list" id="vx3d-p-extra">
-                  <li><strong>Panjang Total:</strong> 1700 mm (Hulu 500 · Miring 1016,97 · Hilir 200 mm)</li>
-                  <li><strong>Lebar &amp; Dinding:</strong> Lebar 400 mm × Tinggi dinding 250 mm</li>
-                </ul>
-              </div>
-            </aside>
-
-            <!-- Auto-Hiding Interaction Hint -->
-            <div class="vx3d__hint" id="vx3d-hint">
-              <span class="vx3d__hint-dot" aria-hidden="true"></span>
-              <span>Klik komponen untuk melihat informasi</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mobile-Only Simple Information View (No 3D on Mobile) -->
-        <div class="vx3d-mob wrap">
-          <header class="vx3d-mob__head">
-            <span class="eyebrow">Alur Konversi Energi</span>
-            <h2 class="h-sec">Lima Bagian Utama <em>Prototipe</em></h2>
-            <p class="lead">Ringkasan komponen utama pengubah aliran air menjadi energi listrik DC pada sistem sirkulasi tertutup Vortex Hydro.</p>
+      <!-- Mengapa Memilih Turbin Vortex? (6 Keunggulan Utama) -->
+      <section class="sec why-vx-sec" id="mengapa-vortex">
+        <div class="wrap">
+          <header class="why-vx__head" data-reveal>
+            <h2 class="why-vx__title">Mengapa Memilih Turbin Vortex?</h2>
+            <p class="why-vx__sub">Banyak aliran air kecil punya tinggi jatuh rendah sehingga tidak bisa memutar turbin biasa. Turbin vortex memakai pusaran air di dalam basin untuk mengubahnya menjadi listrik, tanpa bendungan.</p>
           </header>
 
-          <div class="vx3d-mob__list">
-            <article class="vx3d-mcard vx3d-mcard--c1">
-              <div class="vx3d-mcard__top">
-                <span class="vx3d-mcard__no">01</span>
-                <span class="vx3d-mcard__tag">Saluran Utama</span>
+          <div class="why-vx__grid">
+            <div class="why-vx__visual" data-reveal="left">
+              <div class="why-vx__frame">
+                <img src="assets/images/hero-turbine.jpg" alt="Visualisasi Turbin Vortex Hydro untuk aliran head rendah" loading="lazy" decoding="async">
+                <div class="why-vx__frame-overlay">
+                  <span class="why-vx__frame-badge">Teknologi Head Rendah</span>
+                  <a class="why-vx__frame-cta" href="#tentang">Lihat Simulasi 3D &amp; Cara Kerja →</a>
+                </div>
               </div>
-              <h3>Saluran Akrilik Miring (1700 × 400 mm)</h3>
-              <p>Saluran terbuka berbahan akrilik transparan yang terdiri dari bak penenang hulu (500 mm), bidang luncur miring (1016,97 mm), dan ruang keluar hilir (200 mm) untuk mengarahkan aliran air ke kincir.</p>
-            </article>
+            </div>
 
-            <article class="vx3d-mcard vx3d-mcard--c2">
-              <div class="vx3d-mcard__top">
-                <span class="vx3d-mcard__no">02</span>
-                <span class="vx3d-mcard__tag">Turbin Utama</span>
-              </div>
-              <h3>Kincir Air 6 Sudu Melengkung</h3>
-              <p>Rotor turbin dengan 6 bilah sudu melengkung di dalam saluran miring yang menangkap dorongan aliran air dan mengubahnya menjadi putaran pada poros utama stainless steel Ø 30 mm.</p>
-            </article>
+            <div class="why-vx__cards">
+              <article class="why-card" data-reveal style="--d:0ms">
+                <span class="why-card__ic" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5C12 2.5 5.5 10.2 5.5 14.8a6.5 6.5 0 0 0 13 0C18.5 10.2 12 2.5 12 2.5z"/></svg>
+                </span>
+                <div class="why-card__body">
+                  <h3>Head Rendah</h3>
+                  <p>Bekerja pada tinggi jatuh yang kecil, cocok untuk aliran yang tidak sanggup memutar turbin biasa.</p>
+                </div>
+              </article>
 
-            <article class="vx3d-mcard vx3d-mcard--c3">
-              <div class="vx3d-mcard__top">
-                <span class="vx3d-mcard__no">03</span>
-                <span class="vx3d-mcard__tag">Transmisi Putaran</span>
-              </div>
-              <h3>Transmisi Pulley 4-Jari (1 : 4) &amp; V-Belt</h3>
-              <p>Roda pulley penggerak Ø 270 mm di sisi luar dinding saluran yang terhubung sabuk V-belt ke pulley kecil Ø 67,5 mm untuk melipatgandakan putaran empat kali lebih cepat.</p>
-            </article>
+              <article class="why-card" data-reveal style="--d:70ms">
+                <span class="why-card__ic" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m8.8 12.2 2.2 2.3 4.4-4.6"/></svg>
+                </span>
+                <div class="why-card__body">
+                  <h3>Sederhana</h3>
+                  <p>Konstruksi mudah dan murah dirawat, sehingga mudah dipelajari dan diperbaiki.</p>
+                </div>
+              </article>
 
-            <article class="vx3d-mcard vx3d-mcard--c4">
-              <div class="vx3d-mcard__top">
-                <span class="vx3d-mcard__no">04</span>
-                <span class="vx3d-mcard__tag">Pembangkit Listrik</span>
-              </div>
-              <h3>Generator DC XD 3240</h3>
-              <p>Unit generator magnet permanen arus searah berukuran kompak di zona kering ujung saluran yang mengubah putaran cepat dari pulley menjadi energi listrik DC.</p>
-            </article>
+              <article class="why-card" data-reveal style="--d:140ms">
+                <span class="why-card__ic" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8c1.5-1.5 3-1.5 4.5 0S10.5 9.5 12 8s3-1.5 4.5 0 3 1.5 4.5 0"/><path d="M3 12.5c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0 3 1.5 4.5 0"/><path d="M3 17c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0 3 1.5 4.5 0"/></svg>
+                </span>
+                <div class="why-card__body">
+                  <h3>Tanpa Bendungan</h3>
+                  <p>Tidak memerlukan bendungan besar; pusaran terbentuk di dalam basin.</p>
+                </div>
+              </article>
 
-            <article class="vx3d-mcard vx3d-mcard--c5">
-              <div class="vx3d-mcard__top">
-                <span class="vx3d-mcard__no">05</span>
-                <span class="vx3d-mcard__tag">Penampung Sirkulasi</span>
-              </div>
-              <h3>Ember Penampung Air 60 Liter &amp; Pompa</h3>
-              <p>Ember silinder berwarna hijau berkapasitas 60 liter tepat di bawah bukaan keluar saluran yang dilengkapi pompa celup 100 W untuk menjaga siklus perputaran air secara tertutup.</p>
-            </article>
+              <article class="why-card" data-reveal style="--d:210ms">
+                <span class="why-card__ic" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.2 2.5 4.8 13.4h5.7l-1.7 8.1 8.4-10.9h-5.7l1.7-8.1z"/></svg>
+                </span>
+                <div class="why-card__body">
+                  <h3>Irigasi dan Pedesaan</h3>
+                  <p>Cukup untuk penerangan dan pompa kecil di kawasan pedesaan.</p>
+                </div>
+              </article>
+
+              <article class="why-card" data-reveal style="--d:280ms">
+                <span class="why-card__ic" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h3.2l2.2-5 3.2 9 2.4-6 1.8 2H21"/></svg>
+                </span>
+                <div class="why-card__body">
+                  <h3>Sungai Kecil dan Saluran</h3>
+                  <p>Memanfaatkan aliran kecil tanpa pekerjaan sipil berskala besar.</p>
+                </div>
+              </article>
+
+              <article class="why-card" data-reveal style="--d:350ms">
+                <span class="why-card__ic" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2.2"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4.5"/></svg>
+                </span>
+                <div class="why-card__body">
+                  <h3>Edukasi dan Riset</h3>
+                  <p>Rancangan terbuka untuk dipelajari oleh kelas berikutnya.</p>
+                </div>
+              </article>
+            </div>
           </div>
         </div>
       </section>
@@ -443,18 +419,141 @@
       </section>
     </div>
 
-    <!-- ==================== PAGE 2: CARA KERJA & PERALATAN (ANIMATED FLOW SVG) ==================== -->
+    <!-- ==================== PAGE 2: CARA KERJA & PERALATAN (3D SIMULATOR + ANIMATED FLOW SVG) ==================== -->
     <div class="page" id="tentang" data-title="Cara Kerja" hidden>
       <section class="pagehead">
-        <div class="wrap">
+        <div class="wrap" data-reveal>
           <span class="eyebrow">Anatomi &amp; Prinsip Kerja</span>
           <h1 class="h-sec">Cara kerja sistem, <em>klik setiap komponen</em></h1>
-          <p class="lead">Air dipompa dari tangki penampung ke headbox, ditenangkan, meluncur melalui saluran miring ke kincir 6 sudu, lalu jatuh kembali dalam siklus tertutup.</p>
+          <p class="lead">Air dipompa dari ember penampung ke saluran atas, meluncur melalui bidang miring ke kincir 6 sudu, memutar pulley 1:4 dan generator DC, lalu jatuh kembali dalam siklus tertutup.</p>
+        </div>
+      </section>
+
+      <!-- Interactive 3D Simulator (Desktop 3D + Mobile 5-Card Info) -->
+      <section class="vx3d-sec" id="alur-konversi">
+        <div class="vx3d" id="vx3d-root">
+          <div class="vx3d__stage" id="vx3d-viewport">
+            <canvas id="vx3d-canvas" aria-label="Visualisasi 3D Interaktif Prototipe Vortex Hydro"></canvas>
+
+            <div class="vx3d__hotspots" id="vx3d-hotspots">
+              <button type="button" class="vx3d__spot" data-spot="chute" aria-label="Saluran Akrilik Miring 1700 mm">
+                <span class="vx3d__spot-no">01</span>
+                <span class="vx3d__spot-lbl">Saluran Akrilik</span>
+              </button>
+              <button type="button" class="vx3d__spot" data-spot="wheel" aria-label="Kincir Air 6 Sudu">
+                <span class="vx3d__spot-no">02</span>
+                <span class="vx3d__spot-lbl">Kincir 6 Sudu</span>
+              </button>
+              <button type="button" class="vx3d__spot" data-spot="pulley" aria-label="Transmisi Pulley 1 banding 4">
+                <span class="vx3d__spot-no">03</span>
+                <span class="vx3d__spot-lbl">Pulley 1:4</span>
+              </button>
+              <button type="button" class="vx3d__spot" data-spot="generator" aria-label="Generator DC XD 3240">
+                <span class="vx3d__spot-no">04</span>
+                <span class="vx3d__spot-lbl">Generator DC</span>
+              </button>
+              <button type="button" class="vx3d__spot" data-spot="tank" aria-label="Ember Penampung Air 60 Liter">
+                <span class="vx3d__spot-no">05</span>
+                <span class="vx3d__spot-lbl">Ember 60 L</span>
+              </button>
+            </div>
+
+            <div class="vx3d__tooltip" id="vx3d-tooltip" hidden></div>
+
+            <aside class="vx3d__panel" id="vx3d-panel" hidden aria-live="polite">
+              <div class="vx3d__panel-top">
+                <span class="vx3d__panel-tag" id="vx3d-p-tag">OBJEK 01 · SALURAN</span>
+                <button type="button" class="vx3d__panel-close" id="vx3d-p-close" aria-label="Tutup panel informasi">×</button>
+              </div>
+
+              <div class="vx3d__panel-hero">
+                <img class="vx3d__panel-img" id="vx3d-p-img" src="assets/images/components/cad-prototype.png" alt="Foto komponen" loading="lazy" decoding="async">
+                <div>
+                  <h3 class="vx3d__panel-title" id="vx3d-p-title">Saluran Akrilik Miring</h3>
+                  <p class="vx3d__panel-desc" id="vx3d-p-desc">Saluran terbuka berbahan akrilik transparan yang mengarahkan luncuran air menuju sudu kincir.</p>
+                </div>
+              </div>
+
+              <div class="vx3d__panel-block">
+                <span class="vx3d__panel-lbl">Fungsi Utama</span>
+                <p class="vx3d__panel-func" id="vx3d-p-func">Menampung air di bagian hulu lalu meluncurkannya melalui bidang miring agar mendorong kincir secara optimal.</p>
+              </div>
+
+              <div class="vx3d__panel-block">
+                <span class="vx3d__panel-lbl">Informasi Tambahan</span>
+                <ul class="vx3d__panel-list" id="vx3d-p-extra">
+                  <li><strong>Panjang Total:</strong> 1700 mm (Hulu 500 · Miring 1016,97 · Hilir 200 mm)</li>
+                  <li><strong>Lebar &amp; Dinding:</strong> Lebar 400 mm × Tinggi dinding 250 mm</li>
+                </ul>
+              </div>
+            </aside>
+
+            <div class="vx3d__hint" id="vx3d-hint">
+              <span class="vx3d__hint-dot" aria-hidden="true"></span>
+              <span>Klik komponen untuk melihat informasi</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile-Only Simple Information View (No 3D on Mobile) -->
+        <div class="vx3d-mob wrap">
+          <header class="vx3d-mob__head" data-reveal>
+            <span class="eyebrow">Alur Konversi Energi</span>
+            <h2 class="h-sec">Lima Bagian Utama <em>Prototipe</em></h2>
+            <p class="lead">Ringkasan komponen utama pengubah aliran air menjadi energi listrik DC pada sistem sirkulasi tertutup Vortex Hydro.</p>
+          </header>
+
+          <div class="vx3d-mob__list">
+            <article class="vx3d-mcard vx3d-mcard--c1" data-reveal style="--d:0ms">
+              <div class="vx3d-mcard__top">
+                <span class="vx3d-mcard__no">01</span>
+                <span class="vx3d-mcard__tag">Saluran Utama</span>
+              </div>
+              <h3>Saluran Akrilik Miring (1700 × 400 mm)</h3>
+              <p>Saluran terbuka berbahan akrilik transparan yang terdiri dari bak penenang hulu (500 mm), bidang luncur miring (1016,97 mm), dan ruang keluar hilir (200 mm) untuk mengarahkan aliran air ke kincir.</p>
+            </article>
+
+            <article class="vx3d-mcard vx3d-mcard--c2" data-reveal style="--d:60ms">
+              <div class="vx3d-mcard__top">
+                <span class="vx3d-mcard__no">02</span>
+                <span class="vx3d-mcard__tag">Turbin Utama</span>
+              </div>
+              <h3>Kincir Air 6 Sudu Melengkung</h3>
+              <p>Rotor turbin dengan 6 bilah sudu melengkung di dalam saluran miring yang menangkap dorongan aliran air dan mengubahnya menjadi putaran pada poros utama stainless steel Ø 30 mm.</p>
+            </article>
+
+            <article class="vx3d-mcard vx3d-mcard--c3" data-reveal style="--d:120ms">
+              <div class="vx3d-mcard__top">
+                <span class="vx3d-mcard__no">03</span>
+                <span class="vx3d-mcard__tag">Transmisi Putaran</span>
+              </div>
+              <h3>Transmisi Pulley 4-Jari (1 : 4) &amp; V-Belt</h3>
+              <p>Roda pulley penggerak Ø 270 mm di sisi luar dinding saluran yang terhubung sabuk V-belt ke pulley kecil Ø 67,5 mm untuk melipatgandakan putaran empat kali lebih cepat.</p>
+            </article>
+
+            <article class="vx3d-mcard vx3d-mcard--c4" data-reveal style="--d:180ms">
+              <div class="vx3d-mcard__top">
+                <span class="vx3d-mcard__no">04</span>
+                <span class="vx3d-mcard__tag">Pembangkit Listrik</span>
+              </div>
+              <h3>Generator DC XD 3240</h3>
+              <p>Unit generator magnet permanen arus searah berukuran kompak di zona kering ujung saluran yang mengubah putaran cepat dari pulley menjadi energi listrik DC.</p>
+            </article>
+
+            <article class="vx3d-mcard vx3d-mcard--c5" data-reveal style="--d:240ms">
+              <div class="vx3d-mcard__top">
+                <span class="vx3d-mcard__no">05</span>
+                <span class="vx3d-mcard__tag">Penampung Sirkulasi</span>
+              </div>
+              <h3>Ember Penampung Air 60 Liter &amp; Pompa</h3>
+              <p>Ember silinder berwarna hijau berkapasitas 60 liter tepat di bawah bukaan keluar saluran yang dilengkapi pompa celup 100 W untuk menjaga siklus perputaran air secara tertutup.</p>
+            </article>
+          </div>
         </div>
       </section>
 
       <section class="sec">
-        <div class="wrap">
+        <div class="wrap" data-reveal>
           <div class="howto">
             <figure class="diagram" id="vx-diagram">
               <svg viewBox="0 -22 700 492" role="img" aria-label="Penampang samping prototipe Vortex Hydro dengan animasi aliran air dan 8 titik komponen">
@@ -907,7 +1006,17 @@
       <div class="ft__grid">
         <div class="ft__col">
           <div class="ft__brand">
-            <img src="assets/images/vortex-mark.png" alt="Logo Vortex Hydro" class="ft__logo">
+            <svg class="ft__logo vxlogo__svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M52 10C28 11 14 31 18 54C21 67 30 75 41 79C31 69 27 56 30 43C33 29 44 20 58 17C56 13 54 11 52 10Z" fill="#3FA9C7"/>
+              <path d="M16 47C15 68 30 84 51 86C40 79 34 69 35 58C26 57 20 53 16 47Z" fill="#63CEE3"/>
+              <path d="M48 16C67 16 83 31 84 51C85 69 72 84 53 88C64 78 69 65 67 51C65 36 56 26 42 23C44 19 46 17 48 16Z" fill="#2B7DE9"/>
+              <path d="M36 29C49 22 68 27 76 42C80 51 80 61 75 70C74 56 68 44 56 38C47 34 40 34 33 38C33 34 34 31 36 29Z" fill="#38BDF8"/>
+              <path d="M25 74C38 86 60 88 74 75C61 78 46 77 36 69C31 65 28 60 26 55C23 62 23 68 25 74Z" fill="#1D63B8"/>
+              <path d="M21 28C18 22 20 17 24 19C26 20 26 26 21 28Z" fill="#63CEE3"/>
+              <path d="M29 18C28 13 31 10 34 12C35 14 33 17 29 18Z" fill="#3FA9C7"/>
+              <path d="M84 56C88 60 88 67 83 69C80 68 81 61 84 56Z" fill="#3FA9C7"/>
+              <path d="M79 72C82 76 80 81 75 81C74 78 76 74 79 72Z" fill="#38BDF8"/>
+            </svg>
             <strong>Vortex Hydro</strong>
           </div>
           <p style="margin:0;font-size:.88rem;color:rgba(255,255,255,.68);max-width:34ch">Turbin pusaran air untuk menghasilkan listrik dari aliran head rendah, tanpa bendungan besar.</p>
@@ -1007,7 +1116,17 @@
     </div>
 
     <button class="vxt__btn" id="vxb" type="button" aria-expanded="false" aria-label="Buka alat Vortex" title="Alat Vortex">
-      <img src="assets/images/vortex-mark.png" alt="" class="vxlogo__img">
+      <svg class="vxlogo__svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M52 10C28 11 14 31 18 54C21 67 30 75 41 79C31 69 27 56 30 43C33 29 44 20 58 17C56 13 54 11 52 10Z" fill="#3FA9C7"/>
+        <path d="M16 47C15 68 30 84 51 86C40 79 34 69 35 58C26 57 20 53 16 47Z" fill="#63CEE3"/>
+        <path d="M48 16C67 16 83 31 84 51C85 69 72 84 53 88C64 78 69 65 67 51C65 36 56 26 42 23C44 19 46 17 48 16Z" fill="#2B7DE9"/>
+        <path d="M36 29C49 22 68 27 76 42C80 51 80 61 75 70C74 56 68 44 56 38C47 34 40 34 33 38C33 34 34 31 36 29Z" fill="#38BDF8"/>
+        <path d="M25 74C38 86 60 88 74 75C61 78 46 77 36 69C31 65 28 60 26 55C23 62 23 68 25 74Z" fill="#1D63B8"/>
+        <path d="M21 28C18 22 20 17 24 19C26 20 26 26 21 28Z" fill="#63CEE3"/>
+        <path d="M29 18C28 13 31 10 34 12C35 14 33 17 29 18Z" fill="#3FA9C7"/>
+        <path d="M84 56C88 60 88 67 83 69C80 68 81 61 84 56Z" fill="#3FA9C7"/>
+        <path d="M79 72C82 76 80 81 75 81C74 78 76 74 79 72Z" fill="#38BDF8"/>
+      </svg>
     </button>
   </div>
 
@@ -1078,7 +1197,7 @@
 
   <!-- Consolidated Scripts -->
   <script src="assets/three.min.js"></script>
-  <script src="assets/app.js?v=14"></script>
+  <script src="assets/app.js?v=15"></script>
   <script src="assets/dashboard.js?v=3"></script>
   <script src="assets/i18n.js?v=17"></script>
   <script src="assets/ai-assistant.js?v=9" defer></script>
