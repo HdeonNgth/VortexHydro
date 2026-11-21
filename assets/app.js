@@ -20,6 +20,77 @@
     dashboard: 'Dashboard | Vortex Hydro'
   };
   var hdr = $('hdr');
+  var lgn = $('lgn'), lgnLens = $('lgn-lens'), prevLensRect = null, lensAnim = null;
+
+  function emitWaterDrops(targetEl) {
+    if (!lgn || !targetEl || reducedMotion || !targetEl.offsetWidth) return;
+    var cx = targetEl.offsetLeft + targetEl.offsetWidth / 2;
+    var cy = targetEl.offsetTop + targetEl.offsetHeight / 2;
+    var ring = document.createElement('span');
+    ring.className = 'lgn-ripple';
+    ring.style.left = targetEl.offsetLeft + 'px';
+    ring.style.top = targetEl.offsetTop + 'px';
+    ring.style.width = targetEl.offsetWidth + 'px';
+    ring.style.height = targetEl.offsetHeight + 'px';
+    lgn.appendChild(ring);
+    if (ring.animate) {
+      ring.animate([
+        { transform: 'scale(0.95)', opacity: 0.7 },
+        { transform: 'scale(1.18, 1.42)', opacity: 0 }
+      ], { duration: 560, easing: 'ease-out' }).onfinish = function () { ring.remove(); };
+    } else {
+      setTimeout(function () { ring.remove(); }, 560);
+    }
+
+    for (var i = 0; i < 6; i++) {
+      var drop = document.createElement('span');
+      drop.className = 'lgn-drop';
+      var spreadX = (Math.random() - 0.5) * (targetEl.offsetWidth * 0.72);
+      var liftY = -(12 + Math.random() * 18);
+      var fallY = 18 + Math.random() * 12;
+      var sz = 4 + Math.random() * 4;
+      drop.style.width = sz.toFixed(1) + 'px';
+      drop.style.height = (sz * 1.15).toFixed(1) + 'px';
+      drop.style.left = (cx + spreadX * 0.35) + 'px';
+      drop.style.top = (cy - 4) + 'px';
+      lgn.appendChild(drop);
+      if (drop.animate) {
+        drop.animate([
+          { transform: 'translate(0, 0) scale(0.2)', opacity: 0 },
+          { transform: 'translate(' + spreadX.toFixed(1) + 'px, ' + liftY.toFixed(1) + 'px) scale(1.1)', opacity: 0.95, offset: 0.42 },
+          { transform: 'translate(' + (spreadX * 1.3).toFixed(1) + 'px, ' + fallY.toFixed(1) + 'px) scale(0.55)', opacity: 0 }
+        ], { duration: 560 + Math.random() * 200, easing: 'cubic-bezier(.25,.7,.45,1)', delay: i * 24 }).onfinish = (function (el) {
+          return function () { el.remove(); };
+        })(drop);
+      } else {
+        setTimeout((function (el) { return function () { el.remove(); }; })(drop), 650);
+      }
+    }
+  }
+
+  function placeNavLens(animate) {
+    if (!lgn || !lgnLens) return;
+    var active = lgn.querySelector('a[aria-current="page"]');
+    if (!active || !active.offsetWidth) return;
+    var r = { l: active.offsetLeft, t: active.offsetTop, w: active.offsetWidth, h: active.offsetHeight };
+    if (lensAnim) { lensAnim.cancel(); lensAnim = null; }
+    if (animate && prevLensRect && !reducedMotion && lgnLens.animate) {
+      var uL = Math.min(prevLensRect.l, r.l);
+      var uW = Math.max(prevLensRect.l + prevLensRect.w, r.l + r.w) - uL;
+      lensAnim = lgnLens.animate([
+        { left: prevLensRect.l + 'px', top: prevLensRect.t + 'px', width: prevLensRect.w + 'px', height: prevLensRect.h + 'px' },
+        { left: uL + 'px', top: r.t + 'px', width: uW + 'px', height: r.h + 'px', offset: 0.44 },
+        { left: r.l + 'px', top: r.t + 'px', width: r.w + 'px', height: r.h + 'px' }
+      ], { duration: 480, easing: 'cubic-bezier(.22, 1.08, .36, 1)' });
+      emitWaterDrops(active);
+    }
+    lgnLens.style.left = r.l + 'px';
+    lgnLens.style.top = r.t + 'px';
+    lgnLens.style.width = r.w + 'px';
+    lgnLens.style.height = r.h + 'px';
+    lgnLens.classList.add('is-ready');
+    prevLensRect = r;
+  }
 
   function updateHeaderState(routeId) {
     if (!hdr) return;
@@ -29,6 +100,7 @@
     hdr.classList.toggle('is-dark-page', routeId === 'tentang-kami');
   }
 
+  var firstRoute = true;
   function route() {
     var raw = (location.hash || '#beranda').slice(1);
     var scrollFaq = false;
@@ -53,6 +125,7 @@
 
     document.title = TITLES[active] || TITLES.beranda;
     updateHeaderState(active);
+    requestAnimationFrame(function () { placeNavLens(!firstRoute); firstRoute = false; });
 
     if (scrollFaq) {
       setTimeout(function () {
@@ -65,6 +138,8 @@
   }
 
   window.addEventListener('hashchange', route);
+  window.addEventListener('resize', function () { prevLensRect = null; placeNavLens(false); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { prevLensRect = null; placeNavLens(false); });
   window.addEventListener('scroll', function () {
     var cur = (location.hash || '#beranda').slice(1);
     updateHeaderState(PAGES.indexOf(cur) >= 0 ? cur : 'beranda');
@@ -110,14 +185,16 @@
     reveals.forEach(function (el) { el.classList.add('is-visible'); });
   }
 
-  /* ---------- 4. Restored Vortex Toolsbar & Kalkulator Daya ---------- */
+  /* ---------- 4. Restored Vortex Toolsbar, Palette Modes & Kalkulator Daya ---------- */
   (function initToolsbar() {
     var vxt = $('vxt'), vxb = $('vxb'), vxm = $('vxm'), vxp = $('vxp'), vxc = $('vxc');
+    var vxpal = $('vxpal'), vxpc = $('vxpc'), palList = $('pal-list');
     if (!vxt || !vxb || !vxm) return;
 
     function closeAll() {
       vxm.hidden = true;
       if (vxp) vxp.hidden = true;
+      if (vxpal) vxpal.hidden = true;
       vxt.classList.remove('is-open');
       vxb.setAttribute('aria-expanded', 'false');
     }
@@ -125,14 +202,35 @@
     vxb.addEventListener('click', function () {
       var willOpen = vxm.hidden;
       vxm.hidden = !willOpen;
-      if (!willOpen && vxp) vxp.hidden = true;
+      if (!willOpen) {
+        if (vxp) vxp.hidden = true;
+        if (vxpal) vxpal.hidden = true;
+      }
       vxt.classList.toggle('is-open', willOpen);
       vxb.setAttribute('aria-expanded', String(willOpen));
     });
 
-    if (vxc && vxp) {
-      vxc.addEventListener('click', function () { vxp.hidden = true; });
+    if (vxc && vxp) vxc.addEventListener('click', function () { vxp.hidden = true; });
+    if (vxpc && vxpal) vxpc.addEventListener('click', function () { vxpal.hidden = true; });
+
+    /* Color Palette Switcher */
+    function syncPalButtons() {
+      var curPal = H.dataset.pal || 'vortex';
+      $$('[data-pal-pick]').forEach(function (b) {
+        b.classList.toggle('is-active', b.getAttribute('data-pal-pick') === curPal);
+      });
     }
+    if (palList) {
+      palList.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-pal-pick]');
+        if (!btn) return;
+        var pal = btn.getAttribute('data-pal-pick');
+        H.dataset.pal = pal;
+        try { localStorage.setItem('vxpal', pal); } catch (_) {}
+        syncPalButtons();
+      });
+    }
+    syncPalButtons();
 
     vxm.addEventListener('click', function (e) {
       var item = e.target.closest('[data-tool]');
@@ -142,7 +240,11 @@
       }
       var tool = item.getAttribute('data-tool');
       if (tool === 'calc' && vxp) {
+        if (vxpal) vxpal.hidden = true;
         vxp.hidden = !vxp.hidden;
+      } else if (tool === 'palette' && vxpal) {
+        if (vxp) vxp.hidden = true;
+        vxpal.hidden = !vxpal.hidden;
       } else if (tool === 'lang') {
         var langBtn = document.querySelector('[data-language-toggle]');
         if (langBtn) langBtn.click();
@@ -151,7 +253,7 @@
     });
 
     document.addEventListener('click', function (e) {
-      if (!vxt.contains(e.target) && (!vxm.hidden || (vxp && !vxp.hidden))) closeAll();
+      if (!vxt.contains(e.target) && (!vxm.hidden || (vxp && !vxp.hidden) || (vxpal && !vxpal.hidden))) closeAll();
     });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeAll();
@@ -170,6 +272,68 @@
       if (el) el.addEventListener('input', calcPower);
     });
     calcPower();
+  })();
+
+  /* ---------- 4b. Hero Ambient Water Stream Canvas & Component Carousel ---------- */
+  (function initHeroWaterAndCarousel() {
+    var canvas = $('hero-water');
+    if (canvas && canvas.getContext && !reducedMotion) {
+      var ctx = canvas.getContext('2d');
+      var drops = [];
+      for (var i = 0; i < 36; i++) {
+        drops.push({
+          x: Math.random(), y: 0.1 + Math.random() * 0.8,
+          len: 28 + Math.random() * 64, spd: 0.04 + Math.random() * 0.08,
+          a: 0.08 + Math.random() * 0.18
+        });
+      }
+      var last = performance.now();
+      function draw(now) {
+        var dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+        var beranda = $('beranda');
+        if (beranda && !beranda.hidden) {
+          var w = canvas.width, h = canvas.height;
+          ctx.clearRect(0, 0, w, h);
+          for (var j = 0; j < drops.length; j++) {
+            var d = drops[j];
+            d.x += dt * d.spd;
+            if (d.x > 1.15) { d.x = -0.15; d.y = 0.12 + Math.random() * 0.78; }
+            var px = d.x * w, py = d.y * h + Math.sin(d.x * 8 + now * 0.0014) * 14;
+            var g = ctx.createLinearGradient(px - d.len, py, px + d.len, py);
+            g.addColorStop(0, 'rgba(144,224,239,0)');
+            g.addColorStop(0.5, 'rgba(144,224,239,' + d.a.toFixed(2) + ')');
+            g.addColorStop(1, 'rgba(0,168,232,0)');
+            ctx.strokeStyle = g;
+            ctx.lineWidth = 1.8;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(px - d.len, py);
+            ctx.lineTo(px + d.len, py);
+            ctx.stroke();
+          }
+        }
+        requestAnimationFrame(draw);
+      }
+      requestAnimationFrame(draw);
+    }
+
+    var track = $('comp-track'), prevB = $('comp-prev'), nextB = $('comp-next');
+    if (track && prevB && nextB) {
+      function stepSize() {
+        var first = track.querySelector('.comp-tile');
+        return first ? first.offsetWidth + 20 : 340;
+      }
+      function syncBtns() {
+        prevB.disabled = track.scrollLeft <= 4;
+        nextB.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 6;
+      }
+      prevB.addEventListener('click', function () { track.scrollBy({ left: -stepSize(), behavior: 'smooth' }); });
+      nextB.addEventListener('click', function () { track.scrollBy({ left: stepSize(), behavior: 'smooth' }); });
+      track.addEventListener('scroll', syncBtns, { passive: true });
+      window.addEventListener('resize', syncBtns);
+      syncBtns();
+    }
   })();
 
   /* ---------- 5. Interactive 8-Hotspot Cross-Section Diagram ---------- */
@@ -194,6 +358,15 @@
       s.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(+s.dataset.i); } });
     });
     chips.forEach(function (c) { c.addEventListener('click', function () { show(+c.dataset.i); }); });
+
+    /* Deep link from Beranda component cards -> activate exact hotspot on #tentang */
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest && e.target.closest('[data-go-hotspot]');
+      if (!link) return;
+      var hs = +link.getAttribute('data-go-hotspot');
+      if (hs) setTimeout(function () { show(hs); }, 60);
+    });
+
     show(1);
   })();
 
