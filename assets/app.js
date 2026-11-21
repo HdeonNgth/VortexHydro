@@ -72,7 +72,11 @@
   function placeNavLens(animate) {
     if (!lgn || !lgnLens) return;
     var active = lgn.querySelector('a[aria-current="page"]');
-    if (!active || !active.offsetWidth) return;
+    if (!active || !active.offsetWidth) {
+      lgnLens.classList.remove('is-ready');
+      prevLensRect = null;
+      return;
+    }
     var r = { l: active.offsetLeft, t: active.offsetTop, w: active.offsetWidth, h: active.offsetHeight };
     if (lensAnim) { lensAnim.cancel(); lensAnim = null; }
     if (animate && prevLensRect && !reducedMotion && lgnLens.animate) {

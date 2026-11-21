@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="assets/styles.css?v=20">
+  <link rel="stylesheet" href="assets/styles.css?v=21">
 </head>
 <body>
   <!-- Scroll Progress Bar -->
@@ -43,10 +43,6 @@
         <a href="#beranda" data-nav-link data-k="beranda" aria-current="page" aria-label="Beranda" title="Beranda">
           <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-5.5h-5V21H5a1 1 0 0 1-1-1z"/></svg>
           <span class="nav-txt">Beranda</span>
-        </a>
-        <a href="#eksplorasi" data-nav-link data-k="eksplorasi" aria-label="Eksplorasi 3D" title="Eksplorasi 3D">
-          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3z"/><path d="M12 12 20 7.5M12 12v9M12 12 4 7.5"/></svg>
-          <span class="nav-txt">Eksplorasi 3D</span>
         </a>
         <a href="#tentang" data-nav-link data-k="tentang" aria-label="Cara Kerja" title="Cara Kerja">
           <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2.5 12h3M18.5 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>
@@ -789,109 +785,6 @@
         </div>
       </section>
 
-      <!-- 04 / DAFTAR KOMPONEN & SPESIFIKASI PROTOTIPE -->
-      <section class="sec doc-specs-sec" id="doc-spesifikasi">
-        <div class="wrap">
-          <header class="doc-specs__head" data-reveal>
-            <span class="eyebrow">04 / Spesifikasi Komponen</span>
-            <h2 class="h-sec">Komponen utama &amp; <em>spesifikasi prototipe</em></h2>
-            <p class="lead">Ringkasan fungsi, kegunaan, dan data ukuran setiap komponen utama pada prototipe Vortex Hydro.</p>
-          </header>
-
-          <div class="doc-specs__grid">
-            <article class="doc-spec-card" data-reveal style="--d:0ms">
-              <div class="doc-spec-card__img">
-                <img src="assets/images/components/cad-prototype.png" alt="Saluran Akrilik Miring 1700 mm" loading="lazy" decoding="async">
-              </div>
-              <div class="doc-spec-card__body">
-                <span class="doc-spec-card__tag">01 · Saluran Utama</span>
-                <h3>Saluran Akrilik Miring</h3>
-                <p>Menampung air di bagian hulu lalu meluncurkannya melalui bidang miring agar aliran terarah ke kincir.</p>
-                <ul class="doc-spec-card__list">
-                  <li>Panjang total 1700 mm (hulu 500 · miring 1017 · hilir 200 mm)</li>
-                  <li>Lebar saluran 400 mm · tinggi dinding 250 mm</li>
-                </ul>
-              </div>
-            </article>
-
-            <article class="doc-spec-card" data-reveal style="--d:60ms">
-              <div class="doc-spec-card__img">
-                <img src="assets/images/components/comp-wheel.jpg" alt="Kincir Air 6 Sudu Melengkung" loading="lazy" decoding="async">
-              </div>
-              <div class="doc-spec-card__body">
-                <span class="doc-spec-card__tag">02 · Turbin Utama</span>
-                <h3>Kincir Air 6 Sudu Melengkung</h3>
-                <p>Menangkap dorongan aliran air yang meluncur di dalam saluran dan mengubahnya menjadi gerak putar poros.</p>
-                <ul class="doc-spec-card__list">
-                  <li>6 bilah sudu melengkung di dalam dinding saluran</li>
-                  <li>Poros utama stainless steel diameter 30 mm</li>
-                </ul>
-              </div>
-            </article>
-
-            <article class="doc-spec-card" data-reveal style="--d:120ms">
-              <div class="doc-spec-card__img">
-                <img src="assets/images/components/comp-pulley.jpg" alt="Transmisi Pulley 1 banding 4 dan V-Belt" loading="lazy" decoding="async">
-              </div>
-              <div class="doc-spec-card__body">
-                <span class="doc-spec-card__tag">03 · Transmisi Putaran</span>
-                <h3>Pulley 4-Jari (1 : 4) &amp; V-Belt</h3>
-                <p>Melipatgandakan kecepatan putaran poros kincir empat kali lebih cepat menuju poros generator.</p>
-                <ul class="doc-spec-card__list">
-                  <li>Pulley penggerak diameter 270 mm (4 jari-jari)</li>
-                  <li>Pulley kecil diameter 67,5 mm pada sisi luar saluran</li>
-                </ul>
-              </div>
-            </article>
-
-            <article class="doc-spec-card" data-reveal style="--d:180ms">
-              <div class="doc-spec-card__img doc-spec-card__img--contain">
-                <img src="assets/images/components/comp-generator.jpg?v=2" alt="Generator DC XD 3240" loading="lazy" decoding="async">
-              </div>
-              <div class="doc-spec-card__body">
-                <span class="doc-spec-card__tag">04 · Pembangkit Listrik</span>
-                <h3>Generator DC XD 3240</h3>
-                <p>Mengubah putaran cepat dari sabuk transmisi pulley menjadi energi listrik arus searah (DC) secara stabil.</p>
-                <ul class="doc-spec-card__list">
-                  <li>Tipe permanent magnet DC XD 3240 di zona kering</li>
-                  <li>Menyuplai baterai 12 V dan beban 2 lampu LED 5 W</li>
-                </ul>
-              </div>
-            </article>
-
-            <article class="doc-spec-card" data-reveal style="--d:240ms">
-              <div class="doc-spec-card__img doc-spec-card__img--contain">
-                <img src="assets/images/components/comp-pump.jpg?v=2" alt="Ember Penampung 60 Liter dan Pompa Sirkulasi" loading="lazy" decoding="async">
-              </div>
-              <div class="doc-spec-card__body">
-                <span class="doc-spec-card__tag">05 · Sirkulasi Air</span>
-                <h3>Ember 60 Liter &amp; Pompa Celup</h3>
-                <p>Menampung air buangan di bawah bukaan hilir lalu memompanya kembali agar siklus air tertutup dan hemat.</p>
-                <ul class="doc-spec-card__list">
-                  <li>Ember penampung silinder hijau kapasitas 60 liter</li>
-                  <li>Pompa celup sirkulasi 100 W dengan pipa PVC Ø 45 mm</li>
-                </ul>
-              </div>
-            </article>
-
-            <article class="doc-spec-card" data-reveal style="--d:300ms">
-              <div class="doc-spec-card__img doc-spec-card__img--contain">
-                <img src="assets/images/components/comp-led.jpg?v=2" alt="Lampu LED 12 V Indikator Output" loading="lazy" decoding="async">
-              </div>
-              <div class="doc-spec-card__body">
-                <span class="doc-spec-card__tag">06 · Beban Uji Output</span>
-                <h3>Lampu LED 12 V (2 × 5 W)</h3>
-                <p>Menjadi indikator nyata energi listrik yang dibangkitkan oleh prototipe saat pengujian laboratorium.</p>
-                <ul class="doc-spec-card__list">
-                  <li>2 unit lampu LED 12 V · daya 5 W per lampu</li>
-                  <li>Terhubung melalui baterai 12 V dan rangkaian proteksi</li>
-                </ul>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
       <section class="sec sec--stone" id="faq-sec">
         <div class="wrap">
           <span class="eyebrow">Vortex Hydro · FAQ</span>
@@ -1310,7 +1203,7 @@
 
   <!-- Consolidated Scripts -->
   <script src="assets/three.min.js"></script>
-  <script src="assets/app.js?v=16"></script>
+  <script src="assets/app.js?v=17"></script>
   <script src="assets/dashboard.js?v=3"></script>
   <script src="assets/i18n.js?v=17"></script>
   <script src="assets/ai-assistant.js?v=9" defer></script>
