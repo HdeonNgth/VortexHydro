@@ -11,11 +11,12 @@
   var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- 1. Multi-Page SPA Hash Router ---------- */
-  var PAGES = ['beranda', 'tentang', 'dokumentasi', 'tentang-kami', 'dashboard'];
+  var PAGES = ['beranda', 'eksplorasi', 'tentang', 'dokumentasi', 'tentang-kami', 'dashboard'];
   var TITLES = {
     beranda: 'Vortex Hydro — Pembangkit Listrik Mikro-Hidro Pusaran Air',
-    tentang: 'Cara Kerja & Peralatan | Vortex Hydro',
-    dokumentasi: 'Dokumentasi & FAQ | Vortex Hydro',
+    eksplorasi: 'Eksplorasi 3D | Vortex Hydro',
+    tentang: 'Cara Kerja Sistem | Vortex Hydro',
+    dokumentasi: 'Dokumentasi & Spesifikasi | Vortex Hydro',
     'tentang-kami': 'Tentang Kami | Vortex Hydro',
     dashboard: 'Dashboard | Vortex Hydro'
   };
@@ -107,6 +108,7 @@
     if (raw === 'faq') { raw = 'dokumentasi'; scrollFaq = true; }
     else if (raw === 'struktur-tim' || raw === 'tim') { raw = 'tentang-kami'; }
     else if (raw === 'teknologi' || raw === 'cara-kerja') { raw = 'tentang'; }
+    else if (raw === '3d' || raw === 'eksplorasi-3d' || raw === 'model-3d') { raw = 'eksplorasi'; }
 
     var active = PAGES.indexOf(raw) >= 0 ? raw : 'beranda';
     PAGES.forEach(function (id) {
@@ -121,7 +123,11 @@
     });
 
     var footer = document.querySelector('.footer');
-    if (footer) footer.hidden = (active === 'dashboard');
+    if (footer) footer.hidden = (active === 'dashboard' || active === 'eksplorasi');
+
+    if (active !== 'eksplorasi') {
+      document.body.classList.remove('vx3d-sheet-open');
+    }
 
     document.title = TITLES[active] || TITLES.beranda;
     updateHeaderState(active);
@@ -148,7 +154,7 @@
     if (typeof window.__vxRefreshScroll === 'function') {
       requestAnimationFrame(window.__vxRefreshScroll);
     }
-    if (active === 'tentang' && typeof window.__vx3dResize === 'function') {
+    if (active === 'eksplorasi' && typeof window.__vx3dResize === 'function') {
       requestAnimationFrame(window.__vx3dResize);
       setTimeout(window.__vx3dResize, 80);
     }
@@ -1023,85 +1029,102 @@
     start();
   })();
 
-  /* ---------- 10. Fullscreen Interactive 3D Simulator (Single Fixed Perspective · Transparent Theme Background) ---------- */
+  /* ---------- 10. Minimalist Interactive 3D Exploration Stage (Three.js WebGL · Desktop + Mobile Touch) ---------- */
   (function initVortexThreeSimulator() {
     var root = $('vx3d-root');
     var viewport = $('vx3d-viewport');
     var canvas = $('vx3d-canvas');
-    if (!root || !viewport || !canvas || typeof window.THREE === 'undefined') return;
+    if (!root || !viewport || !canvas) return;
+
+    var loadingEl = $('vx3d-loading');
+    var errorEl = $('vx3d-error');
+    function show3dError() {
+      if (loadingEl) loadingEl.hidden = true;
+      if (errorEl) errorEl.hidden = false;
+    }
+    if (typeof window.THREE === 'undefined') {
+      show3dError();
+      return;
+    }
     var THREE = window.THREE;
 
-    /* 5 Pure Prototype Objects — Concise, Clear, Zero Math Formulas */
+    /* 5 Pure Prototype Objects — Concise Indonesian, Zero Math Formulas */
     var OBJECT_DATA = {
       chute: {
-        tag: 'OBJEK 01 · SALURAN UTAMA',
-        title: 'Saluran Akrilik Miring (1700 × 400 mm)',
+        short: 'Saluran Akrilik',
+        tag: 'KOMPONEN 01 · SALURAN UTAMA',
+        title: 'Saluran Akrilik Miring',
         img: 'assets/images/components/cad-prototype.png',
-        desc: 'Saluran terbuka berbahan akrilik transparan yang terdiri dari bak penenang hulu, bidang luncur miring, dan ruang keluar hilir.',
-        func: 'Menampung air di bagian hulu lalu mengarahkan dan mempercepat luncuran air menuju sudu-sudu kincir sebelum keluar ke ember penampung bawah.',
+        desc: 'Saluran terbuka berbahan akrilik bening dengan bak penenang hulu, bidang luncur miring, dan ruang keluar hilir.',
+        func: 'Menampung air di bagian atas lalu mengarahkan dan mempercepat luncuran air menuju sudu kincir sebelum jatuh ke ember penampung.',
         extra: [
-          '<strong>Panjang Total:</strong> 1700 mm (Hulu 500 · Miring 1016,97 · Hilir 200 mm)',
-          '<strong>Lebar &amp; Dinding:</strong> Lebar 400 mm × Tinggi dinding 250 mm',
-          '<strong>Sekat Hulu:</strong> Pengarah aliran internal 95 × 105 mm'
+          '<strong>Ukuran Saluran:</strong> Panjang total 1700 mm · Lebar 400 mm',
+          '<strong>Tinggi Dinding:</strong> 250 mm dengan sekat penenang di hulu'
         ],
-        anchor: [-3.2, 3.55, 0.9]
+        anchor: [-3.2, 3.55, 0.9],
+        view: { theta: 0.48, phi: 1.04, radius: 18.0, target: [-1.2, 2.2, 0.0] }
       },
       wheel: {
-        tag: 'OBJEK 02 · TURBIN UTAMA',
+        short: 'Kincir Air 6 Sudu',
+        tag: 'KOMPONEN 02 · TURBIN UTAMA',
         title: 'Kincir Air 6 Sudu Melengkung',
         img: 'assets/images/components/comp-wheel.jpg',
-        desc: 'Rotor turbin berwarna biru dengan 6 bilah sudu melengkung yang berada tepat di dalam dinding saluran miring pada poros stainless steel.',
-        func: 'Menangkap dorongan aliran air yang meluncur di dalam saluran dan mengubahnya menjadi gerak putar pada poros utama.',
+        desc: 'Rotor turbin berwarna biru dengan 6 bilah sudu melengkung yang terpasang rapi di dalam saluran miring.',
+        func: 'Menangkap dorongan aliran air yang meluncur di saluran dan mengubahnya menjadi gerak putar pada poros utama.',
         extra: [
           '<strong>Jumlah Bilah:</strong> 6 sudu melengkung penangkap arus',
-          '<strong>Posisi Rotor:</strong> Presisi di dalam ruang saluran (tidak keluar dinding)',
-          '<strong>Poros Utama:</strong> Stainless steel Ø 30 mm menembus sisi saluran'
+          '<strong>Poros Utama:</strong> Stainless steel berdiameter 30 mm'
         ],
-        anchor: [3.6, 2.05, 1.25]
+        anchor: [3.6, 2.05, 1.25],
+        view: { theta: 0.44, phi: 1.06, radius: 11.2, target: [3.8, 2.15, 0.0] }
       },
       pulley: {
-        tag: 'OBJEK 03 · TRANSMISI PUTARAN',
+        short: 'Pulley 1:4 & V-Belt',
+        tag: 'KOMPONEN 03 · TRANSMISI PUTARAN',
         title: 'Transmisi Pulley 4-Jari (1 : 4) & V-Belt',
         img: 'assets/images/components/comp-pulley.jpg',
-        desc: 'Roda pulley besar berjari-jari empat di sisi luar dinding saluran yang dihubungkan sabuk V-belt ke pulley kecil pada poros generator.',
-        func: 'Melipatgandakan kecepatan putaran dari poros kincir menjadi empat kali lebih cepat agar generator dapat membangkitkan listrik secara optimal.',
+        desc: 'Roda pulley besar berjari empat di sisi luar saluran yang dihubungkan sabuk V-belt ke pulley kecil generator.',
+        func: 'Melipatgandakan kecepatan putaran poros kincir menjadi empat kali lebih cepat agar generator bekerja optimal.',
         extra: [
-          '<strong>Pulley Penggerak:</strong> Roda 4-jari diameter 270 mm',
-          '<strong>Pulley Tujuan:</strong> Diameter 67,5 mm (perbandingan putaran 1 : 4)',
-          '<strong>Penempatan:</strong> Sisi luar dinding saluran akrilik'
+          '<strong>Pulley Penggerak:</strong> Diameter 270 mm di sisi luar saluran',
+          '<strong>Pulley Generator:</strong> Diameter 67,5 mm (perbandingan 1 : 4)'
         ],
-        anchor: [3.9, 3.55, -2.32]
+        anchor: [3.9, 3.55, -2.32],
+        view: { theta: 2.38, phi: 1.12, radius: 12.0, target: [5.7, 1.85, -2.2] }
       },
       generator: {
-        tag: 'OBJEK 04 · PEMBANGKIT LISTRIK',
+        short: 'Generator DC',
+        tag: 'KOMPONEN 04 · PEMBANGKIT LISTRIK',
         title: 'Generator DC XD 3240',
         img: 'assets/images/components/comp-generator.jpg?v=2',
-        desc: 'Unit generator arus searah (DC) berukuran kompak yang terpasang di bagian ujung hilir di luar jalur aliran air.',
+        desc: 'Unit generator arus searah (DC) berukuran ringkas yang ditempatkan di ujung hilir di luar jalur air.',
         func: 'Mengubah putaran cepat dari sabuk transmisi pulley menjadi energi listrik arus searah (DC).',
         extra: [
           '<strong>Tipe Unit:</strong> Permanent Magnet Generator DC XD 3240',
-          '<strong>Penggerak:</strong> Terhubung langsung ke pulley kecil 67,5 mm',
-          '<strong>Posisi:</strong> Zona kering di ujung depan saluran'
+          '<strong>Penempatan:</strong> Zona kering di ujung hilir saluran'
         ],
-        anchor: [8.85, 1.45, -1.25]
+        anchor: [8.85, 1.45, -1.25],
+        view: { theta: 1.85, phi: 1.10, radius: 9.8, target: [8.5, 1.35, -1.4] }
       },
       tank: {
-        tag: 'OBJEK 05 · PENAMPUNG SIRKULASI',
+        short: 'Ember Air 60 L',
+        tag: 'KOMPONEN 05 · PENAMPUNG SIRKULASI',
         title: 'Ember Penampung Air 60 Liter & Pompa',
         img: 'assets/images/components/comp-pump.jpg?v=2',
-        desc: 'Ember penampung air silinder berwarna hijau berkapasitas 60 liter yang ditempatkan tepat di bawah bukaan keluar ujung hilir saluran.',
-        func: 'Menampung seluruh air yang jatuh dari bukaan bawah saluran agar dapat disirkulasikan kembali oleh pompa celup di dasar ember.',
+        desc: 'Ember silinder berwarna hijau berkapasitas 60 liter yang berada tepat di bawah bukaan keluar saluran.',
+        func: 'Menampung air yang jatuh dari ujung saluran agar dapat dipompa kembali dalam siklus aliran tertutup.',
         extra: [
-          '<strong>Wadah Penampung:</strong> Ember silinder hijau kapasitas 60 Liter',
-          '<strong>Kelengkapan:</strong> Pompa celup sirkulasi 100 W di dasar ember',
-          '<strong>Posisi:</strong> Tepat di bawah bibir keluaran saluran 200 mm'
+          '<strong>Kapasitas Wadah:</strong> 60 liter dengan pompa celup 100 W',
+          '<strong>Posisi:</strong> Tepat di bawah bibir keluaran saluran hilir'
         ],
-        anchor: [7.35, -2.05, 1.42]
+        anchor: [7.35, -2.05, 1.42],
+        view: { theta: 0.62, phi: 1.18, radius: 13.5, target: [7.1, -1.8, 0.0] }
       }
     };
 
-    /* Single Fixed Optimal Perspective — Shows all 5 objects clearly at once */
-    var FIXED_CAM = { theta: 0.60, phi: 1.05, radius: 21.2, target: [0.55, 0.35, 0.0] };
+    var DEFAULT_VIEW = { theta: 0.60, phi: 1.06, radius: 22.0, target: [0.6, 0.45, 0.0] };
+    var PAN_MIN = new THREE.Vector3(-9.5, -4.5, -5.0);
+    var PAN_MAX = new THREE.Vector3(10.5, 5.5, 5.0);
 
     /* UI Elements */
     var panel = $('vx3d-panel');
@@ -1122,41 +1145,33 @@
       });
     }
 
-    /* Three.js Scene (Transparent Background merging with Website Theme) */
+    /* Three.js Scene & Renderer with WebGL Error Guard */
     var scene = new THREE.Scene();
     scene.background = null;
-
-    var camera = new THREE.PerspectiveCamera(39, 16 / 9, 0.1, 140);
-    var camTarget = new THREE.Vector3(FIXED_CAM.target[0], FIXED_CAM.target[1], FIXED_CAM.target[2]);
-
-    function applyFixedCamera() {
-      var sinPhi = Math.sin(FIXED_CAM.phi);
-      camera.position.set(
-        camTarget.x + FIXED_CAM.radius * sinPhi * Math.sin(FIXED_CAM.theta),
-        camTarget.y + FIXED_CAM.radius * Math.cos(FIXED_CAM.phi),
-        camTarget.z + FIXED_CAM.radius * sinPhi * Math.cos(FIXED_CAM.theta)
-      );
-      camera.lookAt(camTarget);
+    var camera = new THREE.PerspectiveCamera(39, 16 / 9, 0.1, 160);
+    var renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance'
+      });
+    } catch (_) {
+      show3dError();
+      return;
     }
-    applyFixedCamera();
-
-    var renderer = new THREE.WebGLRenderer({
-      canvas: canvas,
-      antialias: true,
-      alpha: true,
-      powerPreference: 'high-performance'
-    });
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(Math.min(1.75, window.devicePixelRatio || 1));
 
-    /* Clean Studio Lighting (Works seamlessly on both Light and Dark Website Themes) */
-    scene.add(new THREE.HemisphereLight(0xdff6ff, 0x0b2545, 1.05));
+    /* Clean Studio Lighting (Light & Dark Theme Balanced) */
+    scene.add(new THREE.HemisphereLight(0xeef8ff, 0x1e3a5f, 1.1));
 
     var keyLight = new THREE.DirectionalLight(0xffffff, 1.15);
     keyLight.position.set(12, 22, 16);
     scene.add(keyLight);
 
-    var backRimLight = new THREE.DirectionalLight(0x00d4ff, 0.78);
+    var backRimLight = new THREE.DirectionalLight(0x38bdf8, 0.72);
     backRimLight.position.set(-14, 10, -14);
     scene.add(backRimLight);
 
@@ -1544,10 +1559,73 @@
     }
 
     /* =====================================================================
-       RAYCASTING & DYNAMIC GLASSMORPHISM PANEL (Fixed Single Perspective)
+       CAMERA ORBIT / ZOOM / PAN (Mouse + Touch), RAYCASTING, INFO PANEL
        ===================================================================== */
     var selectedKey = null;
     var hoveredKey = null;
+    var MIN_R = 6.5, MAX_R = 40;
+    var MIN_PHI = 0.30, MAX_PHI = 1.50;
+
+    function isMobileLayout() { return window.innerWidth <= 768; }
+
+    /* Portrait screens need the camera slightly further away to fit the 17-unit wide model cleanly */
+    function fitFactor(isFocus) {
+      var aspect = camera.aspect || 1.6;
+      var f = Math.min(2.25, Math.max(1, 1.48 / aspect));
+      return isFocus ? Math.sqrt(f) : f;
+    }
+
+    var cam = {
+      theta: DEFAULT_VIEW.theta, phi: DEFAULT_VIEW.phi, radius: DEFAULT_VIEW.radius,
+      target: new THREE.Vector3().fromArray(DEFAULT_VIEW.target)
+    };
+    var goal = {
+      theta: DEFAULT_VIEW.theta, phi: DEFAULT_VIEW.phi, radius: DEFAULT_VIEW.radius,
+      target: new THREE.Vector3().fromArray(DEFAULT_VIEW.target)
+    };
+    /* Screen-space offset so the 3D model stays visible beside the desktop panel / above the mobile bottom sheet */
+    var viewShift = { x: 0, y: 0 }, viewShiftGoal = { x: 0, y: 0 };
+
+    function setGoalView(v, isFocus) {
+      goal.theta = v.theta;
+      goal.phi = v.phi;
+      goal.radius = v.radius * fitFactor(isFocus);
+      goal.target.fromArray(v.target);
+    }
+
+    function applyCamera() {
+      var sinPhi = Math.sin(cam.phi);
+      camera.position.set(
+        cam.target.x + cam.radius * sinPhi * Math.sin(cam.theta),
+        cam.target.y + cam.radius * Math.cos(cam.phi),
+        cam.target.z + cam.radius * sinPhi * Math.cos(cam.theta)
+      );
+      camera.lookAt(cam.target);
+      if (Math.abs(viewShift.x) > 0.5 || Math.abs(viewShift.y) > 0.5) {
+        camera.setViewOffset(vw, vh, viewShift.x, viewShift.y, vw, vh);
+      } else if (camera.view && camera.view.enabled) {
+        camera.clearViewOffset();
+      }
+      camera.updateMatrixWorld();
+    }
+
+    function updatePanelShift() {
+      if (!selectedKey || !panel || panel.hidden) {
+        viewShiftGoal.x = 0;
+        viewShiftGoal.y = 0;
+        return;
+      }
+      if (isMobileLayout()) {
+        var stageRect = viewport.getBoundingClientRect();
+        var sheetRect = panel.getBoundingClientRect();
+        var covered = Math.max(0, stageRect.bottom - sheetRect.top);
+        viewShiftGoal.x = 0;
+        viewShiftGoal.y = Math.min(vh * 0.30, covered * 0.52);
+      } else {
+        viewShiftGoal.x = Math.min(vw * 0.22, (panel.offsetWidth + 32) * 0.5);
+        viewShiftGoal.y = 0;
+      }
+    }
 
     function dismissHint() {
       if (hintEl && !hintEl.classList.contains('is-dismissed')) {
@@ -1561,11 +1639,11 @@
         var orig = originalEmissives.get(m.uuid) || { hex: 0x000000, intensity: 0 };
         var k = m.userData.objKey;
         if (k === selectedKey) {
-          m.material.emissive.setHex(0x00e5ff);
-          m.material.emissiveIntensity = 0.55;
+          m.material.emissive.setHex(0xff7a2f);
+          m.material.emissiveIntensity = 0.42;
         } else if (k === hoveredKey) {
-          m.material.emissive.setHex(0x00b4d8);
-          m.material.emissiveIntensity = 0.36;
+          m.material.emissive.setHex(0xffa25c);
+          m.material.emissiveIntensity = 0.26;
         } else {
           m.material.emissive.setHex(orig.hex);
           m.material.emissiveIntensity = orig.intensity;
@@ -1577,18 +1655,25 @@
         if (!b) return;
         b.classList.toggle('is-active', k === selectedKey);
         b.classList.toggle('is-hover', k === hoveredKey && k !== selectedKey);
+        b.setAttribute('aria-pressed', String(k === selectedKey));
       });
+    }
+
+    function closePanel() {
+      selectedKey = null;
+      if (panel) panel.hidden = true;
+      document.body.classList.remove('vx3d-sheet-open');
+      setGoalView(DEFAULT_VIEW, false);
+      updatePanelShift();
+      applyHighlightState();
     }
 
     function selectObject(key) {
       dismissHint();
-      if (!key || key === 'all' || !OBJECT_DATA[key]) {
-        selectedKey = null;
-        if (panel) panel.hidden = true;
-        applyHighlightState();
+      if (!key || !OBJECT_DATA[key]) {
+        closePanel();
         return;
       }
-
       selectedKey = key;
       var d = OBJECT_DATA[key];
       if (pTag) pTag.textContent = d.tag;
@@ -1599,27 +1684,94 @@
       if (pExtra) {
         pExtra.innerHTML = d.extra.map(function (item) { return '<li>' + item + '</li>'; }).join('');
       }
-      if (panel) panel.hidden = false;
+      if (panel) {
+        panel.hidden = false;
+        panel.scrollTop = 0;
+      }
+      document.body.classList.toggle('vx3d-sheet-open', isMobileLayout());
+      setGoalView(d.view, true);
+      requestAnimationFrame(updatePanelShift);
       applyHighlightState();
     }
 
-    /* Pointer Raycasting (Click & Hover Only — Camera stays locked at fixed perspective) */
+    /* ---------- Pointer Handling: 1 pointer = orbit (or pan with right-click / Shift), 2 pointers = pinch zoom + pan ---------- */
     var raycaster = new THREE.Raycaster();
     var pointerNDC = new THREE.Vector2();
+    var pointers = new Map();
+    var dragMoved = 0, dragMode = 'orbit', lastPinchDist = 0, lastMid = null;
 
-    function updatePointerNDC(e) {
+    function pickAt(clientX, clientY) {
       var rect = canvas.getBoundingClientRect();
-      pointerNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      pointerNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-      return rect;
-    }
-
-    canvas.addEventListener('pointermove', function (e) {
-      var rect = updatePointerNDC(e);
+      pointerNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      pointerNDC.y = -((clientY - rect.top) / rect.height) * 2 + 1;
       raycaster.setFromCamera(pointerNDC, camera);
       var hits = raycaster.intersectObjects(interactiveMeshes, false);
-      var hitKey = (hits.length > 0 && hits[0].object.userData.objKey) ? hits[0].object.userData.objKey : null;
+      return hits.length ? hits[0].object.userData.objKey : null;
+    }
 
+    function panBy(dx, dy) {
+      var scale = cam.radius * 0.0019;
+      var forward = new THREE.Vector3();
+      camera.getWorldDirection(forward);
+      var right = new THREE.Vector3().crossVectors(forward, camera.up).normalize();
+      var up = new THREE.Vector3().crossVectors(right, forward).normalize();
+      goal.target.addScaledVector(right, -dx * scale);
+      goal.target.addScaledVector(up, dy * scale);
+      goal.target.clamp(PAN_MIN, PAN_MAX);
+    }
+
+    function pinchState() {
+      var pts = Array.from(pointers.values());
+      var dx = pts[0].x - pts[1].x, dy = pts[0].y - pts[1].y;
+      return { dist: Math.hypot(dx, dy), mid: { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 } };
+    }
+
+    canvas.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+    canvas.addEventListener('pointerdown', function (e) {
+      if (canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      dragMoved = 0;
+      dragMode = (e.button === 2 || e.shiftKey) ? 'pan' : 'orbit';
+      if (pointers.size === 2) {
+        var ps = pinchState();
+        lastPinchDist = ps.dist;
+        lastMid = ps.mid;
+      }
+      if (tooltip) tooltip.hidden = true;
+    });
+
+    canvas.addEventListener('pointermove', function (e) {
+      var p = pointers.get(e.pointerId);
+      if (p) {
+        var dx = e.clientX - p.x, dy = e.clientY - p.y;
+        p.x = e.clientX;
+        p.y = e.clientY;
+        dragMoved += Math.abs(dx) + Math.abs(dy);
+        if (dragMoved > 6) dismissHint();
+
+        if (pointers.size >= 2) {
+          var ps = pinchState();
+          if (lastPinchDist > 0) {
+            goal.radius = Math.max(MIN_R, Math.min(MAX_R, goal.radius * (lastPinchDist / Math.max(1, ps.dist))));
+          }
+          if (lastMid) panBy(ps.mid.x - lastMid.x, ps.mid.y - lastMid.y);
+          lastPinchDist = ps.dist;
+          lastMid = ps.mid;
+          dragMoved += 10;
+        } else if (dragMode === 'pan') {
+          panBy(dx, dy);
+        } else {
+          goal.theta -= dx * 0.0068;
+          goal.phi = Math.max(MIN_PHI, Math.min(MAX_PHI, goal.phi - dy * 0.0058));
+        }
+        if (dragMoved > 6) canvas.classList.add('is-dragging');
+        return;
+      }
+
+      /* Hover highlight (desktop mouse only) */
+      if (e.pointerType !== 'mouse') return;
+      var hitKey = pickAt(e.clientX, e.clientY);
       if (hitKey !== hoveredKey) {
         hoveredKey = hitKey;
         canvas.classList.toggle('is-hovering', !!hoveredKey);
@@ -1627,7 +1779,8 @@
       }
       if (tooltip) {
         if (hoveredKey && OBJECT_DATA[hoveredKey]) {
-          tooltip.textContent = OBJECT_DATA[hoveredKey].title;
+          var rect = canvas.getBoundingClientRect();
+          tooltip.textContent = OBJECT_DATA[hoveredKey].short;
           tooltip.style.left = (e.clientX - rect.left) + 'px';
           tooltip.style.top = (e.clientY - rect.top) + 'px';
           tooltip.hidden = false;
@@ -1637,7 +1790,22 @@
       }
     });
 
-    canvas.addEventListener('pointerleave', function () {
+    function endPointer(e) {
+      var wasTap = pointers.size === 1 && dragMoved < 7 && (e.pointerType !== 'mouse' || e.button === 0);
+      pointers.delete(e.pointerId);
+      if (pointers.size < 2) { lastPinchDist = 0; lastMid = null; }
+      if (pointers.size === 0) canvas.classList.remove('is-dragging');
+      if (wasTap && e.type === 'pointerup') {
+        var key = pickAt(e.clientX, e.clientY);
+        if (key) selectObject(key);
+        else if (selectedKey) closePanel();
+      }
+    }
+    canvas.addEventListener('pointerup', endPointer);
+    canvas.addEventListener('pointercancel', endPointer);
+
+    canvas.addEventListener('pointerleave', function (e) {
+      if (e.pointerType !== 'mouse') return;
       if (hoveredKey) {
         hoveredKey = null;
         canvas.classList.remove('is-hovering');
@@ -1646,101 +1814,161 @@
       if (tooltip) tooltip.hidden = true;
     });
 
-    canvas.addEventListener('click', function (e) {
-      updatePointerNDC(e);
-      raycaster.setFromCamera(pointerNDC, camera);
-      var hits = raycaster.intersectObjects(interactiveMeshes, false);
-      if (hits.length > 0 && hits[0].object.userData.objKey) {
-        selectObject(hits[0].object.userData.objKey);
-      } else if (selectedKey) {
-        selectObject('all');
-      }
-    });
+    canvas.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      dismissHint();
+      var factor = Math.exp(e.deltaY * 0.0012);
+      goal.radius = Math.max(MIN_R, Math.min(MAX_R, goal.radius * factor));
+    }, { passive: false });
 
-    /* Hotspot & Panel Close Listeners */
+    /* ---------- Hotspots, Panel Close & Camera Controls ---------- */
     Object.keys(spotBtns).forEach(function (k) {
       spotBtns[k].addEventListener('click', function (e) {
         e.stopPropagation();
-        selectObject(k);
+        if (selectedKey === k) closePanel();
+        else selectObject(k);
       });
     });
 
-    if (pClose) {
-      pClose.addEventListener('click', function () { selectObject('all'); });
-    }
+    if (pClose) pClose.addEventListener('click', closePanel);
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && selectedKey) selectObject('all');
+      if (e.key === 'Escape' && selectedKey) closePanel();
     });
 
-    /* Project 3D Hotspot World Anchors to 2D Overlay Coordinates (Once on Init & Resize) */
+    var btnZoomIn = $('vx3d-zoom-in'), btnZoomOut = $('vx3d-zoom-out');
+    var btnReset = $('vx3d-reset'), btnFs = $('vx3d-fullscreen');
+    if (btnZoomIn) btnZoomIn.addEventListener('click', function () { dismissHint(); goal.radius = Math.max(MIN_R, goal.radius * 0.8); });
+    if (btnZoomOut) btnZoomOut.addEventListener('click', function () { dismissHint(); goal.radius = Math.min(MAX_R, goal.radius * 1.25); });
+    if (btnReset) btnReset.addEventListener('click', function () {
+      if (selectedKey) closePanel();
+      else setGoalView(DEFAULT_VIEW, false);
+    });
+
+    var canFullscreen = !!(root.requestFullscreen || root.webkitRequestFullscreen);
+    if (btnFs) {
+      if (!canFullscreen) {
+        btnFs.hidden = true;
+      } else {
+        btnFs.addEventListener('click', function () {
+          var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+          if (!fsEl) {
+            var req = root.requestFullscreen || root.webkitRequestFullscreen;
+            var r = req.call(root);
+            if (r && typeof r.catch === 'function') r.catch(function () {});
+          } else {
+            var ex = document.exitFullscreen || document.webkitExitFullscreen;
+            if (ex) ex.call(document);
+          }
+        });
+        var syncFs = function () {
+          var on = !!(document.fullscreenElement || document.webkitFullscreenElement);
+          root.classList.toggle('is-fullscreen', on);
+          btnFs.setAttribute('aria-label', on ? 'Keluar layar penuh' : 'Layar penuh');
+          btnFs.setAttribute('title', on ? 'Keluar layar penuh' : 'Layar penuh');
+          setTimeout(handleResize, 80);
+        };
+        document.addEventListener('fullscreenchange', syncFs);
+        document.addEventListener('webkitfullscreenchange', syncFs);
+      }
+    }
+
+    /* ---------- Live Camera-Tracking Hotspot Projection ---------- */
     var vw = 1000, vh = 650;
     var projVec = new THREE.Vector3();
+    var camDir = new THREE.Vector3();
+    var toAnchor = new THREE.Vector3();
 
     function updateHotspots() {
-      camera.updateMatrixWorld();
+      camera.getWorldDirection(camDir);
       Object.keys(OBJECT_DATA).forEach(function (k) {
         var btn = spotBtns[k];
         if (!btn) return;
         var a = OBJECT_DATA[k].anchor;
-        projVec.set(a[0], a[1], a[2]).project(camera);
-        if (projVec.z > 1) {
-          btn.style.display = 'none';
+        projVec.set(a[0], a[1], a[2]);
+        toAnchor.subVectors(projVec, camera.position).normalize();
+        projVec.project(camera);
+        var offscreen = projVec.z > 1 || Math.abs(projVec.x) > 1.04 || Math.abs(projVec.y) > 1.04;
+        if (offscreen || toAnchor.dot(camDir) < 0.2) {
+          btn.classList.add('is-off');
           return;
         }
-        btn.style.display = 'inline-flex';
-        var sx = (projVec.x * 0.5 + 0.5) * vw;
-        var sy = (-projVec.y * 0.5 + 0.5) * vh;
-        sx = Math.max(64, Math.min(vw - 64, sx));
-        sy = Math.max(32, Math.min(vh - 46, sy));
-        btn.style.left = sx.toFixed(1) + 'px';
-        btn.style.top = sy.toFixed(1) + 'px';
+        btn.classList.remove('is-off');
+        var halfW = (btn.offsetWidth || 116) * 0.5 + 8;
+        var sx = Math.max(halfW, Math.min(vw - halfW, (projVec.x * 0.5 + 0.5) * vw));
+        var sy = Math.max(76, Math.min(vh - 36, (-projVec.y * 0.5 + 0.5) * vh));
+        btn.style.transform = 'translate3d(' + sx.toFixed(1) + 'px,' + sy.toFixed(1) + 'px,0) translate(-50%,-50%)';
       });
     }
 
     var isInView = true;
+    var hasRendered = false;
     function handleResize() {
       var r = viewport.getBoundingClientRect();
       if (!r.width || !r.height) return;
       isInView = true;
       vw = r.width;
       vh = r.height;
+      var mobile = isMobileLayout();
+      renderer.setPixelRatio(Math.min(mobile ? 1.5 : 1.75, window.devicePixelRatio || 1));
+      renderer.setSize(vw, vh, false);
       camera.aspect = vw / vh;
       camera.updateProjectionMatrix();
-      renderer.setSize(vw, vh, false);
-      applyFixedCamera();
-      updateHotspots();
+      if (selectedKey) setGoalView(OBJECT_DATA[selectedKey].view, true);
+      else setGoalView(DEFAULT_VIEW, false);
+      if (!hasRendered) {
+        cam.theta = goal.theta;
+        cam.phi = goal.phi;
+        cam.radius = goal.radius;
+        cam.target.copy(goal.target);
+      }
+      document.body.classList.toggle('vx3d-sheet-open', !!selectedKey && mobile);
+      updatePanelShift();
     }
-    handleResize();
     window.__vx3dResize = handleResize;
     window.addEventListener('resize', handleResize);
 
     /* Pause WebGL Rendering When Scrolled Off-Screen to Save GPU/CPU */
     if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          isInView = entry.isIntersecting;
-        });
-      }, { threshold: 0.05 });
-      io.observe(root);
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) { isInView = entry.isIntersecting; });
+      }, { threshold: 0.02 }).observe(root);
     }
 
-    /* Main WebGL Animation Loop (Desktop Only; Active on Cara Kerja #tentang) */
-    var simClock = 0;
-    function animate() {
+    /* ---------- Main Render Loop (Desktop + Mobile Touch on #eksplorasi) ---------- */
+    var simClock = 0, lastT = 0;
+    function animate(t) {
       requestAnimationFrame(animate);
-      if (!isInView || window.innerWidth <= 768) return;
-      var tentang = $('tentang');
-      if (tentang && tentang.hidden) return;
+      var page = $('eksplorasi');
+      if (!isInView || (page && page.hidden) || document.hidden) { lastT = t; return; }
+      var dt = Math.min(0.05, Math.max(0.001, ((t - lastT) || 16) / 1000));
+      lastT = t;
 
-      simClock += 0.016;
-      rotorPivot.rotation.z -= 0.042;
-      pulley1Pivot.rotation.z -= 0.042;
-      pulley2Pivot.rotation.z -= 0.168; /* 1:4 Step-Up ratio */
+      var k = 1 - Math.pow(0.0009, dt); /* frame-rate independent smooth damping */
+      cam.theta += (goal.theta - cam.theta) * k;
+      cam.phi += (goal.phi - cam.phi) * k;
+      cam.radius += (goal.radius - cam.radius) * k;
+      cam.target.lerp(goal.target, k);
+      viewShift.x += (viewShiftGoal.x - viewShift.x) * k;
+      viewShift.y += (viewShiftGoal.y - viewShift.y) * k;
+
+      simClock += dt;
+      rotorPivot.rotation.z -= 2.4 * dt;
+      pulley1Pivot.rotation.z -= 2.4 * dt;
+      pulley2Pivot.rotation.z -= 9.6 * dt; /* 1:4 step-up ratio */
       updateWaterParticles(simClock);
 
+      applyCamera();
       renderer.render(scene, camera);
+      updateHotspots();
+
+      if (!hasRendered) {
+        hasRendered = true;
+        root.classList.add('is-ready');
+        if (loadingEl) loadingEl.hidden = true;
+      }
     }
 
+    handleResize();
     requestAnimationFrame(animate);
   })();
 })();
