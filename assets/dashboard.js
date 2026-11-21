@@ -447,12 +447,6 @@
   function syncDashboardRoute() {
     var isDashHash = location.hash === '#dashboard';
     var isAdmin = authState.authenticated && authState.role === 'admin';
-    var siteMain = $('site-main');
-    page.hidden = !isDashHash;
-    if (siteMain) siteMain.hidden = isDashHash;
-    var footer = document.querySelector('.footer');
-    if (footer) footer.hidden = isDashHash;
-
     if (isDashHash) {
       locked.hidden = isAdmin;
       dashEl.hidden = !isAdmin;
@@ -462,7 +456,6 @@
         if (!timer) { timer = setInterval(stepDash, 1000); stepDash(); }
         requestAnimationFrame(placeLens);
       }
-      window.scrollTo(0, 0);
     } else {
       B.classList.remove('is-dash');
       if (timer) { clearInterval(timer); timer = null; }

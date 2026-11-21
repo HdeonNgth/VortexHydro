@@ -1,67 +1,45 @@
 // Vortex Hydro AI Assistant — backend (Supabase Edge Function)
-// Semua komunikasi ke Gemini terjadi di sini. Kunci tidak pernah dikirim ke browser.
+// Komunikasi ke Gemini terjadi di sisi server agar API key tetap aman.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY") ?? "";
-// Satu model (GEMINI_MODEL) atau beberapa dipisah koma (GEMINI_MODELS): dicoba berurutan sampai ada yang berhasil.
-const MODELS = (Deno.env.get("GEMINI_MODELS") ?? Deno.env.get("GEMINI_MODEL") ?? "gemini-3.8-flash")
+const MODELS = (Deno.env.get("GEMINI_MODELS") ?? Deno.env.get("GEMINI_MODEL") ?? "gemini-2.5-flash-lite,gemini-2.5-flash,gemini-3.8-flash")
   .split(",").map((m) => m.trim().replace(/^models\//, "")).filter((m) => /^[A-Za-z0-9._-]+$/.test(m));
 const ALLOWED = (Deno.env.get("ALLOWED_ORIGINS") ??
   "https://hdeonngth.github.io,http://localhost:8000,http://localhost:3000,http://127.0.0.1:8000")
   .split(",").map((s) => s.trim()).filter(Boolean);
 
 const MAX_MESSAGE = 2000;
-const HISTORY_LIMIT = 12;
-const GEMINI_TIMEOUT_MS = 25000;
-const RATE_LIMIT = 20; // permintaan per menit per sesi/IP (best-effort, per instance)
+const HISTORY_LIMIT = 8;
+const GEMINI_TIMEOUT_MS = 18000;
+const RATE_LIMIT = 20;
 
-const SYSTEM_PROMPT = `You are Vortex Hydro AI Assistant, the official virtual assistant integrated into the Vortex Hydro website.
+const SYSTEM_PROMPT = `Kamu adalah Vortex AI — partner lab Mekanika Fluida resmi untuk proyek Vortex Hydro (Teknologi Rekayasa Pembangkit Energi, Fakultas Vokasi, Universitas Negeri Malang).
 
-Your mission is to help visitors understand Vortex Hydro, hydroelectric technology, vortex turbines, fluid mechanics, renewable energy, physics, environmental technology, and related scientific concepts.
+KARAKTER & GAYA BICARA:
+- Cerdas, ramah, antusias, dan langsung ke inti seperti rekan praktikum teknik yang enak diajak diskusi.
+- JANGAN kaku atau bertele-tele. Hindari basa-basi generik seperti "Tentu! Senang bisa menyapa Anda!" atau ringkasan berulang di akhir.
+- Gunakan bahasa yang sama dengan pengguna (Indonesia santai-profesional jika ditanya dalam bahasa Indonesia, Inggris jika ditanya dalam bahasa Inggris).
 
-PERSONALITY:
-- Intelligent and knowledgeable.
-- Friendly, professional, and approachable.
-- Curious and enthusiastic about science and technology.
-- Clear when explaining complicated scientific concepts.
-- Natural and conversational, not robotic.
+ATURAN RINGKAS (WAJIB):
+- Jawab SINGKAT, PADAT, dan CEPAT DIBACA: maksimal 2–4 kalimat pendek atau 3–4 poin ringkas per jawaban.
+- Hanya berikan penjelasan panjang jika pengguna secara eksplisit meminta ("jelaskan detail", "uraikan lengkap", dll).
+- Gunakan **tebal** secukupnya untuk istilah kunci dan rumus sederhana (mis. P = ρ·g·Q·H·η). Jangan pakai garis pemisah "---" atau emoji berlebihan.
 
-COMMUNICATION:
-- Respond in the same language used by the user.
-- Use Indonesian when the user speaks Indonesian.
-- Explain complex concepts step by step.
-- Use Markdown when it improves readability.
-- Use equations when necessary.
-- Include examples and practical analogies.
-- Avoid unnecessary repetition.
-
-ACCURACY:
-- Never fabricate technical specifications, project capabilities, experimental results, or facts about Vortex Hydro.
-- Distinguish established scientific facts from hypotheses and estimates.
-- Admit when information is unavailable.
-- Never claim to have accessed a website feature, document, or database unless the system actually provides that information.
-
-IDENTITY:
-- Introduce yourself as Vortex Hydro AI Assistant when appropriate.
-- Maintain your identity throughout the conversation.
-- Be helpful even when a question is outside the main scope of Vortex Hydro.
-
-Your goal is not simply to answer questions, but to make science, engineering, and renewable energy easier and more interesting to understand.
-
-VERIFIED FACTS ABOUT THE VORTEX HYDRO WEBSITE (the only project facts you may state as certain):
-- Vortex Hydro is a class project: a vortex micro-hydro lab simulator with a website.
-- Equipment list published on the site: Generator XD 3240 (1 unit); LED lamp (2 pcs, 12 V, 5 W each, 10 W total); Wasser WD-101E submersible water pump (1 unit, 220 V/50 Hz, 100 W); pipe, diameter about 45 mm (from earlier measurement notes).
-- The Dashboard page is an admin-only demo that shows simulated sensor data (not real-time hardware data).
-- You have no knowledge base or document search yet. For any other project detail (measured results, efficiency, dimensions), say it is not available to you.`;
+FAKTA TERVERIFIKASI PROYEK VORTEX HYDRO:
+- Proyek kelas Mekanika Fluida: prototipe simulator PLTA mikro-hidro pusaran air (sirkulasi tertutup) di atas rangka 2,0 × 0,8 m.
+- Komponen utama: Pompa celup Wasser WD-101E (1 unit, 220 V / 50 Hz, 100 W), tangki penampung Ø 520 mm, pipa dorong Ø 45 mm, headbox & saluran miring akrilik (0,416 m → 0,28 m), kincir air 6 sudu Ø 330 mm (poros stainless Ø 30 mm), transmisi pulley & V-belt step-up 1:4 di zona kering, Generator DC XD 3240 (1 unit), dan beban 2 lampu LED (12 V, 5 W per unit, total 10 W).
+- Dashboard di situs saat ini menggunakan mode simulasi browser untuk demo pemantauan; prototipe fisik asli sedang dikembangkan tim.
+- Jangan mengarang angka hasil uji lapangan yang tidak ada di daftar fakta di atas; katakan jujur jika data pengukuran asli belum dimasukkan.`;
 
 const PAGES: Record<string, string> = {
-  beranda: "Beranda (home)",
-  tentang: "Tentang (about, how it works, equipment list)",
-  dokumentasi: "Dokumentasi (documentation)",
-  "struktur-tim": "Tim (team structure)",
-  dashboard: "Dashboard (admin demo, simulated data)",
+  beranda: "Beranda",
+  tentang: "Cara Kerja & Peralatan",
+  dokumentasi: "Dokumentasi & FAQ",
+  "tentang-kami": "Tentang Kami (Struktur Tim)",
+  dashboard: "Dashboard Admin (simulasi)",
 };
 
 function corsFor(req: Request) {
@@ -125,14 +103,13 @@ async function askGemini(model: string, history: { role: string; content: string
             role: m.role === "assistant" ? "model" : "user",
             parts: [{ text: m.content }],
           })),
-          generationConfig: { temperature: 0.7, maxOutputTokens: 2048 },
+          generationConfig: { temperature: 0.65, maxOutputTokens: 480 },
         }),
       },
     );
     if (!res.ok) {
       let msg = "";
       try { msg = String((await res.json())?.error?.message ?? "").slice(0, 200); } catch { /* abaikan */ }
-      console.error("gemini_http", res.status, msg);
       const err = new Error(res.status === 429 ? "busy" : "gemini") as Error & { detail?: string };
       err.detail = `HTTP ${res.status}${msg ? ": " + msg : ""}`;
       throw err;
@@ -142,7 +119,6 @@ async function askGemini(model: string, history: { role: string; content: string
     const text = (cand?.content?.parts ?? []).map((p: { text?: string }) => p.text ?? "").join("").trim();
     if (!text) {
       const why = String(cand?.finishReason ?? data?.promptFeedback?.blockReason ?? "unknown");
-      console.error("gemini_empty", why);
       const err = new Error("empty") as Error & { detail?: string };
       err.detail = "empty response: " + why;
       throw err;
@@ -172,11 +148,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return json(req, { error: "method_not_allowed" }, 405);
 
   let body: Record<string, unknown>;
-  try {
-    body = await req.json();
-  } catch {
-    return json(req, { error: "invalid_json" }, 400);
-  }
+  try { body = await req.json(); } catch { return json(req, { error: "invalid_json" }, 400); }
 
   const token = String(body.token ?? "");
   if (!TOKEN.test(token)) return json(req, { error: "invalid_session" }, 400);
@@ -225,7 +197,6 @@ Deno.serve(async (req) => {
     if (message.length > MAX_MESSAGE) return json(req, { error: "message_too_long", max: MAX_MESSAGE }, 413);
     if (!GEMINI_API_KEY) return json(req, { error: "not_configured" }, 503);
 
-    // 1) conversation (baru atau milik sesi ini)
     let id = convId;
     let title = "";
     if (id) {
@@ -233,7 +204,6 @@ Deno.serve(async (req) => {
       if (!conv) return json(req, { error: "not_found" }, 404);
       title = conv.title;
       if (body.retry === true) {
-        // buang pesan pengguna gagal sebelumnya agar tidak dobel
         const { data: last } = await db.from("messages").select("id,role,status")
           .eq("conversation_id", id).order("created_at", { ascending: false }).limit(1);
         if (last?.[0]?.role === "user" && last[0].status === "error") {
@@ -248,26 +218,20 @@ Deno.serve(async (req) => {
       id = data.id;
     }
 
-    // 2) simpan pesan pengguna (pending)
     const { data: um, error: ue } = await db.from("messages")
       .insert({ conversation_id: id, role: "user", content: message, status: "pending" })
       .select("id").single();
     if (ue || !um) throw new Error("db");
 
-    // 3) riwayat terbatas
     const { data: hist, error: he } = await db.from("messages").select("role,content")
       .eq("conversation_id", id).in("status", ["completed", "pending"])
       .order("created_at", { ascending: false }).limit(HISTORY_LIMIT);
     if (he || !hist) throw new Error("db");
     const history = hist.reverse();
 
-    // 4) konteks halaman (hanya nilai dari daftar putih)
     const page = String((body.context as Record<string, unknown> | undefined)?.page ?? "");
-    const pageNote = PAGES[page]
-      ? `\n\nPAGE CONTEXT: the visitor is currently on the "${PAGES[page]}" page. This is only navigation metadata, not a source of technical knowledge.`
-      : "";
+    const pageNote = PAGES[page] ? `\n\nKONTEKS HALAMAN: pengunjung sedang di halaman "${PAGES[page]}".` : "";
 
-    // 5) Gemini
     let answer: string;
     let usedModel = MODELS[0];
     try {
@@ -281,7 +245,6 @@ Deno.serve(async (req) => {
       return json(req, { error: code === "busy" ? "ai_busy" : "ai_failed", detail: (e as { detail?: string }).detail, conversation_id: id }, status);
     }
 
-    // 6) simpan jawaban + tandai pesan pengguna berhasil
     const { data: am, error: ae } = await db.from("messages")
       .insert({ conversation_id: id, role: "assistant", content: answer, model: usedModel, status: "completed" })
       .select("id,created_at").single();

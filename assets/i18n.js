@@ -341,7 +341,17 @@
     'sering diajukan': 'asked questions',
     'Pantau simulasi telemetri': 'Monitor live prototype',
     'prototipe secara langsung': 'telemetry simulation',
-    'Buka Dashboard Admin →': 'Open Admin Dashboard →'
+    'Buka Dashboard Admin →': 'Open Admin Dashboard →',
+    'Tentang Kami': 'About Us',
+    'Ketua Tim &': 'Team Lead &',
+    'Ketua Divisi': 'Division Leads',
+    'Lihat seluruh anggota divisi →': 'View all division members →',
+    'Mode Terang / Gelap': 'Light / Dark Mode',
+    'Ganti Bahasa (ID/EN)': 'Switch Language (ID/EN)',
+    'Buka halaman →': 'Open page →',
+    'Jelajahi Proyek': 'Explore Project',
+    'Akses halaman': 'Access pages',
+    'sesuai kebutuhan': 'as needed'
   };
 
   var enToId = Object.create(null);

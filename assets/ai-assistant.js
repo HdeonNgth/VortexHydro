@@ -138,15 +138,15 @@ window.VX_AI_CONFIG = {
   function scroll() { log.scrollTop = log.scrollHeight; }
 
   function welcome() {
-    log.innerHTML = '<div class="vai__empty"><span class="vai__badge">' + ICON + '</span><h3>Halo, saya Vortex Hydro AI</h3>' +
-      '<p>Asisten teknis untuk memahami cara kerja turbin pusaran air, spesifikasi prototipe, dan rumus mekanika fluida.</p>' +
+    log.innerHTML = '<div class="vai__empty"><span class="vai__badge">' + ICON + '</span><h3>Halo! Aku Vortex AI</h3>' +
+      '<p>Partner lab Mekanika Fluida tim Vortex Hydro UM. Tanya singkat soal cara kerja turbin, komponen, atau rumus fluida.</p>' +
       '<div class="vai__sug"></div></div>';
     var box = log.querySelector('.vai__sug');
     [
-      'Bagaimana cara kerja simulator Vortex Hydro?',
-      'Apa saja komponen utama pada prototipe ini?',
-      'Mengapa turbin vortex cocok untuk head rendah?',
-      'Bagaimana rumus menghitung daya mikro-hidro?'
+      'Singkatnya, bagaimana cara kerja Vortex Hydro?',
+      'Komponen utama prototipe ini apa saja?',
+      'Kenapa pakai turbin pusaran untuk head rendah?',
+      'Rumus cepat hitung daya mikro-hidro?'
     ].forEach(function (q) {
       var b = document.createElement('button'); b.type = 'button'; b.textContent = q;
       b.addEventListener('click', function () { submit(q); }); box.appendChild(b);
@@ -215,8 +215,7 @@ window.VX_AI_CONFIG = {
     api({ action: 'send', conversation_id: state.conv, message: text, retry: !!retry, context: { page: (location.hash || '#beranda').slice(1) } }).then(function (d) {
       state.conv = d.conversation_id; store.set('vxai_conv', state.conv);
       tp.remove();
-      var w = addMsg('assistant', '');
-      return typeInto(w, d.message.content).then(function () { w.querySelector('.vai__txt').innerHTML = md(d.message.content); rebindCopy(w, d.message.content); });
+      addMsg('assistant', d.message.content);
     }).catch(function (e) {
       tp.remove();
       if (e.conv) { state.conv = e.conv; store.set('vxai_conv', state.conv); }
