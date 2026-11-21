@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="assets/styles.css?v=10">
+  <link rel="stylesheet" href="assets/styles.css?v=11">
 </head>
 <body>
   <!-- Scroll Progress Bar -->
@@ -522,17 +522,13 @@
             <span class="doc-ratio">16:9</span>
           </div>
 
-          <button type="button" class="doc-stage doc-stage--wide" data-doc-open="journey" data-reveal aria-label="Putar pratinjau dokumenter The Journey Vortex Hydro">
-            <img src="assets/images/hero-turbine.jpg" alt="Dokumenter perjalanan prototipe Vortex Hydro" loading="lazy" decoding="async">
-            <span class="doc-stage__scrim" aria-hidden="true"></span>
-            <span class="doc-stage__center">
-              <span class="doc-play" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 6.5v11l9-5.5-9-5.5z"/></svg>
-              </span>
+          <div class="doc-stage doc-stage--wide doc-stage--video" data-reveal>
+            <video id="doc-recap-video" src="assets/images/documentation/journey-recap.mp4" poster="assets/images/hero-turbine.jpg" playsinline muted loop controls preload="metadata" aria-label="Video dokumenter The Journey Vortex Hydro"></video>
+            <div class="doc-video__badge" aria-hidden="true">
               <strong>THE JOURNEY</strong>
               <small>VORTEX HYDRO — DOCUMENTARY</small>
-            </span>
-          </button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -678,8 +674,19 @@
     <div class="page about-dark" id="tentang-kami" data-title="Tentang Kami" hidden>
       <section class="about-hero">
         <div class="wrap">
-          <figure class="about-banner" data-reveal>
-            <img src="assets/images/team-group.jpg" alt="Foto bersama seluruh tim Vortex Hydro Universitas Negeri Malang" loading="lazy" decoding="async">
+          <figure class="about-banner about-slider" id="about-slider" data-reveal aria-label="Galeri foto bersama tim Vortex Hydro">
+            <div class="about-slider__track" id="about-slider-track">
+              <div class="about-slider__slide">
+                <img src="assets/images/team-group.jpg" alt="Foto bersama seluruh tim Vortex Hydro Universitas Negeri Malang" loading="eager" decoding="async">
+              </div>
+              <div class="about-slider__slide">
+                <img src="assets/images/team-group-2.jpg" alt="Foto bersama tim Vortex Hydro pose solidaritas Universitas Negeri Malang" loading="lazy" decoding="async">
+              </div>
+            </div>
+            <div class="about-slider__dots" role="tablist" aria-label="Pilih foto tim">
+              <button type="button" class="about-slider__dot is-active" data-slide="0" role="tab" aria-selected="true" aria-label="Foto tim 1"></button>
+              <button type="button" class="about-slider__dot" data-slide="1" role="tab" aria-selected="false" aria-label="Foto tim 2"></button>
+            </div>
           </figure>
           <p class="about-manifesto" data-scroll-words>
             <strong>Kami adalah perancang</strong> — membangun sistem pembangkit listrik mikro-hidro pusaran air di Fakultas Vokasi, Universitas Negeri Malang. Kolaborasi lintas disiplin menjadi inti kami, menyatukan pengurus inti dan tujuh divisi teknis dari simulasi fluida, mekanikal, kelistrikan, hingga perangkat lunak.
@@ -1040,7 +1047,7 @@
   </div>
 
   <!-- Consolidated Scripts -->
-  <script src="assets/app.js?v=7"></script>
+  <script src="assets/app.js?v=8"></script>
   <script src="assets/dashboard.js?v=3"></script>
   <script src="assets/i18n.js?v=17"></script>
   <script src="assets/ai-assistant.js?v=8" defer></script>

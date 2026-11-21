@@ -135,6 +135,16 @@
     } else {
       window.scrollTo(0, 0);
     }
+    var docVid = $('doc-recap-video');
+    if (docVid) {
+      if (active === 'dokumentasi') {
+        docVid.muted = true;
+        var p = docVid.play();
+        if (p && typeof p.catch === 'function') p.catch(function () {});
+      } else {
+        docVid.pause();
+      }
+    }
     if (typeof window.__vxRefreshScroll === 'function') {
       requestAnimationFrame(window.__vxRefreshScroll);
     }
@@ -968,5 +978,42 @@
     if (closeBtn) closeBtn.addEventListener('click', closeDoc);
     ov.addEventListener('mousedown', function (e) { if (e.target === ov) closeDoc(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !ov.hidden) closeDoc(); });
+  })();
+
+  /* ---------- 9. Tentang Kami Top Photo Slideshow (Auto 5s) ---------- */
+  (function initAboutSlider() {
+    var slider = $('about-slider'), track = $('about-slider-track');
+    if (!slider || !track) return;
+    var slides = $$('.about-slider__slide', track);
+    var dots = $$('.about-slider__dot', slider);
+    if (slides.length < 2) return;
+    var idx = 0, timer = null;
+
+    function go(next) {
+      idx = (next + slides.length) % slides.length;
+      track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+      dots.forEach(function (d, i) {
+        var on = i === idx;
+        d.classList.toggle('is-active', on);
+        d.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+    function start() {
+      stop();
+      timer = setInterval(function () { go(idx + 1); }, 5000);
+    }
+    function stop() {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    dots.forEach(function (d) {
+      d.addEventListener('click', function () {
+        go(+d.getAttribute('data-slide') || 0);
+        start();
+      });
+    });
+    slider.addEventListener('mouseenter', stop);
+    slider.addEventListener('mouseleave', start);
+    start();
   })();
 })();

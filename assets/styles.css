@@ -1116,6 +1116,7 @@ html[data-theme="dark"] .nav-card__go { color: var(--sky); }
   padding: calc(var(--hdr-h) + 34px) 0 clamp(44px, 6vw, 72px);
 }
 .about-banner {
+  position: relative;
   margin: 0 0 clamp(32px, 5vw, 56px);
   border-radius: 18px;
   overflow: hidden;
@@ -1123,11 +1124,51 @@ html[data-theme="dark"] .nav-card__go { color: var(--sky); }
   box-shadow: var(--sh-md);
   max-height: 460px;
 }
+.about-slider__track {
+  display: flex;
+  width: 100%;
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.about-slider__slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+}
 .about-banner img {
+  display: block;
   width: 100%;
   height: clamp(220px, 38vw, 440px);
   object-fit: cover;
   object-position: center 35%;
+}
+.about-slider__dots {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(6, 14, 28, 0.48);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2;
+}
+.about-slider__dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.25s ease;
+}
+.about-slider__dot.is-active {
+  width: 24px;
+  background: #FFFFFF;
 }
 .about-manifesto {
   margin: 0;
@@ -1554,6 +1595,49 @@ html[data-theme="dark"] .doc-tag { color: var(--sky); }
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.78);
+}
+.doc-stage--video {
+  cursor: default;
+  background: #040914;
+}
+.doc-stage--video:hover {
+  transform: none;
+}
+.doc-stage--video video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #040914;
+}
+.doc-video__badge {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: rgba(6, 14, 28, 0.56);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  pointer-events: none;
+  z-index: 2;
+}
+.doc-video__badge strong {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #FFFFFF;
+}
+.doc-video__badge small {
+  font-family: var(--f-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   color: rgba(255, 255, 255, 0.78);
 }
 
