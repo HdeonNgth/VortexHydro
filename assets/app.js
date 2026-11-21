@@ -1769,10 +1769,11 @@
       });
     }
 
-    /* Main WebGL Animation Loop */
+    /* Main WebGL Animation Loop (Desktop Only; Paused on Mobile <= 768px) */
     var simClock = 0;
     function animate() {
       requestAnimationFrame(animate);
+      if (window.innerWidth <= 768) return;
       var beranda = $('beranda');
       if (beranda && beranda.hidden) return;
 

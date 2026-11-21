@@ -4,40 +4,53 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <script>try{var t=localStorage.getItem('vxt');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;var p=localStorage.getItem('vxpal');if(p&&/^(vortex|vokasi|emerald|sakura)$/.test(p))document.documentElement.dataset.pal=p;}catch(e){}</script>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23041B36'/%3E%3Cpath d='M16 6a10 10 0 1 1-10 10 6.8 6.8 0 1 1 6.8 6.8 3.6 3.6 0 1 1 3.6-3.6' fill='none' stroke='%2300A8E8' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" href="assets/images/vortex-mark.png">
   <title>Vortex Hydro — Pembangkit Listrik Mikro-Hidro Pusaran Air</title>
   <meta name="description" content="Prototipe pembangkit listrik mikro-hidro berbasis pusaran air skala laboratorium, Fakultas Vokasi, Universitas Negeri Malang.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="assets/styles.css?v=16">
+  <link rel="stylesheet" href="assets/styles.css?v=17">
 </head>
 <body>
   <!-- Scroll Progress Bar -->
   <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
-  <!-- Unified Single Floating Liquid Glass Pill Navbar -->
+  <!-- Unified Single Floating Liquid Glass Pill Navbar (Icon-Only on Mobile) -->
   <header class="hdr" id="hdr">
     <div class="hdr__dock">
       <a class="hdr__brand" href="#beranda" aria-label="Vortex Hydro, ke beranda">
         <span class="vxlogo" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="9" fill="currentColor" fill-opacity=".16"/>
-            <path d="M16 6.5a9.5 9.5 0 1 1-9.5 9.5 6.4 6.4 0 1 1 6.4 6.4 3.4 3.4 0 1 1 3.4-3.4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/>
-          </svg>
+          <img src="assets/images/vortex-mark.png" alt="" class="vxlogo__img">
         </span>
-        <span>Vortex Hydro</span>
+        <span class="hdr__brand-txt">Vortex Hydro</span>
       </a>
 
       <i class="hdr__sep" aria-hidden="true"></i>
 
       <nav class="hdr__nav lgn-pill" id="lgn" aria-label="Menu utama">
         <span class="lgn-lens" id="lgn-lens" aria-hidden="true"></span>
-        <a href="#beranda" data-nav-link data-k="beranda" aria-current="page"><span>Beranda</span></a>
-        <a href="#tentang" data-nav-link data-k="tentang"><span>Cara Kerja</span></a>
-        <a href="#dokumentasi" data-nav-link data-k="dokumentasi"><span>Dokumentasi</span></a>
-        <a href="#tentang-kami" data-nav-link data-k="tentang-kami"><span>Tentang Kami</span></a>
-        <a href="#dashboard" data-nav-link data-k="dashboard" data-admin-only hidden><span>Dashboard</span><i class="hdr__live" aria-hidden="true"></i></a>
+        <a href="#beranda" data-nav-link data-k="beranda" aria-current="page" aria-label="Beranda" title="Beranda">
+          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-5.5h-5V21H5a1 1 0 0 1-1-1z"/></svg>
+          <span class="nav-txt">Beranda</span>
+        </a>
+        <a href="#tentang" data-nav-link data-k="tentang" aria-label="Cara Kerja" title="Cara Kerja">
+          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2.5 12h3M18.5 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>
+          <span class="nav-txt">Cara Kerja</span>
+        </a>
+        <a href="#dokumentasi" data-nav-link data-k="dokumentasi" aria-label="Dokumentasi" title="Dokumentasi">
+          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="m10 9 5 3-5 3V9z"/></svg>
+          <span class="nav-txt">Dokumentasi</span>
+        </a>
+        <a href="#tentang-kami" data-nav-link data-k="tentang-kami" aria-label="Tentang Kami" title="Tentang Kami">
+          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="8.5" r="2.5"/><path d="M17.5 14c2.2.4 3.5 2 3.5 4.8"/></svg>
+          <span class="nav-txt">Tentang Kami</span>
+        </a>
+        <a href="#dashboard" data-nav-link data-k="dashboard" data-admin-only hidden aria-label="Dashboard" title="Dashboard">
+          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
+          <span class="nav-txt">Dashboard</span>
+          <i class="hdr__live" aria-hidden="true"></i>
+        </a>
       </nav>
 
       <i class="hdr__sep hdr__sep--end" aria-hidden="true"></i>
@@ -48,34 +61,10 @@
     </div>
   </header>
 
-  <!-- Mobile Bottom Navigation -->
-  <nav class="mnav" aria-label="Navigasi seluler">
-    <a href="#beranda" data-nav-link data-k="beranda" aria-current="page">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
-      <span>Beranda</span>
-    </a>
-    <a href="#tentang" data-nav-link data-k="tentang">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
-      <span>Cara Kerja</span>
-    </a>
-    <a href="#dokumentasi" data-nav-link data-k="dokumentasi">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
-      <span>Dokumentasi</span>
-    </a>
-    <a href="#tentang-kami" data-nav-link data-k="tentang-kami">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M16 5a3 3 0 0 1 0 6M18 14c2 .6 3 2.4 3 5"/></svg>
-      <span>Tentang Kami</span>
-    </a>
-    <a href="#dashboard" data-nav-link data-k="dashboard" data-admin-only hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
-      <span>Dashboard</span>
-    </a>
-  </nav>
-
   <!-- Dashboard Sidebar (Admin Mode — Dashboard V35 Slim Vertical Rail) -->
   <aside class="dsb" id="dsb" aria-label="Menu dashboard admin">
     <div class="dsb__logo" aria-hidden="true">
-      <svg viewBox="0 0 32 32" fill="none"><path d="M16 6.5a9.5 9.5 0 1 1-9.5 9.5 6.4 6.4 0 1 1 6.4 6.4 3.4 3.4 0 1 1 3.4-3.4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <img src="assets/images/vortex-mark.png" alt="" class="vxlogo__img">
     </div>
     <nav class="dsb__nav" id="dsbn" aria-label="Kategori dashboard">
       <span class="dsb__lens" id="dsbl"></span>
@@ -118,15 +107,6 @@
           </div>
 
           <div class="hero__bottom">
-            <div class="hero__strip">
-              <span class="hero__strip-lbl">Didukung Perangkat Rekayasa</span>
-              <div class="hero__logos">
-                <span><img src="assets/images/software/ansys-fluent.png" alt="ANSYS Fluent">ANSYS Fluent</span>
-                <span><img src="assets/images/software/autocad.png" alt="AutoCAD">AutoCAD</span>
-                <span><img src="assets/images/software/matlab.png" alt="MATLAB">MATLAB</span>
-                <span><img src="assets/images/software/vs-code.png" alt="VS Code">VS Code</span>
-              </div>
-            </div>
             <div class="hero__cta">
               <a class="c-btn c-btn--white" href="#tentang">Lihat Cara Kerja →</a>
               <a class="c-btn c-btn--ghost-light" href="#tentang-kami">Tentang Kami</a>
@@ -321,6 +301,62 @@
             </div>
           </div>
         </div>
+
+        <!-- Mobile-Only Simple Information View (No 3D on Mobile) -->
+        <div class="vx3d-mob wrap">
+          <header class="vx3d-mob__head">
+            <span class="eyebrow">Alur Konversi Energi</span>
+            <h2 class="h-sec">Lima Bagian Utama <em>Prototipe</em></h2>
+            <p class="lead">Ringkasan komponen utama pengubah aliran air menjadi energi listrik DC pada sistem sirkulasi tertutup Vortex Hydro.</p>
+          </header>
+
+          <div class="vx3d-mob__list">
+            <article class="vx3d-mcard vx3d-mcard--c1">
+              <div class="vx3d-mcard__top">
+                <span class="vx3d-mcard__no">01</span>
+                <span class="vx3d-mcard__tag">Saluran Utama</span>
+              </div>
+              <h3>Saluran Akrilik Miring (1700 × 400 mm)</h3>
+              <p>Saluran terbuka berbahan akrilik transparan yang terdiri dari bak penenang hulu (500 mm), bidang luncur miring (1016,97 mm), dan ruang keluar hilir (200 mm) untuk mengarahkan aliran air ke kincir.</p>
+            </article>
+
+            <article class="vx3d-mcard vx3d-mcard--c2">
+              <div class="vx3d-mcard__top">
+                <span class="vx3d-mcard__no">02</span>
+                <span class="vx3d-mcard__tag">Turbin Utama</span>
+              </div>
+              <h3>Kincir Air 6 Sudu Melengkung</h3>
+              <p>Rotor turbin dengan 6 bilah sudu melengkung di dalam saluran miring yang menangkap dorongan aliran air dan mengubahnya menjadi putaran pada poros utama stainless steel Ø 30 mm.</p>
+            </article>
+
+            <article class="vx3d-mcard vx3d-mcard--c3">
+              <div class="vx3d-mcard__top">
+                <span class="vx3d-mcard__no">03</span>
+                <span class="vx3d-mcard__tag">Transmisi Putaran</span>
+              </div>
+              <h3>Transmisi Pulley 4-Jari (1 : 4) &amp; V-Belt</h3>
+              <p>Roda pulley penggerak Ø 270 mm di sisi luar dinding saluran yang terhubung sabuk V-belt ke pulley kecil Ø 67,5 mm untuk melipatgandakan putaran empat kali lebih cepat.</p>
+            </article>
+
+            <article class="vx3d-mcard vx3d-mcard--c4">
+              <div class="vx3d-mcard__top">
+                <span class="vx3d-mcard__no">04</span>
+                <span class="vx3d-mcard__tag">Pembangkit Listrik</span>
+              </div>
+              <h3>Generator DC XD 3240</h3>
+              <p>Unit generator magnet permanen arus searah berukuran kompak di zona kering ujung saluran yang mengubah putaran cepat dari pulley menjadi energi listrik DC.</p>
+            </article>
+
+            <article class="vx3d-mcard vx3d-mcard--c5">
+              <div class="vx3d-mcard__top">
+                <span class="vx3d-mcard__no">05</span>
+                <span class="vx3d-mcard__tag">Penampung Sirkulasi</span>
+              </div>
+              <h3>Penampung Air 60 Liter &amp; Pompa</h3>
+              <p>Wadah silinder berkapasitas 60 liter tepat di bawah bukaan keluar saluran yang dilengkapi pompa celup 100 W untuk menjaga siklus perputaran air secara tertutup.</p>
+            </article>
+          </div>
+        </div>
       </section>
 
       <!-- Pintu Navigasi ke Halaman Lain (Rising Hydro-Dome Hover Cards — Animation_Scroll.mp4 Pattern) -->
@@ -331,7 +367,7 @@
             <h2 class="h-sec">Akses halaman <em>sesuai kebutuhan</em></h2>
           </div>
           <div class="nav-cards dome-cards">
-            <a class="nav-card dome-card" href="#tentang" data-reveal style="--d:0ms">
+            <a class="nav-card dome-card dome-card--c1" href="#tentang" data-reveal style="--d:0ms">
               <div class="dome-card__top">
                 <span class="dome-card__ic" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
@@ -347,7 +383,7 @@
               </div>
             </a>
 
-            <a class="nav-card dome-card" href="#dokumentasi" data-reveal style="--d:90ms">
+            <a class="nav-card dome-card dome-card--c2" href="#dokumentasi" data-reveal style="--d:90ms">
               <div class="dome-card__top">
                 <span class="dome-card__ic" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
@@ -363,7 +399,7 @@
               </div>
             </a>
 
-            <a class="nav-card dome-card" href="#tentang-kami" data-reveal style="--d:180ms">
+            <a class="nav-card dome-card dome-card--c3" href="#tentang-kami" data-reveal style="--d:180ms">
               <div class="dome-card__top">
                 <span class="dome-card__ic" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M16 5a3 3 0 0 1 0 6M18 14c2 .6 3 2.4 3 5"/></svg>
@@ -378,6 +414,37 @@
                 <span class="nav-card__go">Buka halaman →</span>
               </div>
             </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Didukung Perangkat Rekayasa (Moved to Very Bottom of Beranda) -->
+      <section class="sec tools-bottom-sec" id="perangkat-rekayasa">
+        <div class="wrap">
+          <div class="tools-bottom" data-reveal>
+            <div class="tools-bottom__copy">
+              <span class="eyebrow">Ekosistem Perangkat Lunak</span>
+              <h2 class="h-sec">Didukung <em>Perangkat Rekayasa</em></h2>
+              <p>Simulasi fluida, pemodelan 3D, perhitungan matematis, dan pengembangan web terintegrasi.</p>
+            </div>
+            <div class="tools-bottom__grid">
+              <div class="tool-pill tool-pill--ansys">
+                <img src="assets/images/software/ansys-fluent.png" alt="ANSYS Fluent" loading="lazy" decoding="async">
+                <div><strong>ANSYS Fluent</strong><small>Simulasi CFD Aliran</small></div>
+              </div>
+              <div class="tool-pill tool-pill--cad">
+                <img src="assets/images/software/autocad.png" alt="AutoCAD" loading="lazy" decoding="async">
+                <div><strong>AutoCAD</strong><small>Desain Geometri 2D/3D</small></div>
+              </div>
+              <div class="tool-pill tool-pill--matlab">
+                <img src="assets/images/software/matlab.png" alt="MATLAB" loading="lazy" decoding="async">
+                <div><strong>MATLAB</strong><small>Pemodelan Matematis</small></div>
+              </div>
+              <div class="tool-pill tool-pill--vscode">
+                <img src="assets/images/software/vs-code.png" alt="VS Code" loading="lazy" decoding="async">
+                <div><strong>VS Code</strong><small>Web &amp; Integrasi AI</small></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -494,11 +561,7 @@
           </div>
 
           <div class="doc-stage doc-stage--wide doc-stage--video" data-reveal>
-            <video id="doc-recap-video" src="assets/images/documentation/journey-recap.mp4" poster="assets/images/hero-turbine.jpg" playsinline muted loop controls preload="metadata" aria-label="Video dokumenter The Journey Vortex Hydro"></video>
-            <div class="doc-video__badge" aria-hidden="true">
-              <strong>THE JOURNEY</strong>
-              <small>VORTEX HYDRO — DOCUMENTARY</small>
-            </div>
+            <video id="doc-recap-video" src="assets/images/documentation/journey-recap.mp4" poster="assets/images/hero-turbine.jpg" autoplay playsinline muted loop disablePictureInPicture preload="auto" aria-label="Animasi dokumenter Vortex Hydro"></video>
           </div>
         </div>
       </section>
@@ -850,7 +913,10 @@
     <div class="wrap">
       <div class="ft__grid">
         <div class="ft__col">
-          <strong style="font-size:1.15rem;color:#fff;display:block;margin-bottom:8px">Vortex Hydro</strong>
+          <div class="ft__brand">
+            <img src="assets/images/vortex-mark.png" alt="Logo Vortex Hydro" class="ft__logo">
+            <strong>Vortex Hydro</strong>
+          </div>
           <p style="margin:0;font-size:.88rem;color:rgba(255,255,255,.68);max-width:34ch">Turbin pusaran air untuk menghasilkan listrik dari aliran head rendah, tanpa bendungan besar.</p>
         </div>
         <div class="ft__col">
@@ -948,7 +1014,7 @@
     </div>
 
     <button class="vxt__btn" id="vxb" type="button" aria-expanded="false" aria-label="Buka alat Vortex" title="Alat Vortex">
-      <svg viewBox="0 0 32 32" fill="none"><path d="M16 6.5a9.5 9.5 0 1 1-9.5 9.5 6.4 6.4 0 1 1 6.4 6.4 3.4 3.4 0 1 1 3.4-3.4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <img src="assets/images/vortex-mark.png" alt="" class="vxlogo__img">
     </button>
   </div>
 
@@ -1019,9 +1085,9 @@
 
   <!-- Consolidated Scripts -->
   <script src="assets/three.min.js"></script>
-  <script src="assets/app.js?v=12"></script>
+  <script src="assets/app.js?v=13"></script>
   <script src="assets/dashboard.js?v=3"></script>
   <script src="assets/i18n.js?v=17"></script>
-  <script src="assets/ai-assistant.js?v=8" defer></script>
+  <script src="assets/ai-assistant.js?v=9" defer></script>
 </body>
 </html>

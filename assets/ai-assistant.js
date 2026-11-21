@@ -57,7 +57,7 @@ window.VX_AI_CONFIG = {
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function inline(s) {
     var codes = [];
-    s = s.replace(/`([^`\n]+)`/g, function (_, c) { codes.push('<code>' + c + '</code>'); return '\u0000' + (codes.length - 1) + '\u0000'; });
+    s = s.replace(/`([^`\n]+)`/g, '$1');
     s = s.replace(/\$\$?([^$\n]+?)\$\$?/g, function (_, c) {
       var clean = c.replace(/\\rightarrow/g, '→').replace(/\\times/g, '×').replace(/\\cdot/g, '·')
         .replace(/\^(\{[^}]+\}|[\w+-]+)/g, function (_, x) { return '<sup>' + x.replace(/^\{|\}$/g, '') + '</sup>'; })
@@ -72,8 +72,7 @@ window.VX_AI_CONFIG = {
   }
   function md(src) {
     var text = esc(String(src).replace(/\r\n/g, '\n'));
-    var blocks = [];
-    text = text.replace(/```[^\n]*\n([\s\S]*?)```/g, function (_, c) { blocks.push('<pre><code>' + c.replace(/\n$/, '') + '</code></pre>'); return '\n\u0001' + (blocks.length - 1) + '\u0001\n'; });
+    text = text.replace(/```[\s\S]*?```/g, 'Maaf ya, aku tidak bisa memberikan kode pemrograman 😅😊');
     var lines = text.split('\n'), out = [], i = 0;
     function isRow(l) { return /^\s*\|.*\|\s*$/.test(l); }
     function isHr(l) { return /^\s*(?:---+|___+|\*\*\*+)\s*$/.test(l); }
@@ -194,15 +193,15 @@ window.VX_AI_CONFIG = {
   function scroll() { log.scrollTop = log.scrollHeight; }
 
   function welcome() {
-    log.innerHTML = '<div class="vai__empty"><span class="vai__badge">' + ICON + '</span><h3>Halo! Aku Vortex Hydro AI 🌊</h3>' +
-      '<p>Partner cerdas proyek mikro-hidro Vortex Hydro UM ✨ Langsung tanyakan apa saja soal cara kerja turbin, komponen, atau rumus fluida!</p>' +
+    log.innerHTML = '<div class="vai__empty"><span class="vai__badge">' + ICON + '</span><h3>Halo! Aku Vortex Hydro AI 😊</h3>' +
+      '<p>Teman diskusi cerdas proyek mikro-hidro Vortex Hydro UM 😄 Langsung tanyakan apa saja soal cara kerja turbin, komponen, atau konsep alirannya ya!</p>' +
       '<div class="vai__sug"></div></div>';
     var box = log.querySelector('.vai__sug');
     [
-      '🌊 Bagaimana alur kerja Vortex Hydro secara singkat?',
-      '⚙️ Apa fungsi transmisi pulley 1:4 di zona kering?',
-      '⚡ Kenapa turbin pusaran cocok untuk head rendah?',
-      '💡 Bagaimana rumus cepat hitung daya mikro-hidro?'
+      '😊 Bagaimana alur kerja Vortex Hydro secara singkat?',
+      '🤔 Apa fungsi transmisi pulley 1:4 di zona kering?',
+      '😮 Kenapa turbin pusaran cocok untuk head rendah?',
+      '😄 Apa saja komponen utama prototipe Vortex Hydro?'
     ].forEach(function (q) {
       var b = document.createElement('button'); b.type = 'button'; b.textContent = q;
       b.addEventListener('click', function () { submit(q); }); box.appendChild(b);
