@@ -94,10 +94,10 @@
 
   function updateHeaderState(routeId) {
     if (!hdr) return;
-    var darkTop = routeId === 'beranda' || routeId === 'tentang-kami';
+    var darkTop = routeId === 'beranda';
     var solid = !darkTop || window.scrollY > 40;
     hdr.classList.toggle('is-scrolled', solid);
-    hdr.classList.toggle('is-dark-page', routeId === 'tentang-kami');
+    hdr.classList.remove('is-dark-page');
   }
 
   var firstRoute = true;
@@ -714,6 +714,11 @@
       document.body.style.overflow = 'hidden';
       if (closeBtn) closeBtn.focus();
     }
+    window.__vxOpenDivision = function (divId) {
+      for (var k = 0; k < DIVISIONS.length; k++) {
+        if (DIVISIONS[k].id === divId) { openDrawer(k); return; }
+      }
+    };
 
     function closeDrawer() {
       if (!ov || ov.hidden) return;
@@ -800,5 +805,157 @@
       if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) { e.preventDefault(); ov.hidden ? open() : close(); }
       else if (e.key === '/' && !typing && ov.hidden) { e.preventDefault(); open(); }
     });
+  })();
+
+  /* ---------- 8. Documentary & Division Archive Lightbox (#dokumentasi) ---------- */
+  (function initDocArchive() {
+    var ov = $('doc-mod-ov'), closeBtn = $('doc-mod-close');
+    var media = $('doc-mod-media'), tagEl = $('doc-mod-tag'), titleEl = $('doc-mod-title'),
+        descEl = $('doc-mod-desc'), chipsEl = $('doc-mod-chips'), actEl = $('doc-mod-actions');
+    if (!ov) return;
+
+    var ARCHIVE = {
+      journey: {
+        tag: '01 / DOCUMENTATION RECAP · 16:9',
+        title: 'The Journey — Vortex Hydro Documentary',
+        badge: 'REKAP DOKUMENTER · PROYEK LAB',
+        img: 'assets/images/hero-turbine.jpg',
+        desc: 'Rekaman lengkap perjalanan tim Fakultas Vokasi Universitas Negeri Malang merancang, memfabrikasi, dan menguji prototipe pembangkit listrik mikro-hidro pusaran air sirkulasi tertutup di atas rangka 2,0 × 0,8 m.',
+        chips: ['Rangka 2,0 × 0,8 m', 'Kincir 6 Sudu Ø 330 mm', 'Transmisi 1:4', 'Generator DC XD 3240'],
+        goHref: '#tentang',
+        goLabel: 'Lihat Diagram Cara Kerja →'
+      },
+      process: {
+        tag: '02 / BEHIND THE PROCESS · 1:1',
+        title: 'Behind Every Creation — Process Film',
+        badge: 'PROSES KOLABORASI · 8 DIVISI',
+        img: 'assets/images/team-group.jpg',
+        desc: 'Di balik setiap pengujian prototipe terdapat diskusi lintas divisi: mulai dari simulasi fluida ANSYS Fluent, perhitungan hidrodinamika, perakitan mekanikal, instalasi kelistrikan zona kering, hingga pengembangan web & AI.',
+        chips: ['ANSYS Fluent', 'AutoCAD', 'MATLAB', 'VS Code', 'Uji Lab UM'],
+        goHref: '#tentang-kami',
+        goLabel: 'Kenali Tim Kepemimpinan →'
+      },
+      pengurus: {
+        tag: '01 / DIVISION ARCHIVE',
+        title: 'Pengurus Inti',
+        badge: 'KOORDINASI & MANAJEMEN PROYEK',
+        img: 'assets/images/documentation/t-tim.jpg',
+        desc: 'Menyelaraskan jadwal kerja tujuh divisi teknis, administrasi proyek kelas Mekanika Fluida, serta pengelolaan anggaran dan kesiapan presentasi prototipe Vortex Hydro.',
+        chips: ['Koordinasi Lintas Divisi', 'Administrasi', 'Anggaran & Jadwal'],
+        divId: 'pengurus'
+      },
+      modeling: {
+        tag: '02 / DIVISION ARCHIVE',
+        title: 'Divisi Modeling',
+        badge: 'CAD 3D & SIMULASI CFD',
+        img: 'assets/images/documentation/t-akademik.jpg',
+        desc: 'Membangun model geometri 3D rangka, headbox, saluran miring akrilik (0,416 m → 0,28 m), serta mengevaluasi profil kecepatan aliran fluida melalui simulasi ANSYS Fluent & AutoCAD.',
+        chips: ['AutoCAD 3D', 'ANSYS Fluent CFD', 'Geometri Saluran'],
+        divId: 'modeling'
+      },
+      'mat-model': {
+        tag: '03 / DIVISION ARCHIVE',
+        title: 'Divisi Mat Model',
+        badge: 'HIDRODINAMIKA & MATERIAL',
+        img: 'assets/images/documentation/t-blog.jpg',
+        desc: 'Menyusun pemodelan matematis debit aliran, tinggi jatuh (head), persamaan daya mikro-hidro P = ρ·g·Q·H·η di MATLAB, serta kajian pemilihan material tahan air untuk komponen.',
+        chips: ['MATLAB', 'Persamaan P = ρ·g·Q·H·η', 'Kajian Material'],
+        divId: 'mat-model'
+      },
+      software: {
+        tag: '04 / DIVISION ARCHIVE',
+        title: 'Divisi Software',
+        badge: 'WEBSITE, DASHBOARD & AI',
+        img: 'assets/images/documentation/t-acara.jpg',
+        desc: 'Merancang antarmuka website interaktif Vortex Hydro, diagram penampang animasi, simulasi Dashboard Admin telemetri, serta integrasi asisten cerdas Vortex Hydro AI berbasis Supabase & Gemini.',
+        chips: ['VS Code', 'Web SPA & Animasi', 'Dashboard Simulasi', 'Vortex Hydro AI'],
+        divId: 'software'
+      },
+      electrical: {
+        tag: '05 / DIVISION ARCHIVE',
+        title: 'Divisi Electrical',
+        badge: 'PEMBANGKITAN DC & BEBAN LED',
+        img: 'assets/images/components/comp-generator.jpg',
+        desc: 'Merakit sistem kelistrikan pada zona kering: Generator DC XD 3240, pengontrol pengisian baterai 12 V, rangkaian beban 2× lampu LED 12 V / 5 W (total 10 W), serta rencana instrumentasi sensor.',
+        chips: ['Generator DC XD 3240', 'Baterai 12 V', '2× LED 5 W (10 W)'],
+        divId: 'electrical'
+      },
+      mekanikal: {
+        tag: '06 / DIVISION ARCHIVE',
+        title: 'Divisi Mekanikal',
+        badge: 'FABRIKASI & TRANSMISI 1:4',
+        img: 'assets/images/components/comp-wheel.jpg',
+        desc: 'Mengerjakan fabrikasi rangka utama 2,0 × 0,8 m, perakitan kincir air 6 sudu Ø 330 mm (lebar sudu 250 mm), poros stainless steel Ø 30 mm, serta transmisi pulley & V-belt step-up 1:4 (Ø 270 → Ø 67,5 mm).',
+        chips: ['Kincir Ø 330 mm', 'Poros Ø 30 mm', 'Pulley Step-Up 1:4'],
+        divId: 'mekanikal'
+      },
+      perlengkapan: {
+        tag: '07 / DIVISION ARCHIVE',
+        title: 'Divisi Perlengkapan',
+        badge: 'SIRKULASI POMPA & LOGISTIK',
+        img: 'assets/images/components/comp-pump.jpg',
+        desc: 'Mengelola pengadaan komponen teknis dan kesiapan sirkulasi hidrolik: pompa celup Wasser WD-101E (100 W), tangki penampung Ø 520 mm, perpipaan Ø 45 mm + flow meter, dan logistik uji lab.',
+        chips: ['Pompa Wasser 100 W', 'Tangki Ø 520 mm', 'Pipa Ø 45 mm & Flow Meter'],
+        divId: 'perlengkapan'
+      },
+      pdd: {
+        tag: '08 / DIVISION ARCHIVE',
+        title: 'Divisi PDD',
+        badge: 'MEDIA, VISUAL & DOKUMENTASI',
+        img: 'assets/images/documentation/t-cerita.jpg',
+        desc: 'Mendokumentasikan seluruh momen perakitan hingga pengujian laboratorium dalam bentuk foto, video dokumenter, identitas visual, dan publikasi media sosial @Vortexa.Team.',
+        chips: ['Dokumentasi Foto/Video', 'Desain Visual', 'Publikasi @Vortexa.Team'],
+        divId: 'pdd'
+      }
+    };
+
+    function closeDoc() {
+      if (ov.hidden) return;
+      ov.hidden = true;
+      document.body.style.overflow = '';
+    }
+
+    function openDoc(key) {
+      var item = ARCHIVE[key];
+      if (!item) return;
+      media.innerHTML = '<img src="' + item.img + '" alt="' + item.title + '"><span class="doc-mod__badge">' + item.badge + '</span>';
+      tagEl.textContent = item.tag;
+      titleEl.textContent = item.title;
+      descEl.textContent = item.desc;
+      chipsEl.innerHTML = item.chips.map(function (c) { return '<li>' + c + '</li>'; }).join('');
+      actEl.innerHTML = '';
+      if (item.divId) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'c-btn c-btn--navy';
+        b.textContent = 'Lihat Anggota Divisi di Tentang Kami →';
+        b.addEventListener('click', function () {
+          closeDoc();
+          location.hash = '#tentang-kami';
+          setTimeout(function () {
+            if (typeof window.__vxOpenDivision === 'function') window.__vxOpenDivision(item.divId);
+          }, 120);
+        });
+        actEl.appendChild(b);
+      } else if (item.goHref) {
+        var a = document.createElement('a');
+        a.className = 'c-btn c-btn--navy';
+        a.href = item.goHref;
+        a.textContent = item.goLabel;
+        a.addEventListener('click', closeDoc);
+        actEl.appendChild(a);
+      }
+      ov.hidden = false;
+      document.body.style.overflow = 'hidden';
+      if (closeBtn) closeBtn.focus();
+    }
+
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest && e.target.closest('[data-doc-open]');
+      if (btn) openDoc(btn.getAttribute('data-doc-open'));
+    });
+    if (closeBtn) closeBtn.addEventListener('click', closeDoc);
+    ov.addEventListener('mousedown', function (e) { if (e.target === ov) closeDoc(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !ov.hidden) closeDoc(); });
   })();
 })();

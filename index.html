@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="assets/styles.css?v=5">
+  <link rel="stylesheet" href="assets/styles.css?v=7">
 </head>
 <body>
   <!-- Scroll Progress Bar -->
@@ -507,51 +507,148 @@
       </section>
     </div>
 
-    <!-- ==================== PAGE 3: DOKUMENTASI & FAQ ==================== -->
-    <div class="page" id="dokumentasi" data-title="Dokumentasi" hidden>
-      <section class="pagehead">
+    <!-- ==================== PAGE 3: DOKUMENTASI & ARSIP DIVISI (BENTO DOCUMENTARY TEMPLATE) ==================== -->
+    <div class="page doc-page" id="dokumentasi" data-title="Dokumentasi" hidden>
+      <!-- 01 / DOCUMENTATION RECAP (16:9) -->
+      <section class="doc-band doc-band--first">
         <div class="wrap">
-          <span class="eyebrow">Dokumentasi &amp; Pengujian</span>
-          <h1 class="h-sec">Dari desain CAD <em>hingga uji laboratorium</em></h1>
-          <p class="lead">Tahapan ringkas perakitan prototipe, pengujian debit-RPM-daya, serta jawaban atas pertanyaan teknis yang sering diajukan.</p>
+          <div class="doc-head" data-reveal>
+            <span class="doc-tag">01 / DOCUMENTATION RECAP</span>
+            <span class="doc-ratio">16:9</span>
+          </div>
+
+          <button type="button" class="doc-stage doc-stage--wide" data-doc-open="journey" data-reveal aria-label="Putar pratinjau dokumenter The Journey Vortex Hydro">
+            <img src="assets/images/hero-turbine.jpg" alt="Dokumenter perjalanan prototipe Vortex Hydro" loading="lazy" decoding="async">
+            <span class="doc-stage__scrim" aria-hidden="true"></span>
+            <span class="doc-stage__center">
+              <span class="doc-play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 6.5v11l9-5.5-9-5.5z"/></svg>
+              </span>
+              <strong>THE JOURNEY</strong>
+              <small>VORTEX HYDRO — DOCUMENTARY</small>
+            </span>
+          </button>
         </div>
       </section>
 
-      <section class="sec">
+      <!-- 02 / BEHIND THE PROCESS (1:1) -->
+      <section class="doc-band">
         <div class="wrap">
-          <div class="doc-grid">
-            <article class="doc-card" data-reveal style="--d:0ms">
-              <img src="assets/images/documentation/t-akademik.jpg" alt="Perancangan CAD dan simulasi aliran" loading="lazy" decoding="async">
-              <div class="doc-card__overlay">
-                <span class="doc-card__step">01 · DESAIN</span>
-                <h3>Simulasi CAD &amp; CFD</h3>
-                <p>Pemodelan 3D geometri saluran dan evaluasi profil kecepatan fluida di ANSYS Fluent &amp; MATLAB.</p>
+          <div class="doc-head" data-reveal>
+            <span class="doc-tag">02 / BEHIND THE PROCESS</span>
+            <span class="doc-ratio">1:1</span>
+          </div>
+
+          <div class="doc-process">
+            <button type="button" class="doc-stage doc-stage--sq" data-doc-open="process" data-reveal aria-label="Putar pratinjau Process Film Vortex Hydro">
+              <img src="assets/images/team-group.jpg" alt="Proses kolaborasi tim Vortex Hydro di laboratorium" loading="lazy" decoding="async">
+              <span class="doc-stage__scrim" aria-hidden="true"></span>
+              <span class="doc-stage__center">
+                <span class="doc-play" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 6.5v11l9-5.5-9-5.5z"/></svg>
+                </span>
+                <small>PROCESS FILM</small>
+              </span>
+            </button>
+
+            <div class="doc-process__copy" data-reveal style="--d:90ms">
+              <h2>Behind Every Creation.</h2>
+              <p>Persiapan, kolaborasi lintas disiplin, eksperimen laboratorium, dan kisah nyata di balik perancangan hingga uji coba prototipe Vortex Hydro.</p>
+              <button type="button" class="doc-watch" data-doc-open="process">
+                <span>WATCH FILM</span>
+                <span class="doc-watch__arr" aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 / DIVISION ARCHIVE (8-Card Asymmetric Bento Grid) -->
+      <section class="doc-band doc-band--archive">
+        <div class="wrap">
+          <div class="doc-arch__head" data-reveal>
+            <div>
+              <span class="doc-tag">03 / DIVISION ARCHIVE</span>
+              <h1 class="doc-arch__title">Eight Different Stories.</h1>
+              <p class="doc-arch__sub">Satu perjalanan kolaboratif lintas pengurus inti dan tujuh divisi teknis.</p>
+            </div>
+            <span class="doc-arch__count" aria-hidden="true">08</span>
+          </div>
+
+          <div class="doc-bento">
+            <button type="button" class="bento-card bento-card--1" data-doc-open="pengurus" data-reveal style="--d:0ms">
+              <img src="assets/images/documentation/t-tim.jpg" alt="Dokumentasi Pengurus Inti Vortex Hydro" loading="lazy" decoding="async">
+              <span class="bento-card__scrim" aria-hidden="true"></span>
+              <div class="bento-card__foot">
+                <span class="bento-pill">01</span>
+                <strong>Pengurus Inti</strong>
+                <span class="bento-exp">Explore ↗</span>
               </div>
-            </article>
-            <article class="doc-card" data-reveal style="--d:80ms">
-              <img src="assets/images/documentation/t-cerita.jpg" alt="Sirkulasi pompa dan saluran miring" loading="lazy" decoding="async">
-              <div class="doc-card__overlay">
-                <span class="doc-card__step">02 · FABRIKASI</span>
-                <h3>Rangka &amp; Sirkulasi</h3>
-                <p>Perakitan rangka 2 × 0,8 m, tangki Ø 520 mm, pompa 100 W, headbox, dan saluran akrilik miring.</p>
+            </button>
+
+            <button type="button" class="bento-card bento-card--2" data-doc-open="modeling" data-reveal style="--d:60ms">
+              <img src="assets/images/documentation/t-akademik.jpg" alt="Dokumentasi Divisi Modeling CAD dan CFD" loading="lazy" decoding="async">
+              <span class="bento-card__scrim" aria-hidden="true"></span>
+              <div class="bento-card__foot bento-card__foot--row">
+                <strong>02 / Modeling</strong>
+                <span class="bento-go" aria-hidden="true">↗</span>
               </div>
-            </article>
-            <article class="doc-card" data-reveal style="--d:160ms">
-              <img src="assets/images/documentation/t-berita.jpg" alt="Integrasi turbin dan generator" loading="lazy" decoding="async">
-              <div class="doc-card__overlay">
-                <span class="doc-card__step">03 · INTEGRASI</span>
-                <h3>Turbin &amp; Generator</h3>
-                <p>Pemasangan kincir 6 sudu, poros Ø 30 mm, transmisi pulley 1:4, dan Generator DC XD 3240 di zona kering.</p>
+            </button>
+
+            <button type="button" class="bento-card bento-card--3" data-doc-open="mat-model" data-reveal style="--d:110ms">
+              <img src="assets/images/documentation/t-blog.jpg" alt="Dokumentasi Divisi Mat Model dan Hidrodinamika" loading="lazy" decoding="async">
+              <span class="bento-card__scrim" aria-hidden="true"></span>
+              <div class="bento-card__foot bento-card__foot--row">
+                <strong>03 / Mat Model</strong>
               </div>
-            </article>
-            <article class="doc-card" data-reveal style="--d:240ms">
-              <img src="assets/images/documentation/t-tim.jpg" alt="Pengujian langsung di laboratorium" loading="lazy" decoding="async">
-              <div class="doc-card__overlay">
-                <span class="doc-card__step">04 · UJI COBA</span>
-                <h3>Pengujian Langsung</h3>
-                <p>Pengukuran debit (L/s), putaran poros &amp; generator (RPM), dan tegangan output beban 2× LED 5 W.</p>
+            </button>
+
+            <button type="button" class="bento-card bento-card--4" data-doc-open="software" data-reveal style="--d:150ms">
+              <img src="assets/images/documentation/t-acara.jpg" alt="Dokumentasi Divisi Software Website dan AI" loading="lazy" decoding="async">
+              <span class="bento-card__scrim" aria-hidden="true"></span>
+              <div class="bento-card__foot bento-card__foot--row">
+                <strong>04 / Software</strong>
               </div>
-            </article>
+            </button>
+
+            <button type="button" class="bento-card bento-card--5" data-doc-open="electrical" data-reveal style="--d:190ms">
+              <img src="assets/images/components/comp-generator.jpg" alt="Dokumentasi Divisi Electrical Generator DC dan LED" loading="lazy" decoding="async">
+              <span class="bento-card__scrim" aria-hidden="true"></span>
+              <div class="bento-card__foot bento-card__foot--row">
+                <strong>05 / Electrical</strong>
+                <span class="bento-go" aria-hidden="true">↗</span>
+              </div>
+            </button>
+
+            <button type="button" class="bento-card bento-card--6" data-doc-open="mekanikal" data-reveal style="--d:60ms">
+              <img src="assets/images/components/comp-wheel.jpg" alt="Dokumentasi Divisi Mekanikal Kincir dan Rangka" loading="lazy" decoding="async">
+              <span class="bento-card__scrim" aria-hidden="true"></span>
+              <div class="bento-card__foot bento-card__foot--row">
+                <strong>06 / Mekanikal</strong>
+              </div>
+            </button>
+
+            <button type="button" class="bento-card bento-card--7" data-doc-open="perlengkapan" data-reveal style="--d:120ms">
+              <img src="assets/images/components/comp-pump.jpg" alt="Dokumentasi Divisi Perlengkapan Pompa dan Pipa" loading="lazy" decoding="async">
+              <span class="bento-card__scrim" aria-hidden="true"></span>
+              <div class="bento-card__foot bento-card__foot--row">
+                <strong>07 / Perlengkapan</strong>
+              </div>
+            </button>
+
+            <button type="button" class="bento-card bento-card--8" data-doc-open="pdd" data-reveal style="--d:180ms">
+              <img src="assets/images/documentation/t-cerita.jpg" alt="Dokumentasi Divisi PDD Media dan Visual" loading="lazy" decoding="async">
+              <span class="bento-card__scrim" aria-hidden="true"></span>
+              <div class="bento-card__foot bento-card__foot--row">
+                <strong>08 / PDD</strong>
+                <span class="bento-go" aria-hidden="true">↗</span>
+              </div>
+            </button>
+          </div>
+
+          <div class="doc-closing" data-reveal>
+            <strong>Every Moment Matters.</strong>
+            <span>VORTEX HYDRO · DOCUMENTATION ARCHIVE</span>
           </div>
         </div>
       </section>
@@ -795,6 +892,21 @@
     </div>
   </div>
 
+  <!-- Documentary & Division Archive Lightbox Modal -->
+  <div class="doc-mod-ov" id="doc-mod-ov" hidden role="dialog" aria-modal="true" aria-labelledby="doc-mod-title">
+    <div class="doc-mod">
+      <button type="button" class="doc-mod__x" id="doc-mod-close" aria-label="Tutup arsip">×</button>
+      <div class="doc-mod__media" id="doc-mod-media"></div>
+      <div class="doc-mod__body">
+        <span class="doc-tag" id="doc-mod-tag">01 / ARCHIVE</span>
+        <h2 id="doc-mod-title">Judul Arsip</h2>
+        <p id="doc-mod-desc"></p>
+        <ul class="doc-mod__tags" id="doc-mod-chips"></ul>
+        <div class="doc-mod__actions" id="doc-mod-actions"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Search Modal -->
   <div class="vs-ov" id="vs-ov" hidden role="dialog" aria-modal="true" aria-label="Cari di situs">
     <div class="vs-pan">
@@ -809,9 +921,9 @@
   </div>
 
   <!-- Consolidated Scripts -->
-  <script src="assets/app.js?v=4"></script>
+  <script src="assets/app.js?v=5"></script>
   <script src="assets/dashboard.js?v=2"></script>
-  <script src="assets/i18n.js?v=16"></script>
-  <script src="assets/ai-assistant.js?v=5" defer></script>
+  <script src="assets/i18n.js?v=17"></script>
+  <script src="assets/ai-assistant.js?v=6" defer></script>
 </body>
 </html>

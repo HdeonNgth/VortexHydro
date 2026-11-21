@@ -363,7 +363,9 @@
     'Transmisi 1:4 & Pembangkit DC': '1:4 Step-Up & DC Generation',
     'Gulir untuk menjelajah': 'Scroll to explore',
     'Mode Warna & Tema': 'Color Palette & Theme',
-    'Ganti Mode Terang / Gelap': 'Switch Light / Dark Mode'
+    'Ganti Mode Terang / Gelap': 'Switch Light / Dark Mode',
+    'Satu perjalanan kolaboratif lintas pengurus inti dan tujuh divisi teknis.': 'One collective journey across core management and seven technical divisions.',
+    'Persiapan, kolaborasi lintas disiplin, eksperimen laboratorium, dan kisah nyata di balik perancangan hingga uji coba prototipe Vortex Hydro.': 'The preparation, collaboration, laboratory experiments, and stories behind building the Vortex Hydro prototype.'
   };
 
   var enToId = Object.create(null);
