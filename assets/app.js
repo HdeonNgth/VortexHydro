@@ -188,95 +188,6 @@
     var progressBar = $('scroll-progress');
     var heroImg = document.querySelector('.hero__media img');
     var berandaEl = $('beranda');
-    var stepper = $('hydro-stepper');
-    var stageBadge = $('stage-badge');
-    var stepItems = stepper ? $$('.step-item', stepper) : [];
-    var STAGE_LABELS = {
-      'all': 'MODEL 3D CAD · PROTOTIPE 1700 × 400 MM + TANGKI 60 L',
-      '1': 'TAHAP 01 · PENAMPUNG AIR 60 LITER & SIRKULASI ATAS',
-      '2': 'TAHAP 02 · SALURAN 1700 MM (LERENG 1016,97 MM) & KINCIR',
-      '3': 'TAHAP 03 · PULLEY 4-JARI (1:4) & GENERATOR DC XD 3240'
-    };
-    var STAGE_DETAILS = {
-      '1': {
-        chap: 'BAB 01 / 03 · ENERGI POTENSIAL & SIRKULASI',
-        bookTitle: 'Sirkulasi Penampung 60 L',
-        bookIntro: 'Di kolong rangka bawah terdapat <strong>penampung air 60 liter</strong>. Pompa celup mengangkat air menuju bak penenang atas (500 × 400 mm) untuk menciptakan energi potensial gravitasi.',
-        pill: '<strong>1 / 3</strong> · Penampung 60 L &amp; Sirkulasi',
-        img: 'assets/images/components/comp-pump.jpg?v=2',
-        chain: 'ENERGI LISTRIK 100 W → ENERGI POTENSIAL GRAVITASI (60 L)',
-        title: '01 · Penampung Air 60 Liter & Pompa Sirkulasi',
-        desc: 'Penampung air 60 liter ditempatkan tepat di bawah ujung keluar saluran (200 mm) agar air jatuh langsung kembali ke tangki dan dipompa naik secara tertutup menuju bak hulu 500 mm.',
-        metrics: [
-          ['Penampung Bawah', 'Tangki Air 60 Liter'],
-          ['Bak Hulu Atas', '500 × 400 × 250 mm'],
-          ['Sekat Pengarah', '95 mm · Step 105 mm'],
-          ['Elevasi Saluran', 'Tinggi Total 485 mm']
-        ],
-        formula: 'E_p = m · g · h   |   P_h = ρ · g · Q · H',
-        vars: [
-          '<strong>V_tangki</strong> = Penampung bawah 60 Liter (Ø 520 mm)',
-          '<strong>H_total</strong> = Elevasi saluran 485 mm (235 + 250 mm)',
-          '<strong>P_pompa</strong> = Pompa sirkulasi 100 W via pipa Ø 45 mm'
-        ],
-        calcTag: 'PERHITUNGAN ENERGI POTENSIAL · TAHAP 01',
-        calcMath: 'E_p = m · g · h = 60 kg · 9,81 m/s² · 0,485 m = 285,47 J\nH_hulu = 235 mm (kolong) + 250 mm (dinding) = 485 mm',
-        calcNote: 'Air dari penampung bawah 60 liter dipompa naik setinggi 485 mm menuju seksi hulu saluran (500 × 400 mm).',
-        hotspot: '2'
-      },
-      '2': {
-        chap: 'BAB 02 / 03 · ENERGI KINETIK & HIDRODINAMIKA',
-        bookTitle: 'Saluran 1700 mm & Kincir 6 Sudu',
-        bookIntro: 'Air dari bak hulu (500 mm) meluncur turun melewati bidang miring sepanjang <strong>1016,97 mm</strong> dan menumbuk <strong>kincir 6 sudu melengkung biru</strong> sebelum keluar melalui ujung hilir (200 mm) kembali ke penampung 60 L.',
-        pill: '<strong>2 / 3</strong> · Saluran 1700 mm &amp; Kincir 6 Sudu',
-        img: 'assets/images/components/cad-prototype.png',
-        chain: 'ENERGI KINETIK ALIRAN → TORSI MEKANIS KINCIR 6 SUDU',
-        title: '02 · Saluran Akrilik 1700 × 400 mm & Kincir 6 Sudu Biru',
-        desc: 'Sesuai gambar kerja PDF, saluran memiliki panjang total 1700 mm (hulu 500 mm, bidang miring 1016,97 mm, hilir 200 mm, lebar 400 mm, tinggi dinding 250 mm) yang mengarahkan aliran tepat ke sudu kincir.',
-        metrics: [
-          ['Dimensi Saluran', '1700 × 400 × 250 mm'],
-          ['Bidang Miring', 'Panjang Lereng 1016,97 mm'],
-          ['Seksi Hulu & Hilir', 'Hulu 500 mm · Hilir 200 mm'],
-          ['Rotor Turbin', '6 Sudu Melengkung · Ø 330 mm']
-        ],
-        formula: 'E_k = ½ · m · v²   |   P_m = τ · ω_turbin',
-        vars: [
-          '<strong>L_total</strong> = 1700,00 mm (500 + 1016,97 miring + 200 mm)',
-          '<strong>W × H</strong> = Lebar 400,00 mm × Dinding 250,00 mm',
-          '<strong>Bibir Buang</strong> = Drop bawah 50,00 mm ke Tangki 60 L'
-        ],
-        calcTag: 'PERHITUNGAN KINETIK & DIMENSI CAD · TAHAP 02',
-        calcMath: 'v = √(2 · g · Δh) = √(2 · 9,81 · 0,235) ≈ 2,15 m/s\nL_saluran = 500 (hulu) + 1016,97 (miring) + 200 (hilir)',
-        calcNote: 'Aliran air menumbuk 6 sudu melengkung lalu langsung jatuh dari bukaan bawah seksi 200 mm kembali ke penampung 60 liter.',
-        hotspot: '6'
-      },
-      '3': {
-        chap: 'BAB 03 / 03 · TRANSMISI MEKANIK & DAYA LISTRIK',
-        bookTitle: 'Pulley 4-Jari (1:4) & Generator DC',
-        bookIntro: 'Poros kincir menembus dinding samping saluran menuju <strong>pulley besar berjari-jari 4 (Ø 270 mm)</strong> yang memutar pulley kecil (Ø 67,5 mm) dan <strong>Generator DC XD 3240</strong> di ujung depan rangka.',
-        pill: '<strong>3 / 3</strong> · Pulley 1:4 &amp; Generator DC',
-        img: 'assets/images/components/comp-generator.jpg?v=2',
-        chain: 'TRANSMISI STEP-UP 1:4 → ENERGI LISTRIK DC 12 V (2×5W LED)',
-        title: '03 · Pulley 4-Jari 1:4, Generator DC XD 3240 & Beban LED',
-        desc: 'Transmisi V-belt di sisi luar dinding akrilik melipatgandakan putaran poros 4 kali lipat ke Generator DC XD 3240 yang terpasang di rangka depan untuk menyalakan beban lampu LED 12 V.',
-        metrics: [
-          ['Pulley Penggerak', 'Roda 4-Jari Ø 270 mm'],
-          ['Pulley Generator', 'Ø 67,5 mm (Step-Up 1 : 4)'],
-          ['Unit Pembangkit', 'Generator DC XD 3240'],
-          ['Beban Output', '2 × 5 W Lampu LED (10 W)']
-        ],
-        formula: 'ω_gen = 4 · ω_kincir   |   η = P_output / P_input',
-        vars: [
-          '<strong>Rasio Pulley</strong> = Ø 270 mm : Ø 67,5 mm = 1 : 4 (4× RPM)',
-          '<strong>Generator</strong> = Permanent Magnet DC XD 3240 (12–24 V)',
-          '<strong>Output Beban</strong> = Baterai 12 V & 2 × 5 W Lampu LED'
-        ],
-        calcTag: 'PERHITUNGAN TRANSMISI & LISTRIK · TAHAP 03',
-        calcMath: 'N_gen = 4 × N_kincir  (Step-up Ø 270 → Ø 67,5 mm)\nP_out = V · I = 12 V × 0,83 A ≈ 10 W (2 × 5 W LED)',
-        calcNote: 'Generator DC terpasang di rangka depan kanan di luar jalur air sehingga bebas cipratan (zona kering).',
-        hotspot: '8'
-      }
-    };
 
     /* 3a. Scroll Reveal Observer (SPA-safe across hidden pages) */
     var revObs = null;
@@ -331,140 +242,6 @@
       if (bucket.length) wordBlocks.push({ el: el, words: bucket });
     });
 
-    /* 3c. Stepper Activation (scroll + click + 3D pin/object click + Physics Book UI) */
-    var manualStepUntil = 0;
-    var curStage = '';
-    var infoPanel = $('stage-info-panel');
-    var infoImg = $('stage-info-img');
-    var infoChain = $('stage-info-chain');
-    var infoTitle = $('stage-info-title');
-    var infoDesc = $('stage-info-desc');
-    var infoMetrics = $('stage-info-metrics');
-    var infoFormula = $('stage-info-formula');
-    var infoLink = $('stage-info-link');
-    var bookChap = $('pbook-chap');
-    var bookTitle = $('pbook-title');
-    var bookIntro = $('pbook-intro');
-    var bookVars = $('pbook-vars');
-    var pillLabel = $('pbook-pill-label');
-    var calcPop = $('pbook-calc-pop');
-    var calcTag = $('pbook-calc-tag');
-    var calcMath = $('pbook-calc-math');
-    var calcNote = $('pbook-calc-note');
-    var calcClose = $('pbook-calc-close');
-    var calcToggle = $('pbook-calc-toggle');
-    var flapBtn = $('pbook-flap-btn');
-    var prevStageBtn = $('pbook-prev');
-    var nextStageBtn = $('pbook-next');
-
-    function setStage(stage, fromUser) {
-      if (!stepper) return;
-      var s = String(stage);
-      if (fromUser) manualStepUntil = Date.now() + 11000;
-      if (curStage === s) {
-        if (fromUser && calcPop) calcPop.hidden = false;
-        return;
-      }
-      curStage = s;
-      stepper.setAttribute('data-stage', s);
-      if (stageBadge && STAGE_LABELS[s]) stageBadge.textContent = STAGE_LABELS[s];
-
-      var activeStep = s === 'all' ? '1' : s;
-      stepItems.forEach(function (btn) {
-        var on = s !== 'all' && btn.getAttribute('data-step') === s;
-        btn.classList.toggle('is-active', on);
-        btn.setAttribute('aria-selected', on ? 'true' : 'false');
-      });
-      $$('[data-3d-stage]').forEach(function (t) {
-        t.classList.toggle('is-active', t.getAttribute('data-3d-stage') === s);
-      });
-      $$('[data-pin-step]').forEach(function (p) {
-        p.classList.toggle('is-active', p.getAttribute('data-pin-step') === s);
-      });
-
-      var d = STAGE_DETAILS[activeStep];
-      if (d) {
-        if (bookChap) bookChap.textContent = d.chap;
-        if (bookTitle) bookTitle.textContent = d.bookTitle;
-        if (bookIntro) bookIntro.innerHTML = d.bookIntro;
-        if (pillLabel) pillLabel.innerHTML = d.pill;
-        if (infoFormula) infoFormula.textContent = d.formula;
-        if (bookVars && d.vars) {
-          bookVars.innerHTML = d.vars.map(function (v) { return '<li>' + v + '</li>'; }).join('');
-        }
-        if (calcTag) calcTag.textContent = d.calcTag;
-        if (calcMath) calcMath.innerHTML = d.calcMath.replace(/\n/g, '<br>');
-        if (calcNote) calcNote.textContent = d.calcNote;
-        if (fromUser && calcPop) calcPop.hidden = false;
-      }
-      if (d && infoPanel) {
-        if (fromUser && flapBtn) {
-          infoPanel.hidden = false;
-          flapBtn.setAttribute('aria-expanded', 'true');
-        }
-        infoPanel.classList.add('is-switching');
-        setTimeout(function () {
-          if (infoImg) { infoImg.src = d.img; infoImg.alt = d.title; }
-          if (infoChain) infoChain.textContent = d.chain;
-          if (infoTitle) infoTitle.textContent = d.title;
-          if (infoDesc) infoDesc.textContent = d.desc;
-          if (infoMetrics) {
-            infoMetrics.innerHTML = d.metrics.map(function (m) {
-              return '<div class="stage-info__metric"><span>' + m[0] + '</span><strong>' + m[1] + '</strong></div>';
-            }).join('');
-          }
-          if (infoLink) infoLink.setAttribute('data-go-hotspot', d.hotspot);
-          infoPanel.classList.remove('is-switching');
-        }, 90);
-      }
-      if (typeof window.__vxFocus3DStage === 'function') {
-        window.__vxFocus3DStage(s);
-      }
-    }
-    window.__vxSelectStage = function (s) { setStage(s, true); };
-
-    stepItems.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        setStage(btn.getAttribute('data-step'), true);
-      });
-    });
-    $$('[data-3d-stage]').forEach(function (t) {
-      t.addEventListener('click', function () {
-        setStage(t.getAttribute('data-3d-stage'), true);
-      });
-    });
-    $$('[data-pin-step]').forEach(function (p) {
-      p.addEventListener('click', function (e) {
-        e.stopPropagation();
-        setStage(p.getAttribute('data-pin-step'), true);
-      });
-    });
-    if (flapBtn && infoPanel) {
-      flapBtn.addEventListener('click', function () {
-        var open = !infoPanel.hidden;
-        infoPanel.hidden = open;
-        flapBtn.setAttribute('aria-expanded', open ? 'false' : 'true');
-      });
-    }
-    if (calcClose && calcPop) {
-      calcClose.addEventListener('click', function () { calcPop.hidden = true; });
-    }
-    if (calcToggle && calcPop) {
-      calcToggle.addEventListener('click', function () { calcPop.hidden = !calcPop.hidden; });
-    }
-    if (prevStageBtn) {
-      prevStageBtn.addEventListener('click', function () {
-        var n = curStage === '2' ? '1' : (curStage === '3' ? '2' : '3');
-        setStage(n, true);
-      });
-    }
-    if (nextStageBtn) {
-      nextStageBtn.addEventListener('click', function () {
-        var n = curStage === '1' ? '2' : (curStage === '2' ? '3' : '1');
-        setStage(n, true);
-      });
-    }
-
     /* Smooth scroll cue button inside Hero (does not hijack SPA hash) */
     var cue = document.querySelector('.hero__scroll-cue');
     if (cue) {
@@ -475,7 +252,7 @@
       });
     }
 
-    /* 3d. Unified rAF Scroll Tick */
+    /* 3c. Unified rAF Scroll Tick */
     var ticking = false;
     function updateScrollFX() {
       ticking = false;
@@ -514,23 +291,6 @@
           var local = Math.min(1, Math.max(0, (prog - threshold) * (n * 0.32 + 2.4)));
           wb.words[w].style.opacity = (0.18 + local * 0.82).toFixed(2);
         }
-      }
-
-      /* Scroll-Activated 3-Stage Stepper */
-      if (stepper && berandaEl && !berandaEl.hidden && Date.now() > manualStepUntil) {
-        var anchorY = vh * 0.46;
-        var best = '1';
-        var bestDist = Infinity;
-        stepItems.forEach(function (btn) {
-          var r = btn.getBoundingClientRect();
-          var mid = r.top + r.height * 0.5;
-          var dist = Math.abs(mid - anchorY);
-          if (dist < bestDist) {
-            bestDist = dist;
-            best = btn.getAttribute('data-step') || '1';
-          }
-        });
-        setStage(best);
       }
     }
 
@@ -1214,676 +974,847 @@
     start();
   })();
 
-  /* ---------- 10. Interactive 3D Physics Book & CAD Prototype Lab (#hydro-3d-canvas) ---------- */
-  (function initHydro3DRig() {
-    var canvas = $('hydro-3d-canvas');
-    var viewport = $('hydro-3d-viewport');
-    if (!canvas || !viewport) return;
-    var ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  /* ---------- 10. Fullscreen Interactive 3D Simulator (Three.js WebGL + Raycasting) ---------- */
+  (function initVortexThreeSimulator() {
+    var root = $('vx3d-root');
+    var viewport = $('vx3d-viewport');
+    var canvas = $('vx3d-canvas');
+    if (!root || !viewport || !canvas || typeof window.THREE === 'undefined') return;
+    var THREE = window.THREE;
 
-    var pins = {
-      '1': viewport.querySelector('[data-pin-step="1"]'),
-      '2': viewport.querySelector('[data-pin-step="2"]'),
-      '3': viewport.querySelector('[data-pin-step="3"]')
+    /* Concise, general-friendly object information (NO math formulas or equations) */
+    var OBJECT_DATA = {
+      tank: {
+        tag: 'OBJEK 01 · SIRKULASI AIR',
+        title: 'Penampung Air 60 Liter & Pompa',
+        img: 'assets/images/components/comp-pump.jpg?v=2',
+        desc: 'Wadah silinder berkapasitas 60 liter di bagian kolong rangka bawah yang dilengkapi pompa sirkulasi celup.',
+        func: 'Menampung seluruh air yang jatuh dari ujung saluran keluar dan memompanya kembali ke bagian atas agar aliran air berlangsung terus-menerus tanpa terbuang.',
+        extra: [
+          '<strong>Kapasitas Penampung:</strong> 60 Liter di rak bawah',
+          '<strong>Penggerak Sirkulasi:</strong> Pompa air listrik 100 W',
+          '<strong>Sistem Operasi:</strong> Siklus air tertutup hemat air'
+        ],
+        anchor: [3.2, -1.5, 0.2],
+        cam: { theta: 0.62, phi: 1.12, radius: 9.2, target: [2.6, -1.2, 0.0] }
+      },
+      pipe: {
+        tag: 'OBJEK 02 · DISTRIBUSI HULU',
+        title: 'Pipa Sirkulasi & Bak Penenang Hulu',
+        img: 'assets/images/components/comp-pipe.jpg?v=2',
+        desc: 'Jalur pipa PVC pengantar air dari penampung bawah menuju bak penenang bagian atas (seksi hulu 500 mm) yang memiliki sekat pengarah aliran.',
+        func: 'Mengalirkan air naik ke bagian hulu dan menenangkan gejolak air sebelum meluncur ke bidang miring agar aliran lebih rata dan stabil.',
+        extra: [
+          '<strong>Jalur Pipa:</strong> Pipa PVC Ø 45 mm di sisi rangka',
+          '<strong>Dimensi Bak Hulu:</strong> Panjang 500 mm × Lebar 400 mm',
+          '<strong>Sekat Internal:</strong> Pengarah aliran 95 × 105 mm'
+        ],
+        anchor: [-4.6, 1.85, 0.0],
+        cam: { theta: -0.65, phi: 1.02, radius: 9.4, target: [-4.0, 1.3, 0.0] }
+      },
+      chute: {
+        tag: 'OBJEK 03 · SALURAN UTAMA',
+        title: 'Saluran Akrilik Miring (1700 × 400 mm)',
+        img: 'assets/images/components/cad-prototype.png',
+        desc: 'Saluran terbuka berbahan akrilik transparan dengan bidang miring sepanjang 1016,97 mm yang menghubungkan bak hulu ke ruang kincir.',
+        func: 'Mengarahkan dan mempercepat luncuran air dari bagian atas menuju sudu-sudu kincir, sekaligus memudahkan pengamatan visual aliran air dari luar.',
+        extra: [
+          '<strong>Panjang Total:</strong> 1700 mm (Hulu 500 · Miring 1016,97 · Hilir 200 mm)',
+          '<strong>Lebar & Dinding:</strong> Lebar 400 mm × Tinggi dinding 250 mm',
+          '<strong>Material:</strong> Akrilik transparan dengan bukaan keluar bawah'
+        ],
+        anchor: [-0.8, 1.05, 0.0],
+        cam: { theta: 0.48, phi: 1.00, radius: 10.6, target: [-0.6, 0.5, 0.0] }
+      },
+      wheel: {
+        tag: 'OBJEK 04 · TURBIN UTAMA',
+        title: 'Kincir Air 6 Sudu Melengkung',
+        img: 'assets/images/components/comp-wheel.jpg',
+        desc: 'Rotor turbin berwarna biru dengan 6 bilah sudu melengkung yang terpasang pada poros utama stainless steel menembus dinding saluran.',
+        func: 'Menangkap dorongan aliran air yang meluncur dari saluran miring dan mengubahnya menjadi gerak putar pada poros utama.',
+        extra: [
+          '<strong>Jumlah Bilah:</strong> 6 sudu melengkung penangkap arus',
+          '<strong>Dimensi Rotor:</strong> Diameter 330 mm × Lebar 250 mm',
+          '<strong>Poros Utama:</strong> Stainless steel Ø 30 mm tahan karat'
+        ],
+        anchor: [1.65, 0.05, 0.0],
+        cam: { theta: 0.55, phi: 1.04, radius: 7.8, target: [1.65, 0.0, 0.0] }
+      },
+      pulley: {
+        tag: 'OBJEK 05 · TRANSMISI PUTARAN',
+        title: 'Transmisi Pulley 4-Jari (1 : 4) & V-Belt',
+        img: 'assets/images/components/comp-pulley.jpg',
+        desc: 'Roda pulley besar berjari-jari empat di sisi luar dinding saluran yang dihubungkan sabuk V-belt ke pulley kecil pada poros generator.',
+        func: 'Melipatgandakan kecepatan putaran dari poros kincir menjadi empat kali lebih cepat agar generator dapat menghasilkan listrik secara optimal.',
+        extra: [
+          '<strong>Pulley Penggerak:</strong> Roda 4-jari diameter 270 mm',
+          '<strong>Pulley Tujuan:</strong> Diameter 67,5 mm (perbandingan 1 : 4)',
+          '<strong>Penempatan:</strong> Sisi luar dinding saluran (bebas aliran air)'
+        ],
+        anchor: [2.4, -0.05, -1.65],
+        cam: { theta: 2.35, phi: 1.08, radius: 7.8, target: [2.8, -0.2, -1.5] }
+      },
+      generator: {
+        tag: 'OBJEK 06 · PEMBANGKIT & BEBAN',
+        title: 'Generator DC XD 3240 & Lampu LED',
+        img: 'assets/images/components/comp-generator.jpg?v=2',
+        desc: 'Unit generator arus searah berbentuk silinder yang terpasang kokoh di ujung rangka depan beserta lampu indikator LED 12 V.',
+        func: 'Mengubah putaran cepat dari transmisi pulley menjadi energi listrik DC 12 V untuk menyalakan lampu LED sebagai indikator daya.',
+        extra: [
+          '<strong>Tipe Pembangkit:</strong> Generator magnet permanen DC XD 3240',
+          '<strong>Beban Listrik:</strong> 2 unit lampu LED (total 10 W / 12 V)',
+          '<strong>Keamanan:</strong> Terpasang di zona kering ujung rangka'
+        ],
+        anchor: [4.55, -0.45, -0.75],
+        cam: { theta: 1.85, phi: 1.05, radius: 7.5, target: [4.4, -0.5, -0.5] }
+      },
+      frame: {
+        tag: 'OBJEK 07 · STRUKTUR PENOPANG',
+        title: 'Rangka Besi Hollow Bertingkat',
+        img: 'assets/images/components/cad-prototype.png',
+        desc: 'Struktur meja rangka baja hollow dua tingkat berwarna gelap yang menopang seluruh saluran akrilik, transmisi, generator, dan tangki bawah.',
+        func: 'Memberikan kemiringan elevasi yang presisi bagi saluran air sekaligus menjaga kestabilan alat dari getaran saat beroperasi.',
+        extra: [
+          '<strong>Konstruksi:</strong> Rangka besi hollow bertingkat (dek atas & bawah)',
+          '<strong>Dimensi Rangka:</strong> Panjang 2,0 m × Lebar 0,8 m',
+          '<strong>Elevasi Hulu:</strong> Tinggi total saluran 485 mm'
+        ],
+        anchor: [-2.2, -0.8, 1.35],
+        cam: { theta: 0.72, phi: 1.08, radius: 13.0, target: [0.0, -0.3, 0.0] }
+      }
     };
 
-    /* Camera presets tuned to match the CAD isometric view & stage close-ups */
-    var PRESETS = {
-      'all': { yaw: -0.54, pitch: 0.42, zoom: 1.00, tx: -4,  ty: -6, tz: 0 },
-      '1':   { yaw: -0.42, pitch: 0.38, zoom: 1.16, tx: 36,  ty: 24, tz: 4 },
-      '2':   { yaw: -0.56, pitch: 0.44, zoom: 1.20, tx: -12, ty: -14, tz: 0 },
-      '3':   { yaw: -0.76, pitch: 0.38, zoom: 1.28, tx: 68,  ty: 2,  tz: -14 }
-    };
+    var DEFAULT_CAM = { theta: 0.68, phi: 1.04, radius: 13.2, target: [0.1, -0.2, 0.0] };
 
-    var activeStage = '1';
-    var cam = { yaw: -0.54, pitch: 0.42, zoom: 1.00, tx: -4, ty: -6, tz: 0 };
-    var target = { yaw: -0.42, pitch: 0.38, zoom: 1.16, tx: 36, ty: 24, tz: 4 };
+    /* UI Elements */
+    var panel = $('vx3d-panel');
+    var pTag = $('vx3d-p-tag');
+    var pTitle = $('vx3d-p-title');
+    var pImg = $('vx3d-p-img');
+    var pDesc = $('vx3d-p-desc');
+    var pFunc = $('vx3d-p-func');
+    var pExtra = $('vx3d-p-extra');
+    var pClose = $('vx3d-p-close');
+    var tooltip = $('vx3d-tooltip');
+    var hintEl = $('vx3d-hint');
+    var hotspotsWrap = $('vx3d-hotspots');
+    var spotBtns = {};
+    $$('[data-spot]', hotspotsWrap).forEach(function (b) {
+      spotBtns[b.getAttribute('data-spot')] = b;
+    });
+    var navPills = $$('[data-vx3d-select]', root);
 
-    window.__vxFocus3DStage = function (s) {
-      activeStage = String(s || '1');
-      var p = PRESETS[activeStage] || PRESETS['all'];
-      target.yaw = p.yaw;
-      target.pitch = p.pitch;
-      target.zoom = p.zoom;
-      target.tx = p.tx;
-      target.ty = p.ty;
-      target.tz = p.tz;
-    };
+    /* Three.js Scene, Camera & Renderer Setup */
+    var scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x020813, 0.024);
 
-    /* Flow Rate Scrubber & Play/Pause Controls (Video Interactive Scrubber) */
-    var flowRate = 0.85;
-    var isPlaying = true;
-    var flowInput = $('h3d-flow-range');
-    var flowVal = $('h3d-flow-val');
-    var playBtn = $('pbook-play');
-
-    if (flowInput) {
-      flowInput.addEventListener('input', function () {
-        var v = Math.max(0, Math.min(100, Number(flowInput.value) || 0));
-        flowRate = v / 100;
-        if (flowVal) flowVal.textContent = v + '%';
-      });
-    }
-    if (playBtn) {
-      playBtn.addEventListener('click', function () {
-        isPlaying = !isPlaying;
-        playBtn.classList.toggle('is-playing', isPlaying);
-        playBtn.textContent = isPlaying ? '❚❚' : '▶';
-      });
+    var camera = new THREE.PerspectiveCamera(42, 16 / 9, 0.1, 120);
+    var renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    });
+    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    if (renderer.shadowMap) {
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     }
 
-    /* High-DPI resize */
-    var cw = 720, ch = 470, dpr = 1;
-    function resize() {
-      var r = viewport.getBoundingClientRect();
-      if (!r.width || !r.height) return;
-      cw = r.width;
-      ch = r.height;
-      dpr = Math.min(2, window.devicePixelRatio || 1);
-      canvas.width = Math.round(cw * dpr);
-      canvas.height = Math.round(ch * dpr);
-    }
-    resize();
-    window.addEventListener('resize', resize);
+    /* Realistic Futuristic 3D Lighting */
+    var hemiLight = new THREE.HemisphereLight(0x90e0ef, 0x041226, 0.85);
+    scene.add(hemiLight);
 
-    /* 3D Projection Math (World -> Camera -> Screen) */
-    var cosY = 1, sinY = 0, cosP = 1, sinP = 0, scale = 1;
-    function project(x, y, z) {
-      var dx = x - cam.tx;
-      var dy = y - cam.ty;
-      var dz = z - cam.tz;
-      var x1 = dx * cosY - dz * sinY;
-      var z1 = dx * sinY + dz * cosY;
-      var y2 = dy * cosP - z1 * sinP;
-      var z2 = dy * sinP + z1 * cosP;
-      var fov = 620;
-      var persp = fov / Math.max(160, fov + z2);
-      return {
-        x: cw * 0.5 + x1 * scale * persp,
-        y: ch * 0.50 + y2 * scale * persp,
-        z: z2,
-        p: persp * scale
-      };
-    }
+    var dirLight = new THREE.DirectionalLight(0xffffff, 1.15);
+    dirLight.position.set(8, 14, 10);
+    dirLight.castShadow = true;
+    scene.add(dirLight);
 
-    function pushBox(faces, cx, cy, cz, wx, wy, wz, cols, stageTag, alpha) {
-      var hx = wx * 0.5, hy = wy * 0.5, hz = wz * 0.5;
-      var v = [
-        project(cx - hx, cy - hy, cz - hz),
-        project(cx + hx, cy - hy, cz - hz),
-        project(cx + hx, cy + hy, cz - hz),
-        project(cx - hx, cy + hy, cz - hz),
-        project(cx - hx, cy - hy, cz + hz),
-        project(cx + hx, cy - hy, cz + hz),
-        project(cx + hx, cy + hy, cz + hz),
-        project(cx - hx, cy + hy, cz + hz)
-      ];
-      var defs = [
-        { idx: [0, 1, 5, 4], fill: cols.top,    stroke: cols.stroke },
-        { idx: [3, 2, 6, 7], fill: cols.bottom, stroke: cols.stroke },
-        { idx: [4, 5, 6, 7], fill: cols.front,  stroke: cols.stroke },
-        { idx: [0, 1, 2, 3], fill: cols.back,   stroke: cols.stroke },
-        { idx: [1, 5, 6, 2], fill: cols.right,  stroke: cols.stroke },
-        { idx: [0, 4, 7, 3], fill: cols.left,   stroke: cols.stroke }
-      ];
-      for (var i = 0; i < defs.length; i++) {
-        var f = defs[i], pts = [v[f.idx[0]], v[f.idx[1]], v[f.idx[2]], v[f.idx[3]]];
-        var zAvg = (pts[0].z + pts[1].z + pts[2].z + pts[3].z) * 0.25;
-        faces.push({
-          pts: pts,
-          z: zAvg,
-          fill: f.fill,
-          stroke: f.stroke,
-          stage: stageTag,
-          alpha: alpha == null ? 1 : alpha
+    var rimLight = new THREE.DirectionalLight(0x00e5ff, 0.75);
+    rimLight.position.set(-10, 6, -9);
+    scene.add(rimLight);
+
+    var hydroGlowLight = new THREE.PointLight(0x00d4ff, 1.3, 18);
+    hydroGlowLight.position.set(0.5, 1.2, 0);
+    scene.add(hydroGlowLight);
+
+    var ledPointLight = new THREE.PointLight(0xfbbf24, 1.6, 8);
+    ledPointLight.position.set(4.6, 0.1, 0.85);
+    scene.add(ledPointLight);
+
+    /* Subtle High-Tech Floor Grid */
+    var gridHelper = new THREE.GridHelper(26, 26, 0x00a8e8, 0x0b2545);
+    gridHelper.position.y = -2.38;
+    if (gridHelper.material) {
+      gridHelper.material.transparent = true;
+      gridHelper.material.opacity = 0.35;
+    }
+    scene.add(gridHelper);
+
+    /* Component Group Registry for Raycasting & Highlighting */
+    var componentGroups = {};
+    var interactiveMeshes = [];
+    var originalEmissives = new Map();
+
+    function registerMesh(mesh, key) {
+      mesh.userData.objKey = key;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      if (mesh.material && mesh.material.emissive) {
+        originalEmissives.set(mesh.uuid, {
+          hex: mesh.material.emissive.getHex(),
+          intensity: mesh.material.emissiveIntensity || 0
         });
       }
+      interactiveMeshes.push(mesh);
     }
 
-    function pushQuad(faces, p1, p2, p3, p4, fill, stroke, stageTag, alpha, zBias) {
-      var a = project(p1[0], p1[1], p1[2]);
-      var b = project(p2[0], p2[1], p2[2]);
-      var c = project(p3[0], p3[1], p3[2]);
-      var d = project(p4[0], p4[1], p4[2]);
-      faces.push({
-        pts: [a, b, c, d],
-        z: (a.z + b.z + c.z + d.z) * 0.25 + (zBias || 0),
-        fill: fill,
-        stroke: stroke,
-        stage: stageTag,
-        alpha: alpha == null ? 1 : alpha
+    function createGroup(key) {
+      var g = new THREE.Group();
+      g.userData.objKey = key;
+      scene.add(g);
+      componentGroups[key] = g;
+      return g;
+    }
+
+    function addBox(group, key, w, h, d, x, y, z, mat, rx, ry, rz) {
+      var geom = new THREE.BoxGeometry(w, h, d);
+      var m = mat.clone ? mat.clone() : mat;
+      var mesh = new THREE.Mesh(geom, m);
+      mesh.position.set(x, y, z);
+      if (rx) mesh.rotation.x = rx;
+      if (ry) mesh.rotation.y = ry;
+      if (rz) mesh.rotation.z = rz;
+      group.add(mesh);
+      registerMesh(mesh, key);
+      return mesh;
+    }
+
+    function addEdges(parentMesh, color, opacity) {
+      var edges = new THREE.EdgesGeometry(parentMesh.geometry);
+      var lineMat = new THREE.LineBasicMaterial({
+        color: color || 0x00e5ff,
+        transparent: true,
+        opacity: opacity == null ? 0.55 : opacity
       });
+      var line = new THREE.LineSegments(edges, lineMat);
+      parentMesh.add(line);
     }
 
-    function pushCylinderY(faces, cx, cz, yTop, yBot, rad, segs, fillSide, fillTop, stroke, stageTag, alpha) {
-      var topPts = [];
-      for (var i = 0; i < segs; i++) {
-        var a1 = (i / segs) * Math.PI * 2;
-        var a2 = ((i + 1) / segs) * Math.PI * 2;
-        var x1 = cx + Math.cos(a1) * rad, z1 = cz + Math.sin(a1) * rad;
-        var x2 = cx + Math.cos(a2) * rad, z2 = cz + Math.sin(a2) * rad;
-        pushQuad(faces, [x1, yTop, z1], [x2, yTop, z2], [x2, yBot, z2], [x1, yBot, z1], fillSide, stroke, stageTag, alpha);
-        topPts.push(project(x1, yTop, z1));
+    /* Materials */
+    var matFrame = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.65, roughness: 0.35 });
+    var matDeck  = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.5, roughness: 0.45 });
+    var matTankShell = new THREE.MeshPhysicalMaterial({
+      color: 0xdbeafe, transparent: true, opacity: 0.32, roughness: 0.15, metalness: 0.05, side: THREE.DoubleSide
+    });
+    var matTankWater = new THREE.MeshStandardMaterial({
+      color: 0x00a8e8, transparent: true, opacity: 0.72, roughness: 0.2, metalness: 0.1, emissive: 0x004e7c, emissiveIntensity: 0.35
+    });
+    var matPump = new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.45, roughness: 0.3 });
+    var matPipe = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.25, roughness: 0.3 });
+    var matAcrylic = new THREE.MeshPhysicalMaterial({
+      color: 0xe0f7fc, transparent: true, opacity: 0.28, roughness: 0.1, metalness: 0.05, side: THREE.DoubleSide
+    });
+    var matBlade = new THREE.MeshStandardMaterial({
+      color: 0x00b4d8, metalness: 0.3, roughness: 0.25, emissive: 0x005073, emissiveIntensity: 0.25
+    });
+    var matShaft = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.85, roughness: 0.2 });
+    var matPulley = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.55, roughness: 0.3 });
+    var matBelt = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.2, roughness: 0.7 });
+    var matGen = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.7, roughness: 0.3 });
+
+    /* =====================================================================
+       BUILD 07: TWO-TIER DARK STEEL HOLLOW FRAME (Exact Match to CAD PNG)
+       ===================================================================== */
+    var gFrame = createGroup('frame');
+    /* Left Upper Tier Deck (X: -5.6..-1.8, Y: 0.15, Z: -1.4..1.4) */
+    var upperDeck = addBox(gFrame, 'frame', 3.8, 0.14, 2.8, -3.7, 0.15, 0, matDeck);
+    addEdges(upperDeck, 0x0f172a, 0.7);
+    /* Upper Left Brackets holding the Acrylic Flume */
+    addBox(gFrame, 'frame', 0.12, 0.9, 2.75, -5.55, 0.65, 0, matFrame);
+    addBox(gFrame, 'frame', 1.4, 0.75, 0.12, -3.1, 0.58, 1.32, matFrame);
+    addBox(gFrame, 'frame', 1.4, 0.75, 0.12, -3.1, 0.58, -1.32, matFrame);
+
+    /* Right Lower Tier Deck (X: -1.8..4.8, Y: -1.05) with Center Cutout for 60L Tank Outlet */
+    addBox(gFrame, 'frame', 6.6, 0.14, 0.55, 1.5, -1.05, 1.12, matDeck);
+    addBox(gFrame, 'frame', 6.6, 0.14, 0.55, 1.5, -1.05, -1.12, matDeck);
+    addBox(gFrame, 'frame', 1.5, 0.14, 1.7, -1.05, -1.05, 0, matDeck);
+    addBox(gFrame, 'frame', 0.7, 0.14, 1.7, 4.45, -1.05, 0, matDeck);
+
+    /* Bottom Base Frame Rails (Y: -2.3) */
+    addBox(gFrame, 'frame', 10.4, 0.14, 0.14, -0.4, -2.3, 1.33, matFrame);
+    addBox(gFrame, 'frame', 10.4, 0.14, 0.14, -0.4, -2.3, -1.33, matFrame);
+    addBox(gFrame, 'frame', 0.14, 0.14, 2.8, -5.55, -2.3, 0, matFrame);
+    addBox(gFrame, 'frame', 0.14, 0.14, 2.8, 4.75, -2.3, 0, matFrame);
+    /* Middle Longitudinal Support Bars */
+    addBox(gFrame, 'frame', 10.4, 0.12, 0.12, -0.4, -1.65, 1.33, matFrame);
+    addBox(gFrame, 'frame', 10.4, 0.12, 0.12, -0.4, -1.65, -1.33, matFrame);
+
+    /* Vertical Hollow Legs */
+    [-1.33, 1.33].forEach(function (zPos) {
+      addBox(gFrame, 'frame', 0.15, 2.5, 0.15, -5.55, -1.05, zPos, matFrame);
+      addBox(gFrame, 'frame', 0.15, 2.5, 0.15, -1.85, -1.05, zPos, matFrame);
+      addBox(gFrame, 'frame', 0.15, 1.3, 0.15, 4.75, -1.65, zPos, matFrame);
+    });
+
+    /* =====================================================================
+       BUILD 01: 60-LITER CYLINDRICAL WATER RESERVOIR TANK & SUBMERGED PUMP
+       Positioned directly underneath the lower outlet opening
+       ===================================================================== */
+    var gTank = createGroup('tank');
+    var tankWaterMesh = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.28, 1.28, 0.95, 32),
+      matTankWater.clone()
+    );
+    tankWaterMesh.position.set(3.0, -1.78, 0);
+    gTank.add(tankWaterMesh);
+    registerMesh(tankWaterMesh, 'tank');
+
+    var tankShellMesh = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.36, 1.36, 1.25, 32, 1, true),
+      matTankShell.clone()
+    );
+    tankShellMesh.position.set(3.0, -1.64, 0);
+    addEdges(tankShellMesh, 0x00e5ff, 0.45);
+    gTank.add(tankShellMesh);
+    registerMesh(tankShellMesh, 'tank');
+
+    /* Tank Top & Bottom Rim Rings */
+    var rimGeom = new THREE.TorusGeometry(1.36, 0.035, 12, 36);
+    var topRim = new THREE.Mesh(rimGeom, matPipe.clone());
+    topRim.rotation.x = Math.PI / 2;
+    topRim.position.set(3.0, -1.02, 0);
+    gTank.add(topRim);
+    registerMesh(topRim, 'tank');
+
+    /* Submerged 100W Circulation Pump inside 60L Tank */
+    var pumpMesh = addBox(gTank, 'tank', 0.65, 0.52, 0.55, 2.65, -1.96, 0.25, matPump);
+    addEdges(pumpMesh, 0x7ceeff, 0.6);
+
+    /* =====================================================================
+       BUILD 02: RISING PVC PIPE (Ø 45 mm) & UPPER HEADBOX (500 x 400 mm)
+       ===================================================================== */
+    var gPipe = createGroup('pipe');
+    /* Horizontal Lower PVC Pipe from 60L Tank to Back-Left Leg */
+    var pipeHoriz = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 8.0, 16), matPipe.clone());
+    pipeHoriz.rotation.z = Math.PI / 2;
+    pipeHoriz.position.set(-1.35, -1.5, 1.05);
+    gPipe.add(pipeHoriz);
+    registerMesh(pipeHoriz, 'pipe');
+
+    /* Vertical Rising PVC Pipe up the Back-Left Corner */
+    var pipeVert = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 3.9, 16), matPipe.clone());
+    pipeVert.position.set(-5.35, 0.45, 1.05);
+    gPipe.add(pipeVert);
+    registerMesh(pipeVert, 'pipe');
+
+    /* Top Elbow & Inlet Pipe into the 500mm Upper Headbox */
+    var pipeInlet = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 1.1, 16), matPipe.clone());
+    pipeInlet.rotation.x = Math.PI / 2;
+    pipeInlet.position.set(-5.35, 2.4, 0.5);
+    gPipe.add(pipeInlet);
+    registerMesh(pipeInlet, 'pipe');
+
+    /* Upper Headbox Section (500 x 400 x 250 mm + Internal 95 x 105 mm Weir Baffle) */
+    var hbFloor = addBox(gPipe, 'pipe', 2.2, 0.06, 1.76, -4.3, 1.15, 0, matAcrylic);
+    var hbBack  = addBox(gPipe, 'pipe', 0.06, 1.1, 1.76, -5.38, 1.7, 0, matAcrylic);
+    var hbSideF = addBox(gPipe, 'pipe', 2.2, 1.1, 0.06, -4.3, 1.7, 0.86, matAcrylic);
+    var hbSideB = addBox(gPipe, 'pipe', 2.2, 1.1, 0.06, -4.3, 1.7, -0.86, matAcrylic);
+    /* Internal Weir Baffle Box (95 x 105 mm from PDF Drawing) */
+    var hbBaffle = addBox(gPipe, 'pipe', 0.45, 0.48, 1.7, -5.12, 1.96, 0, matAcrylic);
+    [hbFloor, hbBack, hbSideF, hbSideB, hbBaffle].forEach(function (m) { addEdges(m, 0x00e5ff, 0.65); });
+
+    /* =====================================================================
+       BUILD 03: INCLINED ACRYLIC FLUME (1700 x 400 mm, Slope 1016.97 mm, Outlet 200 mm)
+       ===================================================================== */
+    var gChute = createGroup('chute');
+    /* Inclined Middle Slope Section (X: -3.2..2.5, sloping from Y=1.15 down to Y=-0.72) */
+    var slopeLen = 6.02;
+    var slopeAngle = -0.318; /* ~18.2 deg matching 235mm drop over 1016.97mm */
+    var slopeGroup = new THREE.Group();
+    slopeGroup.position.set(-0.35, 0.21, 0);
+    slopeGroup.rotation.z = slopeAngle;
+    gChute.add(slopeGroup);
+
+    var slFloor = addBox(slopeGroup, 'chute', slopeLen, 0.06, 1.76, 0, 0, 0, matAcrylic);
+    var slWallF = addBox(slopeGroup, 'chute', slopeLen, 1.1, 0.06, 0, 0.55, 0.86, matAcrylic);
+    var slWallB = addBox(slopeGroup, 'chute', slopeLen, 1.1, 0.06, 0, 0.55, -0.86, matAcrylic);
+    /* Flowing Translucent Water Sheet inside Slope */
+    var slWater = addBox(slopeGroup, 'chute', slopeLen - 0.1, 0.16, 1.66, 0, 0.11, 0, matTankWater);
+    [slFloor, slWallF, slWallB].forEach(function (m) { addEdges(m, 0x00e5ff, 0.65); });
+
+    /* Lower Horizontal Outlet Section (200 mm long + 50 mm bottom drop lip over 60L Tank) */
+    var outWallF = addBox(gChute, 'chute', 1.15, 1.25, 0.06, 3.05, -0.22, 0.86, matAcrylic);
+    var outWallB = addBox(gChute, 'chute', 1.15, 1.25, 0.06, 3.05, -0.22, -0.86, matAcrylic);
+    var outEnd   = addBox(gChute, 'chute', 0.06, 1.25, 1.76, 3.62, -0.22, 0, matAcrylic);
+    [outWallF, outWallB, outEnd].forEach(function (m) { addEdges(m, 0x00e5ff, 0.65); });
+
+    /* =====================================================================
+       BUILD 04: 6-BLADE CURVED BRIGHT-BLUE WATERWHEEL & STAINLESS SHAFT
+       ===================================================================== */
+    var gWheel = createGroup('wheel');
+    var rotorPivot = new THREE.Group();
+    rotorPivot.position.set(1.65, -0.02, 0);
+    gWheel.add(rotorPivot);
+
+    /* Horizontal Stainless Steel Main Shaft (Ø 30 mm) protruding through both walls */
+    var mainShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 3.4, 20), matShaft.clone());
+    mainShaft.rotation.x = Math.PI / 2;
+    rotorPivot.add(mainShaft);
+    registerMesh(mainShaft, 'wheel');
+
+    /* Central Blue Rotor Hub */
+    var hubMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 1.56, 24), matPump.clone());
+    hubMesh.rotation.x = Math.PI / 2;
+    rotorPivot.add(hubMesh);
+    registerMesh(hubMesh, 'wheel');
+
+    /* 6 Curved Bright-Blue Blades (2-segment curved paddle per blade matching CAD PNG) */
+    for (var bi = 0; bi < 6; bi++) {
+      var bHolder = new THREE.Group();
+      bHolder.rotation.z = (bi * Math.PI) / 3;
+      rotorPivot.add(bHolder);
+
+      var innerBlade = addBox(bHolder, 'wheel', 0.48, 0.06, 1.52, 0.52, 0, 0, matBlade);
+      var outerBlade = addBox(bHolder, 'wheel', 0.36, 0.06, 1.52, 0.88, 0.12, 0, matBlade, 0, 0, 0.52);
+      addEdges(innerBlade, 0x7ceeff, 0.7);
+      addEdges(outerBlade, 0x7ceeff, 0.7);
+    }
+
+    /* =====================================================================
+       BUILD 05: 4-SPOKE LARGE PULLEY (Ø 270 mm) + V-BELT + SMALL PULLEY (1:4)
+       Mounted on the outer side of the acrylic channel wall (Z = -1.35)
+       ===================================================================== */
+    var gPulley = createGroup('pulley');
+    var pulley1Pivot = new THREE.Group();
+    pulley1Pivot.position.set(1.65, -0.02, -1.35);
+    gPulley.add(pulley1Pivot);
+
+    /* Large Pulley Outer Ring (Ø 270 mm) */
+    var p1Ring = new THREE.Mesh(new THREE.TorusGeometry(0.96, 0.07, 14, 36), matPulley.clone());
+    pulley1Pivot.add(p1Ring);
+    registerMesh(p1Ring, 'pulley');
+
+    /* 4 Cross Spokes (Exact 4-spoke geometry from PDF Drawing & CAD PNG) */
+    var spoke1 = addBox(pulley1Pivot, 'pulley', 1.88, 0.11, 0.08, 0, 0, 0, matPulley);
+    var spoke2 = addBox(pulley1Pivot, 'pulley', 0.11, 1.88, 0.08, 0, 0, 0, matPulley);
+    addEdges(spoke1, 0x0f172a, 0.5);
+    addEdges(spoke2, 0x0f172a, 0.5);
+
+    /* Small Driven Pulley (Ø 67.5 mm — Step-Up 1:4) at Generator Shaft */
+    var pulley2Pivot = new THREE.Group();
+    pulley2Pivot.position.set(4.35, -0.62, -1.35);
+    gPulley.add(pulley2Pivot);
+
+    var p2Wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.12, 24), matPulley.clone());
+    p2Wheel.rotation.x = Math.PI / 2;
+    pulley2Pivot.add(p2Wheel);
+    registerMesh(p2Wheel, 'pulley');
+
+    /* Dual V-Belt Strands connecting Large Pulley to Small Pulley */
+    var beltTop = addBox(gPulley, 'pulley', 2.82, 0.06, 0.08, 3.0, 0.08, -1.35, matBelt, 0, 0, -0.44);
+    var beltBot = addBox(gPulley, 'pulley', 2.82, 0.06, 0.08, 3.0, -0.62, -1.35, matBelt, 0, 0, -0.01);
+
+    /* =====================================================================
+       BUILD 06: GENERATOR DC XD 3240 & LED INDICATOR MODULE
+       ===================================================================== */
+    var gGen = createGroup('generator');
+    /* Horizontal Cylindrical Generator Body */
+    var genBody = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 1.05, 28), matGen.clone());
+    genBody.rotation.x = Math.PI / 2;
+    genBody.position.set(4.35, -0.62, -0.68);
+    addEdges(genBody, 0x00e5ff, 0.4);
+    gGen.add(genBody);
+    registerMesh(genBody, 'generator');
+
+    /* Generator Square Mounting Flanges (as seen in CAD PNG) */
+    var flange1 = addBox(gGen, 'generator', 0.88, 0.88, 0.1, 4.35, -0.62, -1.18, matDeck);
+    var flange2 = addBox(gGen, 'generator', 0.88, 0.88, 0.1, 4.35, -0.62, -0.18, matDeck);
+    addEdges(flange1, 0x0f172a, 0.7);
+    addEdges(flange2, 0x0f172a, 0.7);
+
+    /* Glowing 2x 5W LED Output Indicator Module on Front Right Corner */
+    var ledBase = addBox(gGen, 'generator', 0.55, 0.35, 0.65, 4.55, -0.8, 0.75, matFrame);
+    var matBulb = new THREE.MeshStandardMaterial({
+      color: 0xfef08a, emissive: 0xf59e0b, emissiveIntensity: 1.4, roughness: 0.15
+    });
+    var bulb1 = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 20), matBulb);
+    bulb1.position.set(4.55, -0.48, 0.58);
+    gGen.add(bulb1);
+    registerMesh(bulb1, 'generator');
+
+    var bulb2 = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 20), matBulb.clone());
+    bulb2.position.set(4.55, -0.48, 0.92);
+    gGen.add(bulb2);
+    registerMesh(bulb2, 'generator');
+
+    /* =====================================================================
+       3D ANIMATED WATER FLOW PARTICLES (Closed-Loop Hydro Stream)
+       ===================================================================== */
+    var PARTICLE_COUNT = 110;
+    var pGeom = new THREE.BufferGeometry();
+    var pPositions = new Float32Array(PARTICLE_COUNT * 3);
+    var pPhases = new Float32Array(PARTICLE_COUNT);
+    var pLanes = new Float32Array(PARTICLE_COUNT);
+    for (var pi = 0; pi < PARTICLE_COUNT; pi++) {
+      pPhases[pi] = pi / PARTICLE_COUNT;
+      pLanes[pi] = (Math.random() - 0.5) * 1.3;
+    }
+    pGeom.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+    var pMat = new THREE.PointsMaterial({
+      color: 0x7ceeff,
+      size: 0.14,
+      transparent: true,
+      opacity: 0.88
+    });
+    var waterParticles = new THREE.Points(pGeom, pMat);
+    scene.add(waterParticles);
+
+    function updateWaterParticles(time) {
+      var posArr = pGeom.attributes.position.array;
+      for (var i = 0; i < PARTICLE_COUNT; i++) {
+        var t = (pPhases[i] + time * 0.18) % 1;
+        var lane = pLanes[i];
+        var x = 0, y = 0, z = lane;
+        if (t < 0.22) {
+          /* Rising up the back-left PVC pipe */
+          var u = t / 0.22;
+          x = -5.35;
+          y = -1.5 + u * 3.9;
+          z = 1.05;
+        } else if (t < 0.36) {
+          /* Calm flow across 500mm upper headbox */
+          var u2 = (t - 0.22) / 0.14;
+          x = -5.2 + u2 * 2.0;
+          y = 1.32;
+        } else if (t < 0.82) {
+          /* Fast flow down 1016.97mm inclined acrylic chute through 6-blade wheel */
+          var u3 = (t - 0.36) / 0.46;
+          x = -3.2 + u3 * 5.8;
+          y = 1.25 - u3 * 1.92;
+        } else {
+          /* Waterfall dropping from 200mm outlet straight into the 60L bottom reservoir tank */
+          var u4 = (t - 0.82) / 0.18;
+          x = 2.8 + (i % 3) * 0.14;
+          y = -0.68 - u4 * 1.15;
+        }
+        posArr[i * 3] = x;
+        posArr[i * 3 + 1] = y;
+        posArr[i * 3 + 2] = z;
       }
-      var zSum = 0;
-      for (var k = 0; k < topPts.length; k++) zSum += topPts[k].z;
-      faces.push({
-        pts: topPts,
-        z: zSum / topPts.length - 1.5,
-        fill: fillTop,
-        stroke: stroke,
-        stage: stageTag,
-        alpha: alpha == null ? 1 : alpha
-      });
+      pGeom.attributes.position.needsUpdate = true;
     }
 
-    function pushCylinderZ(faces, cx, cy, zBack, zFront, rad, segs, fillSide, fillCap, stroke, stageTag, alpha, rotOffset) {
-      var frontPts = [], backPts = [];
-      var ro = rotOffset || 0;
-      for (var i = 0; i < segs; i++) {
-        var a1 = ro + (i / segs) * Math.PI * 2;
-        var a2 = ro + ((i + 1) / segs) * Math.PI * 2;
-        var x1 = cx + Math.cos(a1) * rad, y1 = cy + Math.sin(a1) * rad;
-        var x2 = cx + Math.cos(a2) * rad, y2 = cy + Math.sin(a2) * rad;
-        pushQuad(faces, [x1, y1, zBack], [x2, y2, zBack], [x2, y2, zFront], [x1, y1, zFront], fillSide, stroke, stageTag, alpha);
-        frontPts.push(project(x1, y1, zFront));
-        backPts.push(project(x1, y1, zBack));
-      }
-      var zF = 0, zB = 0;
-      for (var k = 0; k < segs; k++) { zF += frontPts[k].z; zB += backPts[k].z; }
-      faces.push({ pts: backPts, z: zB / segs, fill: fillCap, stroke: stroke, stage: stageTag, alpha: alpha == null ? 1 : alpha });
-      faces.push({ pts: frontPts, z: zF / segs - 1, fill: fillCap, stroke: stroke, stage: stageTag, alpha: alpha == null ? 1 : alpha });
-    }
-
-    /* 3D Hotspot World Anchors for Stage 01 (60L Tank), Stage 02 (1700mm Flume & Blue Wheel), Stage 03 (4-Spoke Pulley & Generator DC) */
-    var STAGE_ANCHORS = {
-      '1': [74, 66, 18],
-      '2': [8, -18, 24],
-      '3': [88, 12, -36]
+    /* =====================================================================
+       CAMERA ORBIT, ZOOM, PAN & SMOOTH FLY-TO SYSTEM
+       ===================================================================== */
+    var camState = {
+      theta: DEFAULT_CAM.theta,
+      phi: DEFAULT_CAM.phi,
+      radius: DEFAULT_CAM.radius,
+      target: new THREE.Vector3(DEFAULT_CAM.target[0], DEFAULT_CAM.target[1], DEFAULT_CAM.target[2])
     };
-    var projectedAnchors = {};
+    var camGoal = {
+      theta: DEFAULT_CAM.theta,
+      phi: DEFAULT_CAM.phi,
+      radius: DEFAULT_CAM.radius,
+      target: new THREE.Vector3(DEFAULT_CAM.target[0], DEFAULT_CAM.target[1], DEFAULT_CAM.target[2])
+    };
 
-    /* Pointer Orbit Drag + Direct 3D Stage Picking */
-    var dragging = false, moved = 0, lastX = 0, lastY = 0;
+    var selectedKey = null;
+    var hoveredKey = null;
+    var flowRunning = true;
+    var pinsVisible = true;
+
+    function dismissHint() {
+      if (hintEl && !hintEl.classList.contains('is-dismissed')) {
+        hintEl.classList.add('is-dismissed');
+      }
+    }
+
+    function applyHighlightState() {
+      interactiveMeshes.forEach(function (m) {
+        if (!m.material || !m.material.emissive) return;
+        var orig = originalEmissives.get(m.uuid) || { hex: 0x000000, intensity: 0 };
+        var k = m.userData.objKey;
+        if (k === selectedKey) {
+          m.material.emissive.setHex(0x00e5ff);
+          m.material.emissiveIntensity = 0.52;
+        } else if (k === hoveredKey) {
+          m.material.emissive.setHex(0x00b4d8);
+          m.material.emissiveIntensity = 0.36;
+        } else {
+          m.material.emissive.setHex(orig.hex);
+          m.material.emissiveIntensity = orig.intensity;
+        }
+      });
+
+      Object.keys(spotBtns).forEach(function (k) {
+        var b = spotBtns[k];
+        if (!b) return;
+        b.classList.toggle('is-active', k === selectedKey);
+        b.classList.toggle('is-hover', k === hoveredKey && k !== selectedKey);
+      });
+
+      navPills.forEach(function (p) {
+        var pk = p.getAttribute('data-vx3d-select');
+        p.classList.toggle('is-active', (selectedKey ? pk === selectedKey : pk === 'all'));
+      });
+    }
+
+    function selectObject(key) {
+      dismissHint();
+      if (!key || key === 'all' || !OBJECT_DATA[key]) {
+        selectedKey = null;
+        if (panel) panel.hidden = true;
+        camGoal.theta = DEFAULT_CAM.theta;
+        camGoal.phi = DEFAULT_CAM.phi;
+        camGoal.radius = DEFAULT_CAM.radius;
+        camGoal.target.set(DEFAULT_CAM.target[0], DEFAULT_CAM.target[1], DEFAULT_CAM.target[2]);
+        applyHighlightState();
+        return;
+      }
+
+      selectedKey = key;
+      var d = OBJECT_DATA[key];
+      if (pTag) pTag.textContent = d.tag;
+      if (pTitle) pTitle.textContent = d.title;
+      if (pImg) { pImg.src = d.img; pImg.alt = d.title; }
+      if (pDesc) pDesc.textContent = d.desc;
+      if (pFunc) pFunc.textContent = d.func;
+      if (pExtra) {
+        pExtra.innerHTML = d.extra.map(function (item) { return '<li>' + item + '</li>'; }).join('');
+      }
+      if (panel) panel.hidden = false;
+
+      camGoal.theta = d.cam.theta;
+      camGoal.phi = d.cam.phi;
+      camGoal.radius = d.cam.radius;
+      camGoal.target.set(d.cam.target[0], d.cam.target[1], d.cam.target[2]);
+      applyHighlightState();
+    }
+
+    /* Pointer Raycasting + Orbit / Pan / Zoom */
+    var raycaster = new THREE.Raycaster();
+    var pointerNDC = new THREE.Vector2();
+    var isDragging = false, dragMode = 'orbit', dragMoved = 0, prevX = 0, prevY = 0;
+
+    function updatePointerNDC(e) {
+      var rect = canvas.getBoundingClientRect();
+      pointerNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointerNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      return rect;
+    }
+
+    canvas.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
     canvas.addEventListener('pointerdown', function (e) {
-      dragging = true;
-      moved = 0;
-      lastX = e.clientX;
-      lastY = e.clientY;
+      isDragging = true;
+      dragMoved = 0;
+      prevX = e.clientX;
+      prevY = e.clientY;
+      dragMode = (e.button === 2 || e.shiftKey) ? 'pan' : 'orbit';
       if (canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
     });
+
     canvas.addEventListener('pointermove', function (e) {
-      if (!dragging) return;
-      var dx = e.clientX - lastX;
-      var dy = e.clientY - lastY;
-      moved += Math.abs(dx) + Math.abs(dy);
-      lastX = e.clientX;
-      lastY = e.clientY;
-      target.yaw += dx * 0.0075;
-      target.pitch = Math.max(-0.1, Math.min(0.88, target.pitch + dy * 0.006));
+      var rect = updatePointerNDC(e);
+      if (isDragging) {
+        var dx = e.clientX - prevX;
+        var dy = e.clientY - prevY;
+        dragMoved += Math.abs(dx) + Math.abs(dy);
+        prevX = e.clientX;
+        prevY = e.clientY;
+        if (dragMoved > 4) dismissHint();
+
+        if (dragMode === 'orbit') {
+          camGoal.theta -= dx * 0.0075;
+          camGoal.phi = Math.max(0.28, Math.min(1.48, camGoal.phi - dy * 0.0065));
+        } else {
+          var panScale = camGoal.radius * 0.0018;
+          var right = new THREE.Vector3();
+          var up = new THREE.Vector3(0, 1, 0);
+          camera.getWorldDirection(right);
+          right.cross(up).normalize();
+          camGoal.target.addScaledVector(right, -dx * panScale);
+          camGoal.target.y += dy * panScale;
+        }
+        if (tooltip) tooltip.hidden = true;
+        return;
+      }
+
+      /* Hover Raycast Highlight */
+      raycaster.setFromCamera(pointerNDC, camera);
+      var hits = raycaster.intersectObjects(interactiveMeshes, false);
+      var hitKey = (hits.length > 0 && hits[0].object.userData.objKey) ? hits[0].object.userData.objKey : null;
+
+      if (hitKey !== hoveredKey) {
+        hoveredKey = hitKey;
+        canvas.classList.toggle('is-hovering', !!hoveredKey);
+        applyHighlightState();
+      }
+      if (tooltip) {
+        if (hoveredKey && OBJECT_DATA[hoveredKey]) {
+          tooltip.textContent = OBJECT_DATA[hoveredKey].title;
+          tooltip.style.left = (e.clientX - rect.left) + 'px';
+          tooltip.style.top = (e.clientY - rect.top) + 'px';
+          tooltip.hidden = false;
+        } else {
+          tooltip.hidden = true;
+        }
+      }
     });
-    function endDrag(e) {
-      if (!dragging) return;
-      dragging = false;
-      if (moved < 7 && e && e.clientX != null) {
-        var r = canvas.getBoundingClientRect();
-        var mx = e.clientX - r.left;
-        var my = e.clientY - r.top;
-        var bestS = null, bestD = 96;
-        ['1', '2', '3'].forEach(function (k) {
-          var pt = projectedAnchors[k];
-          if (!pt) return;
-          var dist = Math.hypot(mx - pt.x, my - pt.y);
-          if (dist < bestD) { bestD = dist; bestS = k; }
-        });
-        if (bestS && typeof window.__vxSelectStage === 'function') {
-          window.__vxSelectStage(bestS);
+
+    function handlePointerUp(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      if (dragMoved < 6 && e.button === 0) {
+        updatePointerNDC(e);
+        raycaster.setFromCamera(pointerNDC, camera);
+        var hits = raycaster.intersectObjects(interactiveMeshes, false);
+        if (hits.length > 0 && hits[0].object.userData.objKey) {
+          selectObject(hits[0].object.userData.objKey);
+        } else if (selectedKey) {
+          selectObject('all');
         }
       }
     }
-    canvas.addEventListener('pointerup', endDrag);
-    canvas.addEventListener('pointercancel', endDrag);
+    canvas.addEventListener('pointerup', handlePointerUp);
+    canvas.addEventListener('pointercancel', function () { isDragging = false; });
 
-    /* Zoom & Reset Buttons */
-    var btnIn = $('h3d-zoom-in'), btnOut = $('h3d-zoom-out'), btnReset = $('h3d-reset');
-    if (btnIn) btnIn.addEventListener('click', function () { target.zoom = Math.min(1.65, target.zoom + 0.14); });
-    if (btnOut) btnOut.addEventListener('click', function () { target.zoom = Math.max(0.72, target.zoom - 0.14); });
-    if (btnReset) btnReset.addEventListener('click', function () {
-      if (typeof window.__vxSelectStage === 'function') window.__vxSelectStage('all');
-      else window.__vxFocus3DStage('all');
+    /* Wheel Zoom */
+    canvas.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      dismissHint();
+      camGoal.radius = Math.max(5.2, Math.min(20.0, camGoal.radius + e.deltaY * 0.008));
+    }, { passive: false });
+
+    /* Hotspot & Header Button Listeners */
+    Object.keys(spotBtns).forEach(function (k) {
+      spotBtns[k].addEventListener('click', function (e) {
+        e.stopPropagation();
+        selectObject(k);
+      });
     });
 
-    var wheelAngle = 0;
-    var flowPhase = 0;
+    navPills.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        selectObject(btn.getAttribute('data-vx3d-select'));
+      });
+    });
 
-    function stageAlpha(st) {
-      if (!st || activeStage === 'all') return 1;
-      return String(st) === activeStage ? 1 : 0.42;
+    if (pClose) {
+      pClose.addEventListener('click', function () { selectObject('all'); });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && selectedKey) selectObject('all');
+    });
+
+    var btnZoomIn = $('vx3d-zoom-in');
+    var btnZoomOut = $('vx3d-zoom-out');
+    var btnResetCam = $('vx3d-reset-cam');
+    var btnTogglePins = $('vx3d-toggle-pins');
+    var btnToggleFlow = $('vx3d-toggle-flow');
+    var btnFullscreen = $('vx3d-fullscreen');
+
+    if (btnZoomIn) btnZoomIn.addEventListener('click', function () { camGoal.radius = Math.max(5.2, camGoal.radius - 1.3); });
+    if (btnZoomOut) btnZoomOut.addEventListener('click', function () { camGoal.radius = Math.min(20.0, camGoal.radius + 1.3); });
+    if (btnResetCam) btnResetCam.addEventListener('click', function () { selectObject('all'); });
+
+    if (btnTogglePins && hotspotsWrap) {
+      btnTogglePins.addEventListener('click', function () {
+        pinsVisible = !pinsVisible;
+        btnTogglePins.classList.toggle('is-on', pinsVisible);
+        hotspotsWrap.classList.toggle('is-hidden', !pinsVisible);
+      });
+    }
+    if (btnToggleFlow) {
+      btnToggleFlow.addEventListener('click', function () {
+        flowRunning = !flowRunning;
+        btnToggleFlow.classList.toggle('is-on', flowRunning);
+        waterParticles.visible = flowRunning;
+      });
+    }
+    if (btnFullscreen) {
+      btnFullscreen.addEventListener('click', function () {
+        if (!document.fullscreenElement) {
+          if (root.requestFullscreen) root.requestFullscreen().catch(function () {});
+          else root.classList.toggle('is-fullscreen');
+        } else if (document.exitFullscreen) {
+          document.exitFullscreen().catch(function () {});
+        }
+      });
     }
 
-    function draw3DLine(p1, p2, color, width, dash, alpha) {
-      var a = project(p1[0], p1[1], p1[2]);
-      var b = project(p2[0], p2[1], p2[2]);
-      ctx.save();
-      ctx.globalAlpha = alpha == null ? 1 : alpha;
-      ctx.strokeStyle = color;
-      ctx.lineWidth = width;
-      ctx.lineCap = 'round';
-      if (dash) ctx.setLineDash(dash);
-      ctx.beginPath();
-      ctx.moveTo(a.x, a.y);
-      ctx.lineTo(b.x, b.y);
-      ctx.stroke();
-      ctx.restore();
+    /* Resize Handler */
+    var vw = 1000, vh = 650;
+    function handleResize() {
+      var r = viewport.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      vw = r.width;
+      vh = r.height;
+      camera.aspect = vw / vh;
+      camera.updateProjectionMatrix();
+      renderer.setSize(vw, vh, false);
+    }
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    document.addEventListener('fullscreenchange', function () { setTimeout(handleResize, 60); });
+
+    /* Project 3D Hotspot World Anchors to 2D Overlay Coordinates */
+    var projVec = new THREE.Vector3();
+    function updateHotspots() {
+      if (!pinsVisible) return;
+      Object.keys(OBJECT_DATA).forEach(function (k) {
+        var btn = spotBtns[k];
+        if (!btn) return;
+        var a = OBJECT_DATA[k].anchor;
+        projVec.set(a[0], a[1], a[2]).project(camera);
+        if (projVec.z > 1) {
+          btn.style.display = 'none';
+          return;
+        }
+        btn.style.display = 'inline-flex';
+        var sx = (projVec.x * 0.5 + 0.5) * vw;
+        var sy = (-projVec.y * 0.5 + 0.5) * vh;
+        sx = Math.max(64, Math.min(vw - 64, sx));
+        sy = Math.max(76, Math.min(vh - 46, sy));
+        btn.style.left = sx.toFixed(1) + 'px';
+        btn.style.top = sy.toFixed(1) + 'px';
+      });
     }
 
-    function draw3DLabel(pt3d, text, sub, color) {
-      var p = project(pt3d[0], pt3d[1], pt3d[2]);
-      ctx.save();
-      ctx.font = '700 10px "JetBrains Mono", monospace';
-      ctx.textAlign = 'center';
-      ctx.fillStyle = color || '#EAF4FF';
-      ctx.fillText(text, p.x, p.y);
-      if (sub) {
-        ctx.font = '500 9px "Source Sans 3", sans-serif';
-        ctx.fillStyle = 'rgba(226, 232, 240, 0.78)';
-        ctx.fillText(sub, p.x, p.y + 11);
-      }
-      ctx.restore();
-    }
-
-    var FRAME_COLS = {
-      top: '#64748B', bottom: '#1E293B', front: '#475569', back: '#334155', right: '#475569', left: '#334155',
-      stroke: '#0F172A'
-    };
-
-    function renderFrame() {
-      requestAnimationFrame(renderFrame);
+    /* Main WebGL Animation Loop */
+    var simClock = 0;
+    function animate() {
+      requestAnimationFrame(animate);
       var beranda = $('beranda');
       if (beranda && beranda.hidden) return;
 
-      var idleSpin = dragging ? 0 : Math.sin(flowPhase * 0.3) * 0.0006;
-      cam.yaw += (target.yaw - cam.yaw) * 0.11 + idleSpin;
-      cam.pitch += (target.pitch - cam.pitch) * 0.11;
-      cam.zoom += (target.zoom - cam.zoom) * 0.11;
-      cam.tx += (target.tx - cam.tx) * 0.11;
-      cam.ty += (target.ty - cam.ty) * 0.11;
-      cam.tz += (target.tz - cam.tz) * 0.11;
-
-      cosY = Math.cos(cam.yaw); sinY = Math.sin(cam.yaw);
-      cosP = Math.cos(cam.pitch); sinP = Math.sin(cam.pitch);
-      scale = Math.min(cw / 440, ch / 290) * cam.zoom;
-
-      var spd = (isPlaying && !reducedMotion) ? (0.15 + flowRate * 0.85) : 0;
-      wheelAngle += 0.048 * spd;
-      flowPhase += 0.040 * spd;
-
-      ctx.save();
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, cw, ch);
-
-      var faces = [];
-      var a1 = stageAlpha('1');
-      var a2 = stageAlpha('2');
-      var a3 = stageAlpha('3');
-
-      /* =====================================================================
-         0. VIDEO-STYLE 3D ENERGY STORE CYLINDERS (Floating Top Rack)
-         Just like the 3 glass beakers in the Physics Book video (E_p, E_k, E_DC)
-         ===================================================================== */
-      var stores = [
-        { x: -56, label: 'E_p · Potensial', sub: 'Tangki 60 L', lvl: 0.35 + flowRate * 0.58, side: 'rgba(139, 92, 246, 0.55)', top: 'rgba(167, 139, 250, 0.85)', st: '1' },
-        { x: -12, label: 'E_k · Kinetik',   sub: 'Kincir 6 Sudu', lvl: (0.20 + flowRate * 0.68) * (isPlaying ? 1 : 0.35), side: 'rgba(0, 168, 232, 0.58)', top: 'rgba(56, 189, 248, 0.88)', st: '2' },
-        { x: 32,  label: 'E_DC · Listrik',  sub: 'Pulley 1:4 · 12V', lvl: (0.15 + flowRate * 0.76) * (isPlaying ? 1 : 0.25), side: 'rgba(245, 158, 11, 0.62)', top: 'rgba(251, 191, 36, 0.92)', st: '3' }
-      ];
-      /* Glass Beaker Rack Stand */
-      pushBox(faces, -12, -74, -52, 132, 4, 28, {
-        top: 'rgba(226, 232, 240, 0.28)', bottom: 'rgba(15, 23, 42, 0.5)',
-        front: 'rgba(148, 163, 184, 0.35)', back: 'rgba(100, 116, 139, 0.3)',
-        right: 'rgba(148, 163, 184, 0.3)', left: 'rgba(100, 116, 139, 0.3)',
-        stroke: 'rgba(226, 232, 240, 0.5)'
-      }, null, 0.9);
-
-      for (var si = 0; si < stores.length; si++) {
-        var st = stores[si];
-        var bBot = -76, bTop = -114;
-        var fillY = bBot - (bBot - bTop - 3) * st.lvl;
-        /* Colored Energy Liquid inside Beaker */
-        pushCylinderY(faces, st.x, -52, fillY, bBot, 13, 12, st.side, st.top, 'rgba(255,255,255,0.35)', st.st, 0.95);
-        /* Outer Glass Cylinder Beaker */
-        pushCylinderY(faces, st.x, -52, bTop, bBot, 14.5, 12, 'rgba(255,255,255,0.10)', 'rgba(255,255,255,0.16)', 'rgba(226,232,240,0.55)', st.st, 0.85);
+      if (flowRunning && !reducedMotion) {
+        simClock += 0.016;
+        rotorPivot.rotation.z -= 0.045;
+        pulley1Pivot.rotation.z -= 0.045;
+        pulley2Pivot.rotation.z -= 0.18; /* 1:4 Step-Up ratio */
+        updateWaterParticles(simClock);
       }
 
-      /* =====================================================================
-         1. TWO-TIER DARK STEEL HOLLOW FRAME (Exact Match to CAD PNG)
-         ===================================================================== */
-      /* Left Upper Tier Deck Panel (Supports 500 mm Headbox + Upper Slope) */
-      pushBox(faces, -94, -4, 0, 92, 5, 68, FRAME_COLS, null, 0.92);
-      /* Upper Left Guide Brackets on Deck (as shown in CAD PNG) */
-      pushBox(faces, -138, -18, 0, 4, 24, 66, FRAME_COLS, null, 0.92);
-      pushBox(faces, -78, -14, 28, 36, 18, 4, FRAME_COLS, null, 0.92);
+      /* Smooth Camera Spring Interpolation */
+      camState.theta += (camGoal.theta - camState.theta) * 0.09;
+      camState.phi += (camGoal.phi - camState.phi) * 0.09;
+      camState.radius += (camGoal.radius - camState.radius) * 0.09;
+      camState.target.lerp(camGoal.target, 0.09);
 
-      /* Right Lower Tier Deck Panel (Around Outlet & Generator Mount) */
-      pushBox(faces, 38, 36, -27, 152, 5, 14, FRAME_COLS, null, 0.92);
-      pushBox(faces, 38, 36, 27, 152, 5, 14, FRAME_COLS, null, 0.92);
-      pushBox(faces, 108, 36, 0, 14, 5, 40, FRAME_COLS, null, 0.92);
-      pushBox(faces, -22, 36, 0, 32, 5, 40, FRAME_COLS, null, 0.92);
+      var sinPhi = Math.sin(camState.phi);
+      camera.position.x = camState.target.x + camState.radius * sinPhi * Math.sin(camState.theta);
+      camera.position.y = camState.target.y + camState.radius * Math.cos(camState.phi);
+      camera.position.z = camState.target.z + camState.radius * sinPhi * Math.cos(camState.theta);
+      camera.lookAt(camState.target);
 
-      /* Bottom Base Shelf Frame (Y = 86, holds the 60-Liter Water Reservoir Tank) */
-      pushBox(faces, -14, 86, -32, 256, 5, 5, FRAME_COLS, null, 0.9);
-      pushBox(faces, -14, 86, 32, 256, 5, 5, FRAME_COLS, null, 0.9);
-      pushBox(faces, -140, 86, 0, 5, 5, 64, FRAME_COLS, null, 0.9);
-      pushBox(faces, 112, 86, 0, 5, 5, 64, FRAME_COLS, null, 0.9);
-
-      /* Vertical Hollow Steel Frame Legs */
-      [-31, 31].forEach(function (lz) {
-        pushBox(faces, -138, 41, lz, 5, 90, 5, FRAME_COLS, null, 0.9);
-        pushBox(faces, -48,  41, lz, 5, 90, 5, FRAME_COLS, null, 0.9);
-        pushBox(faces, 112,  61, lz, 5, 50, 5, FRAME_COLS, null, 0.9);
-      });
-
-      /* =====================================================================
-         2. STAGE 01: 60-LITER WATER RESERVOIR TANK (Underneath Outlet) + PIPE
-         ===================================================================== */
-      var tX = 68, tZ = 0, tR = 34;
-      var waveDy = Math.sin(flowPhase * 2) * 1.8;
-      /* 60-Liter Water Volume inside Bottom Cylindrical Tank */
-      pushCylinderY(
-        faces, tX, tZ, 52 + waveDy, 85, tR - 2.5, 16,
-        'rgba(0, 168, 232, 0.50)', 'rgba(0, 198, 184, 0.68)', 'rgba(144, 224, 239, 0.55)', '1', a1
-      );
-      /* 60-Liter Cylindrical Tank Shell (Penampung Air 60 Liter) */
-      pushCylinderY(
-        faces, tX, tZ, 41, 86, tR, 16,
-        'rgba(226, 232, 240, 0.24)', 'rgba(144, 224, 239, 0.14)', 'rgba(144, 224, 239, 0.72)', '1', a1
-      );
-      /* Submerged 100W Circulation Pump inside 60L Tank */
-      pushBox(faces, tX - 8, 74, tZ, 18, 16, 16, {
-        top: '#0096C7', bottom: '#023E8A', front: '#0077B6', back: '#005F92', right: '#0084B8', left: '#00669E',
-        stroke: '#90E0EF'
-      }, '1', a1);
-
-      /* =====================================================================
-         3. STAGE 02: EXACT CAD ACRYLIC FLUME (1700 x 400 x 250 mm) + 6-BLADE ROTOR
-         - Upper Horizontal Headbox: 500 mm (X: -134..-76, Y_bot: -48, Y_top: -86)
-         - Internal Weir Baffle: 95 x 105 mm (X: -134..-116, Y: -86..-66)
-         - Inclined Middle Slope: 1016.97 mm (X: -76..+60, Y_bot: -48..+24, Y_top: -86..-14)
-         - Lower Horizontal Outlet: 200 mm (X: +60..+88, Y_bot: +24, Y_top: -14, +50mm drop)
-         ===================================================================== */
-      var fZ1 = -22, fZ2 = 22;
-
-      /* Flowing Water Sheet along 500mm Headbox & 1016.97mm Slope */
-      pushQuad(faces,
-        [-132, -55, fZ1 + 1], [-76, -55, fZ1 + 1],
-        [-76, -55, fZ2 - 1],  [-132, -55, fZ2 - 1],
-        'rgba(0, 180, 236, 0.50)', 'rgba(144, 224, 239, 0.5)', '2', a2
-      );
-      pushQuad(faces,
-        [-76, -55, fZ1 + 1], [60, 18, fZ1 + 1],
-        [60, 18, fZ2 - 1],   [-76, -55, fZ2 - 1],
-        'rgba(0, 168, 232, 0.54)', 'rgba(144, 224, 239, 0.6)', '2', a2
-      );
-
-      /* Acrylic Flume Floor Plates (500mm Upper, 1016.97mm Slope, 200mm Lower) */
-      pushQuad(faces, [-134, -48, fZ1], [-76, -48, fZ1], [-76, -48, fZ2], [-134, -48, fZ2], 'rgba(226, 238, 248, 0.28)', '#0F172A', '2', a2);
-      pushQuad(faces, [-76, -48, fZ1],  [60, 24, fZ1],   [60, 24, fZ2],   [-76, -48, fZ2],  'rgba(226, 238, 248, 0.28)', '#0F172A', '2', a2);
-      pushQuad(faces, [60, 24, fZ1],    [88, 24, fZ1],   [88, 24, fZ2],   [60, 24, fZ2],    'rgba(226, 238, 248, 0.24)', '#0F172A', '2', a2);
-
-      /* Internal Headbox Weir / Baffle Box (95 x 105 mm from PDF Drawing) */
-      pushBox(faces, -125, -75, 0, 18, 20, 44, {
-        top: 'rgba(241, 245, 249, 0.48)', bottom: 'rgba(148, 163, 184, 0.42)',
-        front: 'rgba(226, 232, 240, 0.40)', back: 'rgba(203, 213, 225, 0.40)',
-        right: 'rgba(226, 232, 240, 0.45)', left: 'rgba(203, 213, 225, 0.45)',
-        stroke: '#0F172A'
-      }, '2', a2);
-
-      /* 6-Blade Curved Bright-Blue Waterwheel (Exact Match to Blue Rotor in CAD PNG) */
-      var wX = 36, wY = 2, wZ = 0, wR = 23;
-      /* Protruding Stainless Steel Main Shaft (Ø 30 mm) through both side walls */
-      pushCylinderZ(
-        faces, wX, wY, -40, 38, 3.2, 10,
-        '#94A3B8', '#F8FAFC', '#0F172A', '2', Math.max(a2, a3), wheelAngle
-      );
-      /* Central Rotor Hub */
-      pushCylinderZ(
-        faces, wX, wY, fZ1 + 3, fZ2 - 3, 7, 12,
-        '#0284C7', '#38BDF8', '#0F172A', '2', a2, wheelAngle
-      );
-      /* 6 Curved Cyan-Blue Paddles */
-      for (var b = 0; b < 6; b++) {
-        var ang = wheelAngle + (b * Math.PI) / 3;
-        var rIn = 7, rMid = 16, rOut = wR;
-        var xIn = wX + Math.cos(ang) * rIn, yIn = wY + Math.sin(ang) * rIn;
-        var xMid = wX + Math.cos(ang + 0.16) * rMid, yMid = wY + Math.sin(ang + 0.16) * rMid;
-        var xOut = wX + Math.cos(ang + 0.38) * rOut, yOut = wY + Math.sin(ang + 0.38) * rOut;
-        pushQuad(faces,
-          [xIn, yIn, fZ1 + 3], [xMid, yMid, fZ1 + 3],
-          [xMid, yMid, fZ2 - 3], [xIn, yIn, fZ2 - 3],
-          '#0096C7', '#041B36', '2', a2
-        );
-        pushQuad(faces,
-          [xMid, yMid, fZ1 + 3], [xOut, yOut, fZ1 + 3],
-          [xOut, yOut, fZ2 - 3], [xMid, yMid, fZ2 - 3],
-          '#00B4D8', '#041B36', '2', a2
-        );
-      }
-
-      /* Translucent Acrylic Side Walls (Back Z = -22 & Front Z = +22) + End Walls */
-      [fZ1, fZ2].forEach(function (wz) {
-        var wFill = wz === fZ2 ? 'rgba(241, 245, 249, 0.22)' : 'rgba(203, 213, 225, 0.25)';
-        var bias = wz === fZ2 ? -4 : 4;
-        /* 500mm Upper Wall */
-        pushQuad(faces, [-134, -86, wz], [-76, -86, wz], [-76, -48, wz], [-134, -48, wz], wFill, '#0F172A', '2', a2, bias);
-        /* 1016.97mm Inclined Wall */
-        pushQuad(faces, [-76, -86, wz], [60, -14, wz], [60, 24, wz], [-76, -48, wz], wFill, '#0F172A', '2', a2, bias);
-        /* 200mm Lower Wall + 50mm Drop Lip */
-        pushQuad(faces, [60, -14, wz], [88, -14, wz], [88, 32, wz], [60, 32, wz], wFill, '#0F172A', '2', a2, bias);
-      });
-      /* Back End Wall (X = -134) & Front Lower End Wall (X = +88) */
-      pushQuad(faces, [-134, -86, fZ1], [-134, -86, fZ2], [-134, -48, fZ2], [-134, -48, fZ1], 'rgba(226, 232, 240, 0.34)', '#0F172A', '2', a2);
-      pushQuad(faces, [88, -14, fZ1],   [88, -14, fZ2],   [88, 32, fZ2],    [88, 32, fZ1],    'rgba(226, 232, 240, 0.30)', '#0F172A', '2', a2);
-
-      /* =====================================================================
-         4. STAGE 03: 4-SPOKE LARGE PULLEY (Ø 270 mm) + V-BELT + GENERATOR DC + BULB
-         Exact match to PDF Drawing & CAD PNG
-         ===================================================================== */
-      var pZ = -34;
-      var p1X = wX, p1Y = wY, p1R = 22;
-      /* Large Driver Pulley Rim (Ø 270 mm, 4-spoke wheel on outer side of channel) */
-      pushCylinderZ(
-        faces, p1X, p1Y, pZ - 2.5, pZ + 2.5, p1R, 18,
-        '#CBD5E1', 'rgba(248, 250, 252, 0.28)', '#0F172A', '3', a3, wheelAngle
-      );
-
-      /* Small Driven Pulley (Ø 67.5 mm — 1:4 Step-Up, spins 4x faster) */
-      var p2X = 98, p2Y = 18, p2R = 7.5;
-      pushCylinderZ(
-        faces, p2X, p2Y, pZ - 2.5, pZ + 2.5, p2R, 14,
-        '#94A3B8', '#F1F5F9', '#0F172A', '3', a3, wheelAngle * 4
-      );
-
-      /* Horizontal Cylindrical Generator DC XD 3240 (Mounted on front-right frame beam) */
-      pushCylinderZ(
-        faces, p2X, p2Y, -28, -4, 10.5, 14,
-        '#94A3B8', '#CBD5E1', '#0F172A', '3', a3, 0
-      );
-      /* Generator Mounting End-Brackets (Square flanges as in CAD PNG) */
-      pushBox(faces, p2X, p2Y, -28, 22, 22, 3, {
-        top: '#94A3B8', bottom: '#475569', front: '#CBD5E1', back: '#64748B', right: '#94A3B8', left: '#64748B',
-        stroke: '#0F172A'
-      }, '3', a3);
-      pushBox(faces, p2X, p2Y, -4, 22, 22, 3, {
-        top: '#94A3B8', bottom: '#475569', front: '#CBD5E1', back: '#64748B', right: '#94A3B8', left: '#64748B',
-        stroke: '#0F172A'
-      }, '3', a3);
-
-      /* 3D Output Lamp Stand (Like the glowing bulb apparatus in the video at 00:32) */
-      pushBox(faces, 114, 26, 22, 18, 14, 18, {
-        top: '#475569', bottom: '#0F172A', front: '#334155', back: '#1E293B', right: '#334155', left: '#1E293B',
-        stroke: '#FBBF24'
-      }, '3', a3);
-
-      /* Depth-Sort all 3D Polygons (Painter's Algorithm) */
-      faces.sort(function (a, b) { return b.z - a.z; });
-
-      for (var fIdx = 0; fIdx < faces.length; fIdx++) {
-        var face = faces[fIdx];
-        var pts = face.pts;
-        ctx.save();
-        ctx.globalAlpha = face.alpha;
-        ctx.beginPath();
-        ctx.moveTo(pts[0].x, pts[0].y);
-        for (var pIdx = 1; pIdx < pts.length; pIdx++) {
-          ctx.lineTo(pts[pIdx].x, pts[pIdx].y);
-        }
-        ctx.closePath();
-        if (face.fill) {
-          ctx.fillStyle = face.fill;
-          ctx.fill();
-        }
-        if (face.stroke) {
-          ctx.strokeStyle = face.stroke;
-          ctx.lineWidth = (activeStage === face.stage || activeStage === 'all') ? 1.3 : 0.85;
-          ctx.stroke();
-        }
-        ctx.restore();
-      }
-
-      /* 4 Spokes of the Large Pulley Wheel (Exact 4-cross spokes from PDF Drawing & PNG) */
-      for (var spk = 0; spk < 4; spk++) {
-        var sa = wheelAngle + (spk * Math.PI) / 2;
-        draw3DLine(
-          [p1X, p1Y, pZ],
-          [p1X + Math.cos(sa) * (p1R - 2), p1Y + Math.sin(sa) * (p1R - 2), pZ],
-          '#E2E8F0', 3.2, null, a3
-        );
-      }
-
-      /* Black V-Belt connecting Large 4-Spoke Pulley (Ø 270) to Small Generator Pulley (Ø 67.5) */
-      var beltTop1 = [p1X + 4, p1Y - p1R + 1, pZ];
-      var beltTop2 = [p2X + 1, p2Y - p2R + 1, pZ];
-      var beltBot1 = [p1X - 4, p1Y + p1R - 1, pZ];
-      var beltBot2 = [p2X - 1, p2Y + p2R - 1, pZ];
-      draw3DLine(beltTop1, beltTop2, '#0F172A', 3.5, null, a3);
-      draw3DLine(beltBot1, beltBot2, '#0F172A', 3.5, null, a3);
-      draw3DLine(beltTop1, beltTop2, '#38BDF8', 1.4, [6, 5], a3);
-      draw3DLine(beltBot1, beltBot2, '#38BDF8', 1.4, [6, 5], a3);
-
-      /* Rising PVC Circulation Pipe from 60L Bottom Tank along Lower Frame up to 500mm Headbox (Stage 01) */
-      var pipePts = [
-        [tX - 12, 72, 24],
-        [-130, 56, 24],
-        [-130, -90, 24],
-        [-124, -90, 8],
-        [-124, -78, 8]
-      ];
-      for (var pi = 0; pi < pipePts.length - 1; pi++) {
-        draw3DLine(pipePts[pi], pipePts[pi + 1], 'rgba(226, 232, 240, 0.72)', 6.5 * cam.zoom, null, a1);
-        draw3DLine(pipePts[pi], pipePts[pi + 1], '#00A8E8', 2.8 * cam.zoom, null, a1);
-      }
-
-      /* Animated 3D Water Droplets inside Rising PVC Pipe (Stage 01) */
-      if (flowRate > 0.02) {
-        for (var wp = 0; wp < 10; wp++) {
-          var tp = ((wp / 10) + flowPhase * 0.22) % 1;
-          var px, py, pz = 24;
-          if (tp < 0.45) {
-            var u1 = tp / 0.45;
-            px = (tX - 12) + (-130 - (tX - 12)) * u1;
-            py = 72 + (56 - 72) * u1;
-          } else if (tp < 0.88) {
-            var u2 = (tp - 0.45) / 0.43;
-            px = -130;
-            py = 56 + (-90 - 56) * u2;
-          } else {
-            var u3 = (tp - 0.88) / 0.12;
-            px = -124;
-            py = -90 + u3 * 16;
-            pz = 24 - u3 * 16;
-          }
-          var sp = project(px, py, pz);
-          ctx.save();
-          ctx.globalAlpha = a1;
-          ctx.fillStyle = '#E0F7FC';
-          ctx.beginPath();
-          ctx.arc(sp.x, sp.y, Math.max(2, 3 * sp.p), 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        }
-
-        /* Animated 3D Water Stream & Splash Particles down the 1016.97 mm Slope & into 60L Tank (Stage 02) */
-        for (var cp = 0; cp < 14; cp++) {
-          var tc = ((cp / 14) + flowPhase * 0.36) % 1;
-          var cxP, cyP, czP = ((cp % 3) - 1) * 9;
-          if (tc < 0.78) {
-            var uSlope = tc / 0.78;
-            cxP = -76 + (60 - (-76)) * uSlope;
-            cyP = -54 + (20 - (-54)) * uSlope;
-          } else {
-            /* Waterfall dropping from 200mm outlet straight down into the 60-Liter Reservoir Tank */
-            var uFall = (tc - 0.78) / 0.22;
-            cxP = 68 + (cp % 2) * 5;
-            cyP = 24 + uFall * 32;
-          }
-          var scp = project(cxP, cyP, czP);
-          ctx.save();
-          ctx.globalAlpha = a2;
-          ctx.fillStyle = '#90E0EF';
-          ctx.beginPath();
-          ctx.arc(scp.x, scp.y, Math.max(2, 3.1 * scp.p), 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        }
-      }
-
-      /* Glowing Bulb Apparatus (Video 00:32 Style Glowing Energy Sphere + Bulb Halo) */
-      var bulbPt = project(114, 10, 22);
-      var glowRadius = (10 + flowRate * 24) * bulbPt.p * (0.85 + Math.sin(flowPhase * 3) * 0.15);
-      ctx.save();
-      ctx.globalAlpha = a3;
-      if (flowRate > 0.02) {
-        var grad = ctx.createRadialGradient(bulbPt.x, bulbPt.y, 2, bulbPt.x, bulbPt.y, glowRadius);
-        grad.addColorStop(0, 'rgba(254, 240, 138, 0.98)');
-        grad.addColorStop(0.45, 'rgba(251, 191, 36, 0.58)');
-        grad.addColorStop(1, 'rgba(251, 191, 36, 0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(bulbPt.x, bulbPt.y, glowRadius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.fillStyle = flowRate > 0.02 ? '#FEF08A' : '#64748B';
-      ctx.strokeStyle = '#0F172A';
-      ctx.lineWidth = 1.4;
-      ctx.beginPath();
-      ctx.arc(bulbPt.x, bulbPt.y, Math.max(5, 7 * bulbPt.p), 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      ctx.restore();
-
-      /* 3D Labels for Energy Store Cylinders & 60L Tank */
-      for (var li = 0; li < stores.length; li++) {
-        draw3DLabel([stores[li].x, -124, -52], stores[li].label, stores[li].sub, '#F8FAFC');
-      }
-      draw3DLabel([tX, 98, tZ], 'PENAMPUNG 60 LITER', 'Sirkulasi Bawah', '#90E0EF');
-
-      /* Update Floating 3D Hotspot Pin Positions */
-      ['1', '2', '3'].forEach(function (k) {
-        var w = STAGE_ANCHORS[k];
-        var pr = project(w[0], w[1], w[2]);
-        projectedAnchors[k] = pr;
-        var pinEl = pins[k];
-        if (pinEl) {
-          var clampedX = Math.max(64, Math.min(cw - 64, pr.x));
-          var clampedY = Math.max(26, Math.min(ch - 56, pr.y));
-          pinEl.style.left = clampedX.toFixed(1) + 'px';
-          pinEl.style.top = clampedY.toFixed(1) + 'px';
-        }
-      });
-
-      ctx.restore();
+      renderer.render(scene, camera);
+      updateHotspots();
     }
 
-    requestAnimationFrame(renderFrame);
+    requestAnimationFrame(animate);
   })();
 })();
