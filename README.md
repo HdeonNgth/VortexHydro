@@ -1,39 +1,34 @@
 # Vortex Hydro
 
-Website satu halaman untuk proyek pembangkit listrik mikro-hidro berbasis pusaran air.
+Website proyek kelas pembangkit listrik mikro-hidro berbasis pusaran air (*gravitational water vortex micro-hydro simulator*), Fakultas Vokasi, Universitas Negeri Malang.
 
-## Situs online
+## Situs Online
 
-Buka [Vortex Hydro](https://hdeonngth.github.io/VortexHydro/) untuk melihat versi statis situs di GitHub Pages.
+Buka **[Vortex Hydro](https://hdeonngth.github.io/VortexHydro/)** di GitHub Pages.
 
-Kode backend dan panduan hosting untuk pengembangan berikutnya dikumpulkan di [`Upcoming/`](Upcoming/). Backend belum di-host atau dihubungkan ke situs publik.
+## Fitur Utama
 
-## Akses demo
+- **Visual-First Continuous Scroll:** Hero visual prototipe turbin dengan gelombang aliran air, angka spesifikasi nyata, dan perpindahan seksi mulus tanpa jeda transisi.
+- **Simulasi Interaktif Arus Air:** Pengunjung dapat menggeser debit air (`Q`), tinggi jatuh (`H`), dan efisiensi (`η`) untuk melihat animasi arus air, putaran kincir 6 sudu, nyala LED, serta perhitungan daya listrik secara langsung.
+- **Diagram Penampang 8 Titik:** Blueprint interaktif prototipe dengan penjelasan detail tiap komponen.
+- **Dokumentasi & Struktur Tim Ringkas:** Tahapan uji laboratorium, daftar peralatan, filter divisi tim, dan FAQ.
+- **Dashboard Admin Simulasi:** Pemantauan telemetri simulasi (`debit`, `vbat`, `rpmShaft`, `rpmGen`) dengan grafik 60 detik dan indikator (kata sandi demo: `pakcikiniv2`).
+- **Vortex Hydro AI Assistant:** Widget chat bertenaga Gemini melalui Supabase Edge Function `chat-with-ai`.
+- **Dwi-Bahasa (ID/EN), Mode Terang/Gelap, & Pencarian Cepat (`Ctrl+K`).**
 
-Di GitHub Pages, Tamu masuk tanpa kata sandi. Admin demo memakai kata sandi `pakcikiniv2` dan hanya membuka Dashboard simulasi. Pemeriksaan dilakukan di browser sehingga dapat dilewati; jangan gunakan untuk melindungi data atau kata sandi asli. Data sensor dan riwayat kunjungan tidak realtime.
+## Struktur Folder (Ringkas & Terkonsolidasi)
 
-## Struktur
-
-- `index.html` — markup halaman dan rute.
-- `assets/css/site.css` — gaya situs.
-- `assets/css/dashboard.css` — gaya khusus mode Dashboard (sidebar ikon, top bar, kartu, grafik).
-- `assets/js/` — skrip yang dipisah menurut fitur.
-- `Upcoming/` — backend Node.js, konfigurasi contoh, tes, dan persiapan hosting.
-- `assets/i18n.js` — bahasa Indonesia dan Inggris.
-- `assets/images/` dan `assets/team/` — aset situs yang digunakan langsung.
-- `docs/README.md` — catatan struktur dan deployment situs.
-
-CSS dan skrip dipisahkan tanpa menambahkan build step; urutan pemuatan skrip dipertahankan. Untuk setup backend, lihat [`Upcoming/README.md`](Upcoming/README.md).
-
-## Data Dashboard
-
-Dashboard memantau empat besaran prototipe: debit air (L/s), tegangan baterai (V), RPM poros utama, dan RPM generator. Penganalisis di `assets/js/navigation.js` mengubah angka itu menjadi peringatan berwarna (NORMAL, WASPADA, BAHAYA) dan mencatat perubahan kondisi di Log kejadian: pompa mati, turbin macet, dugaan kebocoran, sabuk slip, putaran berlebih, dan baterai rendah atau tinggi.
-
-Saat ini Dashboard hanya memakai satu sumber data:
-
-- **Simulasi prototipe**: mesin `assets/js/vx-engine.js` yang juga menggerakkan halaman Tentang. Angkanya dibuat di browser, jadi tidak ada database atau koneksi realtime. Fokus pengembangan sekarang ada di tampilan (UI).
-
-Jalur database realtime (Firebase dan Supabase), pengirim data dari simulasi 3D, dan halaman Energi serta Laporan Excel sudah dihapus dari kode. Semuanya masih ada di riwayat Git bila dibutuhkan lagi.
-
-## AI Assistant
-Asisten AI (Gemini via Supabase Edge Function) ada di pojok kiri bawah. Panduan, konfigurasi `GEMINI_API_KEY`, dan checklist uji: `docs/ai-assistant.md`.
+```text
+index.html                  Halaman utama (continuous scroll + mode Dashboard Admin)
+assets/
+  styles.css                Seluruh sistem desain, layout responsif, Dashboard & AI widget
+  app.js                    Navigasi scroll-spy, simulasi arus air, diagram 8 titik, tim & pencarian
+  dashboard.js              Mesin simulasi fisika (VXSim), autentikasi demo & telemetri Dashboard
+  ai-assistant.js           Integrasi chat Vortex Hydro AI (Supabase Edge Function)
+  i18n.js                   Kamus & pengalih bahasa Indonesia / Inggris
+  images/                   Render hero turbin, foto dokumentasi & logo software
+  team/                     Foto profil anggota tim
+supabase/                   Edge Function `chat-with-ai` dan migrasi tabel percakapan
+docs/                       Dokumentasi proyek dan panduan konfigurasi AI Assistant
+Upcoming/                   Backend Node.js opsional untuk pengembangan lanjutan
+```

@@ -3,81 +3,73 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <script src="assets/js/theme-init.js?v=4"></script>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2303045E'/%3E%3Cpath d='M16 6a10 10 0 1 1-10 10 6.8 6.8 0 1 1 6.8 6.8 3.6 3.6 0 1 1 3.6-3.6' fill='none' stroke='%2300B4D8' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
-  <title>Vortex Hydro</title>
-  <meta name="description" content="Vortex Hydro: proyek kelas pembangkit listrik mikro-hidro berbasis pusaran air gravitasi, Universitas Negeri Malang.">
+  <script>try{var t=localStorage.getItem('vxt');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;}catch(e){}</script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23041B36'/%3E%3Cpath d='M16 6a10 10 0 1 1-10 10 6.8 6.8 0 1 1 6.8 6.8 3.6 3.6 0 1 1 3.6-3.6' fill='none' stroke='%2300A8E8' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <title>Vortex Hydro — Pembangkit Listrik Mikro-Hidro Pusaran Air</title>
+  <meta name="description" content="Prototipe pembangkit listrik mikro-hidro berbasis pusaran air skala laboratorium, Fakultas Vokasi, Universitas Negeri Malang.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="assets/css/site.css?v=40">
-  <link rel="stylesheet" href="assets/css/ai-assistant.css?v=4">
-  <link rel="stylesheet" href="assets/css/dashboard.css?v=8">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="assets/styles.css?v=1">
 </head>
 <body>
 
-  <!-- Top Navbar -->
-  <header class="lg" id="lg">
-    <div class="lg__inner">
-      <a class="lg__brand" href="#beranda" aria-label="Vortex Hydro, ke beranda">
+  <!-- Header -->
+  <header class="hdr" id="hdr">
+    <div class="hdr__inner">
+      <a class="hdr__brand" href="#beranda" aria-label="Vortex Hydro, ke beranda">
         <span class="vxlogo" aria-hidden="true">
           <svg viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="8" fill="currentColor" fill-opacity=".12"/>
+            <rect width="32" height="32" rx="8" fill="currentColor" fill-opacity=".16"/>
             <path d="M16 6.5a9.5 9.5 0 1 1-9.5 9.5 6.4 6.4 0 1 1 6.4 6.4 3.4 3.4 0 1 1 3.4-3.4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/>
           </svg>
         </span>
-        <span class="lg__brand-txt">
-          <b>Vortex Hydro</b>
-          <small>Mikro-hidro Lab</small>
-        </span>
+        <span>Vortex Hydro</span>
       </a>
 
-      <nav class="lg__nav" id="lgn" aria-label="Menu utama">
-        <a href="#beranda" data-nav-link data-k="beranda"><span>Beranda</span></a>
-        <a href="#tentang" data-nav-link data-k="tentang"><span>Tentang</span></a>
-        <a href="#dokumentasi" data-nav-link data-k="dokumentasi"><span>Dokumentasi</span></a>
-        <a href="#struktur-tim" data-nav-link data-k="struktur-tim"><span>Struktur Tim</span></a>
-        <a href="#dashboard" data-nav-link data-k="dashboard">
-          <span>Dashboard</span>
-          <i class="lg__live" aria-hidden="true"></i>
-        </a>
+      <nav class="hdr__nav" aria-label="Menu utama">
+        <a href="#beranda" data-nav-link data-k="beranda" aria-current="page">Beranda</a>
+        <a href="#simulasi" data-nav-link data-k="simulasi">Simulasi</a>
+        <a href="#cara-kerja" data-nav-link data-k="cara-kerja">Cara Kerja</a>
+        <a href="#dokumentasi" data-nav-link data-k="dokumentasi">Dokumentasi</a>
+        <a href="#tim" data-nav-link data-k="tim">Tim</a>
+        <a href="#dashboard" data-nav-link data-k="dashboard"><span>Dashboard</span><i class="hdr__live" aria-hidden="true"></i></a>
       </nav>
 
-      <div class="lg__actions">
-        <button class="lg__btn lg__search" type="button" data-vs-open aria-label="Cari di situs" title="Cari (Ctrl+K)">
+      <div class="hdr__actions">
+        <button class="hdr__btn" type="button" data-vs-open aria-label="Cari di situs" title="Cari (Ctrl+K)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
-          <span class="lg__search-lbl">Cari</span>
-          <kbd class="lg__kbd">Ctrl K</kbd>
+          <span class="hdr__lbl">Cari</span>
         </button>
-        <button class="lg__btn lg__lang" data-language-toggle type="button" aria-label="Ganti bahasa ke Inggris" title="Ganti bahasa ke Inggris">EN</button>
-        <button class="lg__btn lg__theme" data-theme-toggle type="button" aria-label="Ganti ke mode gelap" title="Mode terang/gelap">
+        <button class="hdr__btn" data-language-toggle type="button" aria-label="Ganti bahasa ke Inggris" title="Ganti bahasa ke Inggris">EN</button>
+        <button class="hdr__btn" data-theme-toggle type="button" aria-label="Ganti ke mode gelap" title="Mode terang/gelap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
         </button>
-        <button class="lg__btn lg__admin" type="button" data-vx-admin-login aria-label="Login Admin" title="Login Admin">
+        <button class="hdr__btn" type="button" data-vx-admin-login aria-label="Login Admin" title="Login Admin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-          <span class="lg__admin-lbl">Admin</span>
+          <span class="hdr__lbl">Admin</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Mobile Bottom Navigation Bar -->
+  <!-- Mobile Bottom Navigation -->
   <nav class="mnav" aria-label="Navigasi seluler">
-    <a href="#beranda" data-nav-link data-k="beranda">
+    <a href="#beranda" data-nav-link data-k="beranda" aria-current="page">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
       <span>Beranda</span>
     </a>
-    <a href="#tentang" data-nav-link data-k="tentang">
+    <a href="#simulasi" data-nav-link data-k="simulasi">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12c2.5-3 5.5 3 8 0s5.5 3 8 0 2.5-1 4-1M2 17c2.5-3 5.5 3 8 0s5.5 3 8 0 2.5-1 4-1"/></svg>
+      <span>Simulasi</span>
+    </a>
+    <a href="#cara-kerja" data-nav-link data-k="cara-kerja">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
-      <span>Tentang</span>
+      <span>Cara Kerja</span>
     </a>
     <a href="#dokumentasi" data-nav-link data-k="dokumentasi">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
       <span>Dokumentasi</span>
-    </a>
-    <a href="#struktur-tim" data-nav-link data-k="struktur-tim">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M16 5a3 3 0 0 1 0 6M18 14c2 .6 3 2.4 3 5"/></svg>
-      <span>Tim</span>
     </a>
     <a href="#dashboard" data-nav-link data-k="dashboard">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
@@ -88,881 +80,456 @@
   <!-- Dashboard Sidebar (Admin Mode) -->
   <aside class="dsb" id="dsb" aria-label="Menu dashboard">
     <div class="dsb__logo" aria-hidden="true">
-      <span class="vxlogo">
-        <svg viewBox="0 0 32 32" fill="none"><path d="M16 6.5a9.5 9.5 0 1 1-9.5 9.5 6.4 6.4 0 1 1 6.4 6.4 3.4 3.4 0 1 1 3.4-3.4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-      </span>
+      <svg viewBox="0 0 32 32" fill="none"><path d="M16 6.5a9.5 9.5 0 1 1-9.5 9.5 6.4 6.4 0 1 1 6.4 6.4 3.4 3.4 0 1 1 3.4-3.4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
     </div>
     <nav class="dsb__nav" id="dsbn" aria-label="Kategori dashboard">
       <span class="dsb__lens" id="dsbl"></span>
       <div class="dsb__grp" role="group" aria-label="Pantau">
-        <button type="button" data-v="ringkasan" data-tip="Ringkasan" aria-label="Ringkasan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg></button>
-        <button type="button" data-v="sensor" data-tip="Sensor" aria-label="Sensor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 17a8.5 8.5 0 1 1 15 0"/><path d="m12 13 3.5-3.5"/><circle cx="12" cy="13" r="1"/></svg></button>
-        <button type="button" data-v="grafik" data-tip="Grafik" aria-label="Grafik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="m8 14 3-4 3 2 4-6"/></svg></button>
+        <button type="button" data-v="ringkasan" title="Ringkasan" aria-label="Ringkasan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg></button>
+        <button type="button" data-v="sensor" title="Sensor" aria-label="Sensor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 17a8.5 8.5 0 1 1 15 0"/><path d="m12 13 3.5-3.5"/><circle cx="12" cy="13" r="1"/></svg></button>
+        <button type="button" data-v="grafik" title="Grafik" aria-label="Grafik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h16"/><path d="m8 14 3-4 3 2 4-6"/></svg></button>
       </div>
       <i class="dsb__sep"></i>
       <div class="dsb__grp" role="group" aria-label="Pengunjung">
-        <button type="button" data-v="riwayat" data-tip="Riwayat kunjungan" aria-label="Riwayat kunjungan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></button>
+        <button type="button" data-v="riwayat" title="Riwayat kunjungan" aria-label="Riwayat kunjungan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></button>
       </div>
     </nav>
-    <a class="dsb__exit" href="#beranda" data-tip="Keluar dari dashboard" aria-label="Keluar dari dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M15 8l4 4-4 4M19 12H9"/></svg></a>
+    <a class="dsb__exit" href="#beranda" title="Keluar dari dashboard" aria-label="Keluar dari dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M15 8l4 4-4 4M19 12H9"/></svg></a>
   </aside>
 
-  <main>
-    <!-- ==================== HALAMAN 1: BERANDA ==================== -->
-    <div class="page" id="beranda">
-      <section class="hero" aria-label="Beranda Vortex Hydro">
-        <div class="wrap hero__grid">
-          <div class="hero__copy">
-            <div class="hero__badges">
-              <span class="badge badge--primary">Proyek Kelas · Mikro-hidro</span>
-              <span class="badge">Universitas Negeri Malang</span>
-            </div>
-            <h1 class="hero__title">
-              <span>Turbin Pusaran Air</span>
-              <span class="hero__title-accent">Listrik dari Aliran Rendah</span>
-            </h1>
-            <p class="hero__lead">Simulator PLTA vortex skala laboratorium yang mengubah aliran air berketinggian rendah menjadi listrik, tanpa bendungan.</p>
-            <div class="hero__actions">
-              <a class="btn btn--primary" href="#tentang">Lihat Cara Kerja</a>
-              <a class="btn btn--secondary" href="#kalkulator">Kalkulator Daya</a>
-              <a class="btn btn--ghost" href="#dashboard">Buka Dashboard</a>
-            </div>
+  <!-- ==================== CONTINUOUS SCROLL MAIN SITE ==================== -->
+  <main id="site-main">
 
-            <dl class="hero__metrics" aria-label="Spesifikasi ringkas prototipe">
-              <div class="metric">
-                <dt>Pompa Sirkulasi</dt>
-                <dd>100 W</dd>
-                <small>Wasser WD-101E · 220V</small>
-              </div>
-              <div class="metric">
-                <dt>Kincir Turbin</dt>
-                <dd>Ø 330 mm</dd>
-                <small>6 sudu · Poros Ø 30 mm</small>
-              </div>
-              <div class="metric">
-                <dt>Rasio Transmisi</dt>
-                <dd>1 : 4</dd>
-                <small>Pulley &amp; V-belt step-up</small>
-              </div>
-              <div class="metric">
-                <dt>Beban Listrik</dt>
-                <dd>10 W</dd>
-                <small>2 × LED 12 V / 5 W</small>
-              </div>
-            </dl>
-          </div>
+    <!-- 1. VISUAL HERO (Render 3D + 1 Kalimat Manfaat Tegas + Animasi Gelombang Air) -->
+    <section class="hero" id="beranda" data-title="Beranda">
+      <div class="hero__media" aria-hidden="true">
+        <img src="assets/images/hero-turbine.jpg" alt="Prototipe simulator turbin mikro-hidro pusaran air Vortex Hydro">
+        <div class="hero__scrim"></div>
+      </div>
 
-          <div class="hero__panel">
-            <div class="schem-card">
-              <header class="schem-card__head">
-                <div>
-                  <span class="schem-card__tag">Arsitektur Prototipe Lab</span>
-                  <h2>Sistem Sirkulasi Air Tertutup</h2>
-                </div>
-                <span class="schem-card__status"><i></i>Rangka 2 × 0,8 m</span>
-              </header>
-
-              <div class="schem-card__svg" aria-hidden="true">
-                <svg viewBox="0 0 520 300" fill="none">
-                  <rect x="12" y="12" width="496" height="276" rx="14" fill="currentColor" fill-opacity=".03" stroke="currentColor" stroke-opacity=".12"/>
-                  <!-- Siklus aliran -->
-                  <path d="M88 220V78h110" stroke="#00B4D8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M198 78l132 24" stroke="#0077B6" stroke-width="6" stroke-linecap="round"/>
-                  <path d="M366 138v76H130" stroke="#00B4D8" stroke-width="4" stroke-dasharray="6 6" stroke-linecap="round"/>
-                  <!-- Node 1: Pompa & Tangki -->
-                  <rect x="44" y="198" width="96" height="54" rx="10" fill="#03045E"/>
-                  <text x="92" y="221" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">POMPA 100 W</text>
-                  <text x="92" y="238" text-anchor="middle" fill="#90E0EF" font-size="9.5">Tangki Ø 520 mm</text>
-                  <!-- Node 2: Headbox -->
-                  <rect x="150" y="46" width="96" height="52" rx="10" fill="#0077B6"/>
-                  <text x="198" y="69" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">HEADBOX</text>
-                  <text x="198" y="85" text-anchor="middle" fill="#E0F7FC" font-size="9.5">Pipa Ø 45 mm</text>
-                  <!-- Node 3: Kincir 6 Sudu -->
-                  <circle cx="358" cy="108" r="38" fill="#00B4D8" fill-opacity=".18" stroke="#0077B6" stroke-width="2.5"/>
-                  <circle cx="358" cy="108" r="14" fill="#03045E"/>
-                  <path d="M358 70v76M320 108h76M331 81l54 54M385 81l-54 54" stroke="#0077B6" stroke-width="2.5" stroke-linecap="round"/>
-                  <!-- Transmisi ke Generator -->
-                  <path d="M388 92l54-20M388 124l54-12" stroke="#03045E" stroke-width="2" stroke-dasharray="4 3"/>
-                  <!-- Node 4: Generator & LED -->
-                  <rect x="412" y="54" width="82" height="68" rx="10" fill="#03045E"/>
-                  <text x="453" y="78" text-anchor="middle" fill="#00B4D8" font-size="10.5" font-weight="700">GEN XD 3240</text>
-                  <text x="453" y="94" text-anchor="middle" fill="#fff" font-size="9.5">Pulley 1 : 4</text>
-                  <text x="453" y="109" text-anchor="middle" fill="#3DDC97" font-size="9.5" font-weight="600">2× LED 12V</text>
-                  <!-- Label bawah -->
-                  <rect x="176" y="198" width="176" height="48" rx="10" fill="#0077B6" fill-opacity=".1" stroke="#0077B6" stroke-opacity=".3"/>
-                  <text x="264" y="219" text-anchor="middle" fill="currentColor" font-size="10.5" font-weight="700">Sirkulasi Air Kembali</text>
-                  <text x="264" y="235" text-anchor="middle" fill="currentColor" opacity=".75" font-size="9.5">Terjunan air masuk ke tangki bawah</text>
-                </svg>
-              </div>
-
-              <div class="schem-card__foot">
-                <a class="schem-card__link" href="#tentang">
-                  <span>Buka Diagram Penampang Interaktif (8 Titik Komponen)</span>
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-                </a>
-              </div>
-            </div>
-          </div>
+      <div class="wrap hero__content">
+        <span class="hero__pill"><i></i>Proyek Kelas Mekanika Fluida · Universitas Negeri Malang</span>
+        <h1 class="h-display">Listrik bersih dari <em>pusaran air head rendah</em></h1>
+        <p class="hero__sub">Prototipe simulator PLTA vortex sirkulasi tertutup skala laboratorium — mengubah aliran air berketinggian rendah menjadi listrik tanpa bendungan besar.</p>
+        <div class="hero__cta">
+          <a class="c-btn c-btn--white" href="#simulasi">Coba Simulasi Arus Air →</a>
+          <a class="c-btn c-btn--ghost-light" href="#cara-kerja">Pelajari Cara Kerja</a>
         </div>
-      </section>
+      </div>
 
-      <!-- Pendahuluan -->
-      <section class="section intro">
-        <div class="wrap intro__grid">
-          <div class="intro__content">
-            <span class="eyebrow">Latar Belakang</span>
-            <h2 class="h-lg">Pendahuluan</h2>
-            <p class="body">Banyak aliran air kecil punya tinggi jatuh rendah, sehingga tidak bisa memutar turbin biasa. Vortex Hydro memakai pusaran air di dalam basin untuk mengubahnya menjadi listrik, tanpa bendungan.</p>
-            <ul class="checks">
-              <li>
-                <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span>
-                <div><b>Irigasi dan pedesaan</b><i>Penerangan dan pompa kecil.</i></div>
-              </li>
-              <li>
-                <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span>
-                <div><b>Sungai kecil dan saluran</b><i>Tanpa bendungan besar.</i></div>
-              </li>
-              <li>
-                <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span>
-                <div><b>Edukasi dan riset</b><i>Rancangan terbuka untuk dipelajari.</i></div>
-              </li>
-            </ul>
-          </div>
+      <div class="hero__waves" aria-hidden="true">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+          <path class="hero__wave-a" d="M0 30 Q180 4 360 30 T720 30 T1080 30 T1440 30 T1800 30 T2160 30 T2520 30 T2880 30 V60 H0 Z" fill="var(--bg)" fill-opacity=".45"/>
+          <path class="hero__wave-b" d="M0 36 Q180 12 360 36 T720 36 T1080 36 T1440 36 T1800 36 T2160 36 T2520 36 T2880 36 V60 H0 Z" fill="var(--bg)"/>
+        </svg>
+      </div>
+    </section>
 
-          <div class="intro__media">
-            <figure class="media-card">
-              <img src="assets/images/documentation/t-cerita.jpg" alt="Ilustrasi turbin pusaran" loading="lazy" decoding="async">
-              <figcaption>
-                <b>Konsep Turbin Pusaran &amp; Head Rendah</b>
-                <span>Memanfaatkan energi potensial dan kinetik aliran air pada tinggi jatuh rendah.</span>
-              </figcaption>
-            </figure>
-            <div class="intro__tags">
-              <span class="chip">Tanpa bendungan</span>
-              <span class="chip">Head rendah</span>
-              <span class="chip">Mikro-hidro</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Komponen Utama Prototipe (Data Nyata, Tanpa Placeholder Edit) -->
-      <section class="section section--alt">
-        <div class="wrap">
-          <div class="sec-head">
+    <!-- 2. SOROTAN ANGKA HASIL UJI & SPESIFIKASI NYATA (Virya-Style Asymmetric Grid) -->
+    <section class="sec" id="angka" data-title="Angka Prototipe">
+      <div class="wrap">
+        <div class="stats-grid" data-reveal>
+          <div class="stats-anchor">
             <div>
-              <span class="eyebrow">Subsistem Alat</span>
-              <h2 class="h-lg">Komponen yang Digunakan</h2>
-              <p class="sub">Enam bagian utama dalam rangkaian sirkulasi air tertutup dan konversi energi listrik prototipe.</p>
+              <span class="eyebrow">Prototipe dalam Angka</span>
+              <h2>Vortex Hydro dalam <em>data teknis nyata</em></h2>
+              <p>Dirancang, dirakit, dan diuji di laboratorium pada rangka 2,0 × 0,8 meter dengan sirkulasi air tertutup.</p>
             </div>
-            <a class="btn btn--secondary btn--sm" href="#peralatan">Detail Peralatan</a>
+            <div class="stats-anchor__foot">Tangki Ø 520 mm · Pipa Ø 45 mm · Zona Kering</div>
           </div>
 
-          <div class="comp-grid">
-            <article class="comp-card">
-              <div class="comp-card__top">
-                <span class="comp-card__no">01</span>
-                <span class="comp-card__cat">Saluran Masuk</span>
+          <div class="stats-cards">
+            <article class="stat-card">
+              <span class="stat-card__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="10" width="11" height="9" rx="2"/><path d="M14 13h3a4 4 0 0 1 4 4v2M8.5 10V6.5M6.5 6.5h4"/></svg></span>
+              <div>
+                <span class="stat-card__val">100 W</span>
+                <span class="stat-card__lbl">Pompa Sirkulasi</span>
+                <span class="stat-card__sub">Wasser WD-101E · 220 V / 50 Hz</span>
               </div>
-              <h3>Pompa Wasser WD-101E &amp; Pipa Ø 45 mm</h3>
-              <p>Pompa celup 220 V / 100 W menyirkulasikan air dari tangki bawah Ø 520 mm menuju bak penenang atas melalui pipa dorong.</p>
             </article>
 
-            <article class="comp-card">
-              <div class="comp-card__top">
-                <span class="comp-card__no">02</span>
-                <span class="comp-card__cat">Headbox &amp; Saluran</span>
+            <article class="stat-card">
+              <span class="stat-card__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/></svg></span>
+              <div>
+                <span class="stat-card__val">330 mm</span>
+                <span class="stat-card__lbl">Diameter Kincir 6 Sudu</span>
+                <span class="stat-card__sub">Lebar sudu 250 mm · Poros Ø 30 mm</span>
               </div>
-              <h3>Bak Penenang &amp; Saluran Miring</h3>
-              <p>Meredam turbulensi aliran lalu mengarahkan air melewati saluran akrilik miring yang menyempit dari 0,416 m ke 0,28 m.</p>
             </article>
 
-            <article class="comp-card">
-              <div class="comp-card__top">
-                <span class="comp-card__no">03</span>
-                <span class="comp-card__cat">Turbin</span>
+            <article class="stat-card">
+              <span class="stat-card__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="12" r="4"/><circle cx="18" cy="12" r="2.5"/><path d="M7 8l11 1.5M7 16l11-1.5"/></svg></span>
+              <div>
+                <span class="stat-card__val">1 : 4</span>
+                <span class="stat-card__lbl">Transmisi Step-Up</span>
+                <span class="stat-card__sub">Pulley Ø 270 mm ke Ø 67,5 mm</span>
               </div>
-              <h3>Kincir Air 6 Sudu (Ø 330 mm)</h3>
-              <p>Kincir berdiameter 330 mm dengan lebar sudu 250 mm menangkap dorongan aliran air untuk menghasilkan torsi mekanik.</p>
             </article>
 
-            <article class="comp-card">
-              <div class="comp-card__top">
-                <span class="comp-card__no">04</span>
-                <span class="comp-card__cat">Poros &amp; Transmisi</span>
+            <article class="stat-card">
+              <span class="stat-card__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>
+              <div>
+                <span class="stat-card__val">10 W</span>
+                <span class="stat-card__lbl">Beban Output LED</span>
+                <span class="stat-card__sub">2 × 5 W (12 V) · Generator DC XD 3240</span>
               </div>
-              <h3>Poros Stainless Ø 30 mm &amp; Pulley 1:4</h3>
-              <p>Poros utama menembus sekat ke zona kering, memutar transmisi pulley Ø 270 mm ke Ø 67,5 mm dengan V-belt step-up.</p>
-            </article>
-
-            <article class="comp-card">
-              <div class="comp-card__top">
-                <span class="comp-card__no">05</span>
-                <span class="comp-card__cat">Generator</span>
-              </div>
-              <h3>Generator DC XD 3240</h3>
-              <p>Unit generator magnet permanen mengubah putaran yang telah dinaikkan rasionya menjadi daya listrik arus searah (DC).</p>
-            </article>
-
-            <article class="comp-card">
-              <div class="comp-card__top">
-                <span class="comp-card__no">06</span>
-                <span class="comp-card__cat">Beban &amp; Sirkulasi</span>
-              </div>
-              <h3>Baterai 12 V &amp; 2 Lampu LED (10 W)</h3>
-              <p>Listrik disalurkan untuk menyalakan 2 unit lampu LED (masing-masing 12 V / 5 W), sementara air jatuh kembali ke tangki.</p>
             </article>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- Jelajahi Vortex Hydro -->
-      <section class="section">
-        <div class="wrap">
-          <div class="sec-head">
-            <div>
-              <span class="eyebrow">Peta website</span>
-              <h2 class="h-lg">Jelajahi Vortex Hydro</h2>
-            </div>
-          </div>
-
-          <div class="explore-grid">
-            <a class="explore-card" href="#tentang">
-              <span class="explore-card__ic" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
-              </span>
-              <div class="explore-card__body">
-                <strong>Tentang &amp; Cara Kerja</strong>
-                <p>Diagram penampang interaktif 8 komponen, daftar spesifikasi alat, dan kalkulator daya mikro-hidro.</p>
-              </div>
-              <span class="explore-card__arrow" aria-hidden="true">→</span>
-            </a>
-
-            <a class="explore-card" href="#dokumentasi">
-              <span class="explore-card__ic" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
-              </span>
-              <div class="explore-card__body">
-                <strong>Dokumentasi</strong>
-                <p>Parameter desain teknis, tahapan fabrikasi &amp; metodologi pengujian laboratorium, serta daftar FAQ.</p>
-              </div>
-              <span class="explore-card__arrow" aria-hidden="true">→</span>
-            </a>
-
-            <a class="explore-card" href="#struktur-tim">
-              <span class="explore-card__ic" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M16 5a3 3 0 0 1 0 6M18 14c2 .6 3 2.4 3 5"/></svg>
-              </span>
-              <div class="explore-card__body">
-                <strong>Struktur Tim</strong>
-                <p>Susunan pengurus inti dan 7 divisi teknis: Modeling, Mat Model, Software, Electrical, Mekanikal, Perlengkapan, dan PDD.</p>
-              </div>
-              <span class="explore-card__arrow" aria-hidden="true">→</span>
-            </a>
-          </div>
+    <!-- 3. SIMULASI INTERAKTIF ALIRAN AIR & KECEPATAN TURBIN -->
+    <section class="sec sec--navy" id="simulasi" data-title="Simulasi Arus Air">
+      <div class="wrap">
+        <div data-reveal>
+          <span class="eyebrow">Coba Langsung</span>
+          <h2 class="h-sec">Geser kecepatan arus air, <em>lihat turbin berputar</em></h2>
+          <p class="lead">Atur debit air (Q), tinggi jatuh (H), dan efisiensi (η) untuk melihat perubahan putaran kincir, arus aliran, dan daya listrik secara real-time.</p>
         </div>
-      </section>
 
-      <!-- Software Penunjang -->
-      <section class="section section--alt sw-sec">
-        <div class="wrap center">
-          <span class="eyebrow">Perangkat Rekayasa</span>
-          <h2 class="h-lg">Software yang Menunjang Proyek</h2>
-          <p class="sub">Perancangan, simulasi, dan pemrograman proyek ini dikerjakan dengan empat perangkat lunak berikut.</p>
-          <div class="sw-grid">
-            <div class="sw-card">
-              <img src="assets/images/software/ansys-fluent.png" alt="Logo ANSYS Fluent" loading="lazy" decoding="async">
-              <b>ANSYS Fluent</b>
-              <small>Simulasi CFD Aliran</small>
-            </div>
-            <div class="sw-card">
-              <img src="assets/images/software/autocad.png" alt="Logo AutoCAD" loading="lazy" decoding="async">
-              <b>AutoCAD</b>
-              <small>Gambar Kerja &amp; CAD</small>
-            </div>
-            <div class="sw-card">
-              <img src="assets/images/software/matlab.png" alt="Logo MATLAB" loading="lazy" decoding="async">
-              <b>MATLAB</b>
-              <small>Pemodelan Matematis</small>
-            </div>
-            <div class="sw-card">
-              <img src="assets/images/software/vs-code.png" alt="Logo VS Code" loading="lazy" decoding="async">
-              <b>VS Code</b>
-              <small>Web &amp; Dashboard</small>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- ==================== HALAMAN 2: TENTANG & TEKNOLOGI ==================== -->
-    <div class="page" id="tentang" hidden>
-      <section class="pagehead">
-        <div class="wrap">
-          <span class="eyebrow">Teknologi &amp; Rancangan Alat</span>
-          <h1 class="h-xl">Tentang Vortex Hydro</h1>
-          <p class="sub">Kami merancang, membangun, dan menguji simulator PLTA Vortex skala laboratorium secara mandiri. Air dipompa ke bak penenang, mengalir di saluran miring, lalu memutar kincir yang menggerakkan generator.</p>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="wrap center">
-          <h2 class="h-lg">Apa Itu Vortex Hydro?</h2>
-          <p class="sub">Prinsip konversi energi tiga tahap dari sirkulasi air ber-head rendah hingga menghasilkan daya listrik DC.</p>
-          <div class="flow3">
-            <div class="f3">
-              <span class="f3__c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.2 6 10.5A6 6 0 0 1 6 13.5C6 9.2 12 3 12 3z"/></svg></span>
-              <b>Aliran Air</b>
-              <p>Pompa mengalirkan air dari tangki bawah menuju bak penenang (headbox) secara kontinu.</p>
-            </div>
-            <div class="f3">
-              <span class="f3__c"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7a9 9 0 1 1-9 9 6.2 6.2 0 1 1 6.2 6.2 3.4 3.4 0 1 1 3.4-3.4"/></svg></span>
-              <b>Pusaran</b>
-              <p>Saluran pengarah menyempitkan aliran untuk memutar sudu turbin dan poros utama.</p>
-            </div>
-            <div class="f3">
-              <span class="f3__c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>
-              <b>Listrik</b>
-              <p>Transmisi pulley 1:4 memutar generator DC untuk mengisi baterai dan menyalakan beban LED.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Diagram Penampang Interaktif -->
-      <section class="section section--alt">
-        <div class="wrap wrap--wide">
-          <div class="center">
-            <span class="eyebrow">Skema Interaktif</span>
-            <h2 class="h-lg">Cara Kerja</h2>
-            <p class="sub">Klik bagian pada gambar untuk melihat fungsinya.</p>
-          </div>
-
-          <div class="howto">
-            <figure class="diagram" id="vx-diagram">
-              <svg viewBox="0 -22 700 492" role="img" aria-label="Penampang samping prototipe: tangki penampung, pompa, pipa dorong dengan flow meter, headbox, saluran miring, kincir air 6 sudu, terjunan air, dan zona kering">
-                <defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-                <path d="M10 440H690" stroke="currentColor" stroke-opacity=".3" stroke-width="2"/>
-                <g fill="#aab4bd"><rect x="70" y="164" width="465" height="8"/><rect x="619" y="164" width="51" height="8"/><rect x="72" y="172" width="8" height="268"/><rect x="330" y="172" width="8" height="268"/><rect x="660" y="172" width="8" height="268"/><rect x="74" y="390" width="590" height="8" fill="#b9c2ca"/></g>
-                <path d="M545 141H585V242H545Z" fill="var(--sky)" opacity=".85"/><path d="M552 150V236M565 148V238M578 150V236" stroke="#fff" stroke-width="2" opacity=".7"/>
-                <rect x="472" y="205" width="156" height="185" rx="10" fill="none" stroke="currentColor" stroke-width="3" opacity=".7"/>
-                <path d="M474 242H626V382Q626 388 620 388H480Q474 388 474 382Z" fill="var(--sky)" opacity=".6"/><path d="M474 242q19-5 38 0t38 0 38 0 38 0" fill="none" stroke="#fff" stroke-width="2.5"/>
-                <path d="M538 144V200M592 144V200" stroke="var(--blue)" stroke-width="3" opacity=".55"/>
-                <path d="M502 381V190Q502 178 480 178Q457 178 457 190V370H378" fill="none" stroke="#9aa7b2" stroke-width="8" stroke-linejoin="round"/><circle cx="502" cy="381" r="7" fill="#c9a24a"/>
-                <rect x="328" y="340" width="50" height="46" rx="9" fill="#3fae49"/><circle cx="353" cy="363" r="11" fill="#2f8a39"/>
-                <path d="M352 340V322H49V56H118V86" fill="none" stroke="var(--blue)" stroke-width="8" stroke-linejoin="round" stroke-linecap="round" opacity=".75"/>
-                <rect x="31" y="208" width="36" height="32" rx="5" fill="var(--navy)"/><rect x="36" y="214" width="26" height="12" rx="2" fill="var(--sky)"/><path d="M39 233h20" stroke="var(--cyan)" stroke-width="3" stroke-linecap="round"/>
-                <path d="M94 26H532V140.5L94 104Z" fill="var(--sky)" fill-opacity=".1" stroke="var(--blue)" stroke-opacity=".5" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M94 104V84H172L538 118V140.5Z" fill="var(--sky)" opacity=".75"/>
-                <path d="M94 104L538 140.5" stroke="var(--navy)" stroke-width="4" stroke-linecap="round"/><path d="M94 26V104" stroke="var(--navy)" stroke-width="4"/>
-                <rect x="158" y="40" width="4" height="53" fill="var(--pale)" stroke="var(--blue)" stroke-width="1.5"/>
-                <path d="M118 86v6" stroke="var(--cyan)" stroke-width="3" stroke-linecap="round"/><circle cx="118" cy="87" r="3.5" fill="#c9a24a"/>
-                <path d="M346 26v36M430 26v36" stroke="var(--blue)" stroke-width="2" stroke-dasharray="4 4" opacity=".6"/>
-                <g fill="none" stroke="var(--navy)" stroke-width="2" stroke-dasharray="5 4" opacity=".75"><circle cx="472" cy="88" r="40.5"/><circle cx="556" cy="82" r="10"/><rect x="538" y="62" width="46" height="40" rx="6"/><path d="M472 47.5L556 72M472 128.5L556 92"/></g>
-                <text x="561" y="89" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" font-size="13" fill="var(--navy)" opacity=".8">G</text>
-                <g transform="translate(472 88)"><rect x="-3" y="-49.5" width="6" height="30" rx="1.5" fill="#0288D1" transform="rotate(0)"/><rect x="-3" y="-49.5" width="6" height="30" rx="1.5" fill="#0288D1" transform="rotate(60)"/><rect x="-3" y="-49.5" width="6" height="30" rx="1.5" fill="#0288D1" transform="rotate(120)"/><rect x="-3" y="-49.5" width="6" height="30" rx="1.5" fill="#0288D1" transform="rotate(180)"/><rect x="-3" y="-49.5" width="6" height="30" rx="1.5" fill="#0288D1" transform="rotate(240)"/><rect x="-3" y="-49.5" width="6" height="30" rx="1.5" fill="#0288D1" transform="rotate(300)"/><circle r="49.5" fill="none" stroke="var(--navy)" stroke-width="2" opacity=".5"/><circle r="9" fill="var(--navy)"/><circle r="3" fill="#fff"/></g>
-                <g fill="none" stroke="var(--navy)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M44 286L49 276L54 286"/><path d="M560 190L565 200L570 190"/><path d="M290 100L300 107L290 114" transform="translate(0 4)"/></g>
-                <g font-family="Plus Jakarta Sans, sans-serif" font-weight="700" font-size="13" text-anchor="middle" fill="#fff">
-                  <g class="hs" data-i="1" tabindex="0" role="button" aria-label="Tangki Penampung"><g class="hit" fill="transparent" stroke="transparent"><rect x="468" y="200" width="164" height="194" rx="10"/></g><g class="hs__dot"><circle cx="650" cy="300" r="13" fill="var(--blue)"/><text x="650" y="305">1</text></g></g>
-                  <g class="hs" data-i="2" tabindex="0" role="button" aria-label="Pompa dan Pipa Hisap"><g class="hit" fill="transparent" stroke="transparent"><rect x="322" y="334" width="62" height="58" rx="8"/></g><g class="hs__dot"><circle cx="353" cy="418" r="13" fill="var(--blue)"/><text x="353" y="423">2</text></g></g>
-                  <g class="hs" data-i="3" tabindex="0" role="button" aria-label="Pipa Dorong dan Flow Meter"><g class="hit" fill="transparent" stroke="transparent"><path d="M352 340V322H49V56H118V86" fill="none" stroke-width="26" stroke-linejoin="round"/></g><g class="hs__dot"><circle cx="14" cy="224" r="13" fill="var(--blue)"/><text x="14" y="229">3</text></g></g>
-                  <g class="hs" data-i="4" tabindex="0" role="button" aria-label="Headbox"><g class="hit" fill="transparent" stroke="transparent"><rect x="90" y="22" width="92" height="88" rx="6"/></g><g class="hs__dot"><circle cx="133" cy="-2" r="13" fill="var(--blue)"/><text x="133" y="3">4</text></g></g>
-                  <g class="hs" data-i="5" tabindex="0" role="button" aria-label="Saluran Miring"><g class="hit" fill="transparent" stroke="transparent"><polygon points="184,26 420,26 420,132 184,108"/></g><g class="hs__dot"><circle cx="262" cy="-2" r="13" fill="var(--blue)"/><text x="262" y="3">5</text></g></g>
-                  <g class="hs" data-i="6" tabindex="0" role="button" aria-label="Kincir Air 6 Sudu"><g class="hit" fill="transparent" stroke="transparent"><circle cx="472" cy="88" r="54"/></g><g class="hs__dot"><circle cx="472" cy="-2" r="13" fill="var(--blue)"/><text x="472" y="3">6</text></g></g>
-                  <g class="hs" data-i="7" tabindex="0" role="button" aria-label="Terjunan Air"><g class="hit" fill="transparent" stroke="transparent"><rect x="538" y="138" width="54" height="108" rx="6"/></g><g class="hs__dot"><circle cx="640" cy="188" r="13" fill="var(--blue)"/><text x="640" y="193">7</text></g></g>
-                  <g class="hs" data-i="8" tabindex="0" role="button" aria-label="Zona Kering"><g class="hit" fill="transparent" stroke="transparent"><rect x="532" y="56" width="62" height="54" rx="8"/></g><g class="hs__dot"><circle cx="556" cy="38" r="13" fill="var(--blue)"/><text x="556" y="43">8</text></g></g>
+        <div class="sim-panel" style="margin-top:32px" data-reveal>
+          <div class="sim-stage">
+            <canvas id="sim-canvas" width="640" height="360" aria-hidden="true"></canvas>
+            <div class="sim-rotor-wrap">
+              <svg class="sim-turbine-svg" viewBox="0 0 220 220" role="img" aria-label="Animasi putaran kincir 6 sudu">
+                <circle cx="110" cy="110" r="92" fill="rgba(0,168,232,.1)" stroke="rgba(144,224,239,.35)" stroke-width="2" stroke-dasharray="6 6"/>
+                <g id="sim-rotor">
+                  <rect x="104" y="20" width="12" height="58" rx="4" fill="#00A8E8" transform="rotate(0 110 110)"/>
+                  <rect x="104" y="20" width="12" height="58" rx="4" fill="#00C6B8" transform="rotate(60 110 110)"/>
+                  <rect x="104" y="20" width="12" height="58" rx="4" fill="#00A8E8" transform="rotate(120 110 110)"/>
+                  <rect x="104" y="20" width="12" height="58" rx="4" fill="#00C6B8" transform="rotate(180 110 110)"/>
+                  <rect x="104" y="20" width="12" height="58" rx="4" fill="#00A8E8" transform="rotate(240 110 110)"/>
+                  <rect x="104" y="20" width="12" height="58" rx="4" fill="#00C6B8" transform="rotate(300 110 110)"/>
+                  <circle cx="110" cy="110" r="32" fill="#041B36" stroke="#90E0EF" stroke-width="3"/>
+                  <circle cx="110" cy="110" r="10" fill="#90E0EF"/>
                 </g>
               </svg>
-              <figcaption>Penampang samping, tidak berskala. Garis putus-putus = zona kering.</figcaption>
-            </figure>
 
-            <aside class="dinfo" id="dinfo" aria-live="polite">
-              <div class="dinfo__txt" id="dinfo-txt">
-                <h3>Pilih bagian</h3>
-                <p>Klik gambar atau tombol di bawah.</p>
-              </div>
-              <div class="dchips" id="dchips">
-                <button type="button" data-i="1"><b>1</b><span>Tangki Penampung</span></button>
-                <button type="button" data-i="2"><b>2</b><span>Pompa &amp; Pipa Hisap</span></button>
-                <button type="button" data-i="3"><b>3</b><span>Pipa Dorong &amp; Flow Meter</span></button>
-                <button type="button" data-i="4"><b>4</b><span>Headbox</span></button>
-                <button type="button" data-i="5"><b>5</b><span>Saluran Miring</span></button>
-                <button type="button" data-i="6"><b>6</b><span>Kincir Air 6 Sudu</span></button>
-                <button type="button" data-i="7"><b>7</b><span>Terjunan Air</span></button>
-                <button type="button" data-i="8"><b>8</b><span>Zona Kering</span></button>
-              </div>
-            </aside>
-          </div>
-
-          <template data-i="1"><h3>Tangki Penampung</h3><p>Menampung air yang berputar. Air dari kincir jatuh kembali ke sini.</p></template>
-          <template data-i="2"><h3>Pompa &amp; Pipa Hisap</h3><p>Menyedot air dari tangki lalu mendorongnya naik ke headbox.</p></template>
-          <template data-i="3"><h3>Pipa Dorong &amp; Flow Meter</h3><p>Mengalirkan air ke atas. Flow meter membaca debitnya.</p></template>
-          <template data-i="4"><h3>Headbox</h3><p>Menenangkan air supaya aliran halus sebelum masuk saluran.</p></template>
-          <template data-i="5"><h3>Saluran Miring</h3><p>Menyempitkan dan mengarahkan air tepat ke sudu kincir.</p></template>
-          <template data-i="6"><h3>Kincir Air 6 Sudu</h3><p>Diputar oleh air untuk menggerakkan generator.</p></template>
-          <template data-i="7"><h3>Terjunan Air</h3><p>Air bekas memutar kincir jatuh kembali ke tangki.</p></template>
-          <template data-i="8"><h3>Zona Kering</h3><p>Pulley menaikkan putaran, generator mengisi baterai untuk lampu LED.</p></template>
-        </div>
-      </section>
-
-      <!-- Daftar Peralatan & Komponen (Seragam & Profesional) -->
-      <section class="section eqx" id="peralatan">
-        <div class="wrap wrap--wide">
-          <div class="center">
-            <span class="eyebrow">Peralatan</span>
-            <h2 class="h-lg">Daftar Peralatan &amp; Komponen</h2>
-            <p class="sub">Komponen utama yang dipakai pada prototipe simulator.</p>
-          </div>
-          <ol class="eqx__grid">
-            <li class="eqx__c">
-              <div class="eqx__top">
-                <span class="eqx__no">01</span>
-                <span class="eqx__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M13.2 6.5 8.8 12.6h3.6l-1.6 4.9 4.8-6.3h-3.7z"/></svg></span>
-              </div>
-              <h3>Generator XD 3240</h3>
-              <p class="eqx__q"><small>Jumlah</small><b>1 unit</b></p>
-              <p class="eqx__s">Unit pembangkit daya</p>
-            </li>
-            <li class="eqx__c">
-              <div class="eqx__top">
-                <span class="eqx__no">02</span>
-                <span class="eqx__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/></svg></span>
-              </div>
-              <h3>Lampu LED</h3>
-              <p class="eqx__q"><small>Jumlah</small><b>2 pcs</b></p>
-              <p class="eqx__s">Beban tegangan <b>12 V</b>, daya <b>5 W</b> per unit (total <b>10 W</b>)</p>
-            </li>
-            <li class="eqx__c">
-              <div class="eqx__top">
-                <span class="eqx__no">03</span>
-                <span class="eqx__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="10" width="11" height="9" rx="2"/><path d="M14 13h3a4 4 0 0 1 4 4v2M8.5 10V6.5M6.5 6.5h4"/></svg></span>
-              </div>
-              <h3>Pompa Celup Air Wasser WD-101E</h3>
-              <p class="eqx__q"><small>Jumlah</small><b>1 unit</b></p>
-              <p class="eqx__s">Tegangan <b>220 V / 50 Hz</b>, daya <b>100 W</b></p>
-            </li>
-            <li class="eqx__c">
-              <div class="eqx__top">
-                <span class="eqx__no">04</span>
-                <span class="eqx__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="8" width="20" height="8" rx="2"/><path d="M7 8v8M17 8v8"/></svg></span>
-              </div>
-              <h3>Pipa</h3>
-              <p class="eqx__q"><small>Jumlah</small><b>1 set</b></p>
-              <p class="eqx__s">Diameter <b>±45 mm</b> pada jalur sirkulasi utama</p>
-            </li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- Kalkulator Daya Mikro-hidro (Tertanam Langsung & Interaktif) -->
-      <section class="section section--alt calc-sec" id="kalkulator">
-        <div class="wrap">
-          <div class="calc-box">
-            <div class="calc-box__form">
-              <span class="eyebrow">Simulasi Perhitungan</span>
-              <h2 class="h-lg">Kalkulator Daya Mikro-hidro</h2>
-              <p class="sub">Hitung estimasi daya mekanik dan listrik berdasarkan persamaan fluida <span class="mono">P = ρ · g · Q · H · η</span>.</p>
-
-              <div class="calc-presets" role="group" aria-label="Preset skenario aliran">
-                <button type="button" class="calc-preset" data-calc-preset data-q="1.5" data-h="0.5" data-e="30">Skala Lab (1.5 L/s)</button>
-                <button type="button" class="calc-preset is-active" data-calc-preset data-q="50" data-h="1.5" data-e="40">Saluran Irigasi (50 L/s)</button>
-                <button type="button" class="calc-preset" data-calc-preset data-q="150" data-h="2.5" data-e="55">Mikro-hidro Desa (150 L/s)</button>
-              </div>
-
-              <div class="calc-fields">
-                <div class="calc-field">
-                  <label for="vq">Debit air Q (liter/detik)</label>
-                  <input id="vq" type="number" min="0" step="0.5" value="50">
+              <div class="sim-led-box">
+                <div class="sim-led-bulb">
+                  <span id="sim-led-glow"></span>
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/></svg>
                 </div>
-                <div class="calc-field">
-                  <label for="vh">Head H (meter)</label>
-                  <input id="vh" type="number" min="0" step="0.1" value="1.5">
-                </div>
-                <div class="calc-field">
-                  <label for="ve">Efisiensi η (%)</label>
-                  <input id="ve" type="number" min="0" max="100" step="1" value="40">
-                </div>
-              </div>
-            </div>
-
-            <div class="calc-box__result" aria-live="polite">
-              <span class="calc-res__tag">Estimasi Daya Listrik Output</span>
-              <b class="calc-res__main" id="vr">294.3 W</b>
-              <small class="calc-res__eq">P = ρ · g · Q · H · η (ρ = 1000 kg/m³, g = 9,81 m/s²)</small>
-
-              <div class="calc-res__meta">
-                <div>
-                  <span>Daya Hidrolik</span>
-                  <strong id="vr-hyd">735.8 W</strong>
-                </div>
-                <div>
-                  <span>Potensi Energi (24 Jam)</span>
-                  <strong id="vr-day">7.06 kWh/hari</strong>
-                </div>
+                <small id="sim-led-txt">LED 10W Menyala Penuh</small>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      <!-- Mengapa & Tujuan -->
-      <section class="section">
-        <div class="wrap center">
-          <span class="eyebrow">Keunggulan Sistem</span>
-          <h2 class="h-lg">Mengapa Memilih Turbin Vortex?</h2>
-          <div class="why">
-            <article class="pcard">
-              <span class="bigic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9c3-3 5 3 8 0s5 3 8 0 3-1 4-1M2 15c3-3 5 3 8 0s5 3 8 0 3-1 4-1"/></svg></span>
-              <h3>Head Rendah</h3>
-              <p>Bekerja pada tinggi jatuh yang kecil.</p>
-            </article>
-            <article class="pcard">
-              <span class="bigic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
-              <h3>Sederhana</h3>
-              <p>Konstruksi mudah dan murah dirawat.</p>
-            </article>
-            <article class="pcard">
-              <span class="bigic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span>
-              <h3>Tanpa Bendungan</h3>
-              <p>Tidak memerlukan bendungan besar.</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section section--alt">
-        <div class="wrap center">
-          <span class="eyebrow">Sasaran</span>
-          <h2 class="h-lg">Tujuan</h2>
-          <div class="goal">
-            <article class="goal__c">
-              <span class="n">01</span>
-              <span class="bigic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M8 16h2M12 16h2"/></svg></span>
-              <h3>Rancangan Terhitung</h3>
-              <p>Dimensi basin dan turbin.</p>
-            </article>
-            <article class="goal__c">
-              <span class="n">02</span>
-              <span class="bigic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg></span>
-              <h3>Prototipe Teruji</h3>
-              <p>Dibuat dan diuji kinerjanya.</p>
-            </article>
-            <article class="goal__c">
-              <span class="n">03</span>
-              <span class="bigic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/></svg></span>
-              <h3>Dokumentasi</h3>
-              <p>Untuk dipelajari kelas berikutnya.</p>
-            </article>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- ==================== HALAMAN 3: DOKUMENTASI & FAQ ==================== -->
-    <div class="page" id="dokumentasi" hidden>
-      <section class="pagehead">
-        <div class="wrap">
-          <span class="eyebrow">Dokumentasi Teknis &amp; Referensi</span>
-          <h1 class="h-xl">Dokumentasi Proyek Vortex Hydro</h1>
-          <p class="sub">Parameter dimensi prototipe, tahapan perancangan &amp; pengujian laboratorium, serta jawaban atas pertanyaan teknis yang sering diajukan.</p>
-        </div>
-      </section>
-
-      <!-- Tabel Parameter Desain & Spesifikasi -->
-      <section class="section">
-        <div class="wrap">
-          <div class="sec-head">
-            <div>
-              <span class="eyebrow">Spesifikasi Prototipe</span>
-              <h2 class="h-lg">Parameter Desain</h2>
-              <p class="sub">Data ukuran mekanis, sistem hidrolik, dan komponen kelistrikan pada simulator laboratorium.</p>
+          <div class="sim-controls">
+            <div class="sim-presets" role="group" aria-label="Skenario simulasi">
+              <button type="button" class="sim-preset" data-sim-preset data-q="1.5" data-h="0.5" data-e="30">Skala Lab</button>
+              <button type="button" class="sim-preset is-active" data-sim-preset data-q="50" data-h="1.5" data-e="40">Saluran Irigasi</button>
+              <button type="button" class="sim-preset" data-sim-preset data-q="120" data-h="2.5" data-e="55">Mikro-hidro Desa</button>
             </div>
-          </div>
 
-          <div class="spec-table-wrap">
-            <table class="spec-table">
-              <thead>
-                <tr>
-                  <th>Parameter</th>
-                  <th>Spesifikasi / Nilai</th>
-                  <th>Keterangan Teknis</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><b>Ukuran rangka utama, zona basah (panjang × lebar)</b></td>
-                  <td class="mono">2,0 × 0,8 m</td>
-                  <td>Rangka penyangga utama saluran atas dan tangki bawah</td>
-                </tr>
-                <tr>
-                  <td><b>Diameter tangki penampung</b></td>
-                  <td class="mono">Ø 520 mm</td>
-                  <td>Silinder penampung air sirkulasi tertutup</td>
-                </tr>
-                <tr>
-                  <td><b>Pompa Celup Air Wasser WD-101E</b></td>
-                  <td class="mono">220 V / 50 Hz · 100 W</td>
-                  <td>Menyirkulasikan air lewat pipa dorong Ø 45 mm</td>
-                </tr>
-                <tr>
-                  <td><b>Lebar saluran (masuk → depan kincir)</b></td>
-                  <td class="mono">0,416 m → 0,280 m</td>
-                  <td>Saluran akrilik miring yang menyempit ke arah sudu</td>
-                </tr>
-                <tr>
-                  <td><b>Diameter kincir</b></td>
-                  <td class="mono">Ø 330 mm (6 sudu)</td>
-                  <td>Lebar sudu 250 mm pada poros utama stainless Ø 30 mm</td>
-                </tr>
-                <tr>
-                  <td><b>Rasio putaran poros : generator</b></td>
-                  <td class="mono">1 : 4 (Step-up)</td>
-                  <td>Transmisi pulley Ø 270 mm ke Ø 67,5 mm dengan V-belt</td>
-                </tr>
-                <tr>
-                  <td><b>Generator XD 3240</b></td>
-                  <td class="mono">1 unit (DC)</td>
-                  <td>Dipasang di zona kering di balik sekat pelindung cipratan</td>
-                </tr>
-                <tr>
-                  <td><b>Beban listrik (lampu LED)</b></td>
-                  <td class="mono">2 × 5 W (12 V · Total 10 W)</td>
-                  <td>Disuplai melalui baterai 12 V dan pengontrol pengisian</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- Tahapan Rekayasa & Dokumentasi Kegiatan -->
-      <section class="section section--alt">
-        <div class="wrap">
-          <div class="sec-head">
-            <div>
-              <span class="eyebrow">Metodologi Pengerjaan</span>
-              <h2 class="h-lg">Tahapan Perancangan &amp; Pengujian</h2>
-              <p class="sub">Alur kerja tim mulai dari simulasi komputer hingga pengukuran langsung di laboratorium.</p>
-            </div>
-          </div>
-
-          <div class="doc-phases">
-            <article class="phase-card">
-              <div class="phase-card__img">
-                <img src="assets/images/documentation/t-akademik.jpg" alt="Merancang desain 3D dan simulasi" loading="lazy" decoding="async">
-                <span class="phase-card__badge">Tahap 01</span>
+            <div class="sim-sliders">
+              <div class="sim-slider-row">
+                <div class="sim-slider-head"><label for="sim-q">Debit air Q (kecepatan arus)</label><b id="sim-qv">50 L/s</b></div>
+                <input id="sim-q" type="range" min="0.5" max="150" step="0.5" value="50">
               </div>
-              <div class="phase-card__body">
-                <h3>Merancang</h3>
-                <p>Membuat desain 3D dan gambar kerja teknik untuk sistem sirkulasi air tertutup menggunakan AutoCAD, ANSYS Fluent, dan MATLAB.</p>
+              <div class="sim-slider-row">
+                <div class="sim-slider-head"><label for="sim-h">Tinggi jatuh / Head H</label><b id="sim-hv">1.5 m</b></div>
+                <input id="sim-h" type="range" min="0.3" max="3.0" step="0.1" value="1.5">
               </div>
-            </article>
-
-            <article class="phase-card">
-              <div class="phase-card__img">
-                <img src="assets/images/documentation/t-cerita.jpg" alt="Sirkulasi dengan pompa dan saluran miring" loading="lazy" decoding="async">
-                <span class="phase-card__badge">Tahap 02</span>
-              </div>
-              <div class="phase-card__body">
-                <h3>Sirkulasi dengan pompa</h3>
-                <p>Aliran sungai tidak mungkin dibawa ke kampus, jadi pompa mengalirkan air dari tangki penampung bawah secara terus-menerus menuju bak penenang (headbox) dan saluran miring yang menyempit.</p>
-              </div>
-            </article>
-
-            <article class="phase-card">
-              <div class="phase-card__img">
-                <img src="assets/images/documentation/t-berita.jpg" alt="Integrasi turbin dan generator" loading="lazy" decoding="async">
-                <span class="phase-card__badge">Tahap 03</span>
-              </div>
-              <div class="phase-card__body">
-                <h3>Turbin dan generator</h3>
-                <p>Poros kincir menembus dinding sekat ke zona kering, lalu terhubung ke generator lewat pulley dan belt 1:4 untuk menghasilkan listrik.</p>
-              </div>
-            </article>
-
-            <article class="phase-card">
-              <div class="phase-card__img">
-                <img src="assets/images/documentation/t-tim.jpg" alt="Pengujian langsung oleh tim" loading="lazy" decoding="async">
-                <span class="phase-card__badge">Tahap 04</span>
-              </div>
-              <div class="phase-card__body">
-                <h3>Pengujian langsung</h3>
-                <p>Setelah semua komponen terpasang, kami mengukur debit air, kecepatan putaran turbin (RPM), dan daya listrik yang keluar. Teori dan rumus Mekanika Fluida pun terbukti secara nyata.</p>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- FAQ Section (Terintegrasi di Dokumentasi & bisa diakses lewat #faq) -->
-      <section class="section faq-page" id="faq-section" aria-labelledby="faq-title">
-        <div class="wrap faq__wrap">
-          <header class="faq__head">
-            <span class="eyebrow">Vortex Hydro · FAQ</span>
-            <h2 class="h-lg" id="faq-title">Pertanyaan yang Sering Diajukan</h2>
-            <p class="sub">Jawaban ringkas tentang tujuan proyek, prinsip kerja turbin, dan cara membaca data prototipe.</p>
-          </header>
-          <div class="faq__list">
-            <details class="faq__item" open><summary>Apa itu Vortex Hydro?</summary><p>Vortex Hydro adalah simulator PLTA Vortex skala laboratorium yang kami rancang, bangun, dan uji secara mandiri. Aliran air dari bak penenang memutar kincir dan menggerakkan generator.</p></details>
-            <details class="faq__item"><summary>Bagaimana cara kerja turbin vortex?</summary><p>Pompa mengalirkan air dari tangki penampung ke bak penenang (headbox), lalu air meluncur di saluran miring yang menyempit dan memutar kincir 6 sudu. Poros kincir terhubung lewat pulley dan belt ke generator untuk menghasilkan listrik.</p></details>
-            <details class="faq__item"><summary>Mengapa memakai pompa dan sirkulasi tertutup?</summary><p>Aliran sungai tidak mungkin dibawa langsung ke kampus. Karena itu pompa mengalirkan air secara terus-menerus dari tangki penampung bawah ke bak penenang, di atas rangka berukuran 2 × 0,8 meter.</p></details>
-            <details class="faq__item"><summary>Bagaimana prototipe diuji?</summary><p>Setelah semua komponen terpasang, kami melakukan pengujian langsung dengan mengukur debit air, kecepatan putaran turbin (RPM), dan daya listrik yang keluar, untuk membuktikan teori dan rumus Mekanika Fluida.</p></details>
-            <details class="faq__item"><summary>Apakah sistem ini membutuhkan bendungan besar?</summary><p>Tidak. Konsep proyek dirancang untuk memanfaatkan aliran dengan tinggi jatuh rendah dan tidak memerlukan bendungan besar. Kinerja tetap bergantung pada kondisi aliran dan rancangan prototipe.</p></details>
-            <details class="faq__item"><summary>Apakah angka pada dashboard merupakan hasil pengukuran langsung?</summary><p>Tidak selalu. Dashboard menggunakan data simulasi secara bawaan. Nilai simulasi membantu menjelaskan cara kerja antarmuka dan bukan hasil pengujian lapangan. Data nyata memerlukan sumber sensor yang terhubung.</p></details>
-            <details class="faq__item"><summary>Faktor apa yang memengaruhi daya yang dihasilkan?</summary><p>Daya dipengaruhi oleh debit air, tinggi jatuh, serta efisiensi turbin dan generator. Rumus pada Kalkulator Daya adalah model sederhana; hasil aktual perlu diverifikasi melalui pengujian.</p></details>
-            <details class="faq__item"><summary>Perangkat lunak apa yang digunakan dalam proyek?</summary><p>Proyek ini menggunakan ANSYS Fluent, AutoCAD, MATLAB, dan VS Code untuk mendukung simulasi, perancangan, dan pemrograman.</p></details>
-            <details class="faq__item"><summary>Bagaimana cara menghubungi tim?</summary><p>Tim dapat dihubungi melalui <a href="mailto:halo@vortexhydro.id">halo@vortexhydro.id</a>. Proyek ini dikembangkan di Universitas Negeri Malang.</p></details>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- ==================== HALAMAN 4: STRUKTUR TIM ==================== -->
-    <div class="page" id="struktur-tim" hidden>
-      <section class="pagehead">
-        <div class="wrap">
-          <span class="eyebrow">Organisasi Proyek Kelas</span>
-          <h1 class="h-xl">Struktur Tim Vortex Hydro</h1>
-          <p class="sub">Kolaborasi mahasiswa Teknologi Rekayasa Pembangkit Energi, Fakultas Vokasi, Universitas Negeri Malang dalam kepengurusan inti dan 7 divisi teknis.</p>
-        </div>
-      </section>
-
-      <section class="section orgsec">
-        <div class="wrap wrap--wide">
-          <div class="org" id="org-chart">
-            <div id="org-dyn"></div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- ==================== HALAMAN 5: DASHBOARD ==================== -->
-    <div class="page" id="dashboard" hidden>
-      <div class="dash" data-pane="ringkasan">
-        <div class="dtop">
-          <div class="dtop__crumb"><b>Vortex Hydro</b><i aria-hidden="true"></i><span id="dcrumb">Ringkasan</span></div>
-          <span class="dpill" id="dclk">--:--:--</span>
-          <button class="dtop__search" type="button" data-vs-open aria-label="Cari di situs" title="Cari (Ctrl+K)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
-            <span>Cari di situs</span>
-          </button>
-          <span class="dpill" id="dst"><i></i><span>Live · Simulasi</span></span>
-          <span class="dpill" id="donl" style="display:none" title="Jumlah pengunjung yang sedang membuka website"><i></i><span>Online: 0</span></span>
-          <button class="dpill" id="dpause" type="button">Jeda</button>
-          <div class="dtop__acc">
-            <span class="dtop__av" id="dav" aria-hidden="true">A</span>
-            <span class="dtop__who"><b id="dwho">Admin</b><small>Administrator</small></span>
-            <button class="dtop__out" id="dlogout" type="button" aria-label="Keluar dari akun" title="Keluar dari akun">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v8"/><path d="M6.4 6.8a8 8 0 1 0 11.2 0"/></svg>
-            </button>
-          </div>
-        </div>
-        <header class="dhead">
-          <h1 id="dtitle">Ringkasan <em>sekilas</em></h1>
-          <p id="dsub">Kondisi prototipe saat ini: sensor, tren, dan peringatan. Diperbarui setiap detik.</p>
-        </header>
-        <h2 class="dlab" id="dcap-sensor" data-sec="ringkasan">Sensor langsung</h2>
-        <div class="dgrid" data-sec="ringkasan sensor">
-          <div class="dc" data-c="debit"><i class="dic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5s6 6.2 6 10.5a6 6 0 0 1-12 0c0-4.3 6-10.5 6-10.5z"/></svg></i><small>Debit air</small><b><span>0</span><em>L/s</em></b><svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke="var(--lite)" stroke-width="1.6" stroke-linejoin="round" points=""/></svg></div>
-          <div class="dc" data-c="vbat"><i class="dic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="16" height="9" rx="2"/><path d="M21 11v3M7 12.5h4"/></svg></i><small>Tegangan baterai</small><b><span>0</span><em>V</em></b><svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke="var(--lite)" stroke-width="1.6" stroke-linejoin="round" points=""/></svg></div>
-          <div class="dc" data-c="rpmShaft"><i class="dic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v4h-4"/></svg></i><small>RPM poros utama</small><b><span>0</span><em>RPM</em></b><svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke="var(--lite)" stroke-width="1.6" stroke-linejoin="round" points=""/></svg></div>
-          <div class="dc" data-c="rpmGen"><i class="dic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></i><small>RPM generator</small><b><span>0</span><em>RPM</em></b><svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke="var(--lite)" stroke-width="1.6" stroke-linejoin="round" points=""/></svg></div>
-        </div>
-        <h2 class="dlab" id="dcap-trend" data-sec="ringkasan">Tren dan kejadian</h2>
-        <div class="drow">
-          <div class="dc dchart-card" data-sec="ringkasan grafik">
-            <h3>Grafik 60 detik terakhir<span class="dtabs" id="dtabs"><button type="button" aria-pressed="true" data-k="debit">Debit</button><button type="button" aria-pressed="false" data-k="vbat">Baterai</button><button type="button" aria-pressed="false" data-k="rpmShaft">RPM poros</button><button type="button" aria-pressed="false" data-k="rpmGen">RPM generator</button></span></h3>
-            <svg class="dchart" id="dch" viewBox="0 0 600 250" role="img" aria-label="Grafik data sensor"></svg>
-          </div>
-          <div class="dc dind" data-sec="ringkasan sensor">
-            <div class="dind__g">
-              <h3>Indikator</h3>
-              <div class="dgau">
-                <div><svg viewBox="0 0 120 120"><circle class="arc" cx="60" cy="60" r="48" pathLength="100" stroke="rgba(127,127,127,.18)" stroke-dasharray="75 100"/><circle class="arc v" id="grpm" cx="60" cy="60" r="48" pathLength="100" stroke="var(--cyan)" stroke-dasharray="75 100" stroke-dashoffset="75"/><text x="60" y="66" id="grpmt">0</text></svg><small>RPM poros</small></div>
-                <div><svg viewBox="0 0 120 120"><circle class="arc" cx="60" cy="60" r="48" pathLength="100" stroke="rgba(127,127,127,.18)" stroke-dasharray="75 100"/><circle class="arc v" id="geff" cx="60" cy="60" r="48" pathLength="100" stroke="#10b981" stroke-dasharray="75 100" stroke-dashoffset="75"/><text x="60" y="66" id="geft">0</text></svg><small>RPM generator</small></div>
+              <div class="sim-slider-row">
+                <div class="sim-slider-head"><label for="sim-e">Efisiensi sistem η</label><b id="sim-ev">40%</b></div>
+                <input id="sim-e" type="range" min="15" max="75" step="1" value="40">
               </div>
             </div>
-            <div class="dind__l"><h3>Log kejadian</h3><ul class="dlog" id="dlog"></ul></div>
+
+            <div class="sim-readouts" aria-live="polite">
+              <div class="sim-readout sim-readout--hl">
+                <span>Daya Listrik Output</span>
+                <strong id="sim-w">294.3 W</strong>
+              </div>
+              <div class="sim-readout">
+                <span>Putaran Turbin</span>
+                <strong id="sim-rpm">236 RPM</strong>
+              </div>
+              <div class="sim-readout">
+                <span>Daya Hidrolik (P = ρgQH)</span>
+                <strong id="sim-hyd">735.8 W</strong>
+              </div>
+              <div class="sim-readout">
+                <span>Energi Harian (24 Jam)</span>
+                <strong id="sim-day">7.1 kWh</strong>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="dc vhc" data-sec="riwayat">
-          <h3>Riwayat kunjungan <button class="dpill" id="vhclr" type="button">Hapus riwayat</button></h3>
-          <div class="vhs" id="vhs"></div>
-          <ul class="dlog" id="vhl"></ul>
-          <p class="dnote">Tersimpan di browser ini saja.</p>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- 4. TITIK INFO INTERAKTIF PENAMPANG ALAT (8 HOTSPOT) -->
+    <section class="sec" id="cara-kerja" data-title="Cara Kerja">
+      <div class="wrap">
+        <div data-reveal>
+          <span class="eyebrow">Anatomi Prototipe</span>
+          <h2 class="h-sec">Cara kerja sistem, <em>klik setiap komponen</em></h2>
+          <p class="lead">Air dipompa dari tangki penampung ke headbox, ditenangkan, meluncur melalui saluran miring ke kincir 6 sudu, lalu jatuh kembali dalam siklus tertutup.</p>
+        </div>
+
+        <div class="howto" data-reveal>
+          <figure class="diagram" id="vx-diagram">
+            <svg viewBox="0 -22 700 492" role="img" aria-label="Penampang samping prototipe Vortex Hydro dengan 8 titik komponen">
+              <path d="M10 440H690" stroke="currentColor" stroke-opacity=".3" stroke-width="2"/>
+              <g fill="#aab4bd"><rect x="70" y="164" width="465" height="8"/><rect x="619" y="164" width="51" height="8"/><rect x="72" y="172" width="8" height="268"/><rect x="330" y="172" width="8" height="268"/><rect x="660" y="172" width="8" height="268"/><rect x="74" y="390" width="590" height="8" fill="#b9c2ca"/></g>
+              <path d="M545 141H585V242H545Z" fill="var(--sky)" opacity=".85"/><path d="M552 150V236M565 148V238M578 150V236" stroke="#fff" stroke-width="2" opacity=".7"/>
+              <rect x="472" y="205" width="156" height="185" rx="10" fill="none" stroke="currentColor" stroke-width="3" opacity=".7"/>
+              <path d="M474 242H626V382Q626 388 620 388H480Q474 388 474 382Z" fill="var(--sky)" opacity=".6"/><path d="M474 242q19-5 38 0t38 0 38 0 38 0" fill="none" stroke="#fff" stroke-width="2.5"/>
+              <path d="M538 144V200M592 144V200" stroke="var(--blue)" stroke-width="3" opacity=".55"/>
+              <path d="M502 381V190Q502 178 480 178Q457 178 457 190V370H378" fill="none" stroke="#9aa7b2" stroke-width="8" stroke-linejoin="round"/><circle cx="502" cy="381" r="7" fill="#c9a24a"/>
+              <rect x="328" y="340" width="50" height="46" rx="9" fill="#3fae49"/><circle cx="353" cy="363" r="11" fill="#2f8a39"/>
+              <path d="M352 340V322H49V56H118V86" fill="none" stroke="var(--blue)" stroke-width="8" stroke-linejoin="round" stroke-linecap="round" opacity=".75"/>
+              <rect x="31" y="208" width="36" height="32" rx="5" fill="var(--navy)"/><rect x="36" y="214" width="26" height="12" rx="2" fill="var(--sky)"/><path d="M39 233h20" stroke="var(--cyan)" stroke-width="3" stroke-linecap="round"/>
+              <path d="M94 26H532V140.5L94 104Z" fill="var(--sky)" fill-opacity=".1" stroke="var(--blue)" stroke-opacity=".5" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M94 104V84H172L538 118V140.5Z" fill="var(--sky)" opacity=".75"/>
+              <path d="M94 104L538 140.5" stroke="var(--navy)" stroke-width="4" stroke-linecap="round"/><path d="M94 26V104" stroke="var(--navy)" stroke-width="4"/>
+              <rect x="158" y="40" width="4" height="53" fill="var(--pale)" stroke="var(--blue)" stroke-width="1.5"/>
+              <path d="M118 86v6" stroke="var(--cyan)" stroke-width="3" stroke-linecap="round"/><circle cx="118" cy="87" r="3.5" fill="#c9a24a"/>
+              <g fill="none" stroke="var(--navy)" stroke-width="2" stroke-dasharray="5 4" opacity=".75"><circle cx="472" cy="88" r="40.5"/><circle cx="556" cy="82" r="10"/><rect x="538" y="62" width="46" height="40" rx="6"/><path d="M472 47.5L556 72M472 128.5L556 92"/></g>
+              <text x="561" y="89" text-anchor="middle" font-family="Source Sans 3, sans-serif" font-weight="700" font-size="13" fill="var(--navy)" opacity=".8">G</text>
+              <g transform="translate(472 88)"><rect x="-3" y="-49.5" width="6" height="30" rx="1.5" fill="#0288D1" transform="rotate(0)"/><rect x="-3" y="-49.5" width="6" height="30" rx="1.5" fill="#0288D1" transform="rotate(60)"/><rect x="-3" y="-49.5" width="6" height="30" rx="1.5" fill="#0288D1" transform="rotate(120)"/><rect x="-3" y="-49.5" width="6" height="30" rx="1.5" fill="#0288D1" transform="rotate(180)"/><rect x="-3" y="-49.5" width="6" height="30" rx="1.5" fill="#0288D1" transform="rotate(240)"/><rect x="-3" y="-49.5" width="6" height="30" rx="1.5" fill="#0288D1" transform="rotate(300)"/><circle r="49.5" fill="none" stroke="var(--navy)" stroke-width="2" opacity=".5"/><circle r="9" fill="var(--navy)"/><circle r="3" fill="#fff"/></g>
+              <g font-family="Source Sans 3, sans-serif" font-weight="700" font-size="13" text-anchor="middle" fill="#fff">
+                <g class="hs" data-i="1" tabindex="0" role="button" aria-label="Tangki Penampung"><g class="hit" fill="transparent"><rect x="468" y="200" width="164" height="194" rx="10"/></g><g class="hs__dot"><circle cx="650" cy="300" r="13" fill="var(--blue)"/><text x="650" y="305">1</text></g></g>
+                <g class="hs" data-i="2" tabindex="0" role="button" aria-label="Pompa dan Pipa Hisap"><g class="hit" fill="transparent"><rect x="322" y="334" width="62" height="58" rx="8"/></g><g class="hs__dot"><circle cx="353" cy="418" r="13" fill="var(--blue)"/><text x="353" y="423">2</text></g></g>
+                <g class="hs" data-i="3" tabindex="0" role="button" aria-label="Pipa Dorong dan Flow Meter"><g class="hit" fill="transparent"><path d="M352 340V322H49V56H118V86" fill="none" stroke-width="26"/></g><g class="hs__dot"><circle cx="14" cy="224" r="13" fill="var(--blue)"/><text x="14" y="229">3</text></g></g>
+                <g class="hs" data-i="4" tabindex="0" role="button" aria-label="Headbox"><g class="hit" fill="transparent"><rect x="90" y="22" width="92" height="88" rx="6"/></g><g class="hs__dot"><circle cx="133" cy="-2" r="13" fill="var(--blue)"/><text x="133" y="3">4</text></g></g>
+                <g class="hs" data-i="5" tabindex="0" role="button" aria-label="Saluran Miring"><g class="hit" fill="transparent"><polygon points="184,26 420,26 420,132 184,108"/></g><g class="hs__dot"><circle cx="262" cy="-2" r="13" fill="var(--blue)"/><text x="262" y="3">5</text></g></g>
+                <g class="hs" data-i="6" tabindex="0" role="button" aria-label="Kincir Air 6 Sudu"><g class="hit" fill="transparent"><circle cx="472" cy="88" r="54"/></g><g class="hs__dot"><circle cx="472" cy="-2" r="13" fill="var(--blue)"/><text x="472" y="3">6</text></g></g>
+                <g class="hs" data-i="7" tabindex="0" role="button" aria-label="Terjunan Air"><g class="hit" fill="transparent"><rect x="538" y="138" width="54" height="108" rx="6"/></g><g class="hs__dot"><circle cx="640" cy="188" r="13" fill="var(--blue)"/><text x="640" y="193">7</text></g></g>
+                <g class="hs" data-i="8" tabindex="0" role="button" aria-label="Zona Kering"><g class="hit" fill="transparent"><rect x="532" y="56" width="62" height="54" rx="8"/></g><g class="hs__dot"><circle cx="556" cy="38" r="13" fill="var(--blue)"/><text x="556" y="43">8</text></g></g>
+              </g>
+            </svg>
+            <figcaption>Penampang samping prototipe (tidak berskala). Garis putus-putus = zona kering transmisi &amp; generator.</figcaption>
+          </figure>
+
+          <aside class="dinfo" id="dinfo" aria-live="polite">
+            <div class="dinfo__txt" id="dinfo-txt"><h3>Pilih bagian</h3><p>Klik gambar atau tombol nomor di bawah.</p></div>
+            <div class="dchips" id="dchips">
+              <button type="button" data-i="1"><b>1</b><span>Tangki Penampung</span></button>
+              <button type="button" data-i="2"><b>2</b><span>Pompa &amp; Pipa Hisap</span></button>
+              <button type="button" data-i="3"><b>3</b><span>Pipa Dorong &amp; Flow Meter</span></button>
+              <button type="button" data-i="4"><b>4</b><span>Headbox</span></button>
+              <button type="button" data-i="5"><b>5</b><span>Saluran Miring</span></button>
+              <button type="button" data-i="6"><b>6</b><span>Kincir Air 6 Sudu</span></button>
+              <button type="button" data-i="7"><b>7</b><span>Terjunan Air</span></button>
+              <button type="button" data-i="8"><b>8</b><span>Zona Kering</span></button>
+            </div>
+          </aside>
+        </div>
+
+        <template data-i="1"><h3>1. Tangki Penampung</h3><p>Silinder penampung air sirkulasi Ø 520 mm. Air bekas memutar kincir jatuh kembali ke tangki sehingga sistem tertutup dan hemat air.</p></template>
+        <template data-i="2"><h3>2. Pompa &amp; Pipa Hisap</h3><p>Pompa Wasser WD-101E (100 W) menyedot air dari tangki bawah dan mendorongnya naik menuju bak penenang atas.</p></template>
+        <template data-i="3"><h3>3. Pipa Dorong &amp; Flow Meter</h3><p>Pipa Ø 45 mm mengalirkan air naik di sisi rangka, dilengkapi flow meter untuk membaca debit aliran (L/s).</p></template>
+        <template data-i="4"><h3>4. Headbox (Bak Penenang)</h3><p>Menenangkan turbulensi pancaran pompa melalui sekat internal agar aliran masuk ke saluran menjadi stabil dan halus.</p></template>
+        <template data-i="5"><h3>5. Saluran Miring</h3><p>Saluran akrilik yang menyempit dari 0,416 m ke 0,28 m untuk memfokuskan energi aliran tepat ke sudu kincir.</p></template>
+        <template data-i="6"><h3>6. Kincir Air 6 Sudu</h3><p>Kincir Ø 330 mm (lebar sudu 250 mm) menangkap tumbukan aliran air dan memutar poros utama stainless Ø 30 mm.</p></template>
+        <template data-i="7"><h3>7. Terjunan Air</h3><p>Air yang telah memutar kincir dialirkan turun kembali ke tangki penampung untuk siklus berikutnya.</p></template>
+        <template data-i="8"><h3>8. Zona Kering</h3><p>Dipisahkan sekat pelindung cipratan. Pulley step-up 1:4 memutar Generator DC XD 3240 untuk menyuplai 2 lampu LED 12 V / 5 W.</p></template>
+      </div>
+    </section>
+
+    <!-- 5. DOKUMENTASI SINGKAT PENGUJIAN & PERALATAN -->
+    <section class="sec sec--stone" id="dokumentasi" data-title="Dokumentasi">
+      <div class="wrap">
+        <div data-reveal>
+          <span class="eyebrow">Dokumentasi &amp; Pengujian</span>
+          <h2 class="h-sec">Dari desain CAD <em>hingga uji laboratorium</em></h2>
+          <p class="lead">Tahapan ringkas perakitan prototipe, pengujian debit-RPM-daya, serta perangkat lunak rekayasa yang digunakan tim.</p>
+        </div>
+
+        <div class="doc-grid" data-reveal>
+          <article class="doc-card">
+            <img src="assets/images/documentation/t-akademik.jpg" alt="Perancangan CAD dan simulasi aliran" loading="lazy" decoding="async">
+            <div class="doc-card__overlay">
+              <span class="doc-card__step">01 · DESAIN</span>
+              <h3>Simulasi CAD &amp; CFD</h3>
+              <p>Pemodelan 3D geometri saluran dan evaluasi profil kecepatan fluida di ANSYS Fluent &amp; MATLAB.</p>
+            </div>
+          </article>
+          <article class="doc-card">
+            <img src="assets/images/documentation/t-cerita.jpg" alt="Sirkulasi pompa dan saluran miring" loading="lazy" decoding="async">
+            <div class="doc-card__overlay">
+              <span class="doc-card__step">02 · FABRIKASI</span>
+              <h3>Rangka &amp; Sirkulasi</h3>
+              <p>Perakitan rangka 2 × 0,8 m, tangki Ø 520 mm, pompa 100 W, headbox, dan saluran akrilik miring.</p>
+            </div>
+          </article>
+          <article class="doc-card">
+            <img src="assets/images/documentation/t-berita.jpg" alt="Integrasi turbin dan generator" loading="lazy" decoding="async">
+            <div class="doc-card__overlay">
+              <span class="doc-card__step">03 · INTEGRASI</span>
+              <h3>Turbin &amp; Generator</h3>
+              <p>Pemasangan kincir 6 sudu, poros Ø 30 mm, transmisi pulley 1:4, dan Generator DC XD 3240 di zona kering.</p>
+            </div>
+          </article>
+          <article class="doc-card">
+            <img src="assets/images/documentation/t-tim.jpg" alt="Pengujian langsung di laboratorium" loading="lazy" decoding="async">
+            <div class="doc-card__overlay">
+              <span class="doc-card__step">04 · UJI COBA</span>
+              <h3>Pengujian Langsung</h3>
+              <p>Pengukuran debit (L/s), putaran poros &amp; generator (RPM), dan tegangan output beban 2× LED 5 W.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="spec-strip" data-reveal>
+          <div class="spec-item"><small>Pembangkit</small><strong>Generator XD 3240</strong><span>1 unit · DC Magnet Permanen</span></div>
+          <div class="spec-item"><small>Sirkulasi Air</small><strong>Wasser WD-101E</strong><span>1 unit · 220 V / 100 W</span></div>
+          <div class="spec-item"><small>Beban Output</small><strong>Lampu LED 12 V</strong><span>2 pcs × 5 W (Total 10 W)</span></div>
+          <div class="spec-item"><small>Jalur Pipa</small><strong>Pipa Sirkulasi</strong><span>Diameter ±45 mm · Rangka 2×0,8 m</span></div>
+        </div>
+
+        <div class="sw-row" data-reveal>
+          <span class="sw-pill"><img src="assets/images/software/ansys-fluent.png" alt="ANSYS Fluent" loading="lazy">ANSYS Fluent</span>
+          <span class="sw-pill"><img src="assets/images/software/autocad.png" alt="AutoCAD" loading="lazy">AutoCAD</span>
+          <span class="sw-pill"><img src="assets/images/software/matlab.png" alt="MATLAB" loading="lazy">MATLAB</span>
+          <span class="sw-pill"><img src="assets/images/software/vs-code.png" alt="VS Code" loading="lazy">VS Code</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. KARTU PROFIL TIM RINGKAS (Filter Divisi) -->
+    <section class="sec" id="tim" data-title="Struktur Tim">
+      <div class="wrap">
+        <div data-reveal>
+          <span class="eyebrow">Tim Proyek Kelas</span>
+          <h2 class="h-sec">Dikerjakan bersama oleh <em>7 divisi teknis</em></h2>
+          <p class="lead">Mahasiswa Teknologi Rekayasa Pembangkit Energi, Fakultas Vokasi, Universitas Negeri Malang.</p>
+        </div>
+
+        <div class="team-tabs" id="team-tabs" role="tablist" aria-label="Filter divisi tim"></div>
+        <div class="team-grid" id="team-grid" data-reveal></div>
+      </div>
+    </section>
+
+    <!-- 7. FAQ RINGKAS -->
+    <section class="sec sec--stone" id="faq" data-title="FAQ">
+      <div class="wrap">
+        <div data-reveal>
+          <span class="eyebrow">Vortex Hydro · FAQ</span>
+          <h2 class="h-sec">Pertanyaan yang <em>sering diajukan</em></h2>
+        </div>
+
+        <div class="faq-list" data-reveal>
+          <details class="faq__item" open><summary>Apa itu Vortex Hydro?</summary><p>Simulator PLTA mikro-hidro berbasis pusaran air skala laboratorium yang dirancang, dibangun, dan diuji secara mandiri oleh mahasiswa Universitas Negeri Malang.</p></details>
+          <details class="faq__item"><summary>Mengapa memakai pompa dan sirkulasi tertutup?</summary><p>Karena aliran sungai tidak mungkin dibawa ke laboratorium kampus, pompa Wasser 100 W menyirkulasikan air secara kontinu di atas rangka 2 × 0,8 m.</p></details>
+          <details class="faq__item"><summary>Apakah sistem ini butuh bendungan besar?</summary><p>Tidak. Konsep turbin pusaran dirancang khusus untuk memanfaatkan aliran ber-head rendah tanpa bendungan besar.</p></details>
+          <details class="faq__item"><summary>Apakah angka di Dashboard adalah sensor langsung?</summary><p>Pada versi situs statis, Dashboard memakai mesin simulasi prototipe di browser untuk mendemonstrasikan antarmuka pemantauan dan deteksi gangguan.</p></details>
+          <details class="faq__item"><summary>Faktor apa yang memengaruhi daya listrik?</summary><p>Debit aliran (Q), tinggi jatuh (H), serta efisiensi mekanis turbin dan generator (η) sesuai persamaan P = ρ·g·Q·H·η.</p></details>
+          <details class="faq__item"><summary>Bagaimana cara mengakses Dashboard Admin?</summary><p>Klik tombol Admin di pojok kanan atas atau buka tautan Dashboard, lalu masukkan kata sandi demo (pakcikiniv2).</p></details>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- Footer -->
-  <footer class="footer ft">
-    <div class="wrap ft__wrap">
-      <div class="ft__card">
-        <div class="ft__grid">
-          <div class="ft__brand">
-            <a class="brand" href="#beranda" aria-label="Vortex Hydro, ke beranda">
-              <span class="vxlogo" aria-hidden="true">
-                <svg viewBox="0 0 32 32" fill="none"><path d="M16 6.5a9.5 9.5 0 1 1-9.5 9.5 6.4 6.4 0 1 1 6.4 6.4 3.4 3.4 0 1 1 3.4-3.4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg>
-              </span>
-              <span>Vortex Hydro</span>
-            </a>
-            <p>Turbin pusaran air untuk menghasilkan listrik dari aliran rendah, tanpa bendungan.</p>
-            <span class="ft__tag">Proyek Mikro-hidro</span>
-          </div>
-
-          <div class="ft__col">
-            <h4>Halaman</h4>
-            <ul class="ft__links">
-              <li><a href="#beranda">Beranda</a></li>
-              <li><a href="#tentang">Tentang</a></li>
-              <li><a href="#dokumentasi">Dokumentasi</a></li>
-              <li><a href="#struktur-tim">Struktur Tim</a></li>
-              <li><a href="#faq">FAQ</a></li>
-            </ul>
-          </div>
-
-          <div class="ft__col">
-            <h4>Informasi</h4>
-            <ul class="ft__info">
-              <li>
-                <span class="ft__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5 12 5l10 4.5-10 4.5z"/><path d="M6 11.6V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.4"/><path d="M22 9.5V15"/></svg></span>
-                <span><small>Fakultas</small><b>Fakultas Vokasi</b></span>
-              </li>
-              <li>
-                <span class="ft__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>
-                <span><small>Jurusan</small><b>Teknologi Rekayasa Pembangkit Energi</b></span>
-              </li>
-            </ul>
-          </div>
-
-          <div class="ft__col">
-            <h4>Ikuti Kami</h4>
-            <div class="ft__soc">
-              <a class="ft__s" href="https://www.tiktok.com/@Vortexa.Team" target="_blank" rel="noopener noreferrer" aria-label="TikTok Vortexa.Team">
-                <span class="ft__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3c.3 2.4 1.8 4 4 4.2v3.2c-1.5 0-2.9-.5-4-1.3v6.1A5.7 5.7 0 1 1 9.3 9.5v3.3A2.5 2.5 0 1 0 12 15.3V3z"/></svg></span>
-                <span><small>TikTok</small><b>Vortexa.Team</b></span>
-              </a>
-              <a class="ft__s" href="https://www.instagram.com/vortexa.team" target="_blank" rel="noopener noreferrer" aria-label="Instagram vortexa.team">
-                <span class="ft__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></span>
-                <span><small>Instagram</small><b>vortexa.team</b></span>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="ft__base">
-          <span>&copy; 2026 Vortex Hydro. Proyek kelas Mekanika Fluida, Universitas Negeri Malang.</span>
+  <!-- ==================== ADMIN DASHBOARD MODE ==================== -->
+  <div class="dash-page" id="dashboard" hidden>
+    <div class="dash" data-pane="ringkasan">
+      <div class="dtop">
+        <div class="dtop__crumb"><b>Vortex Hydro</b><span>·</span><span id="dcrumb">Ringkasan</span></div>
+        <span class="dpill" id="dclk">--:--:--</span>
+        <span class="dpill ok" id="dst"><i></i><span>LIVE · SIMULASI</span></span>
+        <button class="dpill" id="dpause" type="button">Jeda</button>
+        <div class="dtop__acc">
+          <span class="dtop__av" id="dav" aria-hidden="true">A</span>
+          <b id="dwho">Admin</b>
+          <button class="dtop__out" id="dlogout" type="button" aria-label="Keluar dari akun" title="Keluar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8"/><path d="M6.4 6.8a8 8 0 1 0 11.2 0"/></svg>
+          </button>
         </div>
       </div>
+      <header class="dhead">
+        <h1 id="dtitle">Ringkasan <em>sekilas</em></h1>
+        <p id="dsub">Kondisi prototipe saat ini: sensor, tren, dan peringatan. Diperbarui setiap detik.</p>
+      </header>
+      <div class="dgrid" data-sec="ringkasan sensor">
+        <div class="dc" data-c="debit"><small>Debit air</small><b><span>0</span><em>L/s</em></b><svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke-width="1.8" points=""/></svg></div>
+        <div class="dc" data-c="vbat"><small>Tegangan baterai</small><b><span>0</span><em>V</em></b><svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke-width="1.8" points=""/></svg></div>
+        <div class="dc" data-c="rpmShaft"><small>RPM poros utama</small><b><span>0</span><em>RPM</em></b><svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke-width="1.8" points=""/></svg></div>
+        <div class="dc" data-c="rpmGen"><small>RPM generator</small><b><span>0</span><em>RPM</em></b><svg class="sp" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline fill="none" stroke-width="1.8" points=""/></svg></div>
+      </div>
+      <div class="drow">
+        <div class="dc dchart-card" data-sec="ringkasan grafik">
+          <h3>Grafik 60 detik terakhir
+            <span class="dtabs" id="dtabs">
+              <button type="button" aria-pressed="true" data-k="debit">Debit</button>
+              <button type="button" aria-pressed="false" data-k="vbat">Baterai</button>
+              <button type="button" aria-pressed="false" data-k="rpmShaft">RPM poros</button>
+              <button type="button" aria-pressed="false" data-k="rpmGen">RPM generator</button>
+            </span>
+          </h3>
+          <svg class="dchart" id="dch" viewBox="0 0 600 250" role="img" aria-label="Grafik data sensor"></svg>
+        </div>
+        <div class="dc" data-sec="ringkasan sensor">
+          <h3 style="margin:0 0 12px">Indikator &amp; Log</h3>
+          <div class="dgau">
+            <div><svg viewBox="0 0 120 120"><circle class="arc" cx="60" cy="60" r="48" pathLength="100" stroke="rgba(127,127,127,.18)" stroke-dasharray="75 100"/><circle class="arc" id="grpm" cx="60" cy="60" r="48" pathLength="100" stroke="var(--cyan)" stroke-dasharray="75 100" stroke-dashoffset="75"/><text x="60" y="66" id="grpmt">0</text></svg><small>RPM poros</small></div>
+            <div><svg viewBox="0 0 120 120"><circle class="arc" cx="60" cy="60" r="48" pathLength="100" stroke="rgba(127,127,127,.18)" stroke-dasharray="75 100"/><circle class="arc" id="geff" cx="60" cy="60" r="48" pathLength="100" stroke="var(--ok)" stroke-dasharray="75 100" stroke-dashoffset="75"/><text x="60" y="66" id="geft">0</text></svg><small>RPM generator</small></div>
+          </div>
+          <ul class="dlog" id="dlog"></ul>
+        </div>
+      </div>
+      <div class="dc" data-sec="riwayat">
+        <h3 style="margin:0 0 8px">Riwayat kunjungan</h3>
+        <p style="margin:0;color:var(--muted);font-size:.88rem">Mode demo statis: riwayat kunjungan server dinonaktifkan di GitHub Pages.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="wrap">
+      <div class="ft-cta">
+        <h2>Pantau simulasi telemetri <em>prototipe secara langsung</em></h2>
+        <a class="c-btn c-btn--primary" href="#dashboard">Buka Dashboard Admin →</a>
+      </div>
+
+      <div class="ft__grid">
+        <div class="ft__col">
+          <strong style="font-size:1.15rem;color:#fff;display:block;margin-bottom:8px">Vortex Hydro</strong>
+          <p style="margin:0;font-size:.88rem;color:rgba(255,255,255,.68);max-width:34ch">Turbin pusaran air untuk menghasilkan listrik dari aliran head rendah, tanpa bendungan besar.</p>
+        </div>
+        <div class="ft__col">
+          <h4>Navigasi</h4>
+          <ul class="ft__links">
+            <li><a href="#beranda">Beranda</a></li>
+            <li><a href="#simulasi">Simulasi Arus</a></li>
+            <li><a href="#cara-kerja">Cara Kerja</a></li>
+            <li><a href="#dokumentasi">Dokumentasi</a></li>
+            <li><a href="#tim">Struktur Tim</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="ft__col">
+          <h4>Akademik</h4>
+          <ul class="ft__links">
+            <li>Fakultas Vokasi</li>
+            <li>Teknologi Rekayasa Pembangkit Energi</li>
+            <li>Universitas Negeri Malang</li>
+          </ul>
+        </div>
+        <div class="ft__col">
+          <h4>Ikuti Kami</h4>
+          <ul class="ft__links">
+            <li><a href="https://www.tiktok.com/@Vortexa.Team" target="_blank" rel="noopener noreferrer">TikTok · @Vortexa.Team</a></li>
+            <li><a href="https://www.instagram.com/vortexa.team" target="_blank" rel="noopener noreferrer">Instagram · @vortexa.team</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ft__base">&copy; 2026 Vortex Hydro. Proyek kelas Mekanika Fluida, Universitas Negeri Malang.</div>
     </div>
   </footer>
 
-  <!-- Modal Pencarian -->
+  <!-- Search Modal -->
   <div class="vs-ov" id="vs-ov" hidden role="dialog" aria-modal="true" aria-label="Cari di situs">
     <div class="vs-pan">
       <div class="vs-bar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
-        <input id="vs-in" type="search" placeholder="Cari halaman, komponen, atau tim…" autocomplete="off" aria-label="Kata kunci pencarian">
+        <input id="vs-in" type="search" placeholder="Cari komponen, rumus, atau anggota tim…" autocomplete="off" aria-label="Kata kunci pencarian">
         <button type="button" class="vs-x" id="vs-x" aria-label="Tutup pencarian">Esc</button>
       </div>
       <ul class="vs-res" id="vs-res" role="listbox" aria-label="Hasil pencarian"></ul>
@@ -970,18 +537,10 @@
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="assets/js/vx-engine.js?v=3"></script>
-  <script src="assets/js/api-config.js?v=3"></script>
-  <script src="assets/js/auth.js?v=8"></script>
-  <script src="assets/js/page-interactions.js?v=4"></script>
-  <script src="assets/js/dashboard.js?v=4"></script>
-  <script src="assets/js/dashglass.js?v=4"></script>
-  <script src="assets/js/team.js?v=4"></script>
-  <script src="assets/js/navigation.js?v=10"></script>
-  <script src="assets/js/site-search.js?v=4"></script>
-  <script src="assets/i18n.js?v=12"></script>
-  <script src="assets/js/ai-config.js?v=1"></script>
-  <script src="assets/js/ai-assistant.js?v=2" defer></script>
+  <!-- Consolidated Scripts (Only 4 Clean Files!) -->
+  <script src="assets/app.js?v=1"></script>
+  <script src="assets/dashboard.js?v=1"></script>
+  <script src="assets/i18n.js?v=13"></script>
+  <script src="assets/ai-assistant.js?v=3" defer></script>
 </body>
 </html>
