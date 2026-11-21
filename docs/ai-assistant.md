@@ -19,7 +19,7 @@ Aksi API (POST JSON): `send`, `list`, `history`, `rename`, `delete`.
 1. Buat API key di Google AI Studio.
 2. Set secret: `supabase secrets set GEMINI_API_KEY=... GEMINI_MODEL=gemini-3.8-flash --project-ref gzzwjmcedymcdazckgbc` (atau Dashboard > Edge Functions > Secrets).
 3. Tanpa `GEMINI_API_KEY`, fungsi membalas `not_configured` dan UI menampilkan pesan error yang jelas.
-4. Model dapat diganti lewat `GEMINI_MODEL` tanpa mengubah frontend. Cek https://ai.google.dev/gemini-api/docs/models bila model dihentikan.
+4. Model dapat diganti lewat `GEMINI_MODEL` tanpa mengubah frontend. Untuk beberapa model sekaligus, isi secret `GEMINI_MODELS` dengan daftar dipisah koma (contoh `gemini-4-hydrogen,gemini-3.6-flash`); dicoba berurutan sampai ada yang berhasil. Cek https://ai.google.dev/gemini-api/docs/models bila model dihentikan.
 
 ## Deploy
 - Migrasi: jalankan `supabase/migrations/create_ai_assistant_tables.sql` (SQL Editor atau `supabase db push`).

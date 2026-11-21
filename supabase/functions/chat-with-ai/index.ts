@@ -5,7 +5,9 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY") ?? "";
-const GEMINI_MODEL = Deno.env.get("GEMINI_MODEL") ?? "gemini-3.8-flash";
+// Satu model (GEMINI_MODEL) atau beberapa dipisah koma (GEMINI_MODELS): dicoba berurutan sampai ada yang berhasil.
+const MODELS = (Deno.env.get("GEMINI_MODELS") ?? Deno.env.get("GEMINI_MODEL") ?? "gemini-3.8-flash")
+  .split(",").map((m) => m.trim().replace(/^models\//, "")).filter((m) => /^[A-Za-z0-9._-]+$/.test(m));
 const ALLOWED = (Deno.env.get("ALLOWED_ORIGINS") ??
   "https://hdeonngth.github.io,http://localhost:8000,http://localhost:3000,http://127.0.0.1:8000")
   .split(",").map((s) => s.trim()).filter(Boolean);
@@ -107,12 +109,12 @@ async function owned(id: string, hash: string) {
   return data;
 }
 
-async function askGemini(history: { role: string; content: string }[], pageNote: string) {
+async function askGemini(model: string, history: { role: string; content: string }[], pageNote: string) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), GEMINI_TIMEOUT_MS);
   try {
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
       {
         method: "POST",
         signal: ctrl.signal,
@@ -149,6 +151,20 @@ async function askGemini(history: { role: string; content: string }[], pageNote:
   } finally {
     clearTimeout(timer);
   }
+}
+
+async function askWithFallback(history: { role: string; content: string }[], pageNote: string) {
+  let last: unknown = new Error("gemini");
+  for (const model of MODELS) {
+    try {
+      return { text: await askGemini(model, history, pageNote), model };
+    } catch (e) {
+      const d = e as { detail?: string };
+      if (d.detail) d.detail = `${model}: ${d.detail}`;
+      last = e;
+    }
+  }
+  throw last;
 }
 
 Deno.serve(async (req) => {
@@ -253,8 +269,11 @@ Deno.serve(async (req) => {
 
     // 5) Gemini
     let answer: string;
+    let usedModel = MODELS[0];
     try {
-      answer = await askGemini(history, pageNote);
+      const r = await askWithFallback(history, pageNote);
+      answer = r.text;
+      usedModel = r.model;
     } catch (e) {
       await db.from("messages").update({ status: "error" }).eq("id", um.id);
       const code = (e as Error).message;
@@ -264,7 +283,7 @@ Deno.serve(async (req) => {
 
     // 6) simpan jawaban + tandai pesan pengguna berhasil
     const { data: am, error: ae } = await db.from("messages")
-      .insert({ conversation_id: id, role: "assistant", content: answer, model: GEMINI_MODEL, status: "completed" })
+      .insert({ conversation_id: id, role: "assistant", content: answer, model: usedModel, status: "completed" })
       .select("id,created_at").single();
     if (ae || !am) {
       await db.from("messages").update({ status: "error" }).eq("id", um.id);
