@@ -138,15 +138,15 @@ window.VX_AI_CONFIG = {
   function scroll() { log.scrollTop = log.scrollHeight; }
 
   function welcome() {
-    log.innerHTML = '<div class="vai__empty"><span class="vai__badge">' + ICON + '</span><h3>Halo! Aku Vortex AI</h3>' +
-      '<p>Partner lab Mekanika Fluida tim Vortex Hydro UM. Tanya singkat soal cara kerja turbin, komponen, atau rumus fluida.</p>' +
+    log.innerHTML = '<div class="vai__empty"><span class="vai__badge">' + ICON + '</span><h3>Vortex Hydro AI</h3>' +
+      '<p>Asisten cerdas untuk proyek mikro-hidro Vortex Hydro UM. Tanyakan cara kerja sistem, spesifikasi komponen, atau analisis mekanika fluida.</p>' +
       '<div class="vai__sug"></div></div>';
     var box = log.querySelector('.vai__sug');
     [
-      'Singkatnya, bagaimana cara kerja Vortex Hydro?',
-      'Komponen utama prototipe ini apa saja?',
-      'Kenapa pakai turbin pusaran untuk head rendah?',
-      'Rumus cepat hitung daya mikro-hidro?'
+      'Bagaimana alur kerja sistem Vortex Hydro secara ringkas?',
+      'Jelaskan fungsi transmisi pulley 1:4 di zona kering',
+      'Mengapa turbin pusaran cocok untuk head rendah?',
+      'Bagaimana cara menghitung estimasi daya mikro-hidro?'
     ].forEach(function (q) {
       var b = document.createElement('button'); b.type = 'button'; b.textContent = q;
       b.addEventListener('click', function () { submit(q); }); box.appendChild(b);

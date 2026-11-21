@@ -135,6 +135,9 @@
     } else {
       window.scrollTo(0, 0);
     }
+    if (typeof window.__vxRefreshScroll === 'function') {
+      requestAnimationFrame(window.__vxRefreshScroll);
+    }
   }
 
   window.addEventListener('hashchange', route);
@@ -170,20 +173,176 @@
   });
   syncThemeIcons();
 
-  /* ---------- 3. Scroll Reveal ---------- */
-  var reveals = $$('[data-reveal]');
-  if ('IntersectionObserver' in window && !reducedMotion) {
-    var revObs = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (!en.isIntersecting) return;
-        en.target.classList.add('is-visible');
-        revObs.unobserve(en.target);
+  /* ---------- 3. Scroll Animations Engine (Animation_Scroll.mp4 Patterns) ---------- */
+  (function initScrollAnimations() {
+    var progressBar = $('scroll-progress');
+    var heroImg = document.querySelector('.hero__media img');
+    var berandaEl = $('beranda');
+    var stepper = $('hydro-stepper');
+    var stageBadge = $('stage-badge');
+    var stepItems = stepper ? $$('.step-item', stepper) : [];
+    var STAGE_LABELS = {
+      '1': 'TAHAP 01 · SIRKULASI TERTUTUP',
+      '2': 'TAHAP 02 · FOKUS ALIRAN & KINCIR',
+      '3': 'TAHAP 03 · TRANSMISI 1:4 & LED 12 V'
+    };
+
+    /* 3a. Scroll Reveal Observer (SPA-safe across hidden pages) */
+    var revObs = null;
+    if ('IntersectionObserver' in window && !reducedMotion) {
+      revObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          en.target.classList.add('is-visible');
+          revObs.unobserve(en.target);
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+    }
+    function observeReveals() {
+      $$('[data-reveal]').forEach(function (el) {
+        if (el.classList.contains('is-visible')) return;
+        if (revObs) revObs.observe(el);
+        else el.classList.add('is-visible');
       });
-    }, { threshold: 0.1 });
-    reveals.forEach(function (el) { revObs.observe(el); });
-  } else {
-    reveals.forEach(function (el) { el.classList.add('is-visible'); });
-  }
+    }
+
+    /* 3b. Scroll-Scrubbed Word-by-Word Text Illumination ([data-scroll-words]) */
+    var wordBlocks = [];
+    function wrapTextWords(node, bucket) {
+      if (node.nodeType === 3) {
+        var txt = node.nodeValue;
+        if (!txt || !txt.trim()) return;
+        var frag = document.createDocumentFragment();
+        var parts = txt.split(/(\s+)/);
+        parts.forEach(function (part) {
+          if (!part) return;
+          if (/^\s+$/.test(part)) {
+            frag.appendChild(document.createTextNode(part));
+          } else {
+            var sp = document.createElement('span');
+            sp.className = 'sw-word';
+            sp.textContent = part;
+            if (reducedMotion) sp.style.opacity = '1';
+            bucket.push(sp);
+            frag.appendChild(sp);
+          }
+        });
+        node.parentNode.replaceChild(frag, node);
+      } else if (node.nodeType === 1) {
+        Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+          wrapTextWords(child, bucket);
+        });
+      }
+    }
+    $$('[data-scroll-words]').forEach(function (el) {
+      var bucket = [];
+      wrapTextWords(el, bucket);
+      if (bucket.length) wordBlocks.push({ el: el, words: bucket });
+    });
+
+    /* 3c. Stepper Activation (scroll + click) */
+    var manualStepUntil = 0;
+    function setStage(stage) {
+      if (!stepper) return;
+      var s = String(stage);
+      stepper.setAttribute('data-stage', s);
+      if (stageBadge && STAGE_LABELS[s]) stageBadge.textContent = STAGE_LABELS[s];
+      stepItems.forEach(function (btn) {
+        btn.classList.toggle('is-active', btn.getAttribute('data-step') === s);
+      });
+    }
+    stepItems.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        manualStepUntil = Date.now() + 1800;
+        setStage(btn.getAttribute('data-step'));
+      });
+    });
+
+    /* Smooth scroll cue button inside Hero (does not hijack SPA hash) */
+    var cue = document.querySelector('.hero__scroll-cue');
+    if (cue) {
+      cue.addEventListener('click', function (e) {
+        e.preventDefault();
+        var target = $('manifesto');
+        if (target) target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+      });
+    }
+
+    /* 3d. Unified rAF Scroll Tick */
+    var ticking = false;
+    function updateScrollFX() {
+      ticking = false;
+      var sy = window.scrollY || window.pageYOffset || 0;
+      var vh = window.innerHeight || 800;
+      var maxScroll = Math.max(1, document.documentElement.scrollHeight - vh);
+
+      /* Top Scroll Progress Hairline */
+      if (progressBar) {
+        var pct = Math.min(1, Math.max(0, sy / maxScroll));
+        progressBar.style.transform = 'scaleX(' + pct.toFixed(4) + ')';
+      }
+
+      if (reducedMotion) return;
+
+      /* Subtle Hero Background Parallax */
+      if (heroImg && berandaEl && !berandaEl.hidden) {
+        if (sy < vh * 1.25) {
+          heroImg.style.transform = 'translate3d(0,' + (sy * 0.18).toFixed(1) + 'px,0) scale(1.06)';
+        }
+      }
+
+      /* Scroll-Scrubbed Word Illumination */
+      for (var i = 0; i < wordBlocks.length; i++) {
+        var wb = wordBlocks[i];
+        var page = wb.el.closest('.page');
+        if (page && page.hidden) continue;
+        var rect = wb.el.getBoundingClientRect();
+        var start = vh * 0.9;
+        var end = vh * 0.24;
+        var prog = (start - rect.top) / Math.max(1, start - end + rect.height * 0.45);
+        prog = Math.min(1, Math.max(0, prog));
+        var n = wb.words.length;
+        for (var w = 0; w < n; w++) {
+          var threshold = w / n;
+          var local = Math.min(1, Math.max(0, (prog - threshold) * (n * 0.32 + 2.4)));
+          wb.words[w].style.opacity = (0.18 + local * 0.82).toFixed(2);
+        }
+      }
+
+      /* Scroll-Activated 3-Stage Stepper */
+      if (stepper && berandaEl && !berandaEl.hidden && Date.now() > manualStepUntil) {
+        var anchorY = vh * 0.46;
+        var best = '1';
+        var bestDist = Infinity;
+        stepItems.forEach(function (btn) {
+          var r = btn.getBoundingClientRect();
+          var mid = r.top + r.height * 0.5;
+          var dist = Math.abs(mid - anchorY);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = btn.getAttribute('data-step') || '1';
+          }
+        });
+        setStage(best);
+      }
+    }
+
+    function requestTick() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateScrollFX);
+      }
+    }
+
+    window.addEventListener('scroll', requestTick, { passive: true });
+    window.addEventListener('resize', requestTick, { passive: true });
+    window.__vxRefreshScroll = function () {
+      observeReveals();
+      updateScrollFX();
+    };
+    observeReveals();
+    updateScrollFX();
+  })();
 
   /* ---------- 4. Restored Vortex Toolsbar, Palette Modes & Kalkulator Daya ---------- */
   (function initToolsbar() {
@@ -235,7 +394,7 @@
     vxm.addEventListener('click', function (e) {
       var item = e.target.closest('[data-tool]');
       if (!item) {
-        if (e.target.closest('[data-vx-admin-login]') || e.target.closest('[data-theme-toggle]')) closeAll();
+        if (e.target.closest('[data-vx-admin-login]') || e.target.closest('[data-theme-toggle]') || e.target.closest('[data-language-toggle]')) closeAll();
         return;
       }
       var tool = item.getAttribute('data-tool');
@@ -245,10 +404,6 @@
       } else if (tool === 'palette' && vxpal) {
         if (vxp) vxp.hidden = true;
         vxpal.hidden = !vxpal.hidden;
-      } else if (tool === 'lang') {
-        var langBtn = document.querySelector('[data-language-toggle]');
-        if (langBtn) langBtn.click();
-        closeAll();
       }
     });
 
@@ -520,7 +675,7 @@
     var PLUS_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
 
     grid.innerHTML = DIVISIONS.map(function (d, idx) {
-      return '<button type="button" class="on-card" data-idx="' + idx + '" aria-label="Lihat anggota ' + esc(d.division) + ', diketuai ' + esc(d.leader) + '">' +
+      return '<button type="button" class="on-card" data-idx="' + idx + '" data-reveal style="--d:' + (idx % 4 * 70) + 'ms" aria-label="Lihat anggota ' + esc(d.division) + ', diketuai ' + esc(d.leader) + '">' +
         '<div class="on-card__frame">' +
           portraitHtml(d.leader, d.division) +
           '<span class="on-card__plus" aria-hidden="true">' + PLUS_SVG + '</span>' +
@@ -531,6 +686,7 @@
         '</div>' +
       '</button>';
     }).join('');
+    if (typeof window.__vxRefreshScroll === 'function') window.__vxRefreshScroll();
 
     var curIdx = 0;
     function renderDrawer(idx) {

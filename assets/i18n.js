@@ -354,7 +354,16 @@
     'sesuai kebutuhan': 'as needed',
     'Tim Kepemimpinan': 'Leadership Team',
     'Klik ketua divisi untuk melihat seluruh anggota': 'Click a division lead to view all members',
-    'Kami adalah perancang': 'We are builders'
+    'Kami adalah perancang': 'We are builders',
+    'Alur Konversi Energi': 'Energy Conversion Flow',
+    'Tiga tahap dari': 'Three stages from',
+    'aliran air ke listrik': 'water flow to electricity',
+    'Sirkulasi Air Tertutup': 'Closed-Loop Water Circulation',
+    'Fokus Aliran & Kincir 6 Sudu': 'Focused Flow & 6-Blade Wheel',
+    'Transmisi 1:4 & Pembangkit DC': '1:4 Step-Up & DC Generation',
+    'Gulir untuk menjelajah': 'Scroll to explore',
+    'Mode Warna & Tema': 'Color Palette & Theme',
+    'Ganti Mode Terang / Gelap': 'Switch Light / Dark Mode'
   };
 
   var enToId = Object.create(null);
@@ -455,7 +464,12 @@
 
   function updateLanguageControls() {
     document.querySelectorAll('[data-language-toggle]').forEach(function (button) {
-      button.textContent = language === 'id' ? 'EN' : 'ID';
+      var lblEl = button.querySelector('[data-lang-label]');
+      if (lblEl) {
+        lblEl.textContent = language === 'id' ? 'Ganti Bahasa (ID → EN)' : 'Switch Language (EN → ID)';
+      } else {
+        button.textContent = language === 'id' ? 'EN' : 'ID';
+      }
       var label = language === 'id' ? 'Ganti bahasa ke Inggris' : 'Ganti bahasa ke Bahasa Indonesia';
       button.setAttribute('aria-label', label);
       button.setAttribute('title', label);
