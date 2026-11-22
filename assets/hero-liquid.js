@@ -380,19 +380,38 @@
     return clamp01(base - Math.abs(bounce));
   }
 
-  /* Serene concentric calm-water shockwave ripples radiating smoothly from the two-sphere collision */
+  /* Organic calm-water ripple path with gentle liquid micro-undulation (never a rigid compass circle) */
+  function traceOrganicRipple(cx, cy, baseR, phase, amp) {
+    var segs = 72;
+    ctx.beginPath();
+    for (var s = 0; s <= segs; s++) {
+      var ang = (s / segs) * Math.PI * 2;
+      var wobble =
+        Math.sin(ang * 3 + phase) * amp +
+        Math.cos(ang * 5 - phase * 1.3) * (amp * 0.45) +
+        Math.sin(ang * 2 - phase * 0.7) * (amp * 0.35);
+      var rr = Math.max(2, baseR + wobble);
+      var px = cx + Math.cos(ang) * rr;
+      var py = cy + Math.sin(ang) * rr * 0.96; /* subtle natural perspective foreshortening */
+      if (s === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+  }
+
+  /* Natural dispersive calm-water ripple train radiating smoothly from the two-sphere touch */
   function drawCalmWaterShockwave(cx, cy, sphereR, dtImpact, pal) {
-    if (dtImpact <= 0 || dtImpact > 2.85) return;
+    if (dtImpact <= 0 || dtImpact > 3.2) return;
     ctx.save();
 
-    /* Soft calm-water contact glow right at the instant of touch */
-    if (dtImpact < 0.65) {
-      var ip = clamp01(dtImpact / 0.65);
-      var flashAlpha = Math.sin(ip * Math.PI) * (isDark ? 0.34 : 0.44);
-      var flashR = sphereR * (0.9 + ip * 2.4);
-      var fg = ctx.createRadialGradient(cx, cy, sphereR * 0.12, cx, cy, flashR);
+    /* 1. Soft liquid meniscus pulse right at the touch point (feathery radial gradient) */
+    if (dtImpact < 0.78) {
+      var ip = clamp01(dtImpact / 0.78);
+      var flashAlpha = Math.sin(ip * Math.PI) * Math.exp(-ip * 1.2) * (isDark ? 0.32 : 0.38);
+      var flashR = sphereR * (0.85 + Math.pow(ip, 0.7) * 2.5);
+      var fg = ctx.createRadialGradient(cx, cy, sphereR * 0.1, cx, cy, flashR);
       fg.addColorStop(0, pal.beamMid + flashAlpha.toFixed(3) + ')');
-      fg.addColorStop(0.55, 'rgba(' + pal.rgb + ',' + (flashAlpha * 0.45).toFixed(3) + ')');
+      fg.addColorStop(0.5, 'rgba(' + pal.rgb + ',' + (flashAlpha * 0.42).toFixed(3) + ')');
       fg.addColorStop(1, 'rgba(' + pal.rgb + ',0)');
       ctx.fillStyle = fg;
       ctx.beginPath();
@@ -400,54 +419,68 @@
       ctx.fill();
     }
 
-    /* 4 staggered tranquil water surface ripple rings */
-    var rings = [
-      { delay: 0.00, dur: 1.95, maxScale: 0.46, w0: 3.4, strength: 1.00 },
-      { delay: 0.18, dur: 2.05, maxScale: 0.39, w0: 2.6, strength: 0.78 },
-      { delay: 0.38, dur: 2.10, maxScale: 0.32, w0: 1.9, strength: 0.58 },
-      { delay: 0.62, dur: 2.15, maxScale: 0.25, w0: 1.4, strength: 0.40 }
+    /* 2. Dispersive 5-wave calm pond ripple train (lead wave broader/faster, trailing capillary ripples finer/softer) */
+    var waves = [
+      { delay: 0.00, dur: 2.35, maxScale: 0.48, w0: 14, crest: 2.6, amp: 2.8, strength: 1.00, phase: 0.4 },
+      { delay: 0.16, dur: 2.40, maxScale: 0.41, w0: 11, crest: 2.0, amp: 2.2, strength: 0.76, phase: 1.7 },
+      { delay: 0.35, dur: 2.45, maxScale: 0.34, w0:  8, crest: 1.6, amp: 1.7, strength: 0.56, phase: 3.1 },
+      { delay: 0.56, dur: 2.40, maxScale: 0.27, w0:  6, crest: 1.2, amp: 1.3, strength: 0.38, phase: 4.5 },
+      { delay: 0.80, dur: 2.30, maxScale: 0.20, w0:  5, crest: 1.0, amp: 1.0, strength: 0.24, phase: 5.8 }
     ];
     var span = Math.max(vw, vh);
 
-    for (var i = 0; i < rings.length; i++) {
-      var rg = rings[i];
-      var rt = dtImpact - rg.delay;
-      if (rt <= 0 || rt >= rg.dur) continue;
-      var p = rt / rg.dur;
-      /* Smooth decelerating pond-wave expansion */
-      var easeWave = 1 - Math.pow(1 - p, 2.35);
-      var r = sphereR * 0.72 + easeWave * (span * rg.maxScale);
-      var fadeIn = clamp01(p / 0.08);
-      var fadeOut = Math.pow(1 - p, 1.65);
-      var a = fadeIn * fadeOut * rg.strength;
-      if (a < 0.004) continue;
+    for (var i = 0; i < waves.length; i++) {
+      var wv = waves[i];
+      var rt = dtImpact - wv.delay;
+      if (rt <= 0 || rt >= wv.dur) continue;
+      var p = rt / wv.dur;
 
-      var lw = Math.max(0.6, rg.w0 * (1 - p * 0.62));
+      /* Natural water wave deceleration (fast initial release -> tranquil drifting outward) */
+      var easeWave = 1 - Math.pow(1 - p, 2.6);
+      var r = sphereR * 0.65 + easeWave * (span * wv.maxScale);
 
-      /* 1. Soft translucent water-refraction halo band */
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(' + pal.rgb + ',' + (a * (isDark ? 0.38 : 0.30)).toFixed(3) + ')';
-      ctx.lineWidth = lw * 3.1;
+      /* Smooth bell fade-in + natural exponential viscous water damping */
+      var fadeIn = clamp01(p / 0.10);
+      var fadeOut = Math.exp(-p * 2.45) * (1 - p);
+      var a = fadeIn * fadeOut * wv.strength;
+      if (a < 0.003) continue;
+
+      var phase = wv.phase + dtImpact * 1.4;
+      var wobbleAmp = wv.amp * (0.45 + 0.55 * easeWave);
+      var bandW = Math.max(2.0, wv.w0 * (0.75 + p * 0.85));
+
+      /* Layer A: Soft feathery blurred water-refraction swell (radial gradient band via blurred stroke) */
+      ctx.save();
+      ctx.filter = 'blur(' + (4 + p * 5).toFixed(1) + 'px)';
+      traceOrganicRipple(cx, cy, r, phase, wobbleAmp);
+      ctx.strokeStyle = 'rgba(' + pal.rgb + ',' + (a * (isDark ? 0.34 : 0.24)).toFixed(3) + ')';
+      ctx.lineWidth = bandW;
       ctx.stroke();
+      ctx.restore();
 
-      /* 2. Delicate calm-water trough shadow just inside the crest (light mode) */
-      if (!isDark && r > 8) {
-        ctx.beginPath();
-        ctx.arc(cx, cy, r - lw * 1.15, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(15, 36, 62,' + (a * 0.10).toFixed(3) + ')';
-        ctx.lineWidth = lw * 1.1;
+      /* Layer B: Subtle calm-water trough shadow just inside the crest (gives natural 3D water depth) */
+      if (r > 12) {
+        ctx.save();
+        ctx.filter = 'blur(2.5px)';
+        traceOrganicRipple(cx, cy, r - bandW * 0.38, phase, wobbleAmp * 0.9);
+        ctx.strokeStyle = isDark
+          ? 'rgba(2, 10, 24,' + (a * 0.38).toFixed(3) + ')'
+          : 'rgba(14, 38, 66,' + (a * 0.11).toFixed(3) + ')';
+        ctx.lineWidth = Math.max(1.2, bandW * 0.36);
         ctx.stroke();
+        ctx.restore();
       }
 
-      /* 3. Crisp bright specular water crest ring */
-      ctx.beginPath();
-      ctx.arc(cx, cy, r + lw * 0.35, 0, Math.PI * 2);
+      /* Layer C: Feathery luminous specular water crest (softly blurred so never razor-harsh) */
+      ctx.save();
+      ctx.filter = 'blur(1.6px)';
+      traceOrganicRipple(cx, cy, r + bandW * 0.14, phase, wobbleAmp);
       ctx.strokeStyle = isDark
-        ? 'rgba(215, 248, 255,' + (a * 0.56).toFixed(3) + ')'
-        : 'rgba(255, 255, 255,' + (a * 0.78).toFixed(3) + ')';
-      ctx.lineWidth = lw;
+        ? 'rgba(215, 248, 255,' + (a * 0.44).toFixed(3) + ')'
+        : 'rgba(255, 255, 255,' + (a * 0.72).toFixed(3) + ')';
+      ctx.lineWidth = Math.max(0.8, wv.crest * (1 - p * 0.45));
       ctx.stroke();
+      ctx.restore();
     }
 
     ctx.restore();
