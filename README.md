@@ -8,28 +8,39 @@ Buka **[Vortex Hydro](https://hdeonngth.github.io/VortexHydro/)** di GitHub Page
 
 ## Fitur Utama
 
-- **Visual-First Continuous Scroll:** Hero visual prototipe turbin dengan gelombang aliran air, angka spesifikasi nyata, dan perpindahan seksi mulus tanpa jeda transisi.
-- **Simulasi Interaktif Arus Air:** Pengunjung dapat menggeser debit air (`Q`), tinggi jatuh (`H`), dan efisiensi (`η`) untuk melihat animasi arus air, putaran kincir 6 sudu, nyala LED, serta perhitungan daya listrik secara langsung.
-- **Cara Kerja Interaktif (Geser):** Enam langkah sirkulasi air (Air Masuk, Turbin, Generator, Air Jatuh ke Ember, Pompa Bawah, Pipa Kembali ke Awal) yang bisa digeser, diklik, atau dinavigasi dengan keyboard. FAQ ada di bagian bawah halaman yang sama (`#faq` langsung menuju ke sana).
-- **Diagram Penampang 8 Titik:** Blueprint interaktif prototipe dengan penjelasan detail tiap komponen.
-- **Dokumentasi & Struktur Tim Ringkas:** Tahapan uji laboratorium, daftar peralatan, dan filter divisi tim.
-- **Dashboard Admin Simulasi:** Pemantauan telemetri simulasi (`debit`, `vbat`, `rpmShaft`, `rpmGen`) dengan grafik 60 detik dan indikator (kata sandi demo: `pakcikiniv2`).
-- **Vortex Hydro AI Assistant:** Widget chat bertenaga Gemini melalui Supabase Edge Function `chat-with-ai`.
-- **Dwi-Bahasa (ID/EN), Mode Terang/Gelap, & Pencarian Cepat (`Ctrl+K`).**
+- **Hero Interaktif 3D & Gelombang Air:** Animasi saluran air U-channel, benturan dua bola yang memicu riak air natural, dan kemunculan tipografi sinematik.
+- **Simulasi Interaktif Arus Air & Cara Kerja 6 Langkah:** Pengunjung dapat menggeser debit air (`Q`), tinggi jatuh (`H`), dan efisiensi (`η`), melihat blueprint 8 titik, serta menjelajahi galeri percobaan prototipe dan FAQ.
+- **Voxxy AI Assistant + Pet Interaktif:** Asisten AI bertenaga Google Gemini melalui Supabase Edge Function (`backend/ai-chat/chat-with-ai`), lengkap dengan maskot pet interaktif yang dapat disentuh.
+- **Dashboard Admin & Laporan Harian 24 Jam:** Pemantauan telemetri simulasi (`VXSim`) & kesiapan integrasi sensor ESP32, monitor percakapan AI, moderasi otomatis 24 jam, dan pembersihan log.
+- **4 Pilihan Palet Warna, Mode Terang/Gelap, Dwi-Bahasa (ID/EN), & Pencarian Cepat (`Ctrl+K`).**
 
-## Struktur Folder (Ringkas & Terkonsolidasi)
+## Struktur Folder (2 Kategori Utama: `frontend/` & `backend/`)
 
 ```text
-index.html                  Halaman utama (continuous scroll + mode Dashboard Admin)
-assets/
-  styles.css                Seluruh sistem desain, layout responsif, Dashboard & AI widget
-  app.js                    Navigasi scroll-spy, simulasi arus air, diagram 8 titik, tim & pencarian
-  dashboard.js              Mesin simulasi fisika (VXSim), autentikasi demo & telemetri Dashboard
-  ai-assistant.js           Integrasi chat Vortex Hydro AI (Supabase Edge Function)
-  i18n.js                   Kamus & pengalih bahasa Indonesia / Inggris
-  images/                   Render hero turbin, foto dokumentasi & logo software
-  team/                     Foto profil anggota tim
-supabase/                   Edge Function `chat-with-ai` dan migrasi tabel percakapan
-docs/                       Dokumentasi proyek dan panduan konfigurasi AI Assistant
-Upcoming/                   Backend Node.js opsional untuk pengembangan lanjutan
+ProjectMekfluWeb/
+├── index.html                      Entry redirect otomatis ke frontend/ (untuk GitHub Pages)
+├── frontend/                       KATEGORI 1 — Seluruh kode tampilan (Client / Browser)
+│   ├── index.html                  Halaman utama Vortex Hydro + Dashboard Admin
+│   ├── admin/ai-monitor/           Halaman standalone Admin AI Monitor
+│   ├── styles/main.css             Sistem desain, palet warna, animasi, Voxxy & Dashboard
+│   ├── js/                         Skrip UI (app, hero-liquid, fluid-bg, dashboard, ai-assistant, i18n, lib/)
+│   └── media/                      Foto komponen, dokumentasi, software (images/) & profil tim (team/)
+│
+├── backend/                        KATEGORI 2 — Seluruh kode server, AI, database & IoT
+│   ├── ai-chat/                    Edge Functions AI (chat-with-ai & admin-ai-monitor)
+│   ├── database/                   SQLite lokal (sqlite.js, seed-admin.js) & migrasi PostgreSQL (migrations/)
+│   ├── esp-iot/                    Jalur khusus ESP32 (esp.routes.js, esp.validator.js, contoh firmware .ino)
+│   ├── api/                        Server Express utama (server.js, app.js, middleware/, routes/)
+│   └── tests/                      Pengujian otomatis backend (api.test.js)
+│
+└── docs/                           Dokumentasi & Diagram Alur Belajar
+    ├── backend-architecture.md     Diagram alur lengkap (Frontend, Backend, AI, Database & ESP32)
+    ├── ai-assistant.md             Panduan konfigurasi AI Assistant
+    └── README.md                   Ringkasan teknis proyek
 ```
+
+## Dokumen Belajar & Arsitektur
+
+- **[Diagram Alur Backend, AI, Database & ESP32](docs/backend-architecture.md)**
+- **[Panduan Menjalankan Backend & Server Lokal](backend/README.md)**
+- **[Panduan Koneksi Hardware ESP32](backend/esp-iot/README.md)**

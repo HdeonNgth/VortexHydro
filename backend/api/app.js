@@ -2,17 +2,28 @@ const path = require('node:path');
 const express = require('express');
 const rateLimit = require('express-rate-limit').rateLimit;
 const helmet = require('helmet');
-const { openDatabase } = require('./db');
+const { openDatabase } = require('../database/sqlite');
 const { createSessionMiddleware } = require('./middleware/session');
+const { requireAdmin } = require('./middleware/access');
 const { createAuthRouter } = require('./routes/auth');
-const { createTelemetryRouter } = require('./routes/telemetry');
+const { createVisitsRouter } = require('./routes/visits');
+const { createEspRouter } = require('../esp-iot/esp.routes');
 
 function createApp(options = {}) {
-  const root = options.publicRoot || path.join(__dirname, '..', '..');
+  const projectRoot = path.join(__dirname, '..', '..');
+  const frontendRoot = options.publicRoot || path.join(projectRoot, 'frontend');
+  const docsRoot = path.join(projectRoot, 'docs');
   const db = options.db || openDatabase(options.dbPath);
   const secureCookies = options.secureCookies === true;
-  const apiKey = options.apiKey === undefined ? process.env.API_KEY : options.apiKey;
-  const allowedOrigins = new Set(options.allowedOrigins || (process.env.CORS_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000').split(',').map(value => value.trim()).filter(Boolean));
+  const apiKey = options.apiKey === undefined ? (process.env.ESP_API_KEY || process.env.API_KEY) : options.apiKey;
+  const allowedOrigins = new Set(
+    options.allowedOrigins ||
+    (process.env.CORS_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000')
+      .split(',')
+      .map(value => value.trim())
+      .filter(Boolean)
+  );
+
   const app = express();
   const clients = new Map([['visits', new Set()], ['sensor', new Set()]]);
   const broadcast = {
@@ -26,8 +37,12 @@ function createApp(options = {}) {
   };
 
   app.disable('x-powered-by');
-  if (process.env.TRUST_PROXY) app.set('trust proxy', process.env.TRUST_PROXY === 'true' ? 1 : process.env.TRUST_PROXY);
+  if (process.env.TRUST_PROXY) {
+    app.set('trust proxy', process.env.TRUST_PROXY === 'true' ? 1 : process.env.TRUST_PROXY);
+  }
   app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
+
+  // CORS protection
   app.use((req, res, next) => {
     const origin = req.get('origin');
     if (!origin) return next();
@@ -41,6 +56,7 @@ function createApp(options = {}) {
     if (req.method === 'OPTIONS') return res.status(204).end();
     next();
   });
+
   app.use(express.json({ limit: '16kb', strict: true }));
   app.use((req, res, next) => {
     req.cookies = parseCookies(req.get('cookie') || '');
@@ -55,14 +71,34 @@ function createApp(options = {}) {
     legacyHeaders: false,
     message: { error: 'Terlalu banyak percobaan masuk. Coba lagi dalam 15 menit.' }
   });
-  app.use('/api/auth', createAuthRouter({ db, secureCookies, loginLimiter }));
-  app.use('/api', createTelemetryRouter({ db, apiKey, broadcast }));
 
-  app.get('/', (req, res) => res.sendFile(path.join(root, 'index.html')));
-  app.get('/index.html', (req, res) => res.sendFile(path.join(root, 'index.html')));
-  app.get('/html.html', (req, res) => res.sendFile(path.join(root, 'html.html')));
-  app.use('/assets', express.static(path.join(root, 'assets'), { dotfiles: 'deny', maxAge: '1h' }));
-  app.use('/docs', express.static(path.join(root, 'docs'), { dotfiles: 'deny', maxAge: '1h' }));
+  // 1. Jalur Autentikasi (Tamu & Admin)
+  app.use('/api/auth', createAuthRouter({ db, secureCookies, loginLimiter }));
+
+  // 2. Jalur Analitik Kunjungan Website
+  app.use('/api', createVisitsRouter({ db, broadcast }));
+
+  // 3. Jalur Khusus Perangkat ESP32 / Sensor IoT (/api/esp/*)
+  const esp = createEspRouter({ db, apiKey, broadcast });
+  app.use('/api/esp', esp.router);
+
+  // Alias kompatibilitas jalur sensor lama (/api/ingest, /api/latest, /api/history, /api/stream/sensor)
+  app.post('/api/ingest', esp.handlers.requireEspKey, esp.handlers.handleIngest);
+  app.get('/api/latest', requireAdmin, esp.handlers.handleLatest);
+  app.get('/api/history', requireAdmin, esp.handlers.handleHistory);
+  app.get('/api/stream/sensor', requireAdmin, esp.handlers.handleStream);
+
+  // 4. Health check ringan
+  app.get('/api/health', (req, res) => {
+    res.json({ ok: true, service: 'vortex-hydro-backend', ts: Date.now() });
+  });
+
+  // 5. Penyajian Frontend statis dari folder frontend/
+  app.get('/', (req, res) => res.sendFile(path.join(frontendRoot, 'index.html')));
+  app.get('/index.html', (req, res) => res.sendFile(path.join(frontendRoot, 'index.html')));
+  app.use(express.static(frontendRoot, { dotfiles: 'deny', maxAge: '1h' }));
+  app.use('/docs', express.static(docsRoot, { dotfiles: 'deny', maxAge: '1h' }));
+
   app.use('/api', (req, res) => res.status(404).json({ error: 'Endpoint tidak ditemukan.' }));
   app.use((req, res) => res.status(404).type('text').send('Halaman tidak ditemukan.'));
   app.use((error, req, res, next) => {

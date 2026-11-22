@@ -3,5 +3,7 @@ UI & UX/
 .env
 .env.*
 !.env.example
+!backend/.env.example
 node_modules/
-Upcoming/server/data/
+backend/node_modules/
+backend/database/data/

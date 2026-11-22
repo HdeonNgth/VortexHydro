@@ -1,30 +1,26 @@
 # Dokumentasi Vortex Hydro
 
-## Struktur proyek
+## Arsitektur 2 Kategori (`frontend/` & `backend/`)
 
 ```text
-index.html              Markup dan rute aplikasi satu halaman
-assets/css/site.css     Gaya situs, dipisahkan dari markup
-assets/js/              Skrip per fitur, tetap dimuat berurutan
-assets/i18n.js          Terjemahan antarmuka Indonesia/Inggris
-assets/team/            Foto tim yang dioptimalkan untuk website
-assets/images/          Gambar dokumentasi dan logo software
-Upcoming/               Backend Node.js, konfigurasi contoh, tes, dan panduan hosting
-docs/                   Dokumentasi proyek
+index.html                      Redirect ringan ke frontend/ agar GitHub Pages tetap langsung terbuka
+frontend/                       Kode client-side (HTML, CSS, JS, dan media)
+  ├── index.html                Aplikasi satu halaman (Beranda, Cara Kerja, Dokumentasi, Tentang Kami, Dashboard)
+  ├── admin/ai-monitor/         Halaman standalone Admin AI Monitor
+  ├── styles/main.css           Gaya global, 4 palet warna, mode gelap, animasi & komponen
+  ├── js/                       Skrip fitur (app, hero-liquid, fluid-bg, dashboard, ai-assistant, i18n, lib/three.min.js)
+  └── media/                    Aset foto komponen, dokumentasi, logo (images/) & foto anggota tim (team/)
+backend/                        Kode server-side (AI Chat, Database, ESP32 IoT, API Express & Tests)
+  ├── ai-chat/                  Supabase Edge Functions (chat-with-ai & admin-ai-monitor)
+  ├── database/                 SQLite lokal + migrasi SQL Supabase PostgreSQL (termasuk tabel ESP32)
+  ├── esp-iot/                  Endpoint khusus ESP32 (/api/esp/*), validator sensor & contoh sketch Arduino
+  ├── api/                      Server Node.js Express, autentikasi sesi & analitik kunjungan
+  └── tests/                    Tes otomatis backend (node --test)
+docs/                           Dokumentasi belajar & diagram alur arsitektur
 ```
 
-Beranda, Tentang (sudah termasuk cara kerja), Dokumentasi, Struktur Tim, FAQ, dan Dashboard tetap menjadi rute dalam satu aplikasi halaman. CSS dan JavaScript kini berada di file terpisah; skrip dipanggil pada posisi dan urutan semula agar perilaku halaman tidak berubah. FAQ tetap tersedia melalui tautan di bagian footer, bukan di bilah navigasi atas. Tombol bahasa mengganti teks situs antara Bahasa Indonesia dan English serta mengingat pilihan di browser.
-
-## Akses situs dan backend
-
-Situs statis dipublikasikan melalui [GitHub Pages](https://hdeonngth.github.io/VortexHydro/). GitHub Pages tidak menjalankan backend Express. Situs publik saat ini memakai mode demo frontend; backend belum di-host atau dihubungkan. Semua kode server, contoh konfigurasi, dan panduan hosting berada di [`../Upcoming/README.md`](../Upcoming/README.md).
-
-Panduan setup backend ada pada `Upcoming/README.md`.
-
-Foto tim yang digunakan situs berada di `assets/team/`; gambar dokumentasi dan logo software berada di `assets/images/`. Data anggota serta pemetaan foto berada di `assets/js/team.js`. Folder bahan sumber foto dan referensi desain lokal tidak diperlukan untuk menjalankan situs dan tidak disertakan dalam distribusi publik.
-
-FAQ tetap dapat dicari dari pencarian situs saat footer tersembunyi di Dashboard. Navigasi dashboard berubah menjadi sidebar hanya saat masuk atau keluar dari Dashboard. Animasi menghormati pilihan "matikan animasi" dan preferensi reduced motion perangkat.
-
-## Estimasi performa
-
-Pengukuran sebelumnya menggunakan Chromium tanpa cache, dua kali per ukuran layar: laptop 1366×768 dengan jaringan 20 Mbps/latensi 35 ms rata-rata **0,50 detik**; ponsel simulasi 390×844 dengan jaringan 4G 1,6 Mbps/latensi 150 ms rata-rata **3,37 detik** sampai event `load`. Ini perkiraan simulasi, bukan hasil dari perangkat fisik atau server produksi. Foto tim baru diminta setelah rute Struktur Tim dibuka.
+## Dokumen Terkait
+- **[Diagram Alur Backend, AI, Database & ESP32](backend-architecture.md)** — Penjelasan lengkap menggunakan diagram Mermaid untuk belajar alur kerja sistem.
+- **[Panduan Backend & Server Lokal](../backend/README.md)** — Cara install, seed admin, jalankan tes, dan deploy backend.
+- **[Panduan Jalur ESP32](../backend/esp-iot/README.md)** — Format JSON, header `X-API-Key`, daftar endpoint, dan contoh kode ESP32.
+- **[Panduan Konfigurasi AI Assistant](ai-assistant.md)** — Detail konfigurasi Edge Function & rahasia Gemini API.
