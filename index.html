@@ -9,8 +9,8 @@
   <meta name="description" content="Prototipe pembangkit listrik mikro-hidro berbasis pusaran air skala laboratorium, Fakultas Vokasi, Universitas Negeri Malang.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="assets/styles.css?v=23">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="assets/styles.css?v=24">
 </head>
 <body>
   <!-- Fixed Pure WebGL2 Metaball Water Fluid Background (Behind All Content) -->
@@ -19,58 +19,58 @@
   <!-- Scroll Progress Bar -->
   <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
-  <!-- Unified Single Floating Liquid Glass Pill Navbar (Icon-Only on Mobile) -->
+  <!-- Minimalist Transparent Glass Navigation Bar -->
   <header class="hdr" id="hdr">
-    <div class="hdr__dock">
+    <div class="wrap hdr__bar">
       <a class="hdr__brand" href="#beranda" aria-label="Vortex Hydro, ke beranda">
         <span class="vxlogo" aria-hidden="true">
           <svg class="vxlogo__svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M52 10C28 11 14 31 18 54C21 67 30 75 41 79C31 69 27 56 30 43C33 29 44 20 58 17C56 13 54 11 52 10Z" fill="#3FA9C7"/>
-            <path d="M16 47C15 68 30 84 51 86C40 79 34 69 35 58C26 57 20 53 16 47Z" fill="#63CEE3"/>
-            <path d="M48 16C67 16 83 31 84 51C85 69 72 84 53 88C64 78 69 65 67 51C65 36 56 26 42 23C44 19 46 17 48 16Z" fill="var(--logo-deep, #1B63B2)"/>
-            <path d="M36 29C49 22 68 27 76 42C80 51 80 61 75 70C74 56 68 44 56 38C47 34 40 34 33 38C33 34 34 31 36 29Z" fill="#3298D4"/>
-            <path d="M25 74C38 86 60 88 74 75C61 78 46 77 36 69C31 65 28 60 26 55C23 62 23 68 25 74Z" fill="var(--logo-mid, #154E8F)"/>
-            <path d="M21 28C18 22 20 17 24 19C26 20 26 26 21 28Z" fill="#63CEE3"/>
-            <path d="M29 18C28 13 31 10 34 12C35 14 33 17 29 18Z" fill="#3FA9C7"/>
-            <path d="M84 56C88 60 88 67 83 69C80 68 81 61 84 56Z" fill="#3FA9C7"/>
-            <path d="M79 72C82 76 80 81 75 81C74 78 76 74 79 72Z" fill="#3298D4"/>
+            <path d="M52 10C28 11 14 31 18 54C21 67 30 75 41 79C31 69 27 56 30 43C33 29 44 20 58 17C56 13 54 11 52 10Z" fill="#15D9F2"/>
+            <path d="M16 47C15 68 30 84 51 86C40 79 34 69 35 58C26 57 20 53 16 47Z" fill="#7DE8FA"/>
+            <path d="M48 16C67 16 83 31 84 51C85 69 72 84 53 88C64 78 69 65 67 51C65 36 56 26 42 23C44 19 46 17 48 16Z" fill="var(--logo-deep, #0757C8)"/>
+            <path d="M36 29C49 22 68 27 76 42C80 51 80 61 75 70C74 56 68 44 56 38C47 34 40 34 33 38C33 34 34 31 36 29Z" fill="#168BFF"/>
+            <path d="M25 74C38 86 60 88 74 75C61 78 46 77 36 69C31 65 28 60 26 55C23 62 23 68 25 74Z" fill="var(--logo-mid, #061B49)"/>
+            <path d="M21 28C18 22 20 17 24 19C26 20 26 26 21 28Z" fill="#7DE8FA"/>
+            <path d="M29 18C28 13 31 10 34 12C35 14 33 17 29 18Z" fill="#15D9F2"/>
+            <path d="M84 56C88 60 88 67 83 69C80 68 81 61 84 56Z" fill="#15D9F2"/>
+            <path d="M79 72C82 76 80 81 75 81C74 78 76 74 79 72Z" fill="#168BFF"/>
           </svg>
         </span>
-        <span class="hdr__brand-txt">Vortex Hydro</span>
+        <span class="hdr__brand-txt">VORTEX HYDRO</span>
       </a>
 
-      <i class="hdr__sep" aria-hidden="true"></i>
-
-      <nav class="hdr__nav lgn-pill" id="lgn" aria-label="Menu utama">
-        <span class="lgn-lens" id="lgn-lens" aria-hidden="true"></span>
-        <a href="#beranda" data-nav-link data-k="beranda" aria-current="page" aria-label="Beranda" title="Beranda">
-          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-5.5h-5V21H5a1 1 0 0 1-1-1z"/></svg>
-          <span class="nav-txt">Beranda</span>
-        </a>
-        <a href="#tentang" data-nav-link data-k="tentang" aria-label="Cara Kerja" title="Cara Kerja">
-          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2.5 12h3M18.5 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>
-          <span class="nav-txt">Cara Kerja</span>
-        </a>
-        <a href="#dokumentasi" data-nav-link data-k="dokumentasi" aria-label="Dokumentasi" title="Dokumentasi">
-          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="m10 9 5 3-5 3V9z"/></svg>
-          <span class="nav-txt">Dokumentasi</span>
-        </a>
-        <a href="#tentang-kami" data-nav-link data-k="tentang-kami" aria-label="Tentang Kami" title="Tentang Kami">
-          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="8.5" r="2.5"/><path d="M17.5 14c2.2.4 3.5 2 3.5 4.8"/></svg>
-          <span class="nav-txt">Tentang Kami</span>
-        </a>
-        <a href="#dashboard" data-nav-link data-k="dashboard" data-admin-only hidden aria-label="Dashboard" title="Dashboard">
-          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
-          <span class="nav-txt">Dashboard</span>
-          <i class="hdr__live" aria-hidden="true"></i>
-        </a>
+      <nav class="hdr__nav" id="lgn" aria-label="Menu utama">
+        <a href="#beranda" data-nav-link data-k="beranda" aria-current="page">Beranda</a>
+        <a href="#tentang-kami" data-nav-link data-k="tentang-kami">Tentang</a>
+        <a href="#eksplorasi" data-nav-link data-k="eksplorasi">Eksplorasi</a>
+        <a href="#tentang" data-nav-link data-k="tentang">Inovasi</a>
+        <a href="#kontak" data-nav-link data-k="kontak">Kontak</a>
+        <a href="#dashboard" data-nav-link data-k="dashboard" data-admin-only hidden>Dashboard<i class="hdr__live" aria-hidden="true"></i></a>
       </nav>
 
-      <i class="hdr__sep hdr__sep--end" aria-hidden="true"></i>
+      <div class="hdr__acts">
+        <button class="hdr__search" type="button" data-vs-open aria-label="Cari di situs" title="Cari (Ctrl+K)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+        </button>
+        <a class="hdr__cta" href="#eksplorasi" data-magnetic>Mulai Jelajahi <span aria-hidden="true">↗</span></a>
+        <button class="hdr__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-mobile" aria-label="Buka menu navigasi">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
 
-      <button class="hdr__search" type="button" data-vs-open aria-label="Cari di situs" title="Cari (Ctrl+K)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
-      </button>
+    <!-- Responsive Mobile Navigation Drawer -->
+    <div class="hdr__mob" id="nav-mobile" hidden>
+      <nav class="hdr__mob-nav" aria-label="Menu mobile">
+        <a href="#beranda" data-nav-link data-k="beranda">Beranda</a>
+        <a href="#tentang-kami" data-nav-link data-k="tentang-kami">Tentang</a>
+        <a href="#eksplorasi" data-nav-link data-k="eksplorasi">Eksplorasi</a>
+        <a href="#tentang" data-nav-link data-k="tentang">Inovasi</a>
+        <a href="#dokumentasi" data-nav-link data-k="dokumentasi">Dokumentasi</a>
+        <a href="#kontak" data-nav-link data-k="kontak">Kontak</a>
+        <a href="#dashboard" data-nav-link data-k="dashboard" data-admin-only hidden>Dashboard</a>
+      </nav>
+      <a class="hdr__mob-cta" href="#eksplorasi">Mulai Jelajahi ↗</a>
     </div>
   </header>
 
@@ -113,33 +113,65 @@
 
     <!-- ==================== PAGE 1: BERANDA ==================== -->
     <div class="page" id="beranda" data-title="Beranda">
-      <!-- Dark Editorial Hero + Ambient Hydro Stream Canvas -->
-      <section class="hero">
-        <div class="hero__media" aria-hidden="true">
-          <img src="assets/images/hero-turbine.jpg" alt="Prototipe turbin mikro-hidro pusaran air Vortex Hydro">
-          <canvas id="hero-water" class="hero__canvas" width="1280" height="720"></canvas>
-          <div class="hero__vortex-ring"></div>
-          <div class="hero__scrim"></div>
+      <!-- Animated Abstract Liquid Hero (Light Atmospheric Palette + Sculpted 3D Liquid Ribbons & Glass Spheres) -->
+      <section class="hero hero--liquid" id="vx-hero">
+        <!-- Layered Atmospheric Lighting & Organic SVG Back Ribbons -->
+        <div class="hero__aura" id="hero-aura" aria-hidden="true">
+          <span class="hero__glow hero__glow--1"></span>
+          <span class="hero__glow hero__glow--2"></span>
+          <span class="hero__glow hero__glow--3"></span>
+          <svg class="hero__svg-waves" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="vxWaveA" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0757C8" stop-opacity="0.22"/>
+                <stop offset="50%" stop-color="#168BFF" stop-opacity="0.18"/>
+                <stop offset="100%" stop-color="#15D9F2" stop-opacity="0.06"/>
+              </linearGradient>
+              <linearGradient id="vxWaveB" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#061B49" stop-opacity="0.16"/>
+                <stop offset="55%" stop-color="#15D9F2" stop-opacity="0.24"/>
+                <stop offset="100%" stop-color="#BDEBFF" stop-opacity="0.05"/>
+              </linearGradient>
+            </defs>
+            <path class="hero__svg-r1" d="M320 940C510 660 680 620 890 480C1090 345 1210 120 1520 60L1520 340C1250 430 1120 640 870 760C660 860 540 960 320 940Z" fill="url(#vxWaveA)"/>
+            <path class="hero__svg-r2" d="M460 -60C670 120 820 260 1050 320C1260 375 1360 540 1520 660L1520 880C1260 760 1120 560 880 480C660 405 560 180 460 -60Z" fill="url(#vxWaveB)"/>
+          </svg>
         </div>
 
-        <div class="wrap hero__layout">
-          <div class="hero__top">
-            <span class="hero__pill"><i></i>Proyek Kelas Mekanika Fluida · Universitas Negeri Malang</span>
-            <h1 class="h-display">Listrik Bersih.<br><em>Dari Pusaran Air.</em></h1>
-            <p class="hero__sub">Prototipe pembangkit listrik mikro-hidro sirkulasi tertutup skala laboratorium — mengubah aliran air ber-head rendah menjadi listrik tanpa bendungan besar.</p>
-          </div>
+        <!-- Sculpted 3D Interactive Liquid Ribbons, Glass Spheres & Micro-Particles -->
+        <canvas id="hero-liquid-canvas" class="hero__liquid-canvas" aria-hidden="true"></canvas>
 
-          <div class="hero__bottom">
-            <div class="hero__cta">
-              <a class="c-btn c-btn--white" href="#eksplorasi">Eksplorasi 3D →</a>
-              <a class="c-btn c-btn--ghost-light" href="#tentang">Cara Kerja Sistem</a>
+        <!-- Two-Area Hero Composition (Typography Left · Liquid Sculpture Center-Right) -->
+        <div class="wrap hero__grid">
+          <div class="hero__copy" id="hero-copy">
+            <span class="hero__eyebrow">
+              <i aria-hidden="true"></i>
+              <span>WATER • SCIENCE • INNOVATION</span>
+            </span>
+            <h1 class="hero__title">
+              AIR ADALAH <span class="hero__title-grad">SUMBER SEGALA</span> KEMUNGKINAN.
+            </h1>
+            <p class="hero__lead">
+              Mengolah ide, teknologi, dan potensi air menjadi masa depan yang lebih baik.
+            </p>
+            <div class="hero__actions">
+              <a class="hero__btn hero__btn--primary" href="#eksplorasi" data-magnetic>
+                <span>Jelajahi Vortex</span>
+                <span class="hero__btn-ic" aria-hidden="true">↗</span>
+              </a>
+              <a class="hero__btn hero__btn--ghost" href="#tentang-kami" data-magnetic>
+                <span>Kenali Visi Kami</span>
+                <span class="hero__btn-ic" aria-hidden="true">→</span>
+              </a>
             </div>
           </div>
-          <a class="hero__scroll-cue" href="#manifesto" aria-label="Gulir ke bagian berikutnya">
-            <span>Gulir untuk menjelajah</span>
-            <i aria-hidden="true"></i>
-          </a>
+          <div class="hero__visual-space" aria-hidden="true"></div>
         </div>
+
+        <a class="hero__scroll-cue" href="#manifesto" aria-label="Gulir untuk menjelajah">
+          <span>Gulir untuk menjelajah</span>
+          <i aria-hidden="true"></i>
+        </a>
       </section>
 
       <!-- Scroll-Scrubbed Word-by-Word Manifesto (Animation_Scroll.mp4 Pattern) -->
@@ -1004,7 +1036,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="footer">
+  <footer class="footer" id="kontak">
     <div class="wrap">
       <div class="ft__grid">
         <div class="ft__col">
@@ -1203,7 +1235,8 @@
   <!-- Consolidated Scripts -->
   <script src="assets/fluid-bg.js?v=1"></script>
   <script src="assets/three.min.js"></script>
-  <script src="assets/app.js?v=19"></script>
+  <script src="assets/hero-liquid.js?v=1"></script>
+  <script src="assets/app.js?v=20"></script>
   <script src="assets/dashboard.js?v=3"></script>
   <script src="assets/i18n.js?v=17"></script>
   <script src="assets/ai-assistant.js?v=9" defer></script>

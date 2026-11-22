@@ -97,21 +97,43 @@
     prevLensRect = r;
   }
 
+  var navBurger = $('nav-burger');
+  var navMobile = $('nav-mobile');
+  function closeMobileNav() {
+    if (navMobile) navMobile.hidden = true;
+    if (navBurger) navBurger.setAttribute('aria-expanded', 'false');
+  }
+  if (navBurger && navMobile) {
+    navBurger.addEventListener('click', function () {
+      var willOpen = navMobile.hidden;
+      navMobile.hidden = !willOpen;
+      navBurger.setAttribute('aria-expanded', String(willOpen));
+    });
+    document.addEventListener('click', function (e) {
+      if (!navMobile.hidden && hdr && !hdr.contains(e.target)) closeMobileNav();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !navMobile.hidden) closeMobileNav();
+    });
+  }
+
   function updateHeaderState(routeId) {
     if (!hdr) return;
-    var darkTop = routeId === 'beranda';
-    var solid = !darkTop || window.scrollY > 40;
+    var solid = window.scrollY > 28;
     hdr.classList.toggle('is-scrolled', solid);
-    hdr.classList.remove('is-dark-page');
+    hdr.classList.toggle('is-dark-page', routeId === 'tentang-kami');
   }
 
   var firstRoute = true;
   function route() {
+    closeMobileNav();
     var raw = (location.hash || '#beranda').slice(1);
     var scrollFaq = false;
+    var scrollKontak = false;
     if (raw === 'faq') { raw = 'dokumentasi'; scrollFaq = true; }
+    else if (raw === 'kontak') { raw = 'beranda'; scrollKontak = true; }
     else if (raw === 'struktur-tim' || raw === 'tim') { raw = 'tentang-kami'; }
-    else if (raw === 'teknologi' || raw === 'cara-kerja') { raw = 'tentang'; }
+    else if (raw === 'teknologi' || raw === 'cara-kerja' || raw === 'inovasi') { raw = 'tentang'; }
     else if (raw === '3d' || raw === 'eksplorasi-3d' || raw === 'model-3d') { raw = 'eksplorasi'; }
 
     var active = PAGES.indexOf(raw) >= 0 ? raw : 'beranda';
@@ -120,9 +142,10 @@
       if (el) el.hidden = (id !== active);
     });
 
+    var navActiveKey = scrollKontak ? 'kontak' : active;
     $$('[data-nav-link]').forEach(function (a) {
       var k = a.getAttribute('data-k');
-      if (k === active) a.setAttribute('aria-current', 'page');
+      if (k === navActiveKey) a.setAttribute('aria-current', 'page');
       else a.removeAttribute('aria-current');
     });
 
@@ -142,6 +165,11 @@
         var fq = $('faq-sec');
         if (fq) fq.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
       }, 40);
+    } else if (scrollKontak) {
+      setTimeout(function () {
+        var kt = $('kontak');
+        if (kt) kt.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+      }, 60);
     } else {
       window.scrollTo(0, 0);
     }
@@ -158,6 +186,10 @@
     if (typeof window.__vxRefreshScroll === 'function') {
       requestAnimationFrame(window.__vxRefreshScroll);
     }
+    if (active === 'beranda' && typeof window.__vxHeroResize === 'function') {
+      requestAnimationFrame(window.__vxHeroResize);
+      setTimeout(window.__vxHeroResize, 80);
+    }
     if (active === 'eksplorasi' && typeof window.__vx3dResize === 'function') {
       requestAnimationFrame(window.__vx3dResize);
       setTimeout(window.__vx3dResize, 80);
@@ -165,7 +197,11 @@
   }
 
   window.addEventListener('hashchange', route);
-  window.addEventListener('resize', function () { prevLensRect = null; placeNavLens(false); });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 920) closeMobileNav();
+    prevLensRect = null;
+    placeNavLens(false);
+  });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { prevLensRect = null; placeNavLens(false); });
   window.addEventListener('scroll', function () {
     var cur = (location.hash || '#beranda').slice(1);
