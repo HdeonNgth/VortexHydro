@@ -366,16 +366,91 @@
     return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
   }
 
-  /* Physical sphere motion along the U-channel (starts peeking at edges 00:00 -> drops curves 00:01 -> accelerates 00:02 -> cushioned meet 00:02.85) */
+  /* Exact collision timestamp: spheres collide at bottom-center -> calm water shockwave ripples -> hero text emerges */
+  var IMPACT_T = 2.55;
+
   function evalSphereRoll(timeSec) {
-    var t = clamp01((timeSec - 0.18) / 2.65);
+    var t = clamp01((timeSec - 0.15) / (IMPACT_T - 0.15));
     var base = easeInOutQuart(t);
     var bounce = 0;
-    if (timeSec > 2.82) {
-      var bt = timeSec - 2.82;
-      bounce = Math.exp(-bt * 4.5) * Math.sin(bt * 11.0) * 0.007;
+    if (timeSec > IMPACT_T) {
+      var bt = timeSec - IMPACT_T;
+      bounce = Math.exp(-bt * 4.2) * Math.sin(bt * 10.5) * 0.0085;
     }
     return clamp01(base - Math.abs(bounce));
+  }
+
+  /* Serene concentric calm-water shockwave ripples radiating smoothly from the two-sphere collision */
+  function drawCalmWaterShockwave(cx, cy, sphereR, dtImpact, pal) {
+    if (dtImpact <= 0 || dtImpact > 2.85) return;
+    ctx.save();
+
+    /* Soft calm-water contact glow right at the instant of touch */
+    if (dtImpact < 0.65) {
+      var ip = clamp01(dtImpact / 0.65);
+      var flashAlpha = Math.sin(ip * Math.PI) * (isDark ? 0.34 : 0.44);
+      var flashR = sphereR * (0.9 + ip * 2.4);
+      var fg = ctx.createRadialGradient(cx, cy, sphereR * 0.12, cx, cy, flashR);
+      fg.addColorStop(0, pal.beamMid + flashAlpha.toFixed(3) + ')');
+      fg.addColorStop(0.55, 'rgba(' + pal.rgb + ',' + (flashAlpha * 0.45).toFixed(3) + ')');
+      fg.addColorStop(1, 'rgba(' + pal.rgb + ',0)');
+      ctx.fillStyle = fg;
+      ctx.beginPath();
+      ctx.arc(cx, cy, flashR, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    /* 4 staggered tranquil water surface ripple rings */
+    var rings = [
+      { delay: 0.00, dur: 1.95, maxScale: 0.46, w0: 3.4, strength: 1.00 },
+      { delay: 0.18, dur: 2.05, maxScale: 0.39, w0: 2.6, strength: 0.78 },
+      { delay: 0.38, dur: 2.10, maxScale: 0.32, w0: 1.9, strength: 0.58 },
+      { delay: 0.62, dur: 2.15, maxScale: 0.25, w0: 1.4, strength: 0.40 }
+    ];
+    var span = Math.max(vw, vh);
+
+    for (var i = 0; i < rings.length; i++) {
+      var rg = rings[i];
+      var rt = dtImpact - rg.delay;
+      if (rt <= 0 || rt >= rg.dur) continue;
+      var p = rt / rg.dur;
+      /* Smooth decelerating pond-wave expansion */
+      var easeWave = 1 - Math.pow(1 - p, 2.35);
+      var r = sphereR * 0.72 + easeWave * (span * rg.maxScale);
+      var fadeIn = clamp01(p / 0.08);
+      var fadeOut = Math.pow(1 - p, 1.65);
+      var a = fadeIn * fadeOut * rg.strength;
+      if (a < 0.004) continue;
+
+      var lw = Math.max(0.6, rg.w0 * (1 - p * 0.62));
+
+      /* 1. Soft translucent water-refraction halo band */
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(' + pal.rgb + ',' + (a * (isDark ? 0.38 : 0.30)).toFixed(3) + ')';
+      ctx.lineWidth = lw * 3.1;
+      ctx.stroke();
+
+      /* 2. Delicate calm-water trough shadow just inside the crest (light mode) */
+      if (!isDark && r > 8) {
+        ctx.beginPath();
+        ctx.arc(cx, cy, r - lw * 1.15, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(15, 36, 62,' + (a * 0.10).toFixed(3) + ')';
+        ctx.lineWidth = lw * 1.1;
+        ctx.stroke();
+      }
+
+      /* 3. Crisp bright specular water crest ring */
+      ctx.beginPath();
+      ctx.arc(cx, cy, r + lw * 0.35, 0, Math.PI * 2);
+      ctx.strokeStyle = isDark
+        ? 'rgba(215, 248, 255,' + (a * 0.56).toFixed(3) + ')'
+        : 'rgba(255, 255, 255,' + (a * 0.78).toFixed(3) + ')';
+      ctx.lineWidth = lw;
+      ctx.stroke();
+    }
+
+    ctx.restore();
   }
 
   function traceTrackPath(pts) {
@@ -576,29 +651,29 @@
     introTime = 0;
   };
 
-  /* ---------- Frame-Locked Typography Sync (Matches hero.mp4 00:00 hidden -> 00:01 fading -> 00:02 crisp) ---------- */
+  /* ---------- Frame-Locked Typography Sync (Stays hidden until two spheres collide & calm water shockwave expands!) ---------- */
   function syncHeroText(t, scrollP) {
     var scrollFade = Math.max(0, 1 - scrollP * 1.35);
     var scrollLift = -scrollP * 48;
 
     if (heroTitle) {
-      var tp = easeOutCubic((t - 1.08) / 1.05);
+      var tp = easeOutCubic((t - (IMPACT_T + 0.12)) / 0.92);
       var op = tp * scrollFade;
-      var sc = 0.92 + tp * 0.08;
+      var sc = 0.94 + tp * 0.06;
       var ty = (1 - tp) * 18 + scrollLift;
       heroTitle.style.opacity = op.toFixed(3);
       heroTitle.style.transform = 'translate3d(0,' + ty.toFixed(1) + 'px,0) scale(' + sc.toFixed(3) + ')';
     }
     if (heroLead) {
-      var lp = easeOutCubic((t - 1.36) / 1.05);
+      var lp = easeOutCubic((t - (IMPACT_T + 0.38)) / 0.92);
       var lop = lp * scrollFade;
-      var lsc = 0.94 + lp * 0.06;
+      var lsc = 0.96 + lp * 0.04;
       var lty = (1 - lp) * 14 + scrollLift;
       heroLead.style.opacity = lop.toFixed(3);
       heroLead.style.transform = 'translate3d(0,' + lty.toFixed(1) + 'px,0) scale(' + lsc.toFixed(3) + ')';
     }
     if (scrollCue) {
-      var cp = easeOutCubic((t - 2.35) / 0.85);
+      var cp = easeOutCubic((t - (IMPACT_T + 0.95)) / 0.75);
       var cop = cp * Math.max(0, 1 - scrollP * 2.2);
       scrollCue.style.opacity = cop.toFixed(3);
       scrollCue.style.transform = 'translate3d(-50%,' + (-scrollP * 26).toFixed(1) + 'px,0)';
@@ -832,9 +907,14 @@
     ctx.restore();
     ctx.restore();
 
-    /* 5. Approach Light Beam & Climax Meet Glow Between the Two Rolling Spheres */
-    var approachBeam = clamp01((introTime - 1.65) / 0.85) * (1 - clamp01((introTime - 2.85) / 0.75) * 0.45);
-    var meetGlow = easeOutCubic((introTime - 2.35) / 0.85);
+    /* 5. Approach Light Beam, Calm Water Collision Shockwave & Meet Glow Between the Two Rolling Spheres */
+    var approachBeam = clamp01((introTime - 1.55) / 0.80) * (1 - clamp01((introTime - (IMPACT_T + 0.10)) / 0.70) * 0.45);
+    var meetGlow = easeOutCubic((introTime - (IMPACT_T - 0.18)) / 0.78);
+    var midX = (leftPt.x + rightPt.x) * 0.5;
+    var midY = (leftPt.y + rightPt.y) * 0.5;
+
+    /* Expanding serene calm-water shockwave rings right when the two spheres collide! */
+    drawCalmWaterShockwave(midX, midY, sphereR, introTime - IMPACT_T, pal);
 
     if (approachBeam > 0.02) {
       ctx.save();
@@ -855,8 +935,6 @@
     }
 
     if (meetGlow > 0.01) {
-      var midX = (leftPt.x + rightPt.x) * 0.5;
-      var midY = (leftPt.y + rightPt.y) * 0.5;
       var pulse = 0.88 + 0.12 * Math.sin(flowTime * 2.4);
       var mg = ctx.createRadialGradient(midX, midY, sphereR * 0.1, midX, midY, sphereR * 2.9);
       mg.addColorStop(0, pal.beamMid + (0.64 * meetGlow * pulse).toFixed(3) + ')');
