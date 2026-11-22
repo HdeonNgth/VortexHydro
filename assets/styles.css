@@ -673,7 +673,8 @@ html[data-theme="dark"] .hero--liquid {
   letter-spacing: -0.032em;
   color: #101826;
   text-wrap: balance;
-  animation: heroChannelTextIn 1.05s cubic-bezier(0.22, 1, 0.36, 1) 760ms both;
+  opacity: 0;
+  will-change: transform, opacity;
 }
 .hero__title span {
   display: block;
@@ -694,7 +695,8 @@ html[data-theme="dark"] .hero__title span { color: #CBEAFF; }
   font-weight: 400;
   text-wrap: balance;
   color: rgba(16, 24, 38, 0.7);
-  animation: heroChannelTextIn 1.05s cubic-bezier(0.22, 1, 0.36, 1) 1040ms both;
+  opacity: 0;
+  will-change: transform, opacity;
 }
 html[data-theme="dark"] .hero__lead { color: rgba(244, 250, 255, 0.74); }
 @media (prefers-color-scheme: dark) {
@@ -915,12 +917,8 @@ html[data-theme="dark"] .comp-tile__link { color: var(--sky); }
   text-transform: uppercase;
   color: rgba(6, 27, 73, 0.62);
   transition: color 0.2s ease;
+  opacity: 0;
   will-change: transform, opacity;
-  animation: heroCueFadeIn 0.85s ease 1.75s both;
-}
-@keyframes heroCueFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 .hero__scroll-cue:hover { color: #0757C8; }
 html[data-theme="dark"] .hero__scroll-cue { color: rgba(244, 250, 255, 0.65); }

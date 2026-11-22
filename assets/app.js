@@ -186,9 +186,14 @@
     if (typeof window.__vxRefreshScroll === 'function') {
       requestAnimationFrame(window.__vxRefreshScroll);
     }
-    if (active === 'beranda' && typeof window.__vxHeroResize === 'function') {
-      requestAnimationFrame(window.__vxHeroResize);
-      setTimeout(window.__vxHeroResize, 80);
+    if (active === 'beranda') {
+      if (typeof window.__vxHeroResize === 'function') {
+        requestAnimationFrame(window.__vxHeroResize);
+        setTimeout(window.__vxHeroResize, 80);
+      }
+      if (!scrollKontak && typeof window.__vxReplayHero === 'function') {
+        window.__vxReplayHero();
+      }
     }
     if (active === 'eksplorasi' && typeof window.__vx3dResize === 'function') {
       requestAnimationFrame(window.__vx3dResize);
