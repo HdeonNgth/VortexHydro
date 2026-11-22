@@ -17,18 +17,26 @@ window.VX_AI_CONFIG = {
   var CONV_KEY = 'vx_anon_conv_v1';
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* Session-scoped storage: clears cleanly when browser closes & never piles up across reloads */
   var store = (function () {
     var mem = {};
     return {
-      get: function (k) { try { return localStorage.getItem(k); } catch (e) { return mem[k] || null; } },
-      set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { mem[k] = v; } },
-      del: function (k) { try { localStorage.removeItem(k); } catch (e) { delete mem[k]; } }
+      get: function (k) { try { return sessionStorage.getItem(k); } catch (e) { return mem[k] || null; } },
+      set: function (k, v) { try { sessionStorage.setItem(k, v); } catch (e) { mem[k] = v; } },
+      del: function (k) { try { sessionStorage.removeItem(k); } catch (e) { delete mem[k]; } }
     };
   })();
 
-  // Clean up any legacy token keys
-  store.del('vxai_token');
-  store.del('vxai_conv');
+  // Clean up any legacy localStorage keys & always reset active conversation on every browser refresh
+  try {
+    localStorage.removeItem('vxai_token');
+    localStorage.removeItem('vxai_conv');
+    localStorage.removeItem(SESS_KEY);
+    localStorage.removeItem(CONV_KEY);
+  } catch (e) {}
+  store.del(CONV_KEY);
+  // Also rotate anonymous session on every fresh browser reload so chats never pile up
+  store.del(SESS_KEY);
 
   var initPromise = null;
   function getSessionToken(forceNew) {
@@ -78,7 +86,6 @@ window.VX_AI_CONFIG = {
     function isHr(l) { return /^\s*(?:---+|___+|\*\*\*+)\s*$/.test(l); }
     while (i < lines.length) {
       var l = lines[i], m;
-      if ((m = l.match(/^\u0001(\d+)\u0001$/))) { out.push(blocks[+m[1]]); i++; continue; }
       if (!l.trim()) { i++; continue; }
       if (isHr(l)) { out.push('<hr class="vai-hr">'); i++; continue; }
       if ((m = l.match(/^(#{1,4})\s+(.*)$/))) { var h = Math.min(m[1].length + 2, 6); out.push('<h' + h + '>' + inline(m[2]) + '</h' + h + '>'); i++; continue; }
@@ -102,6 +109,8 @@ window.VX_AI_CONFIG = {
   var ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>';
   var LOCK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
   var EDIT_ICON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+  var CLOSE_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  var CLOSE_ICON_SM = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 
   var root = document.createElement('div');
   root.className = 'vai';
@@ -113,38 +122,39 @@ window.VX_AI_CONFIG = {
       '<header class="vai__head"><span class="vai__logo">' + ICON + '</span><div class="vai__id"><b>Vortex Hydro AI</b><small><i class="vai__dot" id="vaiDot"></i><span id="vaiStatus">Online</span></small></div>' +
         '<button type="button" class="vai__ib" id="vaiHist" aria-label="Riwayat percakapan" title="Riwayat sesi ini"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2M3.5 12a8.5 8.5 0 1 0 2.6-6.1M3.5 4v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
         '<button type="button" class="vai__ib" id="vaiNew" aria-label="Percakapan baru" title="Percakapan baru"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>' +
-        '<button type="button" class="vai__ib" id="vaiClose" aria-label="Tutup panel" title="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></header>' +
-      '<div class="vai__priv" title="Riwayat percakapan hanya dapat diakses dari sesi browser Anda dan terisolasi dari pengunjung lain.">' +
+        '<button type="button" class="vai__ib vai__ib--close" id="vaiClose" aria-label="Tutup panel" title="Tutup">' + CLOSE_ICON + '</button></header>' +
+      '<div class="vai__priv" title="Percakapan bersifat privat dan otomatis dimulai ulang setiap kali halaman disegarkan agar tidak menumpuk.">' +
         '<span class="vai__priv-ic" aria-hidden="true">' + LOCK_ICON + '</span>' +
-        '<span class="vai__priv-txt">Percakapan Anda bersifat privat.</span>' +
+        '<span class="vai__priv-txt">Percakapan privat · Otomatis direset saat dimuat ulang.</span>' +
       '</div>' +
       '<div class="vai__body"><div class="vai__log" id="vaiLog" role="log" aria-live="polite"></div>' +
         '<aside class="vai__drawer" id="vaiDrawer" hidden>' +
-          '<div class="vai__dh"><b>Riwayat Percakapan</b><button type="button" class="vai__ib" id="vaiDrawerClose" aria-label="Tutup riwayat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>' +
+          '<div class="vai__dh"><b>Riwayat Percakapan</b><button type="button" class="vai__ib vai__ib--close" id="vaiDrawerClose" aria-label="Tutup riwayat">' + CLOSE_ICON + '</button></div>' +
           '<ul id="vaiList"></ul>' +
           '<div class="vai__df"><button type="button" class="vai__delall" id="vaiDelAll">Hapus Semua Riwayat</button></div>' +
         '</aside></div>' +
-      '<form class="vai__form" id="vaiForm"><label class="vai__sr" for="vaiInput">Pesan</label><textarea id="vaiInput" rows="1" maxlength="2000" placeholder="Tanya seputar Vortex Hydro…" autocomplete="off"></textarea>' +
+      '<form class="vai__form" id="vaiForm"><label class="vai__sr" for="vaiInput">Pesan</label><textarea id="vaiInput" rows="1" maxlength="2000" placeholder="Tanyakan seputar Vortex Hydro…" autocomplete="off"></textarea>' +
         '<button type="submit" class="vai__send" id="vaiSend" aria-label="Kirim"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5L4 12z" fill="currentColor"/></svg></button></form>' +
-      '<p class="vai__note">Langsung pakai tanpa login · Didukung Gemini.</p>' +
+      '<p class="vai__note">Langsung digunakan tanpa login · Didukung Gemini.</p>' +
     '</section>';
   document.body.appendChild(root);
 
   var $ = function (id) { return document.getElementById(id); };
   var fab = $('vaiFab'), panel = $('vaiPanel'), log = $('vaiLog'), input = $('vaiInput'), send = $('vaiSend'),
       drawer = $('vaiDrawer'), list = $('vaiList'), dot = $('vaiDot'), statusEl = $('vaiStatus'), delAllBtn = $('vaiDelAll');
-  var state = { conv: store.get(CONV_KEY) || null, busy: false, loaded: false };
+  /* Always start clean on every browser page load / refresh */
+  var state = { conv: null, busy: false, loaded: false };
 
   var ERR = {
-    invalid_session: 'Sesi diperbarui otomatis. Silakan kirim ulang pesan Anda.',
-    rate_limited: 'Terlalu banyak permintaan. Tunggu sebentar lalu coba lagi.',
-    ai_busy: 'AI sedang sibuk. Coba lagi beberapa detik lagi.',
-    ai_failed: 'AI belum bisa menjawab saat ini. Silakan coba lagi.',
-    not_configured: 'Asisten belum dikonfigurasi oleh pemilik situs.',
-    message_too_long: 'Pesan terlalu panjang (maksimal 2000 karakter).',
+    invalid_session: 'Sesi diperbarui secara otomatis. Silakan kirim ulang pesan Anda.',
+    rate_limited: 'Terlalu banyak permintaan. Mohon tunggu sebentar lalu coba lagi.',
+    ai_busy: 'Asisten AI sedang sibuk. Silakan coba lagi dalam beberapa detik.',
+    ai_failed: 'Asisten AI belum dapat menjawab saat ini. Silakan coba lagi.',
+    not_configured: 'Asisten belum dikonfigurasi oleh pengelola situs.',
+    message_too_long: 'Pesan terlalu panjang (maksimal 2.000 karakter).',
     not_found: 'Percakapan tidak ditemukan pada sesi Anda.',
-    server_error: 'Terjadi gangguan pada server. Coba lagi nanti.',
-    network: 'Tidak dapat terhubung. Periksa koneksi internet Anda.'
+    server_error: 'Terjadi gangguan pada server. Silakan coba lagi nanti.',
+    network: 'Tidak dapat terhubung ke server. Periksa koneksi internet Anda.'
   };
 
   function api(body, allowReinit) {
@@ -194,13 +204,13 @@ window.VX_AI_CONFIG = {
 
   function welcome() {
     log.innerHTML = '<div class="vai__empty"><span class="vai__badge">' + ICON + '</span><h3>Halo! Aku Vortex Hydro AI 😊</h3>' +
-      '<p>Teman diskusi cerdas proyek mikro-hidro Vortex Hydro UM 😄 Langsung tanyakan apa saja soal cara kerja turbin, komponen, atau konsep alirannya ya!</p>' +
+      '<p>Asisten diskusi cerdas untuk proyek mikro-hidro Vortex Hydro Universitas Negeri Malang 😄 Tanyakan apa saja seputar cara kerja turbin, komponen, atau konsep alirannya ya!</p>' +
       '<div class="vai__sug"></div></div>';
     var box = log.querySelector('.vai__sug');
     [
       '😊 Bagaimana alur kerja Vortex Hydro secara singkat?',
       '🤔 Apa fungsi transmisi pulley 1:4 di zona kering?',
-      '😮 Kenapa turbin pusaran cocok untuk head rendah?',
+      '😮 Mengapa turbin pusaran cocok untuk head rendah?',
       '😄 Apa saja komponen utama prototipe Vortex Hydro?'
     ].forEach(function (q) {
       var b = document.createElement('button'); b.type = 'button'; b.textContent = q;
@@ -298,7 +308,7 @@ window.VX_AI_CONFIG = {
           var t = prompt('Judul baru', c.title); if (t === null || !t.trim()) return;
           api({ action: 'rename', conversation_id: c.id, title: t.trim() }).then(function (r) { c.title = r.title; open.textContent = r.title; });
         });
-        var del = document.createElement('button'); del.type = 'button'; del.className = 'vai__mini'; del.setAttribute('aria-label', 'Hapus percakapan'); del.textContent = '×';
+        var del = document.createElement('button'); del.type = 'button'; del.className = 'vai__mini vai__mini--del'; del.setAttribute('aria-label', 'Hapus percakapan'); del.innerHTML = CLOSE_ICON_SM;
         del.addEventListener('click', function () {
           if (!confirm('Hapus percakapan ini secara permanen?')) return;
           api({ action: 'delete', conversation_id: c.id }).then(function () {
@@ -317,13 +327,24 @@ window.VX_AI_CONFIG = {
     requestAnimationFrame(function () { panel.classList.add('is-in'); });
     if (!state.loaded) {
       state.loaded = true;
-      getSessionToken(false).then(function () {
-        if (state.conv) loadConversation(state.conv);
-        else welcome();
-      }).catch(function () { welcome(); });
+      state.conv = null;
+      store.del(CONV_KEY);
+      welcome();
+      getSessionToken(false).catch(function () {});
     }
     setTimeout(function () { input.focus(); }, 60);
   }
+  /* Also reset chat cleanly if restored from browser back-forward cache */
+  window.addEventListener('pageshow', function (ev) {
+    if (ev.persisted) {
+      state.conv = null;
+      state.loaded = false;
+      store.del(CONV_KEY);
+      store.del(SESS_KEY);
+      drawer.hidden = true;
+      welcome();
+    }
+  });
   function closePanel() {
     panel.classList.remove('is-in'); root.classList.remove('is-open'); fab.setAttribute('aria-expanded', 'false');
     setTimeout(function () { panel.hidden = true; }, reduce ? 0 : 180); fab.focus();

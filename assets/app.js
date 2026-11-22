@@ -894,27 +894,27 @@
 
     var ARCHIVE = {
       journey: {
-        tag: '01 / DOCUMENTATION RECAP · 16:9',
-        title: 'The Journey — Vortex Hydro Documentary',
+        tag: '01 / REKAP DOKUMENTASI · 16:9',
+        title: 'Perjalanan Kami — Dokumenter Vortex Hydro',
         badge: 'REKAP DOKUMENTER · PROYEK LAB',
         photos: ['assets/images/hero-turbine.jpg'],
-        desc: 'Rekaman lengkap perjalanan tim Fakultas Vokasi Universitas Negeri Malang merancang, memfabrikasi, dan menguji prototipe pembangkit listrik mikro-hidro pusaran air sirkulasi tertutup di atas rangka 2,0 × 0,8 m.',
+        desc: 'Rekaman lengkap perjalanan tim Fakultas Vokasi Universitas Negeri Malang dalam merancang, memfabrikasi, dan menguji prototipe pembangkit listrik mikro-hidro pusaran air sirkulasi tertutup di atas rangka 2,0 × 0,8 m.',
         chips: ['Rangka 2,0 × 0,8 m', 'Kincir 6 Sudu Ø 330 mm', 'Transmisi 1:4', 'Generator DC XD 3240'],
         goHref: '#tentang',
         goLabel: 'Lihat Diagram Cara Kerja →'
       },
       process: {
-        tag: '02 / BEHIND THE PROCESS · 1:1',
-        title: 'Behind Every Creation — Process Film',
+        tag: '02 / DI BALIK PROSES · 1:1',
+        title: 'Di Balik Setiap Karya — Film Proses',
         badge: 'PROSES KOLABORASI · 7 DIVISI',
         photos: ['assets/images/team-group.jpg'],
-        desc: 'Di balik setiap pengujian prototipe terdapat diskusi lintas divisi: mulai dari pemodelan CAD/CFD & hidrodinamika, perakitan mekanikal, instalasi kelistrikan zona kering, hingga pengembangan web & AI.',
+        desc: 'Di balik setiap pengujian prototipe terdapat kolaborasi lintas divisi: mulai dari pemodelan CAD/CFD dan hidrodinamika, perakitan mekanikal, instalasi kelistrikan zona kering, hingga pengembangan web dan AI.',
         chips: ['ANSYS Fluent', 'AutoCAD', 'MATLAB', 'VS Code', 'Uji Lab UM'],
         goHref: '#tentang-kami',
         goLabel: 'Kenali Tim Kepemimpinan →'
       },
       pengurus: {
-        tag: '01 / DIVISION ARCHIVE',
+        tag: '01 / ARSIP DIVISI',
         title: 'Pengurus Inti',
         badge: 'KOORDINASI & MANAJEMEN PROYEK',
         photos: [
@@ -929,7 +929,7 @@
         divId: 'pengurus'
       },
       'math-modelling': {
-        tag: '02 / DIVISION ARCHIVE',
+        tag: '02 / ARSIP DIVISI',
         title: 'Divisi Math & Modelling',
         badge: 'CAD 3D · CFD · HIDRODINAMIKA',
         photos: [
@@ -944,7 +944,7 @@
         divId: 'modeling'
       },
       software: {
-        tag: '03 / DIVISION ARCHIVE',
+        tag: '03 / ARSIP DIVISI',
         title: 'Divisi Software',
         badge: 'WEBSITE, 3D INTERAKTIF & AI',
         photos: [
@@ -959,7 +959,7 @@
         divId: 'software'
       },
       electrical: {
-        tag: '04 / DIVISION ARCHIVE',
+        tag: '04 / ARSIP DIVISI',
         title: 'Divisi Electrical',
         badge: 'PEMBANGKITAN DC & BEBAN LED',
         photos: [
@@ -974,7 +974,7 @@
         divId: 'electrical'
       },
       mekanikal: {
-        tag: '05 / DIVISION ARCHIVE',
+        tag: '05 / ARSIP DIVISI',
         title: 'Divisi Mekanikal',
         badge: 'FABRIKASI & TRANSMISI 1:4',
         photos: [
@@ -989,7 +989,7 @@
         divId: 'mekanikal'
       },
       perlengkapan: {
-        tag: '06 / DIVISION ARCHIVE',
+        tag: '06 / ARSIP DIVISI',
         title: 'Divisi Perlengkapan',
         badge: 'SIRKULASI POMPA & LOGISTIK',
         photos: [
@@ -1004,7 +1004,7 @@
         divId: 'perlengkapan'
       },
       pdd: {
-        tag: '07 / DIVISION ARCHIVE',
+        tag: '07 / ARSIP DIVISI',
         title: 'Divisi PDD',
         badge: 'MEDIA, VISUAL & DOKUMENTASI',
         photos: [

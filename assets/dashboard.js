@@ -178,8 +178,9 @@
   dialog.setAttribute('aria-labelledby', 'vx-auth-admin-title');
 
   var card = make('div', 'vx-auth__card');
-  var closeBtn = make('button', 'vx-auth__close', '\u00d7');
+  var closeBtn = make('button', 'vx-auth__close', '');
   closeBtn.type = 'button'; closeBtn.setAttribute('aria-label', 'Tutup');
+  closeBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   card.appendChild(closeBtn);
 
   var adminForm = make('form', 'vx-auth__pane');
@@ -320,9 +321,9 @@
           // Non-admin user: immediately revoke session and keep Dashboard navbar hidden!
           wipeAdminSession(d.access_token);
           if (verErr && verErr.status === 403) {
-            throw new Error('Akses ditolak (403): akun ini tidak memiliki role Administrator.');
+            throw new Error('Akses ditolak (403): akun ini tidak memiliki hak akses Administrator.');
           }
-          throw new Error('Gagal memverifikasi role Administrator di backend.');
+          throw new Error('Gagal memverifikasi hak akses Administrator di server.');
         });
       });
     }).catch(function (err) {
@@ -379,7 +380,7 @@
       '<span class="dashboard-locked__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>' +
       '<span class="eyebrow">Akses Khusus Administrator</span>' +
       '<h1>Dashboard &amp; AI Monitor</h1>' +
-      '<p>Panel telemetri prototipe dan pemantauan riwayat chat AI pengunjung dilindungi verifikasi role Administrator di backend.</p>' +
+      '<p>Panel telemetri prototipe, laporan harian, dan pemantauan riwayat chat AI pengunjung dilindungi verifikasi hak akses Administrator di server.</p>' +
       '<div class="dashboard-locked__actions">' +
         '<button class="c-btn c-btn--navy" type="button" data-vx-admin-login>Login Administrator</button>' +
         '<a class="c-btn c-btn--outline" href="#beranda">Kembali ke Beranda</a>' +
@@ -388,11 +389,12 @@
   page.insertBefore(locked, dashEl);
 
   var VIEWS = {
-    ringkasan: ['Welcome Back,', 'Admin Vortex', 'Pantau telemetri prototipe turbin pusaran dan aktivitas Vortex Hydro AI secara terpadu.', 'Ringkasan'],
-    sensor: ['Sensor', 'Langsung', 'Debit air, tegangan baterai, RPM poros utama, RPM generator, serta monitor vitals langsung.', 'Sensor'],
-    grafik: ['Grafik', '60 Detik', 'Tren sensor prototipe 60 detik terakhir. Arahkan kursor pada kurva untuk melihat nilai detail.', 'Grafik'],
-    'ai-chat': ['Riwayat', 'Chat AI', 'Monitor seluruh percakapan pengunjung berdasarkan sesi, cari kata kunci, filter tanggal, atau kelola data.', 'Riwayat Chat AI'],
-    audit: ['Audit Log', 'Admin', 'Catatan transparansi seluruh aktivitas monitoring dan moderasi Administrator di backend.', 'Audit Log']
+    ringkasan: ['Selamat Datang Kembali,', 'Admin Vortex', 'Pantau telemetri prototipe turbin pusaran, laporan harian, dan aktivitas Vortex Hydro AI secara terpadu.', 'Ringkasan'],
+    sensor: ['Sensor', 'Langsung', 'Debit air, tegangan baterai, RPM poros utama, RPM generator, serta monitor langsung prototipe.', 'Sensor'],
+    grafik: ['Grafik', '60 Detik', 'Tren sensor prototipe selama 60 detik terakhir. Arahkan kursor pada kurva untuk melihat nilai detail.', 'Grafik'],
+    laporan: ['Laporan', '24 Jam Terakhir', 'Ringkasan singkat kejadian hari ini: aktivitas chat AI, deteksi percakapan tidak pantas, gangguan sistem, dan log admin.', 'Laporan Harian'],
+    'ai-chat': ['Riwayat', 'Chat AI', 'Pantau seluruh percakapan pengunjung berdasarkan sesi, cari kata kunci, filter tanggal, atau bersihkan data lama.', 'Riwayat Chat AI'],
+    audit: ['Audit Log', '& Pembersihan', 'Catatan transparansi aktivitas pemantauan dan moderasi Administrator beserta kontrol pembersihan log.', 'Audit Log']
   };
 
   var btns = bar ? [].slice.call(bar.querySelectorAll('button[data-v]')) : [];
@@ -430,13 +432,17 @@
     if (authState.role === 'admin') {
       if (v === 'ai-chat') { loadAiStats(); loadAiList(); }
       else if (v === 'audit') { loadAiAudit(); }
+      else if (v === 'laporan') { loadDailyReport(false); }
     }
   }
   if (bar) bar.addEventListener('click', function (e) { var b = e.target.closest('button[data-v]'); if (b) showPane(b.dataset.v); });
   if ($('dlogout')) $('dlogout').addEventListener('click', performAdminLogout);
   if ($('dopenAiBtn')) $('dopenAiBtn').addEventListener('click', function () { showPane('ai-chat'); });
+  if ($('dopenRepBtn')) $('dopenRepBtn').addEventListener('click', function () { showPane('laporan'); });
   if ($('dkpiAi')) $('dkpiAi').addEventListener('click', function () { showPane('ai-chat'); });
   if ($('dviewAllAi')) $('dviewAllAi').addEventListener('click', function () { showPane('ai-chat'); });
+  if ($('drepGoChat')) $('drepGoChat').addEventListener('click', function () { showPane('ai-chat'); });
+  if ($('drepGoAudit')) $('drepGoAudit').addEventListener('click', function () { showPane('audit'); });
   if ($('dquickSearch')) {
     $('dquickSearch').addEventListener('submit', function (e) {
       e.preventDefault();
@@ -460,7 +466,7 @@
       if ($('aiStConv')) $('aiStConv').textContent = st.total_conversations || 0;
       if ($('aiStTodayC')) $('aiStTodayC').textContent = (st.today_conversations || 0) + ' hari ini';
       if ($('aiStMsg')) $('aiStMsg').textContent = st.total_messages || 0;
-      if ($('aiStSplit')) $('aiStSplit').textContent = (st.user_messages || 0) + ' user · ' + (st.assistant_messages || 0) + ' AI';
+      if ($('aiStSplit')) $('aiStSplit').textContent = (st.user_messages || 0) + ' pengguna · ' + (st.assistant_messages || 0) + ' AI';
       if ($('aiStAudit')) $('aiStAudit').textContent = st.audit_logs_count || 0;
       if ($('aiStTodayM')) $('aiStTodayM').textContent = (st.today_messages || 0) + ' pesan hari ini';
     }).catch(function () {});
@@ -593,6 +599,233 @@
     });
   }
 
+  /* ---------- 4b. Dedicated 24-Hour Daily Report & Moderation Scanner ---------- */
+  var lastDailyReport = null;
+  var peakStats = { debit: 0, rpmGen: 0, daya: 0, cleanups: 0 };
+
+  function renderTelemetrySummaryIntoReport() {
+    var box = $('drepTelemetry');
+    if (!box) return;
+    var cur = window.VXSim ? window.VXSim.read() : { debit: 0, rpmGen: 0, vbat: 0, daya: 0 };
+    box.innerHTML =
+      '<div class="drep__kv"><span>Debit Puncak</span><b>' + Math.max(peakStats.debit, cur.debit || 0).toFixed(2) + ' L/s</b></div>' +
+      '<div class="drep__kv"><span>RPM Gen Puncak</span><b>' + Math.round(Math.max(peakStats.rpmGen, cur.rpmGen || 0)) + ' RPM</b></div>' +
+      '<div class="drep__kv"><span>Tegangan Baterai</span><b>' + (cur.vbat || 0).toFixed(2) + ' V</b></div>' +
+      '<div class="drep__kv"><span>Status Simulasi</span><b>' + (run ? 'Aktif' : 'Dijeda') + '</b></div>';
+  }
+
+  function renderDailyReport(rep) {
+    lastDailyReport = rep;
+    var s = rep.summary || {};
+    var status = rep.status || 'aman';
+
+    var badgeEl = $('drepStatusBadge');
+    if (badgeEl) {
+      badgeEl.className = 'drep__status is-' + status;
+      badgeEl.textContent = status === 'waspada' ? 'WASPADA MODERASI' : (status === 'perhatian' ? 'PERLU PERHATIAN' : 'KONDISI AMAN');
+    }
+    var sidebarDot = $('dsbReportBadge');
+    if (sidebarDot) {
+      sidebarDot.hidden = !(s.flagged_count > 0 || s.error_messages_24h > 0);
+      sidebarDot.className = 'dsb__badge' + (status === 'waspada' ? ' is-high' : '');
+    }
+
+    if ($('drepUpdated')) $('drepUpdated').textContent = 'Diperbarui ' + fmtTime(rep.generated_at);
+    if ($('drepHeadline')) $('drepHeadline').textContent = rep.headline || 'Ringkasan 24 jam terakhir siap ditinjau.';
+    if ($('drepSess')) $('drepSess').textContent = s.sessions_24h || 0;
+    if ($('drepConv')) $('drepConv').textContent = s.conversations_24h || 0;
+    if ($('drepMsgs')) $('drepMsgs').textContent = (s.messages_24h || 0) + ' pesan (' + (s.user_messages_24h || 0) + ' pengguna · ' + (s.ai_messages_24h || 0) + ' AI)';
+    if ($('drepFlagged')) $('drepFlagged').textContent = s.flagged_count || 0;
+    if ($('drepFlagSub')) $('drepFlagSub').textContent = (s.high_severity_count || 0) + ' prioritas tinggi';
+    if ($('drepAudit')) $('drepAudit').textContent = s.audit_actions_24h || 0;
+    if ($('drepSysSub')) $('drepSysSub').textContent = (s.error_messages_24h || 0) + ' gangguan respons AI';
+    if ($('drepFlagPill')) $('drepFlagPill').textContent = (s.flagged_count || 0) + ' Temuan';
+
+    var hlEl = $('drepHighlights');
+    if (hlEl) {
+      var listItems = (rep.highlights || []).slice();
+      listItems.push('Telemetri Prototipe: Debit puncak ' + peakStats.debit.toFixed(2) + ' L/s · RPM generator puncak ' + Math.round(peakStats.rpmGen) + ' RPM.');
+      hlEl.innerHTML = listItems.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('');
+    }
+
+    var flEl = $('drepFlagList');
+    if (flEl) {
+      var flags = rep.flagged_items || [];
+      if (!flags.length) {
+        flEl.innerHTML = '<div class="drep__safe"><strong>Semua Percakapan Aman</strong><p>Tidak ditemukan kata kasar, spam, upaya manipulasi AI, maupun gangguan respons selama 24 jam terakhir.</p></div>';
+      } else {
+        flEl.innerHTML = flags.map(function (f) {
+          var sevCls = f.severity === 'tinggi' ? 'is-high' : 'is-med';
+          var sevLbl = f.severity === 'tinggi' ? 'PRIORITAS TINGGI' : 'PRIORITAS SEDANG';
+          return '<article class="drep__flag">' +
+            '<div class="drep__flag-top">' +
+              '<span class="drep__sev ' + sevCls + '">' + sevLbl + '</span>' +
+              '<strong>' + esc(f.category) + '</strong>' +
+              '<time class="mono">' + esc(fmtTime(f.created_at)) + '</time>' +
+            '</div>' +
+            '<p class="drep__flag-why">' + esc(f.reason) + '</p>' +
+            '<blockquote class="drep__quote">“' + esc(f.excerpt) + '”</blockquote>' +
+            '<div class="drep__flag-foot">' +
+              '<span class="mono">' + esc(f.owner_label) + ' · ' + esc(f.conversation_title) + '</span>' +
+              (f.conversation_id ? '<button type="button" class="dpill dpill--sm" data-open-conv="' + esc(f.conversation_id) + '">Tinjau Chat →</button>' : '') +
+            '</div>' +
+          '</article>';
+        }).join('');
+      }
+    }
+
+    var rcEl = $('drepRecentConvs');
+    if (rcEl) {
+      var rc = rep.recent_conversations || [];
+      rcEl.innerHTML = rc.length ? rc.map(function (c) {
+        return '<button type="button" class="drec-item' + (c.flagged ? ' is-flagged' : '') + '" data-open-conv="' + esc(c.id) + '">' +
+          '<div class="drec-item__top"><strong>' + esc(c.title) + '</strong>' +
+          '<span class="drec-tag ' + (c.flagged ? 'is-warn' : 'is-ok') + '">' + (c.flagged ? 'Perlu Tinjauan' : 'Aman') + '</span></div>' +
+          '<small>' + esc(c.owner_label) + ' · ' + c.message_count + ' pesan · ' + esc(fmtTime(c.updated_at)) + '</small>' +
+        '</button>';
+      }).join('') : '<p style="margin:0;font-size:.82rem;color:var(--muted)">Belum ada percakapan AI dalam 24 jam terakhir.</p>';
+    }
+
+    renderTelemetrySummaryIntoReport();
+
+    var audEl = $('drepAuditList');
+    if (audEl) {
+      var ra = rep.recent_audits || [];
+      audEl.innerHTML = ra.length ? ra.map(function (a) {
+        return '<li><time>' + esc(fmtTime(a.created_at)) + '</time><span><b>' + esc(a.action) + '</b> · ' + esc(a.admin_label) + '</span></li>';
+      }).join('') : '<li><time>—</time><span>Belum ada aktivitas audit dalam 24 jam terakhir.</span></li>';
+    }
+  }
+
+  function loadDailyReport(silentBadgeOnly) {
+    if (authState.role !== 'admin') return;
+    if (!silentBadgeOnly && $('drepUpdated')) $('drepUpdated').textContent = 'Memindai data 24 jam terakhir…';
+    adminApi({ action: 'daily_report' }).then(function (d) {
+      if (d && d.report) renderDailyReport(d.report);
+    }).catch(function () {
+      if (!silentBadgeOnly && $('drepHeadline')) {
+        $('drepHeadline').textContent = 'Gagal memuat laporan 24 jam dari server. Silakan klik Segarkan Laporan.';
+      }
+    });
+  }
+
+  /* ---------- 4c. Log Cleanup Actions (Telemetry Log, Audit Log, & Old AI Chats) ---------- */
+  function showAuditFlash(msg, isErr) {
+    var el = $('aiAuditFlash');
+    if (!el) return;
+    el.textContent = msg || '';
+    el.hidden = !msg;
+    el.classList.toggle('is-err', !!isErr);
+  }
+
+  if ($('dlogClear')) {
+    $('dlogClear').addEventListener('click', function () {
+      var ul = $('dlog');
+      if (!ul) return;
+      ul.innerHTML = '';
+      peakStats.cleanups++;
+      logEvt('Log aktivitas prototipe dibersihkan oleh Admin', 'o');
+    });
+  }
+
+  if ($('aiAuditClearBtn')) {
+    $('aiAuditClearBtn').addEventListener('click', function () {
+      if (authState.role !== 'admin') return;
+      var scopeEl = $('aiAuditClearScope');
+      var scope = scopeEl ? scopeEl.value : 'older_7d';
+      var desc = scope === 'all' ? 'SELURUH catatan audit log' : (scope === 'older_30d' ? 'audit log lebih dari 30 hari' : 'audit log lebih dari 7 hari');
+      if (!confirm('Bersihkan ' + desc + ' secara permanen?')) return;
+      var btn = $('aiAuditClearBtn');
+      btn.disabled = true;
+      btn.textContent = 'Membersihkan…';
+      showAuditFlash('', false);
+      adminApi({ action: 'clear_audit_logs', scope: scope }).then(function (d) {
+        showAuditFlash('Berhasil membersihkan ' + (d.deleted_count || 0) + ' baris audit log.', false);
+        logEvt('Admin membersihkan ' + (d.deleted_count || 0) + ' baris audit log', 'o');
+        loadAiAudit();
+        loadAiStats();
+        loadDailyReport(true);
+      }).catch(function () {
+        showAuditFlash('Gagal membersihkan audit log. Silakan coba lagi.', true);
+      }).finally(function () {
+        btn.disabled = false;
+        btn.textContent = 'Bersihkan Log';
+      });
+    });
+  }
+
+  if ($('aiCleanupBtn')) {
+    $('aiCleanupBtn').addEventListener('click', function () {
+      if (authState.role !== 'admin') return;
+      var scopeEl = $('aiCleanupScope');
+      var scope = scopeEl ? scopeEl.value : 'older_7d';
+      var labels = {
+        older_1d: 'riwayat chat AI lebih dari 24 jam',
+        older_7d: 'riwayat chat AI lebih dari 7 hari',
+        older_30d: 'riwayat chat AI lebih dari 30 hari',
+        all: 'SELURUH riwayat chat AI dan sesi pengunjung'
+      };
+      if (!confirm('Hapus ' + (labels[scope] || 'riwayat chat lama') + ' secara permanen?')) return;
+      var btn = $('aiCleanupBtn');
+      var msgEl = $('aiCleanupMsg');
+      btn.disabled = true;
+      btn.textContent = 'Membersihkan…';
+      if (msgEl) msgEl.textContent = '';
+      adminApi({ action: 'cleanup_chats', scope: scope }).then(function (d) {
+        if (msgEl) msgEl.textContent = 'Berhasil membersihkan ' + (d.deleted_conversations || 0) + ' percakapan AI.';
+        aiSelectedId = null;
+        if ($('aiDetailPane')) $('aiDetailPane').innerHTML = '<div class="dai__empty">Pembersihan selesai. Pilih percakapan lain di sebelah kiri jika tersedia.</div>';
+        logEvt('Admin membersihkan ' + (d.deleted_conversations || 0) + ' percakapan AI', 'o');
+        loadAiStats();
+        loadAiList(false);
+        loadDailyReport(true);
+      }).catch(function () {
+        if (msgEl) msgEl.textContent = 'Gagal membersihkan riwayat chat.';
+      }).finally(function () {
+        btn.disabled = false;
+        btn.textContent = 'Bersihkan Chat';
+      });
+    });
+  }
+
+  if ($('drepRefresh')) $('drepRefresh').addEventListener('click', function () { loadDailyReport(false); });
+  if ($('drepCopy')) {
+    $('drepCopy').addEventListener('click', function () {
+      if (!lastDailyReport) return;
+      var r = lastDailyReport;
+      var lines = [
+        'LAPORAN HARIAN VORTEX HYDRO (24 JAM TERAKHIR)',
+        'Status: ' + String(r.status || 'aman').toUpperCase(),
+        'Ringkasan: ' + (r.headline || '-'),
+        '',
+        'Poin Utama:'
+      ].concat((r.highlights || []).map(function (h) { return '- ' + h; }));
+      if (r.flagged_items && r.flagged_items.length) {
+        lines.push('', 'Temuan Moderasi (' + r.flagged_items.length + '):');
+        r.flagged_items.slice(0, 10).forEach(function (f) {
+          lines.push('- [' + f.severity.toUpperCase() + '] ' + f.category + ' (' + f.owner_label + '): "' + f.excerpt + '"');
+        });
+      }
+      var text = lines.join('\n');
+      var btn = $('drepCopy');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          btn.textContent = 'Ringkasan Tersalin';
+          setTimeout(function () { btn.textContent = 'Salin Ringkasan'; }, 1800);
+        });
+      }
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    var openBtn = e.target.closest && e.target.closest('#drepFlagList [data-open-conv], #drepRecentConvs [data-open-conv]');
+    if (!openBtn) return;
+    var cid = openBtn.getAttribute('data-open-conv');
+    if (!cid) return;
+    showPane('ai-chat');
+    setTimeout(function () { loadAiDetail(cid); }, 90);
+  });
+
   if ($('aiFilterForm')) $('aiFilterForm').addEventListener('submit', function (e) { e.preventDefault(); loadAiList(false); });
   if ($('aiSessSel')) $('aiSessSel').addEventListener('change', function () { loadAiList(false); });
   if ($('aiReset')) $('aiReset').addEventListener('click', function () {
@@ -691,6 +924,10 @@
     if ($('dvRpmg')) $('dvRpmg').textContent = Math.round(D.rpmGen);
     if ($('dvVbat')) $('dvVbat').textContent = D.vbat.toFixed(2);
     if ($('dvDaya')) $('dvDaya').textContent = (o.daya || 0).toFixed(2);
+    if (D.debit > peakStats.debit) peakStats.debit = D.debit;
+    if (D.rpmGen > peakStats.rpmGen) peakStats.rpmGen = D.rpmGen;
+    if ((o.daya || 0) > peakStats.daya) peakStats.daya = o.daya || 0;
+    if (dashEl.dataset.pane === 'laporan') renderTelemetrySummaryIntoReport();
     if ($('grpm')) $('grpm').style.strokeDashoffset = 75 - Math.min(1, D.rpmShaft / 400) * 75;
     if ($('grpmt')) $('grpmt').textContent = Math.round(D.rpmShaft);
     if ($('geff')) $('geff').style.strokeDashoffset = 75 - Math.min(1, D.rpmGen / 900) * 75;
@@ -701,13 +938,13 @@
   }
   function initDash() {
     if ($('dwho')) $('dwho').textContent = authState.email || 'Admin';
-    if ($('dav')) $('dav').textContent = (authState.email || 'A').charAt(0).toUpperCase();
+    if ($('dav')) $('dav').setAttribute('title', 'Profil Administrator · ' + (authState.email || 'Admin Vortex'));
     if (!initialized) {
       initialized = true;
       var seed = window.VXSim.history();
       if (!seed.length) seed = [window.VXSim.read()];
       seed.forEach(function (r) { K.forEach(function (k) { hist[k].push(r[k] || 0); }); });
-      logEvt('Dashboard Admin aktif & terverifikasi Supabase Auth', 'o');
+      logEvt('Dashboard Admin aktif dan terverifikasi Supabase Auth', 'o');
       if ($('dpause')) {
         $('dpause').onclick = function () {
           run = !run; this.textContent = run ? 'Jeda' : 'Lanjut';
@@ -725,6 +962,7 @@
     }
     loadAiStats();
     loadAiList(true);
+    loadDailyReport(true);
     showPane(dashEl.dataset.pane || 'ringkasan');
   }
 

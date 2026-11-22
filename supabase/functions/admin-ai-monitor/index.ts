@@ -12,6 +12,38 @@ const ALLOWED = (Deno.env.get("ALLOWED_ORIGINS") ??
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
+/* Content moderation patterns for 24-hour Daily Report (Indonesian & English) */
+const PROFANITY_RE = /\b(anjing|anjir|bangsat|bajingan|kontol|memek|ngentot|jancok|jancuk|asu|goblog|goblok|tolol|bego|idiot|keparat|brengsek|tai|taik|setan|iblis|pantek|perek|lonte|babi|monyet|fuck|fucking|shit|bitch|asshole|bastard|dick|pussy|cunt|slut|whore|porn|bokep|porno|bunuh|narkoba|judi|slot gacor|togel)\b/i;
+const INJECTION_RE = /(ignore\s+(all\s+)?previous\s+instructions|abaikan\s+(semua\s+)?instruksi|system\s+prompt|jailbreak|dan\s+mode|bypass\s+filter|bocorkan\s+(api|key|password|token)|api[_\s-]?key|service[_\s-]?role|<\s*script\b|drop\s+table|union\s+select|sql\s+injection|bobol\s+(web|admin|server|database))/i;
+const SPAM_REPEAT_RE = /(.)\1{9,}/;
+
+function scanMessageSafety(content: string): { category: string; severity: "tinggi" | "sedang"; reason: string } | null {
+  const txt = String(content ?? "").trim();
+  if (!txt) return null;
+  if (PROFANITY_RE.test(txt)) {
+    return {
+      category: "Bahasa Tidak Pantas",
+      severity: "tinggi",
+      reason: "Terdeteksi penggunaan kata kasar, tidak sopan, atau konten terlarang.",
+    };
+  }
+  if (INJECTION_RE.test(txt)) {
+    return {
+      category: "Indikasi Manipulasi / Keamanan",
+      severity: "tinggi",
+      reason: "Terdeteksi upaya prompt injection, ekstraksi sistem, atau uji kerentanan.",
+    };
+  }
+  if (SPAM_REPEAT_RE.test(txt) || (txt.length > 900 && new Set(txt.toLowerCase().split(/\s+/)).size < 8)) {
+    return {
+      category: "Indikasi Spam",
+      severity: "sedang",
+      reason: "Terdeteksi pengulangan karakter atau teks tidak wajar menyerupai spam.",
+    };
+  }
+  return null;
+}
+
 const adminDb = createClient(SUPABASE_URL, SERVICE_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
@@ -389,6 +421,215 @@ Deno.serve(async (req) => {
         created_at: l.created_at,
       }));
       return json(req, { logs });
+    }
+
+    if (action === "clear_audit_logs") {
+      const scope = String(body.scope ?? "all");
+      let deletedCount = 0;
+      if (scope === "older_7d" || scope === "older_30d") {
+        const days = scope === "older_30d" ? 30 : 7;
+        const cutoff = new Date(Date.now() - days * 86400000).toISOString();
+        const { data: delRows, error: delErr } = await adminDb
+          .from("admin_audit_logs")
+          .delete()
+          .lt("created_at", cutoff)
+          .select("id");
+        if (delErr) throw new Error("db");
+        deletedCount = (delRows ?? []).length;
+      } else {
+        const { data: delRows, error: delErr } = await adminDb
+          .from("admin_audit_logs")
+          .delete()
+          .neq("id", "00000000-0000-0000-0000-000000000000")
+          .select("id");
+        if (delErr) throw new Error("db");
+        deletedCount = (delRows ?? []).length;
+      }
+      await logAudit(adminUser.id, "clear_audit_logs", null, { scope, deleted_count: deletedCount });
+      return json(req, { ok: true, scope, deleted_count: deletedCount });
+    }
+
+    if (action === "cleanup_chats") {
+      const scope = String(body.scope ?? "older_7d");
+      let deletedConvs = 0;
+      if (scope === "all") {
+        const { data: delRows, error: delErr } = await adminDb
+          .from("conversations")
+          .delete()
+          .neq("id", "00000000-0000-0000-0000-000000000000")
+          .select("id");
+        if (delErr) throw new Error("db");
+        deletedConvs = (delRows ?? []).length;
+        await adminDb
+          .from("chat_sessions")
+          .delete()
+          .neq("id", "00000000-0000-0000-0000-000000000000");
+      } else {
+        const days = scope === "older_30d" ? 30 : (scope === "older_1d" ? 1 : 7);
+        const cutoff = new Date(Date.now() - days * 86400000).toISOString();
+        const { data: delRows, error: delErr } = await adminDb
+          .from("conversations")
+          .delete()
+          .lt("updated_at", cutoff)
+          .select("id");
+        if (delErr) throw new Error("db");
+        deletedConvs = (delRows ?? []).length;
+        await adminDb
+          .from("chat_sessions")
+          .delete()
+          .lt("last_activity_at", cutoff);
+      }
+      await logAudit(adminUser.id, "cleanup_chats", null, { scope, deleted_conversations: deletedConvs });
+      return json(req, { ok: true, scope, deleted_conversations: deletedConvs });
+    }
+
+    if (action === "daily_report") {
+      const nowMs = Date.now();
+      const sinceIso = new Date(nowMs - 24 * 3600 * 1000).toISOString();
+
+      const [sessRes, convRes, msgRes, auditRes, userMap] = await Promise.all([
+        adminDb.from("chat_sessions").select("id,created_at,last_activity_at").gte("last_activity_at", sinceIso).limit(500),
+        adminDb.from("conversations").select("id,session_id,user_id,title,created_at,updated_at").gte("updated_at", sinceIso).order("updated_at", { ascending: false }).limit(300),
+        adminDb.from("messages").select("id,conversation_id,role,content,model,status,created_at").gte("created_at", sinceIso).order("created_at", { ascending: false }).limit(2000),
+        adminDb.from("admin_audit_logs").select("id,admin_user_id,action,target_conversation_id,metadata,created_at").gte("created_at", sinceIso).order("created_at", { ascending: false }).limit(200),
+        buildUserMap(),
+      ]);
+
+      if (sessRes.error || convRes.error || msgRes.error || auditRes.error) throw new Error("db");
+
+      const sessions24h = sessRes.data ?? [];
+      const convs24h = convRes.data ?? [];
+      const msgs24h = msgRes.data ?? [];
+      const audits24h = auditRes.data ?? [];
+
+      const convMap = new Map(convs24h.map((c) => [c.id, c]));
+      const userMsgs24h = msgs24h.filter((m) => m.role === "user");
+      const aiMsgs24h = msgs24h.filter((m) => m.role === "assistant");
+      const errMsgs24h = msgs24h.filter((m) => m.status && m.status !== "ok");
+
+      const flaggedItems: {
+        conversation_id: string;
+        conversation_title: string;
+        owner_label: string;
+        category: string;
+        severity: "tinggi" | "sedang";
+        reason: string;
+        excerpt: string;
+        created_at: string;
+      }[] = [];
+
+      const flaggedConvSet = new Set<string>();
+      const convMsgCounts = new Map<string, number>();
+
+      for (const m of msgs24h) {
+        convMsgCounts.set(m.conversation_id, (convMsgCounts.get(m.conversation_id) ?? 0) + 1);
+        const conv = convMap.get(m.conversation_id);
+        const owner = ownerInfo(conv?.session_id ?? null, conv?.user_id ?? null, userMap);
+        const convTitle = conv?.title ?? "Percakapan Tanpa Judul";
+
+        if (m.role === "user") {
+          const hit = scanMessageSafety(String(m.content ?? ""));
+          if (hit) {
+            flaggedConvSet.add(m.conversation_id);
+            flaggedItems.push({
+              conversation_id: m.conversation_id,
+              conversation_title: convTitle,
+              owner_label: owner.label,
+              category: hit.category,
+              severity: hit.severity,
+              reason: hit.reason,
+              excerpt: String(m.content ?? "").replace(/\s+/g, " ").slice(0, 160),
+              created_at: m.created_at,
+            });
+          }
+        } else if (m.status && m.status !== "ok") {
+          flaggedConvSet.add(m.conversation_id);
+          flaggedItems.push({
+            conversation_id: m.conversation_id,
+            conversation_title: convTitle,
+            owner_label: owner.label,
+            category: "Gangguan Respons AI",
+            severity: "sedang",
+            reason: `Status respons AI tercatat "${m.status}".`,
+            excerpt: String(m.content ?? "").replace(/\s+/g, " ").slice(0, 160) || "(Tidak ada isi respons)",
+            created_at: m.created_at,
+          });
+        }
+      }
+
+      const highSeverity = flaggedItems.filter((f) => f.severity === "tinggi").length;
+      const status: "aman" | "perhatian" | "waspada" =
+        highSeverity > 0 ? "waspada" : (flaggedItems.length > 0 || errMsgs24h.length > 0 ? "perhatian" : "aman");
+
+      let headline = "";
+      if (status === "waspada") {
+        headline = `Perlu perhatian segera: ditemukan ${highSeverity} pesan berisiko tinggi (bahasa tidak pantas atau upaya penyalahgunaan) dari total ${userMsgs24h.length} pesan pengunjung dalam 24 jam terakhir.`;
+      } else if (status === "perhatian") {
+        headline = `Terdapat ${flaggedItems.length} catatan moderasi atau gangguan ringan dari ${convs24h.length} percakapan AI dalam 24 jam terakhir.`;
+      } else if (msgs24h.length === 0) {
+        headline = "Kondisi aman dan tenang — belum ada percakapan AI baru dari pengunjung dalam 24 jam terakhir.";
+      } else {
+        headline = `Semua berjalan normal dan aman dalam 24 jam terakhir. Tercatat ${convs24h.length} percakapan AI (${msgs24h.length} pesan) tanpa indikasi konten negatif atau pelanggaran.`;
+      }
+
+      const highlights: string[] = [];
+      highlights.push(`Aktivitas AI: ${sessions24h.length} sesi pengunjung aktif, ${convs24h.length} percakapan, dan ${msgs24h.length} total pesan (${userMsgs24h.length} pengguna · ${aiMsgs24h.length} AI).`);
+      if (flaggedItems.length > 0) {
+        highlights.push(`Moderasi Konten: ${flaggedItems.length} temuan perlu ditinjau (${highSeverity} prioritas tinggi, ${flaggedItems.length - highSeverity} prioritas sedang).`);
+      } else {
+        highlights.push("Moderasi Konten: Seluruh percakapan pengunjung bersih dari kata kasar, spam, maupun indikasi penyalahgunaan.");
+      }
+      if (errMsgs24h.length > 0) {
+        highlights.push(`Keandalan AI: Tercatat ${errMsgs24h.length} gangguan respons AI dalam 24 jam terakhir.`);
+      } else {
+        highlights.push("Keandalan AI: Tidak ada kegagalan respons model AI dalam 24 jam terakhir.");
+      }
+      const modActions = audits24h.filter((a) => ["delete_conversation", "delete_session", "clear_audit_logs", "cleanup_chats"].includes(a.action));
+      highlights.push(`Aktivitas Admin: ${audits24h.length} total log audit hari ini (${modActions.length} aksi pembersihan/moderasi data).`);
+
+      const recentConversations = convs24h.slice(0, 8).map((c) => {
+        const owner = ownerInfo(c.session_id, c.user_id, userMap);
+        return {
+          id: c.id,
+          title: c.title,
+          owner_label: owner.label,
+          message_count: convMsgCounts.get(c.id) ?? 0,
+          flagged: flaggedConvSet.has(c.id),
+          updated_at: c.updated_at,
+        };
+      });
+
+      const auditSummary = audits24h.slice(0, 10).map((a) => ({
+        id: a.id,
+        admin_label: ownerInfo(null, a.admin_user_id, userMap).label,
+        action: a.action,
+        created_at: a.created_at,
+      }));
+
+      return json(req, {
+        report: {
+          generated_at: new Date(nowMs).toISOString(),
+          period_start: sinceIso,
+          period_end: new Date(nowMs).toISOString(),
+          status,
+          headline,
+          summary: {
+            sessions_24h: sessions24h.length,
+            conversations_24h: convs24h.length,
+            messages_24h: msgs24h.length,
+            user_messages_24h: userMsgs24h.length,
+            ai_messages_24h: aiMsgs24h.length,
+            error_messages_24h: errMsgs24h.length,
+            audit_actions_24h: audits24h.length,
+            flagged_count: flaggedItems.length,
+            high_severity_count: highSeverity,
+          },
+          highlights,
+          flagged_items: flaggedItems.slice(0, 30),
+          recent_conversations: recentConversations,
+          recent_audits: auditSummary,
+        },
+      });
     }
 
     return json(req, { error: "unknown_action" }, 400);

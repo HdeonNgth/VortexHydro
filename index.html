@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="assets/styles.css?v=29">
+  <link rel="stylesheet" href="assets/styles.css?v=30">
 </head>
 <body>
   <!-- Fixed Pure WebGL2 Metaball Water Fluid Background (Behind All Content) -->
@@ -98,10 +98,14 @@
       </div>
       <i class="dsb__sep"></i>
       <div class="dsb__grp" role="group" aria-label="AI Assistant Monitor">
+        <button type="button" data-v="laporan" title="Laporan Harian (24 Jam)" aria-label="Laporan Harian (24 Jam)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/><circle cx="9.5" cy="9.5" r="1" fill="currentColor" stroke="none"/></svg>
+          <i class="dsb__badge" id="dsbReportBadge" hidden aria-hidden="true"></i>
+        </button>
         <button type="button" data-v="ai-chat" title="Riwayat Chat AI" aria-label="Riwayat Chat AI">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
         </button>
-        <button type="button" data-v="audit" title="Audit Log Admin" aria-label="Audit Log Admin">
+        <button type="button" data-v="audit" title="Audit Log &amp; Pembersihan" aria-label="Audit Log dan Pembersihan">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V7l7-4z"/><path d="M9.5 12.2 11.3 14 14.8 10.5"/></svg>
         </button>
       </div>
@@ -124,7 +128,7 @@
 
         <div class="wrap hero__center" id="hero-copy">
           <h1 class="hero__title">Vortex Hydro<br><span>Energi Bersih dari Aliran Rendah</span></h1>
-          <p class="hero__lead">Project Mekanika Fluida berbasis mikrohidro mini untuk aliran rendah. Kami merancang sistem pusaran air sirkulasi tertutup yang mengubah energi aliran sederhana menjadi listrik bersih tanpa bendungan besar.</p>
+          <p class="hero__lead">Proyek Mekanika Fluida berbasis pembangkit mikro-hidro mini untuk aliran rendah. Kami merancang sistem pusaran air sirkulasi tertutup yang mengubah energi aliran sederhana menjadi listrik bersih tanpa bendungan besar.</p>
         </div>
 
         <a class="hero__scroll-cue" href="#manifesto" aria-label="Gulir untuk menjelajah">
@@ -370,10 +374,10 @@
                 <span class="nav-card__no">03</span>
               </div>
               <div class="dome-card__rest">
-                <h3>Dokumentasi &amp; Spesifikasi</h3>
+                <h3>Dokumentasi &amp; Arsip</h3>
               </div>
               <div class="dome-card__reveal">
-                <p>Foto pengerjaan, arsip divisi, daftar spesifikasi komponen, dan jawaban pertanyaan umum.</p>
+                <p>Foto pengerjaan, video dokumenter, arsip tujuh divisi, dan jawaban pertanyaan umum.</p>
                 <span class="nav-card__go">Buka halaman →</span>
               </div>
             </a>
@@ -643,11 +647,11 @@
 
     <!-- ==================== PAGE 3: DOKUMENTASI & ARSIP DIVISI (BENTO DOCUMENTARY TEMPLATE) ==================== -->
     <div class="page doc-page" id="dokumentasi" data-title="Dokumentasi" hidden>
-      <!-- 01 / DOCUMENTATION RECAP (16:9) -->
+      <!-- 01 / REKAP DOKUMENTASI (16:9) -->
       <section class="doc-band doc-band--first">
         <div class="wrap">
           <div class="doc-head" data-reveal>
-            <span class="doc-tag">01 / DOCUMENTATION RECAP</span>
+            <span class="doc-tag">01 / REKAP DOKUMENTASI</span>
             <span class="doc-ratio">16:9</span>
           </div>
 
@@ -657,31 +661,31 @@
         </div>
       </section>
 
-      <!-- 02 / BEHIND THE PROCESS (1:1) -->
+      <!-- 02 / DI BALIK PROSES (1:1) -->
       <section class="doc-band">
         <div class="wrap">
           <div class="doc-head" data-reveal>
-            <span class="doc-tag">02 / BEHIND THE PROCESS</span>
+            <span class="doc-tag">02 / DI BALIK PROSES</span>
             <span class="doc-ratio">1:1</span>
           </div>
 
           <div class="doc-process">
-            <button type="button" class="doc-stage doc-stage--sq" data-doc-open="process" data-reveal aria-label="Putar pratinjau Process Film Vortex Hydro">
+            <button type="button" class="doc-stage doc-stage--sq" data-doc-open="process" data-reveal aria-label="Putar pratinjau Film Proses Vortex Hydro">
               <img src="assets/images/team-group.jpg" alt="Proses kolaborasi tim Vortex Hydro di laboratorium" loading="lazy" decoding="async">
               <span class="doc-stage__scrim" aria-hidden="true"></span>
               <span class="doc-stage__center">
                 <span class="doc-play" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 6.5v11l9-5.5-9-5.5z"/></svg>
                 </span>
-                <small>PROCESS FILM</small>
+                <small>FILM PROSES</small>
               </span>
             </button>
 
             <div class="doc-process__copy" data-reveal style="--d:90ms">
-              <h2>Behind Every Creation.</h2>
+              <h2>Di Balik Setiap Karya.</h2>
               <p>Persiapan, kolaborasi lintas disiplin, eksperimen laboratorium, dan kisah nyata di balik perancangan hingga uji coba prototipe Vortex Hydro.</p>
               <button type="button" class="doc-watch" data-doc-open="process">
-                <span>WATCH FILM</span>
+                <span>TONTON FILM</span>
                 <span class="doc-watch__arr" aria-hidden="true">↗</span>
               </button>
             </div>
@@ -689,13 +693,13 @@
         </div>
       </section>
 
-      <!-- 03 / DIVISION ARCHIVE (7-Card Asymmetric Bento Grid) -->
+      <!-- 03 / ARSIP DIVISI (7-Card Asymmetric Bento Grid) -->
       <section class="doc-band doc-band--archive">
         <div class="wrap">
           <div class="doc-arch__head" data-reveal>
             <div>
-              <span class="doc-tag">03 / DIVISION ARCHIVE</span>
-              <h1 class="doc-arch__title">Seven Different Stories.</h1>
+              <span class="doc-tag">03 / ARSIP DIVISI</span>
+              <h1 class="doc-arch__title">Tujuh Kisah Berbeda.</h1>
               <p class="doc-arch__sub">Satu perjalanan kolaboratif lintas pengurus inti dan enam divisi teknis.</p>
             </div>
             <span class="doc-arch__count" aria-hidden="true">07</span>
@@ -708,7 +712,7 @@
               <div class="bento-card__foot">
                 <span class="bento-pill">01</span>
                 <strong>Pengurus Inti</strong>
-                <span class="bento-exp">Explore ↗</span>
+                <span class="bento-exp">Jelajahi ↗</span>
               </div>
             </button>
 
@@ -768,8 +772,8 @@
           </div>
 
           <div class="doc-closing" data-reveal>
-            <strong>Every Moment Matters.</strong>
-            <span>VORTEX HYDRO · DOCUMENTATION ARCHIVE</span>
+            <strong>Setiap Momen Berarti.</strong>
+            <span>VORTEX HYDRO · ARSIP DOKUMENTASI</span>
           </div>
         </div>
       </section>
@@ -781,10 +785,10 @@
           <div class="faq-list">
             <details class="faq__item" open><summary>Apa itu Vortex Hydro?</summary><p>Simulator PLTA mikro-hidro berbasis pusaran air skala laboratorium yang dirancang, dibangun, dan diuji secara mandiri oleh mahasiswa Universitas Negeri Malang.</p></details>
             <details class="faq__item"><summary>Mengapa memakai pompa dan sirkulasi tertutup?</summary><p>Karena aliran sungai tidak mungkin dibawa ke laboratorium kampus, pompa Wasser 100 W menyirkulasikan air secara kontinu di atas rangka 2 × 0,8 m.</p></details>
-            <details class="faq__item"><summary>Apakah sistem ini butuh bendungan besar?</summary><p>Tidak. Konsep turbin pusaran dirancang khusus untuk memanfaatkan aliran ber-head rendah tanpa bendungan besar.</p></details>
-            <details class="faq__item"><summary>Apakah angka di Dashboard adalah sensor langsung?</summary><p>Pada versi situs statis, Dashboard memakai mesin simulasi prototipe di browser untuk mendemonstrasikan antarmuka pemantauan sambil menunggu integrasi sensor prototipe fisik asli.</p></details>
-            <details class="faq__item"><summary>Faktor apa yang memengaruhi daya listrik?</summary><p>Debit aliran (Q), tinggi jatuh (H), serta efisiensi mekanis turbin dan generator (η) sesuai persamaan P = ρ·g·Q·H·η. Anda bisa mencobanya lewat Kalkulator Daya di tombol alat pojok kiri bawah.</p></details>
-            <details class="faq__item"><summary>Bagaimana cara mengakses Dashboard Admin?</summary><p>Buka ikon kunci Login Admin pada Toolsbar pojok kiri bawah, lalu masuk menggunakan akun Administrator terverifikasi. Dashboard dan Riwayat Chat AI hanya dapat diakses oleh role admin.</p></details>
+            <details class="faq__item"><summary>Apakah sistem ini membutuhkan bendungan besar?</summary><p>Tidak. Konsep turbin pusaran dirancang khusus untuk memanfaatkan aliran ber-head rendah tanpa bendungan besar.</p></details>
+            <details class="faq__item"><summary>Apakah angka di Dashboard merupakan data sensor langsung?</summary><p>Pada versi situs statis, Dashboard memakai mesin simulasi prototipe di browser untuk mendemonstrasikan antarmuka pemantauan sambil menunggu integrasi sensor prototipe fisik asli.</p></details>
+            <details class="faq__item"><summary>Faktor apa saja yang memengaruhi daya listrik?</summary><p>Debit aliran (Q), tinggi jatuh (H), serta efisiensi mekanis turbin dan generator (η) sesuai persamaan P = ρ·g·Q·H·η. Anda dapat mencobanya melalui Kalkulator Daya pada menu alat di pojok kiri bawah.</p></details>
+            <details class="faq__item"><summary>Bagaimana cara mengakses Dashboard Admin?</summary><p>Buka ikon kunci Login Admin pada menu alat di pojok kiri bawah, lalu masuk menggunakan akun Administrator terverifikasi. Dashboard dan Riwayat Chat AI hanya dapat diakses oleh pengguna dengan peran Administrator.</p></details>
           </div>
         </div>
       </section>
@@ -840,7 +844,19 @@
             <button class="dpill" id="dpause" type="button">Jeda</button>
             <button class="dpill" type="button" data-theme-toggle aria-label="Ganti tema">Tema</button>
             <div class="dtop__acc">
-              <span class="dtop__av" id="dav" aria-hidden="true">A</span>
+              <span class="dtop__av dtop__av--logo" id="dav" title="Profil Administrator Vortex Hydro" aria-hidden="true">
+                <svg class="vxlogo__svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M52 10C28 11 14 31 18 54C21 67 30 75 41 79C31 69 27 56 30 43C33 29 44 20 58 17C56 13 54 11 52 10Z" fill="#3FA9C7"/>
+                  <path d="M16 47C15 68 30 84 51 86C40 79 34 69 35 58C26 57 20 53 16 47Z" fill="#63CEE3"/>
+                  <path d="M48 16C67 16 83 31 84 51C85 69 72 84 53 88C64 78 69 65 67 51C65 36 56 26 42 23C44 19 46 17 48 16Z" fill="#2B7DE9"/>
+                  <path d="M36 29C49 22 68 27 76 42C80 51 80 61 75 70C74 56 68 44 56 38C47 34 40 34 33 38C33 34 34 31 36 29Z" fill="#38BDF8"/>
+                  <path d="M25 74C38 86 60 88 74 75C61 78 46 77 36 69C31 65 28 60 26 55C23 62 23 68 25 74Z" fill="#1D63B8"/>
+                  <path d="M21 28C18 22 20 17 24 19C26 20 26 26 21 28Z" fill="#63CEE3"/>
+                  <path d="M29 18C28 13 31 10 34 12C35 14 33 17 29 18Z" fill="#3FA9C7"/>
+                  <path d="M84 56C88 60 88 67 83 69C80 68 81 61 84 56Z" fill="#3FA9C7"/>
+                  <path d="M79 72C82 76 80 81 75 81C74 78 76 74 79 72Z" fill="#38BDF8"/>
+                </svg>
+              </span>
               <b id="dwho">Admin</b>
               <button class="dtop__out" id="dlogout" type="button" aria-label="Keluar dari akun" title="Keluar">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8"/><path d="M6.4 6.8a8 8 0 1 0 11.2 0"/></svg>
@@ -852,11 +868,12 @@
         <!-- Hero Greeting Row (Dashboard V35 Rhythm) -->
         <header class="dhero">
           <div class="dhead">
-            <h1 id="dtitle">Welcome Back, <em>Admin Vortex</em></h1>
-            <p id="dsub">Pantau telemetri prototipe turbin pusaran dan riwayat percakapan Vortex Hydro AI dalam satu ruang kerja terverifikasi.</p>
+            <h1 id="dtitle">Selamat Datang Kembali, <em>Admin Vortex</em></h1>
+            <p id="dsub">Pantau telemetri prototipe turbin pusaran, laporan harian, dan riwayat percakapan Vortex Hydro AI dalam satu ruang kerja terverifikasi.</p>
           </div>
           <div class="dhero__act">
             <span class="dpill mono" id="dclk">--:--:--</span>
+            <button type="button" class="dpill" id="dopenRepBtn">Laporan 24 Jam</button>
             <button type="button" class="c-btn c-btn--navy dhero__btn" id="dopenAiBtn">Riwayat Chat AI →</button>
           </div>
         </header>
@@ -891,12 +908,12 @@
             <!-- Insights Row -->
             <div class="drow">
               <div class="dc dchart-card" data-sec="ringkasan grafik">
-                <h3>Operational Insights · 60 Detik
+                <h3>Analisis Operasional · 60 Detik
                   <span class="dtabs" id="dtabs">
                     <button type="button" aria-pressed="true" data-k="debit">Debit</button>
                     <button type="button" aria-pressed="false" data-k="vbat">Baterai</button>
-                    <button type="button" aria-pressed="false" data-k="rpmShaft">RPM poros</button>
-                    <button type="button" aria-pressed="false" data-k="rpmGen">RPM gen</button>
+                    <button type="button" aria-pressed="false" data-k="rpmShaft">RPM Poros</button>
+                    <button type="button" aria-pressed="false" data-k="rpmGen">RPM Generator</button>
                   </span>
                 </h3>
                 <svg class="dchart" id="dch" viewBox="0 0 600 250" role="img" aria-label="Grafik data sensor"></svg>
@@ -905,8 +922,12 @@
               <div class="dc" data-sec="ringkasan sensor">
                 <h3 style="margin:0 0 14px">Kinerja Turbin</h3>
                 <div class="dgau">
-                  <div><svg viewBox="0 0 120 120"><circle class="arc" cx="60" cy="60" r="48" pathLength="100" stroke="rgba(127,127,127,.18)" stroke-dasharray="75 100"/><circle class="arc" id="grpm" cx="60" cy="60" r="48" pathLength="100" stroke="var(--cyan)" stroke-dasharray="75 100" stroke-dashoffset="75"/><text x="60" y="66" id="grpmt">0</text></svg><small>RPM poros</small></div>
-                  <div><svg viewBox="0 0 120 120"><circle class="arc" cx="60" cy="60" r="48" pathLength="100" stroke="rgba(127,127,127,.18)" stroke-dasharray="75 100"/><circle class="arc" id="geff" cx="60" cy="60" r="48" pathLength="100" stroke="var(--ok)" stroke-dasharray="75 100" stroke-dashoffset="75"/><text x="60" y="66" id="geft">0</text></svg><small>RPM generator</small></div>
+                  <div><svg viewBox="0 0 120 120"><circle class="arc" cx="60" cy="60" r="48" pathLength="100" stroke="rgba(127,127,127,.18)" stroke-dasharray="75 100"/><circle class="arc" id="grpm" cx="60" cy="60" r="48" pathLength="100" stroke="var(--cyan)" stroke-dasharray="75 100" stroke-dashoffset="75"/><text x="60" y="66" id="grpmt">0</text></svg><small>RPM Poros</small></div>
+                  <div><svg viewBox="0 0 120 120"><circle class="arc" cx="60" cy="60" r="48" pathLength="100" stroke="rgba(127,127,127,.18)" stroke-dasharray="75 100"/><circle class="arc" id="geff" cx="60" cy="60" r="48" pathLength="100" stroke="var(--ok)" stroke-dasharray="75 100" stroke-dashoffset="75"/><text x="60" y="66" id="geft">0</text></svg><small>RPM Generator</small></div>
+                </div>
+                <div class="dlog__head">
+                  <span>Log Aktivitas Prototipe</span>
+                  <button type="button" class="dpill dpill--sm" id="dlogClear">Bersihkan Log</button>
                 </div>
                 <ul class="dlog" id="dlog"></ul>
               </div>
@@ -917,14 +938,14 @@
           <aside class="dbento__side" data-sec="ringkasan sensor">
             <div class="dvitals">
               <div class="dvitals__head">
-                <div><b>Vortex Live Monitor</b><small>Prototipe Sirkulasi Tertutup</small></div>
+                <div><b>Monitor Langsung Vortex</b><small>Prototipe Sirkulasi Tertutup</small></div>
                 <span class="dvitals__live"><i></i>LIVE</span>
               </div>
               <div class="dvitals__grid">
                 <div class="dvit"><span>Debit Q</span><b id="dvDebit">0.00</b><small>L/s</small></div>
                 <div class="dvit"><span>RPM Gen</span><b id="dvRpmg">0</b><small>RPM</small></div>
                 <div class="dvit"><span>Baterai</span><b id="dvVbat">0.00</b><small>Volt</small></div>
-                <div class="dvit"><span>Daya Est.</span><b id="dvDaya">0.00</b><small>Watt</small></div>
+                <div class="dvit"><span>Estimasi Daya</span><b id="dvDaya">0.00</b><small>Watt</small></div>
               </div>
               <svg class="dvitals__wave" viewBox="0 0 280 56" fill="none" aria-hidden="true">
                 <path class="svg-chute-flow" d="M0 32 Q20 12 40 32 T80 32 T120 28 T160 16 T200 34 T240 24 T280 32" stroke="var(--cyan)" stroke-width="2.2" stroke-dasharray="8 6" stroke-linecap="round"/>
@@ -942,12 +963,82 @@
           </aside>
         </div>
 
+        <!-- DEDICATED 24-HOUR DAILY REPORT PANE (Sidebar Icon: Laporan Harian) -->
+        <section class="drep" data-sec="laporan" hidden>
+          <div class="dc drep__banner" id="drepBanner">
+            <div class="drep__binfo">
+              <div class="drep__btop">
+                <span class="drep__status is-aman" id="drepStatusBadge">KONDISI AMAN</span>
+                <span class="mono drep__time" id="drepUpdated">Memuat ringkasan 24 jam terakhir…</span>
+              </div>
+              <h2 id="drepHeadline">Menyiapkan laporan harian Vortex Hydro…</h2>
+              <p class="drep__sub" id="drepPeriod">Mencakup aktivitas percakapan AI, deteksi konten tidak pantas, gangguan sistem, dan log admin dalam 24 jam terakhir.</p>
+            </div>
+            <div class="drep__bact">
+              <button type="button" class="dpill" id="drepCopy">Salin Ringkasan</button>
+              <button type="button" class="c-btn c-btn--navy dhero__btn" id="drepRefresh">Segarkan Laporan</button>
+            </div>
+          </div>
+
+          <div class="dgrid">
+            <div class="dc"><small>Sesi Pengunjung (24 Jam)</small><b id="drepSess">0</b><span class="dc__sub">Sesi unik aktif hari ini</span></div>
+            <div class="dc"><small>Percakapan AI (24 Jam)</small><b id="drepConv">0</b><span class="dc__sub" id="drepMsgs">0 pesan hari ini</span></div>
+            <div class="dc"><small>Temuan Moderasi AI</small><b id="drepFlagged">0</b><span class="dc__sub" id="drepFlagSub">0 prioritas tinggi</span></div>
+            <div class="dc"><small>Aktivitas Admin (24 Jam)</small><b id="drepAudit">0</b><span class="dc__sub" id="drepSysSub">0 gangguan respons AI</span></div>
+          </div>
+
+          <div class="drep__grid">
+            <div class="drep__col">
+              <div class="dc">
+                <div class="daudit__head">
+                  <h3>Ringkasan Kejadian Hari Ini</h3>
+                  <span class="dpill dpill--sm">24 Jam Terakhir</span>
+                </div>
+                <ul class="drep__list" id="drepHighlights">
+                  <li>Memuat ringkasan kejadian harian…</li>
+                </ul>
+              </div>
+
+              <div class="dc">
+                <div class="daudit__head">
+                  <h3>Deteksi Chat AI Tidak Baik / Anomali</h3>
+                  <span class="dpill dpill--sm" id="drepFlagPill">0 Temuan</span>
+                </div>
+                <div class="drep__flags" id="drepFlagList">
+                  <div class="dai__empty">Memindai percakapan 24 jam terakhir…</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="drep__col">
+              <div class="dc">
+                <div class="daudit__head">
+                  <h3>Percakapan AI Hari Ini</h3>
+                  <button type="button" class="drecent__all" id="drepGoChat">Buka Semua →</button>
+                </div>
+                <div class="drecent__list" id="drepRecentConvs">
+                  <p style="margin:0;font-size:.82rem;color:var(--muted)">Memuat percakapan 24 jam terakhir…</p>
+                </div>
+              </div>
+
+              <div class="dc">
+                <div class="daudit__head">
+                  <h3>Ringkasan Telemetri &amp; Aktivitas Admin</h3>
+                  <button type="button" class="drecent__all" id="drepGoAudit">Lihat Audit →</button>
+                </div>
+                <div class="drep__meta-grid" id="drepTelemetry"></div>
+                <ul class="dlog" id="drepAuditList"></ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- INTEGRATED AI CHAT MONITORING PANE (Sidebar Icon: Riwayat Chat AI) -->
         <section class="dai" data-sec="ai-chat" hidden>
           <div class="dgrid">
             <div class="dc"><small>Total Sesi Pengunjung</small><b id="aiStSess">0</b><span class="dc__sub">Sesi unik terisolasi</span></div>
             <div class="dc"><small>Total Percakapan</small><b id="aiStConv">0</b><span class="dc__sub" id="aiStTodayC">0 hari ini</span></div>
-            <div class="dc"><small>Total Pesan</small><b id="aiStMsg">0</b><span class="dc__sub" id="aiStSplit">0 user · 0 AI</span></div>
+            <div class="dc"><small>Total Pesan</small><b id="aiStMsg">0</b><span class="dc__sub" id="aiStSplit">0 pengguna · 0 AI</span></div>
             <div class="dc"><small>Audit Log Admin</small><b id="aiStAudit">0</b><span class="dc__sub" id="aiStTodayM">0 pesan hari ini</span></div>
           </div>
 
@@ -958,9 +1049,20 @@
               <input type="date" id="aiFrom" aria-label="Dari tanggal">
               <input type="date" id="aiTo" aria-label="Sampai tanggal">
               <button type="submit" class="c-btn c-btn--navy dai__btn">Filter</button>
-              <button type="button" class="c-btn c-btn--outline dai__btn" id="aiReset">Reset</button>
+              <button type="button" class="c-btn c-btn--outline dai__btn" id="aiReset">Atur Ulang</button>
               <button type="button" class="c-btn c-btn--outline dai__btn" id="aiRefresh">Muat Ulang</button>
             </form>
+            <div class="dclean-bar">
+              <span class="dclean-bar__lbl">Pembersihan Riwayat Chat AI:</span>
+              <select id="aiCleanupScope" aria-label="Rentang pembersihan riwayat chat">
+                <option value="older_1d">Lebih dari 24 jam</option>
+                <option value="older_7d" selected>Lebih dari 7 hari</option>
+                <option value="older_30d">Lebih dari 30 hari</option>
+                <option value="all">Hapus semua chat AI</option>
+              </select>
+              <button type="button" class="dpill dai__danger" id="aiCleanupBtn">Bersihkan Chat</button>
+              <span class="dclean-bar__msg" id="aiCleanupMsg" role="status" aria-live="polite"></span>
+            </div>
           </div>
 
           <div class="dai__split">
@@ -969,7 +1071,7 @@
               <div class="dai__list" id="aiConvList"></div>
             </div>
             <div class="dc dai__detail" id="aiDetailPane">
-              <div class="dai__empty">Pilih salah satu percakapan pengunjung di sebelah kiri untuk membaca pesan user dan respons AI secara berurutan.</div>
+              <div class="dai__empty">Pilih salah satu percakapan pengunjung di sebelah kiri untuk membaca pesan pengguna dan respons AI secara berurutan.</div>
             </div>
           </div>
         </section>
@@ -978,11 +1080,18 @@
         <section class="dc daudit" data-sec="audit" hidden>
           <div class="daudit__head">
             <h3>Riwayat Aktivitas Admin (50 Terbaru)</h3>
-            <div style="display:flex;gap:8px">
+            <div class="daudit__actions">
+              <select id="aiAuditClearScope" class="daudit__sel" aria-label="Rentang pembersihan audit log">
+                <option value="older_7d">Hapus log &gt; 7 hari</option>
+                <option value="older_30d">Hapus log &gt; 30 hari</option>
+                <option value="all">Hapus semua audit log</option>
+              </select>
+              <button type="button" class="dpill dai__danger" id="aiAuditClearBtn">Bersihkan Log</button>
               <button type="button" class="dpill" id="aiAuditRefresh">Segarkan</button>
               <a class="dpill" href="admin/ai-monitor/">Buka Halaman Terpisah ↗</a>
             </div>
           </div>
+          <p class="daudit__flash" id="aiAuditFlash" role="status" aria-live="polite" hidden></p>
           <div style="overflow-x:auto">
             <table class="daudit__tbl">
               <thead><tr><th>Waktu</th><th>Admin</th><th>Aksi</th><th>Target</th></tr></thead>
@@ -1052,7 +1161,7 @@
     <div class="vxt__pan" id="vxp" role="dialog" aria-label="Kalkulator Daya Mikro-hidro" hidden>
       <div class="vxt__pan-head">
         <h4>Kalkulator Daya Mikro-hidro</h4>
-        <button type="button" id="vxc" aria-label="Tutup">×</button>
+        <button type="button" id="vxc" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
       <div class="vxt__field"><label for="vq">Debit air Q (liter/detik)</label><input id="vq" type="number" min="0" step="0.5" value="50"></div>
       <div class="vxt__field"><label for="vh">Head H (meter)</label><input id="vh" type="number" min="0" step="0.1" value="1.5"></div>
@@ -1064,7 +1173,7 @@
     <div class="vxt__pan" id="vxpal" role="dialog" aria-label="Tampilan dan Palet Warna" hidden>
       <div class="vxt__pan-head">
         <h4>Mode Warna &amp; Tampilan</h4>
-        <button type="button" id="vxpc" aria-label="Tutup">×</button>
+        <button type="button" id="vxpc" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
       <div class="pal-list" id="pal-list">
         <button type="button" class="pal-opt" data-pal-pick="vortex">
@@ -1165,7 +1274,7 @@
   <!-- Documentary & Division Archive Lightbox Modal -->
   <div class="doc-mod-ov" id="doc-mod-ov" hidden role="dialog" aria-modal="true" aria-labelledby="doc-mod-title">
     <div class="doc-mod">
-      <button type="button" class="doc-mod__x" id="doc-mod-close" aria-label="Tutup arsip">×</button>
+      <button type="button" class="doc-mod__x" id="doc-mod-close" aria-label="Tutup arsip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <div class="doc-mod__media" id="doc-mod-media"></div>
       <div class="doc-mod__thumbs" id="doc-mod-thumbs" hidden></div>
       <div class="doc-mod__body">
@@ -1195,9 +1304,9 @@
   <script src="assets/fluid-bg.js?v=1"></script>
   <script src="assets/three.min.js"></script>
   <script src="assets/hero-liquid.js?v=6"></script>
-  <script src="assets/app.js?v=22"></script>
-  <script src="assets/dashboard.js?v=3"></script>
-  <script src="assets/i18n.js?v=17"></script>
-  <script src="assets/ai-assistant.js?v=9" defer></script>
+  <script src="assets/app.js?v=23"></script>
+  <script src="assets/dashboard.js?v=4"></script>
+  <script src="assets/i18n.js?v=18"></script>
+  <script src="assets/ai-assistant.js?v=10" defer></script>
 </body>
 </html>
