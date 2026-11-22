@@ -556,6 +556,20 @@
         </svg>
 
         <div class="wrap">
+          <!-- Pendahuluan singkat -->
+          <section class="hiw-intro" aria-labelledby="hiw-intro-title" data-reveal>
+            <div class="hiw-intro__copy">
+              <span class="hiw-intro__label">Pendahuluan</span>
+              <h2 class="hiw-intro__title" id="hiw-intro-title">Listrik dari aliran air, tanpa bendungan besar.</h2>
+              <p class="hiw-intro__text">Vortex Hydro adalah simulator PLTA mikro-hidro skala laboratorium. Air mengalir memutar kincir, kincir menggerakkan generator, dan hasilnya menjadi listrik. Di bawah ini, ikuti perjalanan air langkah demi langkah.</p>
+            </div>
+            <ul class="hiw-intro__facts">
+              <li><strong>Sirkulasi tertutup</strong><span>Air dipakai ulang terus</span></li>
+              <li><strong>Kincir 6 sudu</strong><span>Ø 330 mm</span></li>
+              <li><strong>Pompa 100 W</strong><span>Mengembalikan air ke atas</span></li>
+            </ul>
+          </section>
+
           <div class="hiw__stage" data-reveal>
             <!-- Left: editorial header -->
             <header class="hiw__copy">
@@ -712,6 +726,25 @@
               </button>
             </div>
           </div>
+
+          <!-- FAQ: pertanyaan yang sering diajukan seputar cara kerja -->
+          <section class="hiw-faq" id="faq-sec" aria-labelledby="hiw-faq-title" data-reveal>
+            <header class="hiw-faq__head">
+              <span class="hiw-faq__label">FAQ</span>
+              <h2 class="hiw-faq__title" id="hiw-faq-title">Masih penasaran?</h2>
+              <p class="hiw-faq__lead">Jawaban singkat untuk pertanyaan yang paling sering muncul.</p>
+            </header>
+            <div class="hiw-faq__list">
+              <details class="hiw-faq__item" name="hiw-faq" open><summary>Apa itu Vortex Hydro?</summary><p>Simulator PLTA mikro-hidro berbasis pusaran air skala laboratorium yang dirancang, dibangun, dan diuji secara mandiri oleh mahasiswa Universitas Negeri Malang.</p></details>
+              <details class="hiw-faq__item" name="hiw-faq"><summary>Bagaimana putaran kincir menjadi listrik?</summary><p>Putaran kincir dinaikkan 1:4 lewat pulley, lalu memutar generator DC XD 3240 yang mengubahnya menjadi listrik DC.</p></details>
+              <details class="hiw-faq__item" name="hiw-faq"><summary>Ke mana air pergi setelah memutar kincir?</summary><p>Air jatuh ke ember penampung di bawah, lalu pompa 100 W menyedotnya dan mengalirkannya lewat pipa kembali ke bak penenang atas. Siklus ini berulang terus.</p></details>
+              <details class="hiw-faq__item" name="hiw-faq"><summary>Mengapa memakai pompa dan sirkulasi tertutup?</summary><p>Karena aliran sungai tidak mungkin dibawa ke laboratorium kampus, pompa Wasser 100 W menyirkulasikan air secara kontinu di atas rangka 2 × 0,8 m.</p></details>
+              <details class="hiw-faq__item" name="hiw-faq"><summary>Apakah sistem ini membutuhkan bendungan besar?</summary><p>Tidak. Konsep turbin pusaran dirancang khusus untuk memanfaatkan aliran ber-head rendah tanpa bendungan besar.</p></details>
+              <details class="hiw-faq__item" name="hiw-faq"><summary>Faktor apa saja yang memengaruhi daya listrik?</summary><p>Debit aliran (Q), tinggi jatuh (H), serta efisiensi mekanis turbin dan generator (η) sesuai persamaan P = ρ·g·Q·H·η. Anda dapat mencobanya melalui Kalkulator Daya pada menu alat di pojok kiri bawah.</p></details>
+              <details class="hiw-faq__item" name="hiw-faq"><summary>Apakah angka di Dashboard merupakan data sensor langsung?</summary><p>Pada versi situs statis, Dashboard memakai mesin simulasi prototipe di browser untuk mendemonstrasikan antarmuka pemantauan sambil menunggu integrasi sensor prototipe fisik asli.</p></details>
+              <details class="hiw-faq__item" name="hiw-faq"><summary>Bagaimana cara mengakses Dashboard Admin?</summary><p>Buka ikon kunci Login Admin pada menu alat di pojok kiri bawah, lalu masuk menggunakan akun Administrator terverifikasi. Dashboard dan Riwayat Chat AI hanya dapat diakses oleh pengguna dengan peran Administrator.</p></details>
+            </div>
+          </section>
         </div>
       </section>
     </div>
@@ -845,21 +878,6 @@
           <div class="doc-closing" data-reveal>
             <strong>Setiap Momen Berarti.</strong>
             <span>VORTEX HYDRO · ARSIP DOKUMENTASI</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="sec sec--stone" id="faq-sec">
-        <div class="wrap">
-          <span class="eyebrow">Vortex Hydro · FAQ</span>
-          <h2 class="h-sec">Pertanyaan yang <em>sering diajukan</em></h2>
-          <div class="faq-list">
-            <details class="faq__item" open><summary>Apa itu Vortex Hydro?</summary><p>Simulator PLTA mikro-hidro berbasis pusaran air skala laboratorium yang dirancang, dibangun, dan diuji secara mandiri oleh mahasiswa Universitas Negeri Malang.</p></details>
-            <details class="faq__item"><summary>Mengapa memakai pompa dan sirkulasi tertutup?</summary><p>Karena aliran sungai tidak mungkin dibawa ke laboratorium kampus, pompa Wasser 100 W menyirkulasikan air secara kontinu di atas rangka 2 × 0,8 m.</p></details>
-            <details class="faq__item"><summary>Apakah sistem ini membutuhkan bendungan besar?</summary><p>Tidak. Konsep turbin pusaran dirancang khusus untuk memanfaatkan aliran ber-head rendah tanpa bendungan besar.</p></details>
-            <details class="faq__item"><summary>Apakah angka di Dashboard merupakan data sensor langsung?</summary><p>Pada versi situs statis, Dashboard memakai mesin simulasi prototipe di browser untuk mendemonstrasikan antarmuka pemantauan sambil menunggu integrasi sensor prototipe fisik asli.</p></details>
-            <details class="faq__item"><summary>Faktor apa saja yang memengaruhi daya listrik?</summary><p>Debit aliran (Q), tinggi jatuh (H), serta efisiensi mekanis turbin dan generator (η) sesuai persamaan P = ρ·g·Q·H·η. Anda dapat mencobanya melalui Kalkulator Daya pada menu alat di pojok kiri bawah.</p></details>
-            <details class="faq__item"><summary>Bagaimana cara mengakses Dashboard Admin?</summary><p>Buka ikon kunci Login Admin pada menu alat di pojok kiri bawah, lalu masuk menggunakan akun Administrator terverifikasi. Dashboard dan Riwayat Chat AI hanya dapat diakses oleh pengguna dengan peran Administrator.</p></details>
           </div>
         </div>
       </section>

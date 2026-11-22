@@ -91,6 +91,25 @@
     'Tahap 04': 'Stage 04',
     'Membuat desain 3D dan gambar kerja teknik untuk sistem sirkulasi air tertutup menggunakan AutoCAD, ANSYS Fluent, dan MATLAB.': 'Creating 3D designs and engineering drawings for the closed-loop water circulation system using AutoCAD, ANSYS Fluent, and MATLAB.',
     'Vortex Hydro · FAQ': 'Vortex Hydro · FAQ',
+    'Listrik dari aliran air, tanpa bendungan besar.': 'Electricity from flowing water, no large dam needed.',
+    'Vortex Hydro adalah simulator PLTA mikro-hidro skala laboratorium. Air mengalir memutar kincir, kincir menggerakkan generator, dan hasilnya menjadi listrik. Di bawah ini, ikuti perjalanan air langkah demi langkah.': 'Vortex Hydro is a laboratory-scale micro-hydro power plant simulator. Water flows to turn the wheel, the wheel drives the generator, and the result is electricity. Below, follow the water step by step.',
+    'Air dipakai ulang terus': 'Water is reused continuously',
+    'Mengembalikan air ke atas': 'Returns water to the top',
+    'Masih penasaran?': 'Still curious?',
+    'Jawaban singkat untuk pertanyaan yang paling sering muncul.': 'Quick answers to the questions we hear most often.',
+    'Simulator PLTA mikro-hidro berbasis pusaran air skala laboratorium yang dirancang, dibangun, dan diuji secara mandiri oleh mahasiswa Universitas Negeri Malang.': 'A laboratory-scale vortex-based micro-hydro power plant simulator designed, built, and tested independently by Universitas Negeri Malang students.',
+    'Bagaimana putaran kincir menjadi listrik?': 'How does the wheel rotation become electricity?',
+    'Putaran kincir dinaikkan 1:4 lewat pulley, lalu memutar generator DC XD 3240 yang mengubahnya menjadi listrik DC.': 'The wheel speed is stepped up 1:4 through a pulley, then drives the XD 3240 DC generator, which turns it into DC electricity.',
+    'Ke mana air pergi setelah memutar kincir?': 'Where does the water go after turning the wheel?',
+    'Air jatuh ke ember penampung di bawah, lalu pompa 100 W menyedotnya dan mengalirkannya lewat pipa kembali ke bak penenang atas. Siklus ini berulang terus.': 'The water falls into the catch bucket below, then the 100 W pump draws it up and sends it through the pipe back to the upper settling tank. The cycle repeats continuously.',
+    'Karena aliran sungai tidak mungkin dibawa ke laboratorium kampus, pompa Wasser 100 W menyirkulasikan air secara kontinu di atas rangka 2 × 0,8 m.': 'A river cannot be brought into the campus lab, so a 100 W Wasser pump circulates the water continuously over a 2 × 0.8 m frame.',
+    'Tidak. Konsep turbin pusaran dirancang khusus untuk memanfaatkan aliran ber-head rendah tanpa bendungan besar.': 'No. The vortex turbine concept is designed to use low-head flow without a large dam.',
+    'Faktor apa saja yang memengaruhi daya listrik?': 'What factors affect the electrical power?',
+    'Debit aliran (Q), tinggi jatuh (H), serta efisiensi mekanis turbin dan generator (η) sesuai persamaan P = ρ·g·Q·H·η. Anda dapat mencobanya melalui Kalkulator Daya pada menu alat di pojok kiri bawah.': 'Flow rate (Q), head (H), and the mechanical efficiency of the turbine and generator (η), following P = ρ·g·Q·H·η. You can try it with the Power Calculator in the tools menu at the bottom left.',
+    'Apakah angka di Dashboard merupakan data sensor langsung?': 'Are the Dashboard numbers live sensor data?',
+    'Pada versi situs statis, Dashboard memakai mesin simulasi prototipe di browser untuk mendemonstrasikan antarmuka pemantauan sambil menunggu integrasi sensor prototipe fisik asli.': 'In the static site version, the Dashboard uses a prototype simulation engine in the browser to demonstrate the monitoring interface while waiting for real sensor integration on the physical prototype.',
+    'Bagaimana cara mengakses Dashboard Admin?': 'How do I access the Admin Dashboard?',
+    'Buka ikon kunci Login Admin pada menu alat di pojok kiri bawah, lalu masuk menggunakan akun Administrator terverifikasi. Dashboard dan Riwayat Chat AI hanya dapat diakses oleh pengguna dengan peran Administrator.': 'Open the Admin Login key icon in the tools menu at the bottom left, then sign in with a verified Administrator account. The Dashboard and AI Chat History are only available to users with the Administrator role.',
     'Organisasi Proyek Kelas': 'Class Project Organization',
     'Kolaborasi mahasiswa Teknologi Rekayasa Pembangkit Energi, Fakultas Vokasi, Universitas Negeri Malang dalam kepengurusan inti dan 7 divisi teknis.': 'Collaboration of Energy Power Generation Engineering Technology students, Faculty of Vocational Studies, Universitas Negeri Malang across core management and 7 technical divisions.',
     'Pimpinan Proyek': 'Project Leadership',
@@ -537,11 +556,11 @@
 
   function updateTitle() {
     var titles = {
-      id: { beranda: 'Vortex Hydro', eksplorasi: 'Eksplorasi 3D', tentang: 'Cara Kerja Sistem', dokumentasi: 'Dokumentasi & FAQ', 'tentang-kami': 'Tentang Kami', 'struktur-tim': 'Struktur Tim', dashboard: 'Dashboard' },
-      en: { beranda: 'Vortex Hydro', eksplorasi: '3D Exploration', tentang: 'How It Works', dokumentasi: 'Documentation & FAQ', 'tentang-kami': 'About Us', 'struktur-tim': 'Team Structure', dashboard: 'Dashboard' }
+      id: { beranda: 'Vortex Hydro', eksplorasi: 'Eksplorasi 3D', tentang: 'Cara Kerja Sistem', dokumentasi: 'Dokumentasi', 'tentang-kami': 'Tentang Kami', 'struktur-tim': 'Struktur Tim', dashboard: 'Dashboard' },
+      en: { beranda: 'Vortex Hydro', eksplorasi: '3D Exploration', tentang: 'How It Works', dokumentasi: 'Documentation', 'tentang-kami': 'About Us', 'struktur-tim': 'Team Structure', dashboard: 'Dashboard' }
     };
     var route = (window.location.hash || '#beranda').slice(1);
-    if (route === 'faq') route = 'dokumentasi';
+    if (route === 'faq') route = 'tentang';
     var title = titles[language][route] || titles[language].beranda;
     document.title = route === 'beranda' ? title : title + ' | Vortex Hydro';
   }

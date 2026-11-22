@@ -130,7 +130,7 @@
     var raw = (location.hash || '#beranda').slice(1);
     var scrollFaq = false;
     var scrollKontak = false;
-    if (raw === 'faq') { raw = 'dokumentasi'; scrollFaq = true; }
+    if (raw === 'faq') { raw = 'tentang'; scrollFaq = true; }
     else if (raw === 'kontak') { raw = 'beranda'; scrollKontak = true; }
     else if (raw === 'struktur-tim' || raw === 'tim') { raw = 'tentang-kami'; }
     else if (raw === 'teknologi' || raw === 'cara-kerja' || raw === 'inovasi') { raw = 'tentang'; }
