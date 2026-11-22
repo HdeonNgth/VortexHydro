@@ -559,185 +559,216 @@
     }
   })();
 
-  /* ---------- 5. Redesigned Interactive Editorial How It Works (#tentang) ---------- */
+  /* ---------- 5. Interactive Swipe Flow — How It Works (#tentang) ---------- */
   (function initHowItWorks() {
     var root = $('hiw-root');
     if (!root) return;
 
-    var STAGES = [
-      {
-        num: '01',
-        phase: 'Tahap Pertama',
-        code: 'TAHAP 01 · PEMETAAN ALIRAN',
-        title: 'Eksplorasi Ide',
-        lead: 'Menemukan potensi dan solusi dari setiap tantangan.',
-        body: 'Memetakan potensi aliran ber-head rendah, merumuskan mekanisme pusaran air sirkulasi tertutup, dan mengidentifikasi kebutuhan daya tanpa bendungan besar.',
-        tags: ['Head Rendah', 'Analisis Debit', 'Konsep Sirkulasi']
-      },
-      {
-        num: '02',
-        phase: 'Tahap Kedua',
-        code: 'TAHAP 02 · REKAYASA & SIMULASI',
-        title: 'Proses Teknologi',
-        lead: 'Mengembangkan ide melalui teknologi dan pendekatan yang tepat.',
-        body: 'Memodelkan geometri saluran akrilik 3D di AutoCAD, mensimulasikan dinamika aliran fluida di ANSYS Fluent, dan memvalidasi perhitungan daya dengan MATLAB.',
-        tags: ['AutoCAD 3D', 'ANSYS Fluent', 'MATLAB']
-      },
-      {
-        num: '03',
-        phase: 'Tahap Ketiga',
-        code: 'TAHAP 03 · FABRIKASI PROTOTIPE',
-        title: 'Implementasi',
-        lead: 'Mengubah konsep menjadi solusi nyata.',
-        body: 'Merakit rangka laboratorium 2,0 × 0,8 m, kincir 6 sudu Ø 330 mm, transmisi pulley step-up 1:4 pada zona kering, dan Generator DC XD 3240.',
-        tags: ['Kincir 6 Sudu', 'Pulley 1:4', 'Generator DC']
-      },
-      {
-        num: '04',
-        phase: 'Tahap Keempat',
-        code: 'TAHAP 04 · ENERGI BERKELANJUTAN',
-        title: 'Dampak Nyata',
-        lead: 'Menciptakan manfaat untuk masa depan yang lebih baik.',
-        body: 'Menghasilkan listrik DC bersih 12 V untuk beban LED sekaligus menjadi referensi edukasi dan riset energi terbarukan skala mikro tanpa bendungan besar.',
-        tags: ['Output 12 V DC', 'Tanpa Bendungan', 'Riset Terbuka']
-      }
+    /* 6 langkah sirkulasi air: urutan sama dengan rail */
+    var STEPS = [
+      { title: 'Air Masuk', desc: 'Air dari bak penenang atas mengalir masuk ke saluran miring menuju kincir.', chips: ['Saluran miring', 'Debit terukur'] },
+      { title: 'Turbin', desc: 'Air memutar turbin secara efisien.', chips: ['Kincir 6 sudu', 'Ø 330 mm'] },
+      { title: 'Generator', desc: 'Putaran dinaikkan 1:4 lewat pulley, lalu diubah menjadi listrik DC.', chips: ['Pulley 1:4', 'Generator DC XD 3240'] },
+      { title: 'Air Jatuh ke Ember', desc: 'Selesai memutar turbin, air jatuh ke ember penampung di bagian bawah.', chips: ['Penampung bawah'] },
+      { title: 'Pompa Bawah', desc: 'Pompa menyedot air dari penampung lalu mendorongnya naik kembali.', chips: ['Pompa 100 W', 'Sirkulasi kontinu'] },
+      { title: 'Pipa Kembali ke Awal', desc: 'Air kembali ke bak penenang atas, lalu siklus berulang tanpa henti.', chips: ['Pipa Ø 45 mm', 'Sirkulasi tertutup'] }
     ];
+    /* Tautan "Lihat Cara Kerja" di Beranda (data-go-hotspot) -> langkah yang sesuai */
+    var HOTSPOT_STEP = { 2: 4, 3: 5, 6: 1, 8: 2 };
 
-    var steps = $$('.hiw__step', root);
-    var arts = $$('.hiw__art', root);
-    var railWrap = $('hiw-rail-wrap');
-    var progressEl = $('hiw-progress');
+    var rail = $('hiw-rail');
+    var railWrap = rail && rail.parentNode;
+    var panel = $('hiw-panel');
+    var tiles = $$('.hiw__tile', root);
+    var visuals = $$('.hiw__vis', root);
+    var card = root.querySelector('.hiw__card');
     var counterEl = $('hiw-counter');
-    var specCodeEl = $('hiw-spec-code');
-    var panelEl = $('hiw-panel');
-    var detailBox = root.querySelector('.hiw__detail');
-    var dNum = $('hiw-detail-num'), dPhase = $('hiw-detail-phase'), dTitle = $('hiw-detail-title'),
-        dLead = $('hiw-detail-lead'), dBody = $('hiw-detail-body'), dTags = $('hiw-detail-tags'),
-        dBar = $('hiw-bar-fill'), prevBtn = $('hiw-prev'), nextBtn = $('hiw-next'),
-        canvasEl = $('hiw-canvas');
+    var iconEl = $('hiw-card-icon'), titleEl = $('hiw-card-title'),
+        descEl = $('hiw-card-desc'), chipsEl = $('hiw-card-chips');
+    var cardNext = $('hiw-next'), edgePrev = $('hiw-prev'), edgeNext = $('hiw-edge-next');
+    if (!rail || !panel || !tiles.length) return;
 
     var activeIdx = 0;
     var swapTimer = null;
 
-    function updateProgress(idx) {
-      var pct = ((idx + 1) / STAGES.length) * 100;
-      if (progressEl) progressEl.style.width = pct + '%';
-      if (railWrap) railWrap.style.setProperty('--hiw-mob-prog', pct + '%');
-      if (dBar) dBar.style.width = pct + '%';
-      if (counterEl) counterEl.textContent = STAGES[idx].num + ' / 0' + STAGES.length;
+    function centerTile(idx, instant) {
+      var tile = tiles[idx];
+      if (!tile || !rail.clientWidth) return;
+      var left = tile.offsetLeft - (rail.clientWidth - tile.offsetWidth) / 2;
+      if (typeof rail.scrollTo === 'function') {
+        rail.scrollTo({ left: left, behavior: (instant || reducedMotion) ? 'auto' : 'smooth' });
+      } else {
+        rail.scrollLeft = left;
+      }
     }
 
-    function activate(idx, immediate) {
-      idx = ((idx % STAGES.length) + STAGES.length) % STAGES.length;
+    function syncOverflow() {
+      if (!railWrap) return;
+      railWrap.classList.toggle('has-overflow', rail.scrollWidth > rail.clientWidth + 2);
+    }
+
+    function activate(idx, instant) {
+      idx = Math.max(0, Math.min(STEPS.length - 1, idx));
       activeIdx = idx;
-      var st = STAGES[idx];
+      var st = STEPS[idx];
 
-      steps.forEach(function (el, i) {
-        var isAct = i === idx;
-        el.classList.toggle('is-active', isAct);
-        el.classList.toggle('is-passed', i < idx);
-        var btn = el.querySelector('.hiw__step-btn');
-        if (btn) btn.setAttribute('aria-selected', String(isAct));
+      tiles.forEach(function (tile, i) {
+        var on = i === idx;
+        tile.classList.toggle('is-active', on);
+        tile.classList.toggle('is-passed', i < idx);
+        tile.setAttribute('aria-selected', String(on));
+        tile.tabIndex = on ? 0 : -1;
+      });
+      visuals.forEach(function (fig, i) {
+        fig.setAttribute('data-pos', i === idx ? 'active' : (i < idx ? 'prev' : 'next'));
+        fig.setAttribute('aria-hidden', String(i !== idx));
       });
 
-      arts.forEach(function (svg, i) {
-        svg.classList.toggle('is-active', i === idx);
-      });
-
-      updateProgress(idx);
-      if (panelEl) panelEl.setAttribute('aria-labelledby', 'hiw-tab-' + idx);
-      if (specCodeEl) specCodeEl.textContent = st.code;
+      if (counterEl) counterEl.textContent = '0' + (idx + 1) + ' / 0' + STEPS.length;
+      panel.setAttribute('aria-labelledby', 'hiw-tab-' + idx);
+      if (edgePrev) edgePrev.disabled = idx === 0;
+      if (edgeNext) edgeNext.disabled = idx === STEPS.length - 1;
+      centerTile(idx, instant);
 
       function applyText() {
-        if (dNum) dNum.textContent = st.num;
-        if (dPhase) dPhase.textContent = st.phase;
-        if (dTitle) dTitle.textContent = st.title;
-        if (dLead) dLead.textContent = st.lead;
-        if (dBody) dBody.textContent = st.body;
-        if (dTags) {
-          dTags.innerHTML = '';
-          st.tags.forEach(function (t) {
+        var svg = tiles[idx].querySelector('.hiw__ico svg');
+        if (iconEl) iconEl.innerHTML = svg ? svg.outerHTML : '';
+        if (titleEl) titleEl.textContent = st.title;
+        if (descEl) descEl.textContent = st.desc;
+        if (chipsEl) {
+          chipsEl.innerHTML = '';
+          st.chips.forEach(function (label) {
             var li = document.createElement('li');
-            li.textContent = t;
-            dTags.appendChild(li);
+            li.textContent = label;
+            chipsEl.appendChild(li);
           });
         }
-        if (detailBox) detailBox.classList.remove('is-switching');
+        if (card) card.classList.remove('is-swap');
       }
 
       clearTimeout(swapTimer);
-      if (immediate || reducedMotion || !detailBox) {
+      if (instant || reducedMotion || !card) {
         applyText();
       } else {
-        detailBox.classList.add('is-switching');
-        swapTimer = setTimeout(applyText, 120);
+        card.classList.add('is-swap');
+        swapTimer = setTimeout(applyText, 130);
       }
     }
 
-    steps.forEach(function (el, i) {
-      var btn = el.querySelector('.hiw__step-btn');
-      if (!btn) return;
-      btn.addEventListener('click', function () { activate(i, false); });
-      btn.addEventListener('mouseenter', function () {
-        if (progressEl && window.innerWidth > 760) {
-          var hoverPct = Math.max(((activeIdx + 1) / STAGES.length) * 100, ((i + 1) / STAGES.length) * 100);
-          progressEl.style.width = hoverPct + '%';
-        }
-      });
-      btn.addEventListener('mouseleave', function () {
-        if (progressEl && window.innerWidth > 760) {
-          progressEl.style.width = (((activeIdx + 1) / STAGES.length) * 100) + '%';
-        }
-      });
-      btn.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-          e.preventDefault();
-          activate(i + 1, false);
-          var nb = steps[activeIdx] && steps[activeIdx].querySelector('.hiw__step-btn');
-          if (nb) nb.focus();
-        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-          e.preventDefault();
-          activate(i - 1, false);
-          var pb = steps[activeIdx] && steps[activeIdx].querySelector('.hiw__step-btn');
-          if (pb) pb.focus();
-        }
+    /* Tile clicks + keyboard (roving tabindex) */
+    tiles.forEach(function (tile, i) {
+      tile.addEventListener('click', function () { activate(i, false); });
+      tile.addEventListener('keydown', function (e) {
+        var next = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = Math.min(i + 1, tiles.length - 1);
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = Math.max(i - 1, 0);
+        else if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = tiles.length - 1;
+        if (next === null) return;
+        e.preventDefault();
+        activate(next, false);
+        tiles[next].focus({ preventScroll: true });
       });
     });
 
-    if (prevBtn) prevBtn.addEventListener('click', function () { activate(activeIdx - 1, false); });
-    if (nextBtn) nextBtn.addEventListener('click', function () { activate(activeIdx + 1, false); });
+    if (cardNext) cardNext.addEventListener('click', function () { activate((activeIdx + 1) % STEPS.length, false); });
+    if (edgePrev) edgePrev.addEventListener('click', function () { activate(activeIdx - 1, false); });
+    if (edgeNext) edgeNext.addEventListener('click', function () { activate(activeIdx + 1, false); });
 
-    /* Subtle lightweight scroll parallax on the technical illustration canvas */
-    if (canvasEl && !reducedMotion) {
-      var artStack = canvasEl.querySelector('.hiw__art-stack');
-      var rafPending = false;
-      function onScrollParallax() {
-        if (rafPending || $('tentang').hidden) return;
-        rafPending = true;
-        requestAnimationFrame(function () {
-          rafPending = false;
-          if (!artStack) return;
-          var r = canvasEl.getBoundingClientRect();
-          var vh = window.innerHeight || 800;
-          if (r.bottom < 0 || r.top > vh) return;
-          var norm = ((r.top + r.height * 0.5) / vh - 0.5) * 2;
-          var shift = Math.max(-10, Math.min(10, norm * -8));
-          artStack.style.transform = 'translate3d(0,' + shift.toFixed(1) + 'px,0)';
-        });
+    /* Mouse drag-to-scroll on the rail (touch already scrolls natively) */
+    var rd = { on: false, moved: false, x: 0, left: 0 };
+    rail.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      rd.on = true;
+      rd.moved = false;
+      rd.x = e.clientX;
+      rd.left = rail.scrollLeft;
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (!rd.on) return;
+      var dx = e.clientX - rd.x;
+      if (!rd.moved && Math.abs(dx) > 5) {
+        rd.moved = true;
+        rail.classList.add('is-dragging');
       }
-      window.addEventListener('scroll', onScrollParallax, { passive: true });
+      if (rd.moved) rail.scrollLeft = rd.left - dx;
+    });
+    function endRailDrag() {
+      if (!rd.on) return;
+      rd.on = false;
+      rail.classList.remove('is-dragging');
+      setTimeout(function () { rd.moved = false; }, 0);
     }
+    window.addEventListener('pointerup', endRailDrag);
+    window.addEventListener('pointercancel', endRailDrag);
+    rail.addEventListener('click', function (e) {
+      if (rd.moved) { e.preventDefault(); e.stopPropagation(); }
+    }, true);
 
-    /* Deep links from Beranda component cards -> activate matching stage on #tentang */
+    /* Swipe / drag on the visual to move between steps */
+    var sw = { id: null, x: 0, y: 0, horizontal: false, dx: 0 };
+    function resetSwipe() {
+      sw.id = null;
+      sw.horizontal = false;
+      sw.dx = 0;
+      panel.classList.remove('is-dragging');
+      panel.style.removeProperty('--hiw-drag');
+    }
+    panel.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      if (e.target.closest && e.target.closest('.hiw__card')) return;
+      sw.id = e.pointerId;
+      sw.x = e.clientX;
+      sw.y = e.clientY;
+      sw.horizontal = false;
+      sw.dx = 0;
+    });
+    panel.addEventListener('pointermove', function (e) {
+      if (sw.id !== e.pointerId) return;
+      var dx = e.clientX - sw.x, dy = e.clientY - sw.y;
+      if (!sw.horizontal) {
+        if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+          sw.horizontal = true;
+          panel.classList.add('is-dragging');
+          if (e.pointerType === 'mouse' && panel.setPointerCapture) {
+            try { panel.setPointerCapture(e.pointerId); } catch (err) {}
+          }
+        } else {
+          return;
+        }
+      }
+      sw.dx = dx;
+      var pull = Math.max(-64, Math.min(64, dx * 0.4));
+      panel.style.setProperty('--hiw-drag', pull.toFixed(1) + 'px');
+    });
+    function finishSwipe(e) {
+      if (sw.id !== e.pointerId) return;
+      var go = sw.horizontal && Math.abs(sw.dx) >= 48;
+      var dir = sw.dx < 0 ? 1 : -1;
+      resetSwipe();
+      if (go) activate(activeIdx + dir, false);
+    }
+    panel.addEventListener('pointerup', finishSwipe);
+    panel.addEventListener('pointercancel', function (e) { if (sw.id === e.pointerId) resetSwipe(); });
+    panel.addEventListener('dragstart', function (e) { e.preventDefault(); });
+
+    /* Keep edge arrows + centering correct when the page becomes visible / resized */
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(function () { syncOverflow(); centerTile(activeIdx, true); }).observe(rail);
+    }
+    window.addEventListener('resize', syncOverflow);
+
+    /* Deep links from Beranda component cards -> matching step */
     document.addEventListener('click', function (e) {
       var link = e.target.closest && e.target.closest('[data-go-hotspot]');
       if (!link) return;
       var hs = +link.getAttribute('data-go-hotspot');
-      var targetStep = hs >= 8 ? 3 : (hs >= 2 ? 2 : 0);
-      setTimeout(function () { activate(targetStep, true); }, 60);
+      var target = Object.prototype.hasOwnProperty.call(HOTSPOT_STEP, hs) ? HOTSPOT_STEP[hs] : 0;
+      setTimeout(function () { activate(target, true); }, 60);
     });
 
     activate(0, true);
+    syncOverflow();
   })();
 
   /* ---------- 6. Tentang Kami: ON.Energy Portrait Grid + Right Slide-Over Drawer ---------- */

@@ -10,6 +10,7 @@ Buka **[Vortex Hydro](https://hdeonngth.github.io/VortexHydro/)** di GitHub Page
 
 - **Visual-First Continuous Scroll:** Hero visual prototipe turbin dengan gelombang aliran air, angka spesifikasi nyata, dan perpindahan seksi mulus tanpa jeda transisi.
 - **Simulasi Interaktif Arus Air:** Pengunjung dapat menggeser debit air (`Q`), tinggi jatuh (`H`), dan efisiensi (`η`) untuk melihat animasi arus air, putaran kincir 6 sudu, nyala LED, serta perhitungan daya listrik secara langsung.
+- **Cara Kerja Interaktif (Geser):** Enam langkah sirkulasi air (Air Masuk, Turbin, Generator, Air Jatuh ke Ember, Pompa Bawah, Pipa Kembali ke Awal) yang bisa digeser, diklik, atau dinavigasi dengan keyboard.
 - **Diagram Penampang 8 Titik:** Blueprint interaktif prototipe dengan penjelasan detail tiap komponen.
 - **Dokumentasi & Struktur Tim Ringkas:** Tahapan uji laboratorium, daftar peralatan, filter divisi tim, dan FAQ.
 - **Dashboard Admin Simulasi:** Pemantauan telemetri simulasi (`debit`, `vbat`, `rpmShaft`, `rpmGen`) dengan grafik 60 detik dan indikator (kata sandi demo: `pakcikiniv2`).
