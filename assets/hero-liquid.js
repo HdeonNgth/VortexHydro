@@ -1,10 +1,12 @@
 /* ==========================================================================
-   Vortex Hydro — Architectural U-Channel Water-Flow Hero (Inspired by hero.mp4)
-   - Matte architectural studio surface with subtle stone grain & diagonal sunlight
-   - Expanding sculpted translucent U-channel filled with living flowing cyan/blue water
-   - Two 3D-shaded spheres (Hydro Water Emblem Orb + Polished Chrome Turbine Orb)
-     gliding down both arms of the U-channel to meet gracefully at bottom center
-   - Continuous water streamlines, caustics, bubbles, pointer sway & scroll exit
+   Vortex Hydro — Architectural Concrete U-Channel Water-Flow Hero
+   Choreographed frame-for-frame after hero.mp4 with flowing Vortex Hydro water:
+   - 0.0s: Compact U-channel, spheres peeking at upper inlets, text hidden
+   - 0.0s -> 1.75s: U-channel opens wide, spheres drop down both curved arms,
+     headline & paragraph emerge smoothly inside the concrete wall cradle
+   - 1.8s -> 2.65s: Spheres accelerate across bottom trough with bright aqua
+     caustic light cone between them, meeting at center with cushioned micro-bounce
+   - Continuous living crystal-clear blue-cyan water streamlines & bubbles
    ========================================================================== */
 (function initVortexChannelHero() {
   'use strict';
@@ -39,24 +41,88 @@
     new MutationObserver(syncTheme).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
   }
 
-  /* ---------- Pre-Generated Matte Architectural Stone Grain Pattern ---------- */
-  var grainCanvas = document.createElement('canvas');
-  grainCanvas.width = 180;
-  grainCanvas.height = 180;
-  var gctx = grainCanvas.getContext('2d');
-  if (gctx) {
-    var imgData = gctx.createImageData(180, 180);
-    var d = imgData.data;
-    for (var gi = 0; gi < d.length; gi += 4) {
-      var v = Math.random() > 0.5 ? 255 : 0;
-      d[gi] = v;
-      d[gi + 1] = v;
-      d[gi + 2] = v;
-      d[gi + 3] = Math.floor(Math.random() * 14);
+  /* ---------- Procedural 512x512 Architectural Concrete / Plaster Wall Texture ---------- */
+  function createConcreteWallPattern(darkMode) {
+    var size = 512;
+    var tc = document.createElement('canvas');
+    tc.width = size;
+    tc.height = size;
+    var tctx = tc.getContext('2d');
+    if (!tctx) return null;
+
+    /* Base matte mineral concrete tone */
+    tctx.fillStyle = darkMode ? '#0A1526' : '#E9EAE8';
+    tctx.fillRect(0, 0, size, size);
+
+    /* 1. Soft multi-scale mottled plaster/mineral clouds (toroidally wrapped for 100% seamless tiling) */
+    for (var m = 0; m < 44; m++) {
+      var mx = Math.random() * size;
+      var my = Math.random() * size;
+      var mr = 38 + Math.random() * 110;
+      var bright = Math.random() > 0.48;
+      var col0 = darkMode
+        ? (bright ? 'rgba(34, 64, 102, 0.13)' : 'rgba(2, 6, 14, 0.20)')
+        : (bright ? 'rgba(255, 255, 255, 0.24)' : 'rgba(130, 138, 146, 0.11)');
+      for (var ox = -size; ox <= size; ox += size) {
+        for (var oy = -size; oy <= size; oy += size) {
+          var cx = mx + ox, cy = my + oy;
+          if (cx + mr < 0 || cx - mr > size || cy + mr < 0 || cy - mr > size) continue;
+          var cg = tctx.createRadialGradient(cx, cy, 2, cx, cy, mr);
+          cg.addColorStop(0, col0);
+          cg.addColorStop(1, 'rgba(0,0,0,0)');
+          tctx.fillStyle = cg;
+          tctx.fillRect(cx - mr, cy - mr, mr * 2, mr * 2);
+        }
+      }
     }
-    gctx.putImageData(imgData, 0, 0);
+
+    /* 2. Fine mineral sand grain pixel texture */
+    var img = tctx.getImageData(0, 0, size, size);
+    var px = img.data;
+    var grainAmp = darkMode ? 12 : 16;
+    for (var i = 0; i < px.length; i += 4) {
+      var n = (Math.random() - 0.5) * grainAmp;
+      px[i]     = Math.max(0, Math.min(255, px[i] + n));
+      px[i + 1] = Math.max(0, Math.min(255, px[i + 1] + n));
+      px[i + 2] = Math.max(0, Math.min(255, px[i + 2] + n));
+    }
+    tctx.putImageData(img, 0, 0);
+
+    /* 3. Subtle horizontal troweled concrete micro-streaks */
+    tctx.strokeStyle = darkMode ? 'rgba(255,255,255,0.025)' : 'rgba(255,255,255,0.18)';
+    tctx.lineWidth = 1;
+    for (var s = 0; s < 36; s++) {
+      var sy = Math.random() * size;
+      var sx = Math.random() * size;
+      var slen = 30 + Math.random() * 90;
+      tctx.beginPath();
+      tctx.moveTo(sx, sy);
+      tctx.lineTo(sx + slen, sy + (Math.random() - 0.5) * 3);
+      tctx.stroke();
+    }
+
+    /* 4. Authentic tiny architectural concrete air-void pinholes / pores (like hero.mp4) */
+    for (var p = 0; p < 145; p++) {
+      var x = Math.random() * size;
+      var y = Math.random() * size;
+      var pr = 0.65 + Math.random() * 1.45;
+      /* Tiny bright lower-right rim highlight */
+      tctx.beginPath();
+      tctx.arc(x + 0.5, y + 0.5, pr, 0, Math.PI * 2);
+      tctx.fillStyle = darkMode ? 'rgba(160, 200, 235, 0.08)' : 'rgba(255, 255, 255, 0.45)';
+      tctx.fill();
+      /* Tiny recessed concrete pore */
+      tctx.beginPath();
+      tctx.arc(x, y, pr, 0, Math.PI * 2);
+      tctx.fillStyle = darkMode ? 'rgba(2, 6, 14, 0.46)' : 'rgba(92, 98, 106, 0.24)';
+      tctx.fill();
+    }
+
+    return ctx.createPattern(tc, 'repeat');
   }
-  var grainPattern = ctx.createPattern(grainCanvas, 'repeat');
+
+  var lightWallPattern = createConcreteWallPattern(false);
+  var darkWallPattern  = createConcreteWallPattern(true);
 
   /* ---------- Responsive Sizing ---------- */
   var vw = 1280, vh = 720, dpr = 1;
@@ -123,72 +189,83 @@
   window.addEventListener('resize', updateHeroScroll, { passive: true });
   updateHeroScroll();
 
-  /* ---------- Easing Helpers ---------- */
+  /* ---------- Easing Helpers (Exact hero.mp4 Physics) ---------- */
   function clamp01(v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
-  function easeOutQuart(t) { return 1 - Math.pow(1 - clamp01(t), 4); }
-  function easeInOutCubic(t) {
+  function easeOutCubic(t) { return 1 - Math.pow(1 - clamp01(t), 3); }
+  function easeInOutQuart(t) {
     t = clamp01(t);
-    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
   }
 
-  /* ---------- Smooth Symmetric U-Channel Polyline Sampler ----------
-     Builds an architectural rounded U-track from upper-left -> down -> bottom trough -> up -> upper-right.
-     Returns sampled points + cumulative arc lengths so water streaks & rolling spheres follow the EXACT centerline! */
+  /* Physical sphere roll progress with subtle cushioned micro-rebound upon meeting at center */
+  function evalSphereMotion(timeSec) {
+    var t = clamp01((timeSec - 0.12) / 2.45);
+    /* Accelerates down the steep slope, glides smoothly into center kiss */
+    var base = easeInOutQuart(t);
+    var bounce = 0;
+    if (timeSec > 2.55) {
+      var bt = timeSec - 2.55;
+      /* Soft damped micro-rebound (kiss & settle, never jittery) */
+      bounce = Math.exp(-bt * 4.8) * Math.sin(bt * 11.5) * 0.0065;
+    }
+    return clamp01(base - Math.abs(bounce));
+  }
+
+  /* ---------- Symmetric Expanding U-Channel Sampler (Matches hero.mp4 00:00 -> 00:02) ---------- */
   function buildUTrack(w, h, openEase, scrollOffset) {
     var isMob = w < 720;
 
-    /* Expand smoothly from compact initial frame (00:00) into wide architectural cradle (00:02) */
-    var compactX = isMob ? 0.05 : 0.13;
-    var openX    = isMob ? 0.03 : 0.055;
-    var sideXFrac = compactX + (openX - compactX) * openEase;
+    /* At 00:00 (openEase = 0): tight inner U-frame; at 00:02 (openEase = 1): wide architectural cradle */
+    var sideStart = isMob ? 0.10 : 0.185;
+    var sideEnd   = isMob ? 0.025 : 0.052;
+    var sideFrac  = sideStart + (sideEnd - sideStart) * openEase;
 
-    var topYFrac    = (isMob ? 0.14 : 0.12) + (1 - openEase) * 0.05;
-    var bottomYFrac = (isMob ? 0.78 : 0.76) - (1 - openEase) * 0.06 + scrollOffset * 0.10;
+    var topStart = isMob ? 0.22 : 0.21;
+    var topEnd   = isMob ? 0.13 : 0.105;
+    var topYFrac = topStart + (topEnd - topStart) * openEase;
 
-    var xLeftIn   = -w * 0.04;
-    var xLeftArm  = w * sideXFrac + (isMob ? 24 : 52);
-    var xLeftBot  = w * (isMob ? 0.24 : 0.25);
+    var botStart = isMob ? 0.68 : 0.69;
+    var botEnd   = isMob ? 0.78 : 0.765;
+    var bottomYFrac = botStart + (botEnd - botStart) * openEase + scrollOffset * 0.10;
+
+    var xLeftIn   = -w * 0.05;
+    var xLeftArm  = w * sideFrac + (isMob ? 20 : 48);
+    var xLeftBot  = w * (isMob ? 0.24 : (0.30 - 0.05 * openEase));
     var xRightBot = w - xLeftBot;
     var xRightArm = w - xLeftArm;
-    var xRightOut = w * 1.04;
+    var xRightOut = w * 1.05;
 
     var yTop = h * topYFrac;
     var yBot = h * bottomYFrac;
 
-    /* 5 cubic Bezier segments forming a silky symmetric U-channel */
     var segs = [
-      /* 0: Upper-left horizontal entry bending down into left slope */
       [
         { x: xLeftIn, y: yTop },
         { x: xLeftArm * 0.52, y: yTop },
-        { x: xLeftArm * 0.82, y: yTop + (yBot - yTop) * 0.06 },
-        { x: xLeftArm * 1.05, y: yTop + (yBot - yTop) * 0.34 }
+        { x: xLeftArm * 0.84, y: yTop + (yBot - yTop) * 0.07 },
+        { x: xLeftArm * 1.06, y: yTop + (yBot - yTop) * 0.36 }
       ],
-      /* 1: Left descending arm curving smoothly into bottom-left corner */
       [
-        { x: xLeftArm * 1.05, y: yTop + (yBot - yTop) * 0.34 },
-        { x: xLeftArm * 1.32, y: yBot - (yBot - yTop) * 0.16 },
-        { x: xLeftBot - (xLeftBot - xLeftArm) * 0.52, y: yBot },
+        { x: xLeftArm * 1.06, y: yTop + (yBot - yTop) * 0.36 },
+        { x: xLeftArm * 1.30, y: yBot - (yBot - yTop) * 0.14 },
+        { x: xLeftBot - (xLeftBot - xLeftArm) * 0.54, y: yBot },
         { x: xLeftBot, y: yBot }
       ],
-      /* 2: Flat architectural bottom trough */
       [
         { x: xLeftBot, y: yBot },
         { x: xLeftBot + (xRightBot - xLeftBot) * 0.33, y: yBot },
         { x: xLeftBot + (xRightBot - xLeftBot) * 0.67, y: yBot },
         { x: xRightBot, y: yBot }
       ],
-      /* 3: Bottom-right corner sweeping up into right ascending arm */
       [
         { x: xRightBot, y: yBot },
-        { x: xRightBot + (xRightArm - xRightBot) * 0.52, y: yBot },
-        { x: w - xLeftArm * 1.32, y: yBot - (yBot - yTop) * 0.16 },
-        { x: w - xLeftArm * 1.05, y: yTop + (yBot - yTop) * 0.34 }
+        { x: xRightBot + (xRightArm - xRightBot) * 0.54, y: yBot },
+        { x: w - xLeftArm * 1.30, y: yBot - (yBot - yTop) * 0.14 },
+        { x: w - xLeftArm * 1.06, y: yTop + (yBot - yTop) * 0.36 }
       ],
-      /* 4: Upper-right arm curving out horizontally */
       [
-        { x: w - xLeftArm * 1.05, y: yTop + (yBot - yTop) * 0.34 },
-        { x: w - xLeftArm * 0.82, y: yTop + (yBot - yTop) * 0.06 },
+        { x: w - xLeftArm * 1.06, y: yTop + (yBot - yTop) * 0.36 },
+        { x: w - xLeftArm * 0.84, y: yTop + (yBot - yTop) * 0.07 },
         { x: w - xLeftArm * 0.52, y: yTop },
         { x: xRightOut, y: yTop }
       ]
@@ -258,13 +335,13 @@
 
   /* ---------- Pre-Seeded Flowing Water Streaks & Micro-Bubbles ---------- */
   var streaks = [];
-  for (var st = 0; st < 28; st++) {
+  for (var st = 0; st < 30; st++) {
     streaks.push({
-      offset: st / 28,
+      offset: st / 30,
       lane: (Math.random() - 0.5) * 0.66,
-      len: 0.025 + Math.random() * 0.042,
+      len: 0.024 + Math.random() * 0.044,
       speed: 0.11 + Math.random() * 0.06,
-      width: 1.5 + Math.random() * 2.4,
+      width: 1.4 + Math.random() * 2.3,
       alpha: 0.22 + Math.random() * 0.36
     });
   }
@@ -274,7 +351,7 @@
     bubbles.push({
       offset: Math.random(),
       lane: (Math.random() - 0.5) * 0.62,
-      r: 1.8 + Math.random() * 3.0,
+      r: 1.7 + Math.random() * 2.9,
       speed: 0.09 + Math.random() * 0.06,
       wobble: Math.random() * Math.PI * 2
     });
@@ -287,20 +364,20 @@
     /* Ground cast shadow (diagonal sunlit studio bottom-right) */
     ctx.save();
     ctx.beginPath();
-    ctx.ellipse(x + r * 0.28, y + r * 0.52, r * 1.05, r * 0.68, 0.22, 0, Math.PI * 2);
-    ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.55)' : 'rgba(6, 27, 73, 0.22)';
-    ctx.filter = 'blur(12px)';
+    ctx.ellipse(x + r * 0.32, y + r * 0.54, r * 1.08, r * 0.68, 0.24, 0, Math.PI * 2);
+    ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.58)' : 'rgba(15, 28, 46, 0.24)';
+    ctx.filter = 'blur(13px)';
     ctx.fill();
     ctx.restore();
 
     /* Luminous cyan floor caustic bounce */
     if (meetGlow > 0.01) {
-      var cg = ctx.createRadialGradient(x + r * 0.55, y + r * 0.45, r * 0.1, x + r * 0.55, y + r * 0.45, r * 1.8);
-      cg.addColorStop(0, 'rgba(21, 217, 242,' + (0.34 * meetGlow).toFixed(3) + ')');
+      var cg = ctx.createRadialGradient(x + r * 0.55, y + r * 0.45, r * 0.1, x + r * 0.55, y + r * 0.45, r * 1.9);
+      cg.addColorStop(0, 'rgba(21, 217, 242,' + (0.36 * meetGlow).toFixed(3) + ')');
       cg.addColorStop(1, 'rgba(21, 217, 242, 0)');
       ctx.fillStyle = cg;
       ctx.beginPath();
-      ctx.arc(x + r * 0.55, y + r * 0.45, r * 1.8, 0, Math.PI * 2);
+      ctx.arc(x + r * 0.55, y + r * 0.45, r * 1.9, 0, Math.PI * 2);
       ctx.fill();
     }
 
@@ -317,28 +394,26 @@
     ctx.fillStyle = bg;
     ctx.fill();
 
-    /* Subtle lower-right rim reflection from aqua water */
+    /* Lower-right cyan bounce from water trough */
     var rim = ctx.createRadialGradient(x + r * 0.4, y + r * 0.42, r * 0.1, x, y, r);
-    rim.addColorStop(0, 'rgba(21, 217, 242, 0.48)');
+    rim.addColorStop(0, 'rgba(21, 217, 242, 0.50)');
     rim.addColorStop(0.6, 'rgba(21, 217, 242, 0)');
     ctx.fillStyle = rim;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
 
-    /* Luminous Hydro Water-Drop / Vortex Emblem Centered on Orb Face */
+    /* Glowing Hydro Water-Drop Emblem */
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(rollAngle);
 
-    /* Subtle circular inset ring */
     ctx.beginPath();
     ctx.arc(0, 0, r * 0.48, 0, Math.PI * 2);
     ctx.strokeStyle = 'rgba(7, 87, 200, 0.22)';
     ctx.lineWidth = Math.max(1.5, r * 0.05);
     ctx.stroke();
 
-    /* Glowing Cyan-Blue Water Droplet Emblem */
     var dr = r * 0.34;
     ctx.beginPath();
     ctx.moveTo(0, -dr * 1.15);
@@ -356,17 +431,16 @@
     ctx.fill();
     ctx.shadowBlur = 0;
 
-    /* Tiny glossy droplet specular dot */
     ctx.beginPath();
     ctx.ellipse(-dr * 0.24, dr * 0.12, dr * 0.14, dr * 0.26, -0.35, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.78)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
     ctx.fill();
     ctx.restore();
 
-    /* Crisp Top-Left Studio Specular Glint */
+    /* Crisp Top-Left Specular Glint */
     ctx.beginPath();
     ctx.ellipse(x - r * 0.34, y - r * 0.36, r * 0.22, r * 0.12, -0.68, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
     ctx.fill();
 
     ctx.restore();
@@ -378,19 +452,17 @@
     /* Ground cast shadow */
     ctx.save();
     ctx.beginPath();
-    ctx.ellipse(x + r * 0.30, y + r * 0.52, r * 1.06, r * 0.68, 0.22, 0, Math.PI * 2);
-    ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(6, 27, 73, 0.26)';
-    ctx.filter = 'blur(12px)';
+    ctx.ellipse(x + r * 0.34, y + r * 0.54, r * 1.08, r * 0.68, 0.24, 0, Math.PI * 2);
+    ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.62)' : 'rgba(15, 28, 46, 0.28)';
+    ctx.filter = 'blur(13px)';
     ctx.fill();
     ctx.restore();
 
-    /* Clip inside circle for chrome environment reflection */
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.save();
     ctx.clip();
 
-    /* Studio Chrome Base Gradient */
     var mg = ctx.createRadialGradient(x - r * 0.32, y - r * 0.36, r * 0.05, x, y, r * 1.15);
     mg.addColorStop(0.0, '#FFFFFF');
     mg.addColorStop(0.24, '#E8EFF5');
@@ -401,12 +473,11 @@
     ctx.fillStyle = mg;
     ctx.fillRect(x - r, y - r, r * 2, r * 2);
 
-    /* Curved Metallic Horizon Band (Gives Authentic Mirror-Steel Depth) */
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(rollAngle * 0.35 - 0.18);
     var band = ctx.createLinearGradient(0, -r * 0.35, 0, r * 0.55);
-    band.addColorStop(0, 'rgba(255, 255, 255, 0.52)');
+    band.addColorStop(0, 'rgba(255, 255, 255, 0.55)');
     band.addColorStop(0.45, 'rgba(15, 28, 46, 0.72)');
     band.addColorStop(0.75, 'rgba(12, 74, 110, 0.55)');
     band.addColorStop(1, 'rgba(21, 217, 242, 0.45)');
@@ -416,7 +487,6 @@
     ctx.fill();
     ctx.restore();
 
-    /* Cyan Water Bounce Reflection along Lower-Left Rim */
     var bounce = ctx.createRadialGradient(x - r * 0.42, y + r * 0.38, r * 0.05, x - r * 0.42, y + r * 0.38, r * 0.95);
     bounce.addColorStop(0, 'rgba(21, 217, 242, 0.55)');
     bounce.addColorStop(0.6, 'rgba(22, 139, 255, 0.12)');
@@ -424,15 +494,13 @@
     ctx.fillStyle = bounce;
     ctx.fillRect(x - r, y - r, r * 2, r * 2);
 
-    /* Sharp Studio Skylight Crescent Reflection (Top-Left) */
     ctx.beginPath();
     ctx.ellipse(x - r * 0.32, y - r * 0.38, r * 0.30, r * 0.16, -0.58, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.94)';
     ctx.fill();
 
     ctx.restore();
 
-    /* Crisp Outer Specular Rim */
     ctx.beginPath();
     ctx.arc(x, y, r - 0.5, 0, Math.PI * 2);
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.42)';
@@ -442,7 +510,7 @@
     ctx.restore();
   }
 
-  /* ---------- Visibility Pause & Animation Clock ---------- */
+  /* ---------- Visibility Pause & Replayable Intro Clock ---------- */
   var isInView = true;
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (entries) {
@@ -450,9 +518,14 @@
     }, { threshold: 0.02 }).observe(hero);
   }
 
-  var introTime = reduced ? 3.2 : 0;
+  var introTime = reduced ? 3.5 : 0;
   var flowTime = 0;
   var lastT = performance.now();
+
+  /* Allow clean replay if user navigates back to Beranda */
+  window.__vxReplayHero = function () {
+    if (!reduced) introTime = 0;
+  };
 
   /* ---------- Main 60 FPS Render Loop ---------- */
   function render(now) {
@@ -471,7 +544,7 @@
     pointer.y += (pointer.ty - pointer.y) * ease;
 
     if (!reduced) {
-      introTime = Math.min(5.0, introTime + dt);
+      introTime = Math.min(6.0, introTime + dt);
       flowTime += dt;
     } else {
       flowTime += dt * 0.16;
@@ -479,98 +552,107 @@
 
     ctx.clearRect(0, 0, vw, vh);
 
-    /* 1. Architectural Matte Stone Backdrop + Subtle Grain + Diagonal Sunlight Shaft */
-    var bgGrad = ctx.createLinearGradient(0, 0, vw, vh);
-    if (isDark) {
-      bgGrad.addColorStop(0, '#071222');
-      bgGrad.addColorStop(0.55, '#0B1A30');
-      bgGrad.addColorStop(1, '#06101E');
-    } else {
-      bgGrad.addColorStop(0, '#F3F6F9');
-      bgGrad.addColorStop(0.52, '#E9EEF3');
-      bgGrad.addColorStop(1, '#DFE7EE');
-    }
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, vw, vh);
-
-    if (grainPattern) {
-      ctx.save();
-      ctx.globalAlpha = isDark ? 0.22 : 0.45;
-      ctx.fillStyle = grainPattern;
+    /* 1. Textured Architectural Concrete / Plaster Studio Wall */
+    var wallPat = isDark ? darkWallPattern : lightWallPattern;
+    if (wallPat) {
+      ctx.fillStyle = wallPat;
       ctx.fillRect(0, 0, vw, vh);
-      ctx.restore();
+    } else {
+      ctx.fillStyle = isDark ? '#0A1526' : '#E9EAE8';
+      ctx.fillRect(0, 0, vw, vh);
     }
 
-    /* Dramatic Soft Diagonal Sunlight Beam (Echoing hero.mp4 top-left -> bottom-right lighting) */
-    ctx.save();
-    var sunShift = pointer.x * 28;
-    var sunGrad = ctx.createLinearGradient(vw * 0.15 + sunShift, 0, vw * 0.85 + sunShift, vh);
+    /* Subtle edge vignette for natural studio lighting falloff */
+    var vig = ctx.createRadialGradient(vw * 0.44, vh * 0.42, vw * 0.12, vw * 0.5, vh * 0.5, Math.max(vw, vh) * 0.78);
     if (isDark) {
-      sunGrad.addColorStop(0, 'rgba(21, 217, 242, 0.08)');
-      sunGrad.addColorStop(0.45, 'rgba(22, 139, 255, 0.03)');
-      sunGrad.addColorStop(1, 'rgba(0, 0, 0, 0.25)');
+      vig.addColorStop(0, 'rgba(18, 42, 74, 0.16)');
+      vig.addColorStop(1, 'rgba(3, 8, 18, 0.52)');
     } else {
-      sunGrad.addColorStop(0, 'rgba(255, 255, 255, 0.58)');
-      sunGrad.addColorStop(0.42, 'rgba(255, 255, 255, 0.14)');
-      sunGrad.addColorStop(0.75, 'rgba(6, 27, 73, 0.04)');
-      sunGrad.addColorStop(1, 'rgba(6, 27, 73, 0.10)');
+      vig.addColorStop(0, 'rgba(255, 255, 255, 0.34)');
+      vig.addColorStop(0.65, 'rgba(230, 234, 238, 0.05)');
+      vig.addColorStop(1, 'rgba(42, 52, 66, 0.13)');
     }
-    ctx.fillStyle = sunGrad;
+    ctx.fillStyle = vig;
     ctx.fillRect(0, 0, vw, vh);
 
-    /* Soft architectural diagonal shadow wedge in top-right & bottom-left */
+    /* Dramatic Diagonal Window Sunlight Beam & Architectural Corner Shadows (Matches hero.mp4!) */
+    ctx.save();
+    var sunShift = pointer.x * 26;
+
+    /* Upper-right architectural shadow cast across the wall */
     ctx.beginPath();
-    ctx.moveTo(vw * 0.46 + sunShift * 0.4, 0);
+    ctx.moveTo(vw * 0.44 + sunShift * 0.4, 0);
     ctx.lineTo(vw, 0);
-    ctx.lineTo(vw, vh * 0.54);
+    ctx.lineTo(vw, vh * 0.62);
     ctx.closePath();
-    ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.18)' : 'rgba(6, 27, 73, 0.038)';
+    ctx.fillStyle = isDark ? 'rgba(2, 6, 14, 0.34)' : 'rgba(36, 44, 56, 0.085)';
+    ctx.filter = 'blur(26px)';
+    ctx.fill();
+
+    /* Warm-bright diagonal sunlight shaft cutting across center-left to bottom-right */
+    ctx.beginPath();
+    ctx.moveTo(0, vh * 0.48);
+    ctx.lineTo(vw * 0.48 + sunShift * 0.5, 0);
+    ctx.lineTo(vw * 0.92 + sunShift * 0.5, 0);
+    ctx.lineTo(vw * 0.32 + sunShift * 0.3, vh);
+    ctx.lineTo(0, vh);
+    ctx.closePath();
+    var shaftGrad = ctx.createLinearGradient(0, vh * 0.2, vw * 0.75, vh * 0.85);
+    if (isDark) {
+      shaftGrad.addColorStop(0, 'rgba(21, 217, 242, 0.075)');
+      shaftGrad.addColorStop(0.55, 'rgba(22, 139, 255, 0.035)');
+      shaftGrad.addColorStop(1, 'rgba(21, 217, 242, 0)');
+    } else {
+      shaftGrad.addColorStop(0, 'rgba(255, 253, 248, 0.44)');
+      shaftGrad.addColorStop(0.55, 'rgba(255, 255, 255, 0.16)');
+      shaftGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    }
+    ctx.fillStyle = shaftGrad;
+    ctx.filter = 'blur(22px)';
     ctx.fill();
     ctx.restore();
 
-    /* 2. Build Expanding U-Channel Track */
-    var openEase = easeOutQuart(introTime / 1.85);
+    /* 2. Choreographed Expanding U-Channel (00:00 Compact -> 00:02 Wide Cradle) */
+    var openEase = easeOutCubic(introTime / 1.75);
     var track = buildUTrack(vw, vh, openEase, scrollProg);
-    var channelW = Math.max(44, Math.min(92, Math.min(vw, vh) * 0.095));
+    var channelW = Math.max(44, Math.min(90, Math.min(vw, vh) * 0.092));
     var wallW = channelW + 20;
 
-    /* 3. Cast Shadow of Sculpted U-Channel onto Studio Surface */
+    /* 3. Cast Shadow of Sculpted U-Channel onto Textured Concrete Wall */
     ctx.save();
-    ctx.translate(16 + pointer.x * 6, 24 + pointer.y * 4);
+    ctx.translate(18 + pointer.x * 7, 26 + pointer.y * 5);
     traceTrackPath(track.pts);
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.lineWidth = wallW + 6;
-    ctx.strokeStyle = isDark ? 'rgba(0, 0, 0, 0.52)' : 'rgba(6, 27, 73, 0.14)';
-    ctx.filter = 'blur(18px)';
+    ctx.lineWidth = wallW + 8;
+    ctx.strokeStyle = isDark ? 'rgba(0, 0, 0, 0.58)' : 'rgba(28, 36, 48, 0.18)';
+    ctx.filter = 'blur(20px)';
     ctx.stroke();
     ctx.restore();
 
-    /* 4. Sculpted Acrylic / Brushed Metal Outer Channel Frame */
+    /* 4. Sculpted Acrylic / Metallic U-Channel Casing */
     ctx.save();
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    /* Outer casing wall */
     traceTrackPath(track.pts);
-    var wallGrad = ctx.createLinearGradient(0, vh * 0.12, 0, track.yBot + wallW);
+    var wallGrad = ctx.createLinearGradient(0, vh * 0.10, 0, track.yBot + wallW);
     if (isDark) {
-      wallGrad.addColorStop(0, '#16355C');
-      wallGrad.addColorStop(0.5, '#0F2747');
+      wallGrad.addColorStop(0, '#1B3D68');
+      wallGrad.addColorStop(0.5, '#112B4E');
       wallGrad.addColorStop(1, '#09182E');
     } else {
-      wallGrad.addColorStop(0, '#C7D9E8');
-      wallGrad.addColorStop(0.45, '#E4EEF5');
-      wallGrad.addColorStop(1, '#9CB7CE');
+      wallGrad.addColorStop(0, '#C0D2E0');
+      wallGrad.addColorStop(0.45, '#E4ECF2');
+      wallGrad.addColorStop(1, '#93AFC6');
     }
     ctx.lineWidth = wallW;
     ctx.strokeStyle = wallGrad;
     ctx.stroke();
 
-    /* Inner recessed channel trough shadow */
     traceTrackPath(track.pts);
     ctx.lineWidth = channelW + 4;
-    ctx.strokeStyle = isDark ? 'rgba(3, 10, 22, 0.85)' : 'rgba(6, 27, 73, 0.16)';
+    ctx.strokeStyle = isDark ? 'rgba(3, 10, 22, 0.86)' : 'rgba(12, 32, 58, 0.18)';
     ctx.stroke();
 
     /* 5. Living Crystal-Clear Flowing Water Inside the U-Channel */
@@ -593,17 +675,17 @@
     ctx.strokeStyle = waterGrad;
     ctx.stroke();
 
-    /* Inner bright center-stream aqua core */
+    /* Inner luminous aqua core */
     traceTrackPath(track.pts);
     var coreGrad = ctx.createLinearGradient(vw * 0.18, track.yBot - 20, vw * 0.82, track.yBot + 20);
     coreGrad.addColorStop(0, 'rgba(189, 235, 255, 0.16)');
-    coreGrad.addColorStop(0.5, 'rgba(210, 248, 255, 0.44)');
+    coreGrad.addColorStop(0.5, 'rgba(215, 249, 255, 0.46)');
     coreGrad.addColorStop(1, 'rgba(189, 235, 255, 0.16)');
     ctx.lineWidth = channelW * 0.46;
     ctx.strokeStyle = coreGrad;
     ctx.stroke();
 
-    /* Continuous Animated Water Flow Streamlines along U-Channel Centerline */
+    /* Continuous Animated Water Streamlines along U-Channel */
     for (var si = 0; si < streaks.length; si++) {
       var st = streaks[si];
       var f0 = (st.offset + flowTime * st.speed) % 1.0;
@@ -629,58 +711,75 @@
       var bb = bubbles[bi];
       var bf = (bb.offset + flowTime * bb.speed) % 1.0;
       var bp = track.sampleAt(bf);
-      var bLane = bb.lane * (channelW * 0.42) + Math.sin(flowTime * 3.0 + bb.wobble) * 2.5;
-      var bx = bp.x + bp.nx * bLane;
-      var by = bp.y + bp.ny * bLane;
+      var bLane = bb.lane * (channelW * 0.42) + Math.sin(flowTime * 3.0 + bb.wobble) * 2.4;
       ctx.beginPath();
-      ctx.arc(bx, by, bb.r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.52)';
+      ctx.arc(bp.x + bp.nx * bLane, bp.y + bp.ny * bLane, bb.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.54)';
       ctx.fill();
     }
 
-    /* Glossy Top-Edge Acrylic Specular Rim Highlight */
+    /* Sunlit Specular Top-Edge Acrylic Bevel Rim */
     ctx.save();
     ctx.translate(-1.5, -channelW * 0.42);
     traceTrackPath(track.pts);
     ctx.lineWidth = 2.2;
-    ctx.strokeStyle = isDark ? 'rgba(189, 235, 255, 0.24)' : 'rgba(255, 255, 255, 0.72)';
+    ctx.strokeStyle = isDark ? 'rgba(189, 235, 255, 0.25)' : 'rgba(255, 255, 255, 0.78)';
     ctx.stroke();
     ctx.restore();
     ctx.restore();
 
-    /* 6. Two Iconic 3D Spheres Gliding Down Both Arms to Meet at Bottom Center */
-    var sphereR = channelW * 0.56;
-    var rollProg = easeInOutCubic((introTime - 0.15) / 2.45);
-    var meetGlow = easeOutQuart((introTime - 2.15) / 0.9);
+    /* 6. Choreographed 3D Spheres Gliding In from Both Inlets to Meet at Bottom Center */
+    var sphereR = channelW * 0.58;
+    var rollProg = evalSphereMotion(introTime);
+    var approachBeam = clamp01((introTime - 1.55) / 0.85) * (1 - clamp01((introTime - 2.65) / 0.75) * 0.45);
+    var meetGlow = easeOutCubic((introTime - 2.20) / 0.85);
 
-    /* Exact contact spacing at center of the U-track */
-    var halfGapFrac = (sphereR * 1.06) / Math.max(1, track.totalLen);
-    var idleDrift = Math.sin(flowTime * 1.15) * 0.0022 + pointer.x * 0.006;
+    var halfGapFrac = (sphereR * 1.04) / Math.max(1, track.totalLen);
+    var idleDrift = (introTime > 2.8) ? (Math.sin(flowTime * 1.15) * 0.0020 + pointer.x * 0.0055) : 0;
 
-    var leftFrac  = 0.02 + (0.5 - halfGapFrac - 0.02) * rollProg + idleDrift * rollProg;
-    var rightFrac = 0.98 - (0.98 - (0.5 + halfGapFrac)) * rollProg + idleDrift * rollProg;
+    /* At 00:00 (rollProg = 0): both spheres peek right at the upper-left and upper-right edges */
+    var leftFrac  = 0.015 + (0.5 - halfGapFrac - 0.015) * rollProg + idleDrift;
+    var rightFrac = 0.985 - (0.985 - (0.5 + halfGapFrac)) * rollProg + idleDrift;
 
     var leftPt  = track.sampleAt(leftFrac);
     var rightPt = track.sampleAt(rightFrac);
 
-    /* Luminous Aqua Energy Caustic Glow Between Both Spheres When They Meet */
+    /* Bright Aqua Caustic Light Cone Shooting Between the Two Approaching Spheres (Like hero.mp4 00:02!) */
+    if (approachBeam > 0.02) {
+      ctx.save();
+      var beamGrad = ctx.createLinearGradient(leftPt.x, leftPt.y, rightPt.x, rightPt.y);
+      beamGrad.addColorStop(0, 'rgba(21, 217, 242,' + (0.48 * approachBeam).toFixed(3) + ')');
+      beamGrad.addColorStop(0.5, 'rgba(220, 250, 255,' + (0.68 * approachBeam).toFixed(3) + ')');
+      beamGrad.addColorStop(1, 'rgba(21, 217, 242,' + (0.42 * approachBeam).toFixed(3) + ')');
+      ctx.beginPath();
+      ctx.moveTo(leftPt.x, leftPt.y - sphereR * 0.35);
+      ctx.lineTo(rightPt.x, rightPt.y - sphereR * 0.25);
+      ctx.lineTo(rightPt.x, rightPt.y + sphereR * 0.85);
+      ctx.lineTo(leftPt.x, leftPt.y + sphereR * 0.85);
+      ctx.closePath();
+      ctx.fillStyle = beamGrad;
+      ctx.filter = 'blur(14px)';
+      ctx.fill();
+      ctx.restore();
+    }
+
+    /* Soft Luminous Aqua Halo When Spheres Meet at Center */
     if (meetGlow > 0.01) {
       var midX = (leftPt.x + rightPt.x) * 0.5;
       var midY = (leftPt.y + rightPt.y) * 0.5;
-      var pulse = 0.85 + 0.15 * Math.sin(flowTime * 2.4);
-      var mg = ctx.createRadialGradient(midX, midY, sphereR * 0.1, midX, midY, sphereR * 2.8);
-      mg.addColorStop(0, 'rgba(189, 245, 255,' + (0.65 * meetGlow * pulse).toFixed(3) + ')');
-      mg.addColorStop(0.4, 'rgba(21, 217, 242,' + (0.28 * meetGlow * pulse).toFixed(3) + ')');
+      var pulse = 0.88 + 0.12 * Math.sin(flowTime * 2.4);
+      var mg = ctx.createRadialGradient(midX, midY, sphereR * 0.1, midX, midY, sphereR * 2.9);
+      mg.addColorStop(0, 'rgba(200, 248, 255,' + (0.64 * meetGlow * pulse).toFixed(3) + ')');
+      mg.addColorStop(0.42, 'rgba(21, 217, 242,' + (0.28 * meetGlow * pulse).toFixed(3) + ')');
       mg.addColorStop(1, 'rgba(21, 217, 242, 0)');
       ctx.fillStyle = mg;
       ctx.beginPath();
-      ctx.arc(midX, midY, sphereR * 2.8, 0, Math.PI * 2);
+      ctx.arc(midX, midY, sphereR * 2.9, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    /* Left Sphere rolls clockwise down the left slope, settling upright (angle = 0) at center */
-    var leftRollAngle = -(1 - rollProg) * Math.PI * 2.0 + pointer.x * 0.08;
-    var rightRollAngle = (1 - rollProg) * Math.PI * 2.0 + pointer.x * 0.08;
+    var leftRollAngle = -(1 - rollProg) * Math.PI * 2.2 + pointer.x * 0.08;
+    var rightRollAngle = (1 - rollProg) * Math.PI * 2.2 + pointer.x * 0.08;
 
     drawHydroWaterOrb(leftPt.x, leftPt.y, sphereR, leftRollAngle, meetGlow);
     drawMetallicTurbineOrb(rightPt.x, rightPt.y, sphereR, rightRollAngle);
