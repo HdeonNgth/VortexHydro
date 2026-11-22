@@ -38,7 +38,7 @@
     new MutationObserver(syncTheme).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
   }
 
-  /* ---------- Seamless 512x512 Architectural Concrete Wall Texture ---------- */
+  /* ---------- Seamless 512x512 Architectural Plastered Concrete Wall Texture (Periodic FBM) ---------- */
   function createConcreteWallPattern(darkMode) {
     var size = 512;
     var tc = document.createElement('canvas');
@@ -47,68 +47,104 @@
     var tctx = tc.getContext('2d');
     if (!tctx) return null;
 
-    tctx.fillStyle = darkMode ? '#0A1526' : '#E9EAE8';
-    tctx.fillRect(0, 0, size, size);
-
-    /* 1. Toroidally wrapped mottled plaster/mineral clouds (100% seamless) */
-    for (var m = 0; m < 44; m++) {
-      var mx = Math.random() * size;
-      var my = Math.random() * size;
-      var mr = 38 + Math.random() * 110;
-      var bright = Math.random() > 0.48;
-      var col0 = darkMode
-        ? (bright ? 'rgba(34, 64, 102, 0.13)' : 'rgba(2, 6, 14, 0.20)')
-        : (bright ? 'rgba(255, 255, 255, 0.24)' : 'rgba(130, 138, 146, 0.11)');
-      for (var ox = -size; ox <= size; ox += size) {
-        for (var oy = -size; oy <= size; oy += size) {
-          var cx = mx + ox, cy = my + oy;
-          if (cx + mr < 0 || cx - mr > size || cy + mr < 0 || cy - mr > size) continue;
-          var cg = tctx.createRadialGradient(cx, cy, 2, cx, cy, mr);
-          cg.addColorStop(0, col0);
-          cg.addColorStop(1, 'rgba(0,0,0,0)');
-          tctx.fillStyle = cg;
-          tctx.fillRect(cx - mr, cy - mr, mr * 2, mr * 2);
-        }
-      }
+    /* Deterministic PRNG for clean organic plaster clouds without harsh artifacts */
+    var seed = darkMode ? 918273 : 428519;
+    function rand() {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      return seed / 4294967296;
     }
 
-    /* 2. Fine mineral sand grain */
-    var img = tctx.getImageData(0, 0, size, size);
+    function makeGrid(g) {
+      var arr = new Float32Array(g * g);
+      for (var i = 0; i < arr.length; i++) arr[i] = rand() * 2 - 1;
+      return arr;
+    }
+
+    function samplePeriodic(grid, g, u, v) {
+      var gx = u * g;
+      var gy = v * g;
+      var x0 = Math.floor(gx);
+      var y0 = Math.floor(gy);
+      var fx = gx - x0;
+      var fy = gy - y0;
+      /* Quintic smoothstep: zero grid seams or circular spots */
+      var sx = fx * fx * fx * (fx * (fx * 6 - 15) + 10);
+      var sy = fy * fy * fy * (fy * (fy * 6 - 15) + 10);
+      var ix0 = x0 % g;
+      var iy0 = y0 % g;
+      var ix1 = (ix0 + 1) % g;
+      var iy1 = (iy0 + 1) % g;
+      var n00 = grid[iy0 * g + ix0];
+      var n10 = grid[iy0 * g + ix1];
+      var n01 = grid[iy1 * g + ix0];
+      var n11 = grid[iy1 * g + ix1];
+      var nx0 = n00 + (n10 - n00) * sx;
+      var nx1 = n01 + (n11 - n01) * sx;
+      return nx0 + (nx1 - nx0) * sy;
+    }
+
+    var g4  = makeGrid(4);
+    var g8  = makeGrid(8);
+    var g16 = makeGrid(16);
+    var g32 = makeGrid(32);
+
+    var img = tctx.createImageData(size, size);
     var px = img.data;
-    var grainAmp = darkMode ? 12 : 16;
-    for (var i = 0; i < px.length; i += 4) {
-      var n = (Math.random() - 0.5) * grainAmp;
-      px[i]     = Math.max(0, Math.min(255, px[i] + n));
-      px[i + 1] = Math.max(0, Math.min(255, px[i + 1] + n));
-      px[i + 2] = Math.max(0, Math.min(255, px[i + 2] + n));
+    var baseR = darkMode ? 11 : 235;
+    var baseG = darkMode ? 22 : 237;
+    var baseB = darkMode ? 39 : 236;
+    var cloudAmp = darkMode ? 10.5 : 13.5;
+    var grainAmp = darkMode ? 7.5 : 8.5;
+
+    for (var y = 0; y < size; y++) {
+      var v = y / size;
+      for (var x = 0; x < size; x++) {
+        var u = x / size;
+        var fbm =
+          samplePeriodic(g4, 4, u, v) * 0.50 +
+          samplePeriodic(g8, 8, u, v) * 0.28 +
+          samplePeriodic(g16, 16, u, v) * 0.14 +
+          samplePeriodic(g32, 32, u, v) * 0.08;
+
+        var grain = (rand() - 0.5) * grainAmp;
+        var delta = fbm * cloudAmp + grain;
+        var idx = (y * size + x) * 4;
+        px[idx]     = Math.max(0, Math.min(255, baseR + delta));
+        px[idx + 1] = Math.max(0, Math.min(255, baseG + delta * (darkMode ? 1.05 : 1.0)));
+        px[idx + 2] = Math.max(0, Math.min(255, baseB + delta * (darkMode ? 1.15 : 0.98)));
+        px[idx + 3] = 255;
+      }
     }
     tctx.putImageData(img, 0, 0);
 
-    /* 3. Subtle troweled concrete streaks */
-    tctx.strokeStyle = darkMode ? 'rgba(255,255,255,0.025)' : 'rgba(255,255,255,0.18)';
+    /* Subtle architectural trowel wisps (wrapped toroidally so seamless) */
+    tctx.strokeStyle = darkMode ? 'rgba(180,220,255,0.022)' : 'rgba(255,255,255,0.22)';
     tctx.lineWidth = 1;
-    for (var s = 0; s < 32; s++) {
-      var sy = Math.random() * size;
-      var sx = Math.random() * size;
-      var slen = 28 + Math.random() * 84;
-      tctx.beginPath();
-      tctx.moveTo(sx, sy);
-      tctx.lineTo(sx + slen, sy + (Math.random() - 0.5) * 3);
-      tctx.stroke();
+    for (var s = 0; s < 26; s++) {
+      var sx = rand() * size;
+      var sy = rand() * size;
+      var slen = 36 + rand() * 90;
+      var sdy = (rand() - 0.5) * 4;
+      for (var ox = -size; ox <= size; ox += size) {
+        tctx.beginPath();
+        tctx.moveTo(sx + ox, sy);
+        tctx.lineTo(sx + ox + slen, sy + sdy);
+        tctx.stroke();
+      }
     }
 
-    /* 4. Authentic tiny architectural concrete pores / air-void pinholes */
-    for (var p = 0; p < 150; p++) {
-      var x = Math.random() * size;
-      var y = Math.random() * size;
-      var pr = 0.65 + Math.random() * 1.45;
+    /* Fine architectural micro-pores (delicate, realistic micro-cement pinholes) */
+    for (var p = 0; p < 110; p++) {
+      var px0 = rand() * size;
+      var py0 = rand() * size;
+      var pr = 0.5 + rand() * 0.95;
       tctx.beginPath();
-      tctx.arc(x + 0.5, y + 0.5, pr, 0, Math.PI * 2);
-      tctx.fillStyle = darkMode ? 'rgba(160, 200, 235, 0.08)' : 'rgba(255, 255, 255, 0.45)';
+      tctx.arc(px0 + 0.45, py0 + 0.45, pr, 0, Math.PI * 2);
+      tctx.fillStyle = darkMode ? 'rgba(160, 200, 235, 0.06)' : 'rgba(255, 255, 255, 0.42)';
       tctx.fill();
       tctx.beginPath();
-      tctx.arc(x, y, pr, 0, Math.PI * 2);
-      tctx.fillStyle = darkMode ? 'rgba(2, 6, 14, 0.46)' : 'rgba(92, 98, 106, 0.24)';
+      tctx.arc(px0, py0, pr, 0, Math.PI * 2);
+      tctx.fillStyle = darkMode ? 'rgba(2, 6, 14, 0.38)' : 'rgba(104, 112, 122, 0.17)';
       tctx.fill();
     }
 
@@ -126,8 +162,8 @@
     var isMob = w < 720;
     /* Static World-Space U-Channel (The Camera zooms IN from 0.72x -> 1.18x across this world!) */
     var xLeftIn   = -w * 0.24;
-    var xLeftArm  = w * (isMob ? 0.14 : 0.135);
-    var xLeftBot  = w * (isMob ? 0.30 : 0.28);
+    var xLeftArm  = w * (isMob ? 0.115 : 0.135);
+    var xLeftBot  = w * (isMob ? 0.28 : 0.28);
     var xRightBot = w - xLeftBot;
     var xRightArm = w - xLeftArm;
     var xRightOut = w * 1.24;
@@ -496,7 +532,7 @@
     var scrollLift = -scrollP * 48;
 
     if (heroTitle) {
-      var tp = easeOutCubic((t - 0.85) / 1.05);
+      var tp = easeOutCubic((t - 1.08) / 1.05);
       var op = tp * scrollFade;
       var sc = 0.92 + tp * 0.08;
       var ty = (1 - tp) * 18 + scrollLift;
@@ -504,7 +540,7 @@
       heroTitle.style.transform = 'translate3d(0,' + ty.toFixed(1) + 'px,0) scale(' + sc.toFixed(3) + ')';
     }
     if (heroLead) {
-      var lp = easeOutCubic((t - 1.15) / 1.05);
+      var lp = easeOutCubic((t - 1.36) / 1.05);
       var lop = lp * scrollFade;
       var lsc = 0.94 + lp * 0.06;
       var lty = (1 - lp) * 14 + scrollLift;
@@ -569,8 +605,8 @@
        - 0.0s -> 2.95s: camera zooms IN (0.72x -> 1.18x desktop / 1.08x mobile) and tracks downward
          following the Y descent of the two spheres into the bottom-center cradle! */
     var camEase = easeInOutCubic((introTime - 0.08) / 2.85);
-    var zoomStart = isMob ? 0.76 : 0.72;
-    var zoomEnd   = isMob ? 1.08 : 1.18;
+    var zoomStart = isMob ? 0.74 : 0.72;
+    var zoomEnd   = isMob ? 1.14 : 1.18;
     var camZoom   = zoomStart + (zoomEnd - zoomStart) * camEase - scrollProg * 0.08;
 
     /* Follow-cam Y center tracks down with the falling spheres */
