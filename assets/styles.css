@@ -616,7 +616,7 @@ html[data-theme="dark"] .hdr__search:hover,
   .hdr__nav a .nav-ic { display: block; }
 }
 
-/* ---------- 1. LIGHTWEIGHT ORGANIC LIQUID HERO (.hero--liquid) ---------- */
+/* ---------- 1. ARCHITECTURAL U-CHANNEL WATER-FLOW HERO (.hero--liquid) ---------- */
 .hero,
 .hero--liquid {
   position: relative;
@@ -624,61 +624,24 @@ html[data-theme="dark"] .hdr__search:hover,
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--hdr-h) + 32px) 0 76px;
-  color: #061B49;
-  background:
-    radial-gradient(circle at 50% 35%, #FFFFFF 0%, #F4FAFF 45%, #DFF3FF 82%, #CBEAFF 100%);
+  padding: calc(var(--hdr-h) + 20px) 0 40px;
+  color: #0B1526;
+  background: #ECEFF3;
   overflow: hidden;
   isolation: isolate;
 }
 html[data-theme="dark"] .hero--liquid {
   color: #F4FAFF;
-  background:
-    radial-gradient(circle at 50% 38%, rgba(7, 87, 200, 0.24) 0%, rgba(6, 27, 73, 0.65) 55%, #041026 100%);
+  background: #071222;
 }
 @media (prefers-color-scheme: dark) {
   html:not([data-theme="light"]) .hero--liquid {
     color: #F4FAFF;
-    background:
-      radial-gradient(circle at 50% 38%, rgba(7, 87, 200, 0.24) 0%, rgba(6, 27, 73, 0.65) 55%, #041026 100%);
+    background: #071222;
   }
 }
 
-.hero__aura {
-  position: absolute;
-  inset: -6%;
-  z-index: 0;
-  pointer-events: none;
-}
-.hero__glow {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(78px);
-}
-.hero__glow--1 {
-  width: min(560px, 65vw);
-  height: min(560px, 65vw);
-  left: 16%;
-  top: 12%;
-  background: radial-gradient(circle, rgba(21, 217, 242, 0.22) 0%, transparent 72%);
-  animation: heroGlowDrift1 16s ease-in-out infinite alternate;
-}
-.hero__glow--2 {
-  width: min(520px, 62vw);
-  height: min(520px, 62vw);
-  right: 12%;
-  bottom: 10%;
-  background: radial-gradient(circle, rgba(22, 139, 255, 0.20) 0%, transparent 72%);
-  animation: heroGlowDrift2 20s ease-in-out infinite alternate;
-}
-@keyframes heroGlowDrift1 {
-  0%   { transform: translate3d(0, 0, 0) scale(1); }
-  100% { transform: translate3d(28px, 22px, 0) scale(1.08); }
-}
-@keyframes heroGlowDrift2 {
-  0%   { transform: translate3d(0, 0, 0) scale(1.04); }
-  100% { transform: translate3d(-24px, -24px, 0) scale(0.95); }
-}
+.hero__aura { display: none; }
 
 .hero__liquid-canvas {
   position: absolute;
@@ -689,7 +652,7 @@ html[data-theme="dark"] .hero--liquid {
   pointer-events: none;
 }
 
-/* Clean Centered Compact Hero Typography */
+/* Clean Centered Compact Hero Typography (Framed inside the U-Channel Cradle) */
 .hero__center {
   position: relative;
   z-index: 2;
@@ -697,19 +660,19 @@ html[data-theme="dark"] .hero--liquid {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  max-width: 680px;
-  padding-bottom: clamp(28px, 6vh, 64px);
+  max-width: 620px;
+  padding-bottom: clamp(130px, 24vh, 230px);
   will-change: transform, opacity;
 }
 .hero__title {
   margin: 0;
   font-family: var(--f-display);
-  font-size: clamp(2.15rem, 4.4vw, 3.55rem);
+  font-size: clamp(2.15rem, 4.3vw, 3.55rem);
   font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -0.03em;
-  color: #061B49;
-  animation: heroRiseIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  line-height: 1.06;
+  letter-spacing: -0.032em;
+  color: #0B1526;
+  animation: heroRiseIn 0.95s cubic-bezier(0.22, 1, 0.36, 1) 460ms both;
 }
 html[data-theme="dark"] .hero__title { color: #F4FAFF; }
 @media (prefers-color-scheme: dark) {
@@ -717,16 +680,23 @@ html[data-theme="dark"] .hero__title { color: #F4FAFF; }
 }
 .hero__lead {
   margin: 14px 0 0;
-  max-width: 44ch;
-  font-size: clamp(0.96rem, 1.3vw, 1.12rem);
-  line-height: 1.6;
+  max-width: 36ch;
+  font-size: clamp(0.95rem, 1.25vw, 1.08rem);
+  line-height: 1.62;
   font-weight: 500;
-  color: rgba(6, 27, 73, 0.76);
-  animation: heroRiseIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
+  text-wrap: balance;
+  color: rgba(11, 21, 38, 0.72);
+  animation: heroRiseIn 0.95s cubic-bezier(0.22, 1, 0.36, 1) 660ms both;
 }
-html[data-theme="dark"] .hero__lead { color: rgba(244, 250, 255, 0.8); }
+html[data-theme="dark"] .hero__lead { color: rgba(244, 250, 255, 0.78); }
 @media (prefers-color-scheme: dark) {
-  html:not([data-theme="light"]) .hero__lead { color: rgba(244, 250, 255, 0.8); }
+  html:not([data-theme="light"]) .hero__lead { color: rgba(244, 250, 255, 0.78); }
+}
+@media (max-width: 720px) {
+  .hero__center {
+    max-width: min(260px, 66vw);
+    padding-inline: 12px;
+  }
 }
 
 /* ---------- Component Specification Carousel (Inspired by Component.mp4) ---------- */
