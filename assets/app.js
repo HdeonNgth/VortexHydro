@@ -855,6 +855,7 @@
       'mohamad-rizky-fadilah': 'assets/team/mekanikal/mohamad-rizky-fadilah.jpg',
       'mohammad-hisyam-rifai': 'assets/team/mekanikal/mohammad-hisyam-rifai.jpg',
       'muhammad-fadil': 'assets/team/mekanikal/muhammad-fadil.jpg',
+      'mukhamad-nur-alfan': 'assets/team/mekanikal/mukhamad-nur-alfan.jpg',
       'kristoforus-rizkiano-tembang-langit': 'assets/team/modeling/kristoforus-rizkiano-tembang-langit.jpg',
       'lutfi-ahmad-suriyana': 'assets/team/modeling/lutfi-ahmad-suriyana.jpg',
       'm-rangga-satria-noorfando': 'assets/team/modeling/m-rangga-satria-noorfando.jpg',
