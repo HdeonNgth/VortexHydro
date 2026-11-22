@@ -25,17 +25,65 @@
   var root = document.documentElement;
   var mqDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
   var isDark = false;
+  var curPal = 'vortex';
+
+  var HERO_PALS = {
+    vortex: {
+      rgb: '18, 194, 233',
+      rgbDeep: '11, 99, 214',
+      lightWater: ['#0959BA', '#0E8EE8', '#22D3EE'],
+      darkWater:  ['#07438A', '#0B7BD1', '#14C5E8'],
+      drop:       ['#22D3EE', '#0EA5E9', '#0B63D6'],
+      orbTint:    ['#FFFFFF', '#EEF8FF', '#BFE6F8', '#6ABCE6', '#3C8BC4'],
+      core:       ['rgba(189,235,255,0.16)', 'rgba(215,249,255,0.46)'],
+      beamMid:    'rgba(220,250,255,'
+    },
+    vokasi: {
+      rgb: '245, 130, 31',
+      rgbDeep: '217, 78, 20',
+      lightWater: ['#B83C0E', '#E36119', '#F79D3B'],
+      darkWater:  ['#7D2709', '#C44711', '#EC7E24'],
+      drop:       ['#FDBA74', '#F5821F', '#C2410C'],
+      orbTint:    ['#FFFFFF', '#FFF7F0', '#FDE0C6', '#F4AF76', '#CF6D2D'],
+      core:       ['rgba(255,228,200,0.18)', 'rgba(255,244,230,0.46)'],
+      beamMid:    'rgba(255,238,218,'
+    },
+    emerald: {
+      rgb: '20, 184, 154',
+      rgbDeep: '11, 132, 114',
+      lightWater: ['#086E5F', '#0EA58C', '#34D3B4'],
+      darkWater:  ['#064D43', '#0B7D6A', '#18B89C'],
+      drop:       ['#5EEAD4', '#14B89A', '#0B7666'],
+      orbTint:    ['#FFFFFF', '#EEFAF7', '#BCEEE1', '#6FD3BA', '#2E9680'],
+      core:       ['rgba(190,247,232,0.16)', 'rgba(224,252,245,0.46)'],
+      beamMid:    'rgba(218,252,242,'
+    },
+    sakura: {
+      rgb: '236, 72, 153',
+      rgbDeep: '192, 38, 125',
+      lightWater: ['#9D1C69', '#D6338E', '#F472B6'],
+      darkWater:  ['#6D1248', '#B12272', '#E554A1'],
+      drop:       ['#F9A8D4', '#EC4899', '#A81C6E'],
+      orbTint:    ['#FFFFFF', '#FDF2F8', '#FBCFE8', '#EC8BC0', '#BA4B89'],
+      core:       ['rgba(252,216,236,0.16)', 'rgba(255,236,247,0.46)'],
+      beamMid:    'rgba(255,230,244,'
+    }
+  };
+  function getPal() { return HERO_PALS[curPal] || HERO_PALS.vortex; }
 
   function syncTheme() {
     var explicit = root.dataset.theme;
     if (explicit === 'dark') isDark = true;
     else if (explicit === 'light') isDark = false;
     else isDark = !!(mqDark && mqDark.matches);
+    var p = root.dataset.pal;
+    curPal = HERO_PALS[p] ? p : 'vortex';
   }
   syncTheme();
   if (mqDark && mqDark.addEventListener) mqDark.addEventListener('change', syncTheme);
+  window.addEventListener('vx:palettechange', syncTheme);
   if ('MutationObserver' in window) {
-    new MutationObserver(syncTheme).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+    new MutationObserver(syncTheme).observe(root, { attributes: true, attributeFilter: ['data-theme', 'data-pal'] });
   }
 
   /* ---------- Seamless 512x512 Architectural Plastered Concrete Wall Texture (Periodic FBM) ---------- */
@@ -364,6 +412,7 @@
 
   /* ---------- 3D Shaded Spheres ---------- */
   function drawHydroWaterOrb(x, y, r, rollAngle, meetGlow) {
+    var pal = getPal();
     ctx.save();
 
     /* Ground cast shadow */
@@ -377,8 +426,8 @@
 
     if (meetGlow > 0.01) {
       var cg = ctx.createRadialGradient(x + r * 0.55, y + r * 0.45, r * 0.1, x + r * 0.55, y + r * 0.45, r * 1.9);
-      cg.addColorStop(0, 'rgba(21, 217, 242,' + (0.36 * meetGlow).toFixed(3) + ')');
-      cg.addColorStop(1, 'rgba(21, 217, 242, 0)');
+      cg.addColorStop(0, 'rgba(' + pal.rgb + ',' + (0.36 * meetGlow).toFixed(3) + ')');
+      cg.addColorStop(1, 'rgba(' + pal.rgb + ',0)');
       ctx.fillStyle = cg;
       ctx.beginPath();
       ctx.arc(x + r * 0.55, y + r * 0.45, r * 1.9, 0, Math.PI * 2);
@@ -386,11 +435,11 @@
     }
 
     var bg = ctx.createRadialGradient(x - r * 0.36, y - r * 0.38, r * 0.08, x, y, r);
-    bg.addColorStop(0.0, '#FFFFFF');
-    bg.addColorStop(0.42, '#EEF8FF');
-    bg.addColorStop(0.76, '#BFE6F8');
-    bg.addColorStop(0.93, '#6ABCE6');
-    bg.addColorStop(1.0, '#3C8BC4');
+    bg.addColorStop(0.0, pal.orbTint[0]);
+    bg.addColorStop(0.42, pal.orbTint[1]);
+    bg.addColorStop(0.76, pal.orbTint[2]);
+    bg.addColorStop(0.93, pal.orbTint[3]);
+    bg.addColorStop(1.0, pal.orbTint[4]);
 
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
@@ -398,8 +447,8 @@
     ctx.fill();
 
     var rim = ctx.createRadialGradient(x + r * 0.4, y + r * 0.42, r * 0.1, x, y, r);
-    rim.addColorStop(0, 'rgba(21, 217, 242, 0.50)');
-    rim.addColorStop(0.6, 'rgba(21, 217, 242, 0)');
+    rim.addColorStop(0, 'rgba(' + pal.rgb + ',0.50)');
+    rim.addColorStop(0.6, 'rgba(' + pal.rgb + ',0)');
     ctx.fillStyle = rim;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
@@ -411,7 +460,7 @@
 
     ctx.beginPath();
     ctx.arc(0, 0, r * 0.48, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(7, 87, 200, 0.22)';
+    ctx.strokeStyle = 'rgba(' + pal.rgbDeep + ',0.24)';
     ctx.lineWidth = Math.max(1.5, r * 0.05);
     ctx.stroke();
 
@@ -423,10 +472,10 @@
     ctx.closePath();
 
     var dropGrad = ctx.createLinearGradient(0, -dr, 0, dr);
-    dropGrad.addColorStop(0, '#15D9F2');
-    dropGrad.addColorStop(0.55, '#0EA5E9');
-    dropGrad.addColorStop(1, '#0757C8');
-    ctx.shadowColor = 'rgba(21, 217, 242, 0.65)';
+    dropGrad.addColorStop(0, pal.drop[0]);
+    dropGrad.addColorStop(0.55, pal.drop[1]);
+    dropGrad.addColorStop(1, pal.drop[2]);
+    ctx.shadowColor = 'rgba(' + pal.rgb + ',0.65)';
     ctx.shadowBlur = 12;
     ctx.fillStyle = dropGrad;
     ctx.fill();
@@ -486,10 +535,11 @@
     ctx.fill();
     ctx.restore();
 
+    var palM = getPal();
     var bounce = ctx.createRadialGradient(x - r * 0.42, y + r * 0.38, r * 0.05, x - r * 0.42, y + r * 0.38, r * 0.95);
-    bounce.addColorStop(0, 'rgba(21, 217, 242, 0.55)');
-    bounce.addColorStop(0.6, 'rgba(22, 139, 255, 0.12)');
-    bounce.addColorStop(1, 'rgba(21, 217, 242, 0)');
+    bounce.addColorStop(0, 'rgba(' + palM.rgb + ',0.55)');
+    bounce.addColorStop(0.6, 'rgba(' + palM.rgbDeep + ',0.14)');
+    bounce.addColorStop(1, 'rgba(' + palM.rgb + ',0)');
     ctx.fillStyle = bounce;
     ctx.fillRect(x - r, y - r, r * 2, r * 2);
 
@@ -716,31 +766,25 @@
     ctx.strokeStyle = isDark ? 'rgba(3, 10, 22, 0.86)' : 'rgba(12, 32, 58, 0.18)';
     ctx.stroke();
 
-    /* 4. Living Crystal-Clear Flowing Water Inside U-Channel */
+    /* 4. Living Crystal-Clear Flowing Water Inside U-Channel (Palette-Synchronized) */
+    var pal = getPal();
+    var wStops = isDark ? pal.darkWater : pal.lightWater;
     traceTrackPath(track.pts);
     var waterGrad = ctx.createLinearGradient(0, track.yTop, vw, track.yBot);
-    if (isDark) {
-      waterGrad.addColorStop(0, '#074B94');
-      waterGrad.addColorStop(0.28, '#0D85DB');
-      waterGrad.addColorStop(0.5, '#15C9EC');
-      waterGrad.addColorStop(0.72, '#0D85DB');
-      waterGrad.addColorStop(1, '#063C7A');
-    } else {
-      waterGrad.addColorStop(0, '#0968C4');
-      waterGrad.addColorStop(0.24, '#1396EC');
-      waterGrad.addColorStop(0.5, '#2AD9F7');
-      waterGrad.addColorStop(0.76, '#1396EC');
-      waterGrad.addColorStop(1, '#0968C4');
-    }
+    waterGrad.addColorStop(0, wStops[0]);
+    waterGrad.addColorStop(0.26, wStops[1]);
+    waterGrad.addColorStop(0.5, wStops[2]);
+    waterGrad.addColorStop(0.74, wStops[1]);
+    waterGrad.addColorStop(1, wStops[0]);
     ctx.lineWidth = channelW;
     ctx.strokeStyle = waterGrad;
     ctx.stroke();
 
     traceTrackPath(track.pts);
     var coreGrad = ctx.createLinearGradient(vw * 0.18, track.yBot - 20, vw * 0.82, track.yBot + 20);
-    coreGrad.addColorStop(0, 'rgba(189, 235, 255, 0.16)');
-    coreGrad.addColorStop(0.5, 'rgba(215, 249, 255, 0.46)');
-    coreGrad.addColorStop(1, 'rgba(189, 235, 255, 0.16)');
+    coreGrad.addColorStop(0, pal.core[0]);
+    coreGrad.addColorStop(0.5, pal.core[1]);
+    coreGrad.addColorStop(1, pal.core[0]);
     ctx.lineWidth = channelW * 0.46;
     ctx.strokeStyle = coreGrad;
     ctx.stroke();
@@ -795,9 +839,9 @@
     if (approachBeam > 0.02) {
       ctx.save();
       var beamGrad = ctx.createLinearGradient(leftPt.x, leftPt.y, rightPt.x, rightPt.y);
-      beamGrad.addColorStop(0, 'rgba(21, 217, 242,' + (0.48 * approachBeam).toFixed(3) + ')');
-      beamGrad.addColorStop(0.5, 'rgba(220, 250, 255,' + (0.68 * approachBeam).toFixed(3) + ')');
-      beamGrad.addColorStop(1, 'rgba(21, 217, 242,' + (0.42 * approachBeam).toFixed(3) + ')');
+      beamGrad.addColorStop(0, 'rgba(' + pal.rgb + ',' + (0.48 * approachBeam).toFixed(3) + ')');
+      beamGrad.addColorStop(0.5, pal.beamMid + (0.68 * approachBeam).toFixed(3) + ')');
+      beamGrad.addColorStop(1, 'rgba(' + pal.rgb + ',' + (0.42 * approachBeam).toFixed(3) + ')');
       ctx.beginPath();
       ctx.moveTo(leftPt.x, leftPt.y - sphereR * 0.35);
       ctx.lineTo(rightPt.x, rightPt.y - sphereR * 0.25);
@@ -815,9 +859,9 @@
       var midY = (leftPt.y + rightPt.y) * 0.5;
       var pulse = 0.88 + 0.12 * Math.sin(flowTime * 2.4);
       var mg = ctx.createRadialGradient(midX, midY, sphereR * 0.1, midX, midY, sphereR * 2.9);
-      mg.addColorStop(0, 'rgba(200, 248, 255,' + (0.64 * meetGlow * pulse).toFixed(3) + ')');
-      mg.addColorStop(0.42, 'rgba(21, 217, 242,' + (0.28 * meetGlow * pulse).toFixed(3) + ')');
-      mg.addColorStop(1, 'rgba(21, 217, 242, 0)');
+      mg.addColorStop(0, pal.beamMid + (0.64 * meetGlow * pulse).toFixed(3) + ')');
+      mg.addColorStop(0.42, 'rgba(' + pal.rgb + ',' + (0.28 * meetGlow * pulse).toFixed(3) + ')');
+      mg.addColorStop(1, 'rgba(' + pal.rgb + ',0)');
       ctx.fillStyle = mg;
       ctx.beginPath();
       ctx.arc(midX, midY, sphereR * 2.9, 0, Math.PI * 2);

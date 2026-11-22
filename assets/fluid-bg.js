@@ -193,7 +193,27 @@
   var mqMotion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
   var isReducedMotion = !!(mqMotion && mqMotion.matches);
   var isDark = false;
+  var curPal = 'vortex';
   var bgRgb = [0.98, 0.984, 0.992];
+
+  var FLUID_PALS = {
+    vortex: {
+      light: { shallow: [0.62, 0.90, 0.95], deep: [0.20, 0.62, 0.78] },
+      dark:  { shallow: [0.16, 0.55, 0.66], deep: [0.03, 0.22, 0.32] }
+    },
+    vokasi: {
+      light: { shallow: [0.99, 0.85, 0.72], deep: [0.87, 0.46, 0.22] },
+      dark:  { shallow: [0.60, 0.28, 0.12], deep: [0.24, 0.09, 0.04] }
+    },
+    emerald: {
+      light: { shallow: [0.66, 0.94, 0.86], deep: [0.15, 0.64, 0.52] },
+      dark:  { shallow: [0.12, 0.50, 0.41], deep: [0.03, 0.21, 0.17] }
+    },
+    sakura: {
+      light: { shallow: [0.97, 0.79, 0.89], deep: [0.78, 0.29, 0.56] },
+      dark:  { shallow: [0.54, 0.17, 0.38], deep: [0.21, 0.06, 0.17] }
+    }
+  };
 
   function parseCssColor(str) {
     var s = (str || '').trim();
@@ -226,6 +246,9 @@
     else if (explicit === 'light') isDark = false;
     else isDark = !!(mqDark && mqDark.matches);
 
+    var p = root.dataset.pal;
+    curPal = FLUID_PALS[p] ? p : 'vortex';
+
     var cs = getComputedStyle(root);
     var parsed = parseCssColor(cs.getPropertyValue('--bg')) || parseCssColor(getComputedStyle(document.body).backgroundColor);
     if (parsed) {
@@ -236,6 +259,7 @@
   }
 
   syncTheme();
+  window.addEventListener('vx:palettechange', syncTheme);
   if (mqDark && mqDark.addEventListener) {
     mqDark.addEventListener('change', syncTheme);
   }
@@ -350,14 +374,10 @@
       dropData[k * 3 + 2] = rCss * dpr;
     }
 
-    /* Default Aqua Shallow & Deep Colors (Light vs Dark Mode) */
-    if (isDark) {
-      gl.uniform3f(uShallow, 0.16, 0.55, 0.66);
-      gl.uniform3f(uDeep,    0.03, 0.22, 0.32);
-    } else {
-      gl.uniform3f(uShallow, 0.62, 0.90, 0.95);
-      gl.uniform3f(uDeep,    0.20, 0.62, 0.78);
-    }
+    /* Palette-Synchronized Shallow & Deep Fluid Colors (Light vs Dark Mode) */
+    var palCfg = (FLUID_PALS[curPal] || FLUID_PALS.vortex)[isDark ? 'dark' : 'light'];
+    gl.uniform3f(uShallow, palCfg.shallow[0], palCfg.shallow[1], palCfg.shallow[2]);
+    gl.uniform3f(uDeep,    palCfg.deep[0],    palCfg.deep[1],    palCfg.deep[2]);
 
     gl.uniform2f(uRes, canvas.width, canvas.height);
     gl.uniform1f(uTime, simTime);

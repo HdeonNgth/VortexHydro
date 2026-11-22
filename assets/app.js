@@ -454,6 +454,7 @@
         H.dataset.pal = pal;
         try { localStorage.setItem('vxpal', pal); } catch (_) {}
         syncPalButtons();
+        window.dispatchEvent(new CustomEvent('vx:palettechange', { detail: { pal: pal } }));
       });
     }
     syncPalButtons();
@@ -558,38 +559,185 @@
     }
   })();
 
-  /* ---------- 5. Interactive 8-Hotspot Cross-Section Diagram ---------- */
-  (function initDiagram() {
-    var dia = $('vx-diagram'), dtxt = $('dinfo-txt');
-    if (!dia || !dtxt) return;
-    var spots = $$('.hs', dia), chips = $$('#dchips button');
+  /* ---------- 5. Redesigned Interactive Editorial How It Works (#tentang) ---------- */
+  (function initHowItWorks() {
+    var root = $('hiw-root');
+    if (!root) return;
 
-    function show(i) {
-      var tpl = document.querySelector('template[data-i="' + i + '"]');
-      if (!tpl) return;
-      dtxt.innerHTML = tpl.innerHTML;
-      spots.forEach(function (s) { s.classList.toggle('is-on', +s.dataset.i === i); });
-      chips.forEach(function (c) {
-        var on = +c.dataset.i === i;
-        c.classList.toggle('is-on', on);
-        c.setAttribute('aria-pressed', String(on));
-      });
+    var STAGES = [
+      {
+        num: '01',
+        phase: 'Tahap Pertama',
+        code: 'TAHAP 01 · PEMETAAN ALIRAN',
+        title: 'Eksplorasi Ide',
+        lead: 'Menemukan potensi dan solusi dari setiap tantangan.',
+        body: 'Memetakan potensi aliran ber-head rendah, merumuskan mekanisme pusaran air sirkulasi tertutup, dan mengidentifikasi kebutuhan daya tanpa bendungan besar.',
+        tags: ['Head Rendah', 'Analisis Debit', 'Konsep Sirkulasi']
+      },
+      {
+        num: '02',
+        phase: 'Tahap Kedua',
+        code: 'TAHAP 02 · REKAYASA & SIMULASI',
+        title: 'Proses Teknologi',
+        lead: 'Mengembangkan ide melalui teknologi dan pendekatan yang tepat.',
+        body: 'Memodelkan geometri saluran akrilik 3D di AutoCAD, mensimulasikan dinamika aliran fluida di ANSYS Fluent, dan memvalidasi perhitungan daya dengan MATLAB.',
+        tags: ['AutoCAD 3D', 'ANSYS Fluent', 'MATLAB']
+      },
+      {
+        num: '03',
+        phase: 'Tahap Ketiga',
+        code: 'TAHAP 03 · FABRIKASI PROTOTIPE',
+        title: 'Implementasi',
+        lead: 'Mengubah konsep menjadi solusi nyata.',
+        body: 'Merakit rangka laboratorium 2,0 × 0,8 m, kincir 6 sudu Ø 330 mm, transmisi pulley step-up 1:4 pada zona kering, dan Generator DC XD 3240.',
+        tags: ['Kincir 6 Sudu', 'Pulley 1:4', 'Generator DC']
+      },
+      {
+        num: '04',
+        phase: 'Tahap Keempat',
+        code: 'TAHAP 04 · ENERGI BERKELANJUTAN',
+        title: 'Dampak Nyata',
+        lead: 'Menciptakan manfaat untuk masa depan yang lebih baik.',
+        body: 'Menghasilkan listrik DC bersih 12 V untuk beban LED sekaligus menjadi referensi edukasi dan riset energi terbarukan skala mikro tanpa bendungan besar.',
+        tags: ['Output 12 V DC', 'Tanpa Bendungan', 'Riset Terbuka']
+      }
+    ];
+
+    var steps = $$('.hiw__step', root);
+    var arts = $$('.hiw__art', root);
+    var railWrap = $('hiw-rail-wrap');
+    var progressEl = $('hiw-progress');
+    var counterEl = $('hiw-counter');
+    var specCodeEl = $('hiw-spec-code');
+    var panelEl = $('hiw-panel');
+    var detailBox = root.querySelector('.hiw__detail');
+    var dNum = $('hiw-detail-num'), dPhase = $('hiw-detail-phase'), dTitle = $('hiw-detail-title'),
+        dLead = $('hiw-detail-lead'), dBody = $('hiw-detail-body'), dTags = $('hiw-detail-tags'),
+        dBar = $('hiw-bar-fill'), prevBtn = $('hiw-prev'), nextBtn = $('hiw-next'),
+        canvasEl = $('hiw-canvas');
+
+    var activeIdx = 0;
+    var swapTimer = null;
+
+    function updateProgress(idx) {
+      var pct = ((idx + 1) / STAGES.length) * 100;
+      if (progressEl) progressEl.style.width = pct + '%';
+      if (railWrap) railWrap.style.setProperty('--hiw-mob-prog', pct + '%');
+      if (dBar) dBar.style.width = pct + '%';
+      if (counterEl) counterEl.textContent = STAGES[idx].num + ' / 0' + STAGES.length;
     }
-    spots.forEach(function (s) {
-      s.addEventListener('click', function () { show(+s.dataset.i); });
-      s.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(+s.dataset.i); } });
-    });
-    chips.forEach(function (c) { c.addEventListener('click', function () { show(+c.dataset.i); }); });
 
-    /* Deep link from Beranda component cards -> activate exact hotspot on #tentang */
+    function activate(idx, immediate) {
+      idx = ((idx % STAGES.length) + STAGES.length) % STAGES.length;
+      activeIdx = idx;
+      var st = STAGES[idx];
+
+      steps.forEach(function (el, i) {
+        var isAct = i === idx;
+        el.classList.toggle('is-active', isAct);
+        el.classList.toggle('is-passed', i < idx);
+        var btn = el.querySelector('.hiw__step-btn');
+        if (btn) btn.setAttribute('aria-selected', String(isAct));
+      });
+
+      arts.forEach(function (svg, i) {
+        svg.classList.toggle('is-active', i === idx);
+      });
+
+      updateProgress(idx);
+      if (panelEl) panelEl.setAttribute('aria-labelledby', 'hiw-tab-' + idx);
+      if (specCodeEl) specCodeEl.textContent = st.code;
+
+      function applyText() {
+        if (dNum) dNum.textContent = st.num;
+        if (dPhase) dPhase.textContent = st.phase;
+        if (dTitle) dTitle.textContent = st.title;
+        if (dLead) dLead.textContent = st.lead;
+        if (dBody) dBody.textContent = st.body;
+        if (dTags) {
+          dTags.innerHTML = '';
+          st.tags.forEach(function (t) {
+            var li = document.createElement('li');
+            li.textContent = t;
+            dTags.appendChild(li);
+          });
+        }
+        if (detailBox) detailBox.classList.remove('is-switching');
+      }
+
+      clearTimeout(swapTimer);
+      if (immediate || reducedMotion || !detailBox) {
+        applyText();
+      } else {
+        detailBox.classList.add('is-switching');
+        swapTimer = setTimeout(applyText, 120);
+      }
+    }
+
+    steps.forEach(function (el, i) {
+      var btn = el.querySelector('.hiw__step-btn');
+      if (!btn) return;
+      btn.addEventListener('click', function () { activate(i, false); });
+      btn.addEventListener('mouseenter', function () {
+        if (progressEl && window.innerWidth > 760) {
+          var hoverPct = Math.max(((activeIdx + 1) / STAGES.length) * 100, ((i + 1) / STAGES.length) * 100);
+          progressEl.style.width = hoverPct + '%';
+        }
+      });
+      btn.addEventListener('mouseleave', function () {
+        if (progressEl && window.innerWidth > 760) {
+          progressEl.style.width = (((activeIdx + 1) / STAGES.length) * 100) + '%';
+        }
+      });
+      btn.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          activate(i + 1, false);
+          var nb = steps[activeIdx] && steps[activeIdx].querySelector('.hiw__step-btn');
+          if (nb) nb.focus();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          activate(i - 1, false);
+          var pb = steps[activeIdx] && steps[activeIdx].querySelector('.hiw__step-btn');
+          if (pb) pb.focus();
+        }
+      });
+    });
+
+    if (prevBtn) prevBtn.addEventListener('click', function () { activate(activeIdx - 1, false); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { activate(activeIdx + 1, false); });
+
+    /* Subtle lightweight scroll parallax on the technical illustration canvas */
+    if (canvasEl && !reducedMotion) {
+      var artStack = canvasEl.querySelector('.hiw__art-stack');
+      var rafPending = false;
+      function onScrollParallax() {
+        if (rafPending || $('tentang').hidden) return;
+        rafPending = true;
+        requestAnimationFrame(function () {
+          rafPending = false;
+          if (!artStack) return;
+          var r = canvasEl.getBoundingClientRect();
+          var vh = window.innerHeight || 800;
+          if (r.bottom < 0 || r.top > vh) return;
+          var norm = ((r.top + r.height * 0.5) / vh - 0.5) * 2;
+          var shift = Math.max(-10, Math.min(10, norm * -8));
+          artStack.style.transform = 'translate3d(0,' + shift.toFixed(1) + 'px,0)';
+        });
+      }
+      window.addEventListener('scroll', onScrollParallax, { passive: true });
+    }
+
+    /* Deep links from Beranda component cards -> activate matching stage on #tentang */
     document.addEventListener('click', function (e) {
       var link = e.target.closest && e.target.closest('[data-go-hotspot]');
       if (!link) return;
       var hs = +link.getAttribute('data-go-hotspot');
-      if (hs) setTimeout(function () { show(hs); }, 60);
+      var targetStep = hs >= 8 ? 3 : (hs >= 2 ? 2 : 0);
+      setTimeout(function () { activate(targetStep, true); }, 60);
     });
 
-    show(1);
+    activate(0, true);
   })();
 
   /* ---------- 6. Tentang Kami: ON.Energy Portrait Grid + Right Slide-Over Drawer ---------- */
