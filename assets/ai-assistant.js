@@ -106,7 +106,88 @@ window.VX_AI_CONFIG = {
     return out.join('');
   }
 
-  var ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>';
+  /* Minimalist Stylized Voxxy Mini Avatar (for FAB, Header & Assistant Bubbles) */
+  var VOXXY_MINI =
+    '<svg viewBox="0 0 36 36" aria-hidden="true" focusable="false" fill="none">' +
+      '<path d="M8 14L6 6.5C6 5.4 7.2 4.8 8 5.5L13.5 9.8C15 9.3 16.5 9 18 9C19.5 9 21 9.3 22.5 9.8L28 5.5C28.8 4.8 30 5.4 30 6.5L28 14C29.3 16 30 18.4 30 21C30 27.2 24.8 31 18 31C11.2 31 6 27.2 6 21C6 18.4 6.7 16 8 14Z" fill="currentColor"/>' +
+      '<ellipse cx="18" cy="22.8" rx="9.5" ry="6.4" fill="#FFFFFF" fill-opacity="0.92"/>' +
+      '<circle cx="14.2" cy="21.4" r="1.55" fill="#0B1F3A"/>' +
+      '<circle cx="21.8" cy="21.4" r="1.55" fill="#0B1F3A"/>' +
+      '<circle cx="14.7" cy="20.9" r="0.5" fill="#FFFFFF"/>' +
+      '<circle cx="22.3" cy="20.9" r="0.5" fill="#FFFFFF"/>' +
+      '<path d="M16.2 24.1C16.8 25 19.2 25 19.8 24.1" stroke="#0B1F3A" stroke-width="1.35" stroke-linecap="round"/>' +
+      '<ellipse cx="11.6" cy="23.2" rx="1.6" ry="0.95" fill="#FF8FAB" fill-opacity="0.72"/>' +
+      '<ellipse cx="24.4" cy="23.2" rx="1.6" ry="0.95" fill="#FF8FAB" fill-opacity="0.72"/>' +
+    '</svg>';
+
+  /* Interactive Lounging Pet Mascot — Stylized Flat-Cute Voxxy Resting on Chat Panel Roof */
+  var VOXXY_PET =
+    '<svg class="vxpet__svg" viewBox="0 0 132 62" fill="none" aria-hidden="true">' +
+      '<defs>' +
+        '<linearGradient id="vxPetBody" x1="20" y1="10" x2="112" y2="54" gradientUnits="userSpaceOnUse">' +
+          '<stop offset="0%" stop-color="var(--cyan)"/>' +
+          '<stop offset="100%" stop-color="var(--blue)"/>' +
+        '</linearGradient>' +
+      '</defs>' +
+      /* Cute swishing tail on the left */
+      '<path class="vxpet__tail" d="M26 44C14 45 8 36 13 28C15.5 24 21 25 22 30C23 34 20 38 26 39" fill="url(#vxPetBody)"/>' +
+      /* Cozy lounging rounded body */
+      '<g class="vxpet__body">' +
+        '<path d="M24 44C24 29 37 20 56 20H78C96 20 109 29 109 44C109 50.5 103 53 95 53H37C29 53 24 50.5 24 44Z" fill="url(#vxPetBody)"/>' +
+        /* Cute rounded water-cat ears */
+        '<path class="vxpet__ear vxpet__ear--l" d="M68 23L65 11.5C64.6 9.8 66.5 8.6 68 9.6L78 16.8Z" fill="url(#vxPetBody)"/>' +
+        '<path class="vxpet__ear vxpet__ear--r" d="M98 24L103 13C103.8 11.4 102 9.8 100.4 10.7L90 17.2Z" fill="url(#vxPetBody)"/>' +
+        '<path d="M69 20.2L67.3 13.8L74.2 18.2Z" fill="#FFFFFF" fill-opacity="0.45"/>' +
+        '<path d="M96.8 20.6L99.8 14.5L92.6 18.6Z" fill="#FFFFFF" fill-opacity="0.45"/>' +
+        /* Soft glossy droplet highlight on back */
+        '<ellipse cx="47" cy="30" rx="11" ry="4.5" transform="rotate(-10 47 30)" fill="#FFFFFF" fill-opacity="0.28"/>' +
+        /* Soft cream face patch */
+        '<ellipse cx="83" cy="36" rx="20" ry="13.5" fill="#FFFFFF" fill-opacity="0.95"/>' +
+        /* Cheeks */
+        '<ellipse class="vxpet__cheek" cx="69" cy="39.5" rx="3.4" ry="2" fill="#FF8FAB"/>' +
+        '<ellipse class="vxpet__cheek" cx="97" cy="39.5" rx="3.4" ry="2" fill="#FF8FAB"/>' +
+        /* FACE: SLEEP (peaceful closed eyes) */
+        '<g class="vxpet__face vxpet__face--sleep">' +
+          '<path d="M72 36.2C73.5 38.2 76.5 38.2 78 36.2" stroke="#13294B" stroke-width="1.9" stroke-linecap="round"/>' +
+          '<path d="M88 36.2C89.5 38.2 92.5 38.2 94 36.2" stroke="#13294B" stroke-width="1.9" stroke-linecap="round"/>' +
+          '<path d="M81 40.5C82 41.7 84 41.7 85 40.5" stroke="#13294B" stroke-width="1.6" stroke-linecap="round"/>' +
+        '</g>' +
+        /* FACE: AWAKE (bright cute eyes) */
+        '<g class="vxpet__face vxpet__face--awake">' +
+          '<circle cx="75" cy="35.5" r="2.7" fill="#13294B"/>' +
+          '<circle cx="91" cy="35.5" r="2.7" fill="#13294B"/>' +
+          '<circle cx="75.9" cy="34.5" r="0.95" fill="#FFFFFF"/>' +
+          '<circle cx="91.9" cy="34.5" r="0.95" fill="#FFFFFF"/>' +
+          '<path d="M80.5 39.8C81.8 41.6 84.2 41.6 85.5 39.8" stroke="#13294B" stroke-width="1.7" stroke-linecap="round"/>' +
+        '</g>' +
+        /* FACE: HAPPY (squinty blissful ^ ^ eyes) */
+        '<g class="vxpet__face vxpet__face--happy">' +
+          '<path d="M72 36.5C73.5 33.8 76.5 33.8 78 36.5" stroke="#13294B" stroke-width="2" stroke-linecap="round"/>' +
+          '<path d="M88 36.5C89.5 33.8 92.5 33.8 94 36.5" stroke="#13294B" stroke-width="2" stroke-linecap="round"/>' +
+          '<path d="M79.8 39.4C81.4 42.2 84.6 42.2 86.2 39.4" stroke="#13294B" stroke-width="1.8" stroke-linecap="round"/>' +
+        '</g>' +
+        /* FACE: PEEK (curious eyes looking down at user typing) */
+        '<g class="vxpet__face vxpet__face--peek">' +
+          '<circle cx="75" cy="37.2" r="2.6" fill="#13294B"/>' +
+          '<circle cx="91" cy="37.2" r="2.6" fill="#13294B"/>' +
+          '<circle cx="75.8" cy="36.4" r="0.85" fill="#FFFFFF"/>' +
+          '<circle cx="91.8" cy="36.4" r="0.85" fill="#FFFFFF"/>' +
+          '<circle cx="83" cy="41.4" r="1.4" fill="#13294B"/>' +
+        '</g>' +
+        /* FACE: THINK (thoughtful eyes looking up-right) */
+        '<g class="vxpet__face vxpet__face--think">' +
+          '<circle cx="76.2" cy="34.2" r="2.4" fill="#13294B"/>' +
+          '<circle cx="92.2" cy="34.2" r="2.4" fill="#13294B"/>' +
+          '<circle cx="77" cy="33.4" r="0.8" fill="#FFFFFF"/>' +
+          '<circle cx="93" cy="33.4" r="0.8" fill="#FFFFFF"/>' +
+          '<path d="M81 40.6H85" stroke="#13294B" stroke-width="1.7" stroke-linecap="round"/>' +
+        '</g>' +
+      '</g>' +
+      /* Cute stubby paws resting gently over the top edge of the chat panel */
+      '<ellipse class="vxpet__paw vxpet__paw--l" cx="69" cy="52.5" rx="7" ry="4.5" fill="#FFFFFF" stroke="var(--blue)" stroke-width="1.5"/>' +
+      '<ellipse class="vxpet__paw vxpet__paw--r" cx="95" cy="52.5" rx="7" ry="4.5" fill="#FFFFFF" stroke="var(--blue)" stroke-width="1.5"/>' +
+    '</svg>';
+
   var LOCK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
   var EDIT_ICON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
   var CLOSE_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
@@ -115,35 +196,131 @@ window.VX_AI_CONFIG = {
   var root = document.createElement('div');
   root.className = 'vai';
   root.innerHTML =
-    '<button type="button" class="vai__fab" id="vaiFab" aria-label="Tanya Vortex AI" aria-expanded="false" aria-controls="vaiPanel">' +
-      '<span class="vai__fab-ic">' + ICON + '</span><span class="vai__fab-lbl">Tanya AI</span>' +
+    '<button type="button" class="vai__fab" id="vaiFab" aria-label="Tanya Voxxy" aria-expanded="false" aria-controls="vaiPanel">' +
+      '<span class="vai__fab-ic">' + VOXXY_MINI + '</span><span class="vai__fab-lbl">Tanya Voxxy</span>' +
     '</button>' +
-    '<section class="vai__panel" id="vaiPanel" role="dialog" aria-label="Vortex Hydro AI Assistant" hidden>' +
-      '<header class="vai__head"><span class="vai__logo">' + ICON + '</span><div class="vai__id"><b>Vortex Hydro AI</b><small><i class="vai__dot" id="vaiDot"></i><span id="vaiStatus">Online</span></small></div>' +
-        '<button type="button" class="vai__ib" id="vaiHist" aria-label="Riwayat percakapan" title="Riwayat sesi ini"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2M3.5 12a8.5 8.5 0 1 0 2.6-6.1M3.5 4v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
-        '<button type="button" class="vai__ib" id="vaiNew" aria-label="Percakapan baru" title="Percakapan baru"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>' +
-        '<button type="button" class="vai__ib vai__ib--close" id="vaiClose" aria-label="Tutup panel" title="Tutup">' + CLOSE_ICON + '</button></header>' +
-      '<div class="vai__priv" title="Percakapan bersifat privat dan otomatis dimulai ulang setiap kali halaman disegarkan agar tidak menumpuk.">' +
-        '<span class="vai__priv-ic" aria-hidden="true">' + LOCK_ICON + '</span>' +
-        '<span class="vai__priv-txt">Percakapan privat · Otomatis direset saat dimuat ulang.</span>' +
+    '<section class="vai__panel" id="vaiPanel" role="dialog" aria-label="Voxxy AI Assistant" hidden>' +
+      /* Interactive Lounging Pet Mascot Perched Peacefully on Top of the Chat Roof */
+      '<div class="vxpet-dock">' +
+        '<button type="button" class="vxpet" id="vxPet" data-mood="sleep" aria-label="Sentuh atau elus Voxxy" title="Sentuh atau elus Voxxy~">' +
+          '<span class="vxpet__zzz" aria-hidden="true"><i>z</i><i>z</i></span>' +
+          '<span class="vxpet__think" aria-hidden="true">?</span>' +
+          '<span class="vxpet__fx" id="vxPetFx" aria-hidden="true"></span>' +
+          VOXXY_PET +
+        '</button>' +
+        '<span class="vxpet__say" id="vxPetSay" aria-live="polite" hidden></span>' +
       '</div>' +
-      '<div class="vai__body"><div class="vai__log" id="vaiLog" role="log" aria-live="polite"></div>' +
-        '<aside class="vai__drawer" id="vaiDrawer" hidden>' +
-          '<div class="vai__dh"><b>Riwayat Percakapan</b><button type="button" class="vai__ib vai__ib--close" id="vaiDrawerClose" aria-label="Tutup riwayat">' + CLOSE_ICON + '</button></div>' +
-          '<ul id="vaiList"></ul>' +
-          '<div class="vai__df"><button type="button" class="vai__delall" id="vaiDelAll">Hapus Semua Riwayat</button></div>' +
-        '</aside></div>' +
-      '<form class="vai__form" id="vaiForm"><label class="vai__sr" for="vaiInput">Pesan</label><textarea id="vaiInput" rows="1" maxlength="2000" placeholder="Tanyakan seputar Vortex Hydro…" autocomplete="off"></textarea>' +
-        '<button type="submit" class="vai__send" id="vaiSend" aria-label="Kirim"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5L4 12z" fill="currentColor"/></svg></button></form>' +
-      '<p class="vai__note">Langsung digunakan tanpa login · Didukung Gemini.</p>' +
+      '<div class="vai__box">' +
+        '<header class="vai__head">' +
+          '<span class="vai__logo">' + VOXXY_MINI + '</span>' +
+          '<div class="vai__id"><b>Voxxy</b><small><i class="vai__dot" id="vaiDot"></i><span id="vaiStatus">Online</span></small></div>' +
+          '<button type="button" class="vai__ib" id="vaiHist" aria-label="Riwayat percakapan" title="Riwayat sesi ini"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2M3.5 12a8.5 8.5 0 1 0 2.6-6.1M3.5 4v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+          '<button type="button" class="vai__ib" id="vaiNew" aria-label="Percakapan baru" title="Percakapan baru"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>' +
+          '<button type="button" class="vai__ib vai__ib--close" id="vaiClose" aria-label="Tutup panel" title="Tutup">' + CLOSE_ICON + '</button>' +
+        '</header>' +
+        '<div class="vai__priv" title="Percakapan bersifat privat dan otomatis direset setiap kali halaman dimuat ulang agar tidak menumpuk.">' +
+          '<span class="vai__priv-ic" aria-hidden="true">' + LOCK_ICON + '</span>' +
+          '<span class="vai__priv-txt">Percakapan privat · Reset otomatis saat dimuat ulang.</span>' +
+        '</div>' +
+        '<div class="vai__body"><div class="vai__log" id="vaiLog" role="log" aria-live="polite"></div>' +
+          '<aside class="vai__drawer" id="vaiDrawer" hidden>' +
+            '<div class="vai__dh"><b>Riwayat Voxxy</b><button type="button" class="vai__ib vai__ib--close" id="vaiDrawerClose" aria-label="Tutup riwayat">' + CLOSE_ICON + '</button></div>' +
+            '<ul id="vaiList"></ul>' +
+            '<div class="vai__df"><button type="button" class="vai__delall" id="vaiDelAll">Hapus Semua Riwayat</button></div>' +
+          '</aside></div>' +
+        '<form class="vai__form" id="vaiForm">' +
+          '<div class="vai__input-pill">' +
+            '<label class="vai__sr" for="vaiInput">Pesan</label>' +
+            '<textarea id="vaiInput" rows="1" maxlength="2000" placeholder="Ngobrol dengan Voxxy…" autocomplete="off"></textarea>' +
+            '<button type="submit" class="vai__send" id="vaiSend" aria-label="Kirim"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5L4 12z" fill="currentColor"/></svg></button>' +
+          '</div>' +
+        '</form>' +
+        '<p class="vai__note">Voxxy · Tanpa login · Didukung Gemini</p>' +
+      '</div>' +
     '</section>';
   document.body.appendChild(root);
 
   var $ = function (id) { return document.getElementById(id); };
   var fab = $('vaiFab'), panel = $('vaiPanel'), log = $('vaiLog'), input = $('vaiInput'), send = $('vaiSend'),
-      drawer = $('vaiDrawer'), list = $('vaiList'), dot = $('vaiDot'), statusEl = $('vaiStatus'), delAllBtn = $('vaiDelAll');
+      drawer = $('vaiDrawer'), list = $('vaiList'), dot = $('vaiDot'), statusEl = $('vaiStatus'), delAllBtn = $('vaiDelAll'),
+      petEl = $('vxPet'), petFx = $('vxPetFx'), petSay = $('vxPetSay');
   /* Always start clean on every browser page load / refresh */
   var state = { conv: null, busy: false, loaded: false };
+
+  /* ---------- Interactive Pet ("Voxxy") Touch, Petting & Mood Engine ---------- */
+  var petState = { mood: 'sleep', pets: 0, sleepTimer: null, sayTimer: null, lastRub: 0 };
+  var PET_LINES = [
+    'Zzz… eh halo! 😊',
+    'Hehe geli~ 😄',
+    'Makasih elusannya! 🥰',
+    'Lagi santai nih~',
+    'Yuk ngobrol sama Voxxy!',
+    'Siap bantu kamu! 😎'
+  ];
+
+  function setPetMood(mood, autoSleepMs) {
+    if (!petEl) return;
+    petState.mood = mood;
+    petEl.setAttribute('data-mood', mood);
+    clearTimeout(petState.sleepTimer);
+    if (autoSleepMs && !state.busy) {
+      petState.sleepTimer = setTimeout(function () {
+        if (!state.busy && document.activeElement !== input) {
+          petState.mood = 'sleep';
+          petEl.setAttribute('data-mood', 'sleep');
+        }
+      }, autoSleepMs);
+    }
+  }
+
+  function spawnPetSpark(symbol) {
+    if (!petFx) return;
+    var sp = document.createElement('i');
+    sp.className = 'vxpet__spark';
+    sp.textContent = symbol || '♡';
+    sp.style.left = (38 + Math.random() * 44) + '%';
+    petFx.appendChild(sp);
+    setTimeout(function () { sp.remove(); }, 950);
+  }
+
+  function sayPet(msg) {
+    if (!petSay) return;
+    petSay.textContent = msg;
+    petSay.hidden = false;
+    petSay.classList.remove('is-show');
+    void petSay.offsetWidth;
+    petSay.classList.add('is-show');
+    clearTimeout(petState.sayTimer);
+    petState.sayTimer = setTimeout(function () {
+      petSay.classList.remove('is-show');
+      setTimeout(function () { if (!petSay.classList.contains('is-show')) petSay.hidden = true; }, 220);
+    }, 2300);
+  }
+
+  function petVoxxy(isRub) {
+    if (!petEl) return;
+    var now = Date.now();
+    if (isRub && now - petState.lastRub < 700) return;
+    petState.lastRub = now;
+    petState.pets++;
+    var nextMood = (petState.mood === 'sleep' && !isRub) ? 'awake' : 'happy';
+    setPetMood(nextMood, 8500);
+    petEl.classList.remove('is-boop');
+    void petEl.offsetWidth;
+    petEl.classList.add('is-boop');
+    spawnPetSpark(nextMood === 'happy' ? '♡' : '✦');
+    if (petState.pets % 2 === 0 || !isRub) {
+      var line = PET_LINES[(petState.pets - 1) % PET_LINES.length];
+      sayPet(line);
+    }
+  }
+
+  if (petEl) {
+    petEl.addEventListener('click', function () { petVoxxy(false); });
+    petEl.addEventListener('pointermove', function (e) {
+      if (e.buttons === 1 || e.pointerType === 'touch') petVoxxy(true);
+    });
+  }
 
   var ERR = {
     invalid_session: 'Sesi diperbarui secara otomatis. Silakan kirim ulang pesan Anda.',
@@ -203,8 +380,8 @@ window.VX_AI_CONFIG = {
   function scroll() { log.scrollTop = log.scrollHeight; }
 
   function welcome() {
-    log.innerHTML = '<div class="vai__empty"><span class="vai__badge">' + ICON + '</span><h3>Halo! Aku Vortex Hydro AI 😊</h3>' +
-      '<p>Asisten diskusi cerdas untuk proyek mikro-hidro Vortex Hydro Universitas Negeri Malang 😄 Tanyakan apa saja seputar cara kerja turbin, komponen, atau konsep alirannya ya!</p>' +
+    log.innerHTML = '<div class="vai__empty"><span class="vai__badge">' + VOXXY_MINI + '</span><h3>Halo! Aku Voxxy 😊</h3>' +
+      '<p>Asisten pintar untuk proyek mikro-hidro Vortex Hydro UM 😄 Tanyakan apa saja soal cara kerja, komponen, atau alirannya! <span class="vai__pet-hint">Psst, sentuh Voxxy yang lagi tiduran di atas~</span></p>' +
       '<div class="vai__sug"></div></div>';
     var box = log.querySelector('.vai__sug');
     [
@@ -222,7 +399,7 @@ window.VX_AI_CONFIG = {
     var empty = log.querySelector('.vai__empty'); if (empty) log.innerHTML = '';
     var w = document.createElement('div'); w.className = 'vai__m vai__m--' + role;
     if (role === 'assistant') {
-      w.innerHTML = '<span class="vai__av">' + ICON + '</span><div class="vai__bub"><div class="vai__txt"></div><button type="button" class="vai__copy" aria-label="Salin jawaban">Salin</button></div>';
+      w.innerHTML = '<span class="vai__av">' + VOXXY_MINI + '</span><div class="vai__bub"><div class="vai__txt"></div><button type="button" class="vai__copy" aria-label="Salin jawaban">Salin</button></div>';
       w.querySelector('.vai__txt').innerHTML = md(content);
       rebindCopy(w, content);
     } else {
@@ -243,7 +420,7 @@ window.VX_AI_CONFIG = {
 
   function typing() {
     var w = document.createElement('div'); w.className = 'vai__m vai__m--assistant';
-    w.innerHTML = '<span class="vai__av">' + ICON + '</span><div class="vai__bub"><div class="vai__dots" aria-label="AI sedang mengetik"><i></i><i></i><i></i></div></div>';
+    w.innerHTML = '<span class="vai__av">' + VOXXY_MINI + '</span><div class="vai__bub"><div class="vai__dots" aria-label="Voxxy sedang mengetik"><i></i><i></i><i></i></div></div>';
     log.appendChild(w); scroll(); return w;
   }
 
@@ -255,7 +432,11 @@ window.VX_AI_CONFIG = {
     log.appendChild(w); scroll();
   }
 
-  function setBusy(b) { state.busy = b; send.disabled = b; panel.classList.toggle('is-busy', b); setStatus(b ? 'busy' : 'ok'); }
+  function setBusy(b) {
+    state.busy = b; send.disabled = b; panel.classList.toggle('is-busy', b); setStatus(b ? 'busy' : 'ok');
+    if (b) setPetMood('think');
+    else setPetMood('awake', 7000);
+  }
 
   function submit(text, retry) {
     text = (text || '').trim();
@@ -267,6 +448,7 @@ window.VX_AI_CONFIG = {
       state.conv = d.conversation_id; store.set(CONV_KEY, state.conv);
       tp.remove();
       addMsg('assistant', d.message.content);
+      spawnPetSpark('✦');
     }).catch(function (e) {
       tp.remove();
       if (e.conv) { state.conv = e.conv; store.set(CONV_KEY, state.conv); }
@@ -368,5 +550,12 @@ window.VX_AI_CONFIG = {
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panel.hidden) { if (!drawer.hidden) drawer.hidden = true; else closePanel(); } });
   $('vaiForm').addEventListener('submit', function (e) { e.preventDefault(); var t = input.value; if (!t.trim() || state.busy) return; input.value = ''; input.style.height = 'auto'; submit(t); });
   input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('vaiForm').requestSubmit(); } });
-  input.addEventListener('input', function () { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 120) + 'px'; });
+  input.addEventListener('input', function () {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    if (!state.busy && input.value.trim()) setPetMood('peek', 6500);
+  });
+  input.addEventListener('blur', function () {
+    if (!state.busy && petState.mood === 'peek') setPetMood('sleep');
+  });
 })();

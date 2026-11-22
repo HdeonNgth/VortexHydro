@@ -554,7 +554,7 @@
           (msgs.length ? msgs.map(function (m) {
             var isU = m.role === 'user';
             return '<div class="dai__msg dai__msg--' + (isU ? 'u' : 'a') + '">' +
-              '<div class="dai__mhd"><span>' + (isU ? 'PENGUNJUNG' : 'VORTEX AI' + (m.model ? ' · ' + esc(m.model) : '')) + '</span><time>' + esc(fmtTime(m.created_at)) + '</time></div>' +
+              '<div class="dai__mhd"><span>' + (isU ? 'PENGUNJUNG' : 'VOXXY AI' + (m.model ? ' · ' + esc(m.model) : '')) + '</span><time>' + esc(fmtTime(m.created_at)) + '</time></div>' +
               '<div>' + esc(m.content) + '</div>' +
             '</div>';
           }).join('') : '<div class="dai__empty">Belum ada pesan.</div>') +
