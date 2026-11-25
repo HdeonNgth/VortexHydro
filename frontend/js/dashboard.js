@@ -10,19 +10,21 @@
   var ADMIN_API = SUPA_URL + '/functions/v1/admin-ai-monitor';
   var SESSION_KEY = 'vx_admin_monitor_session';
 
-  /* ---------- 1. Prototype Physics Engine (VXSim) ---------- */
+  /* ---------- 1. Prototype Physics Engine (VXSim — DINONAKTIFKAN / Menunggu Sensor Asli) ---------- */
   var CFG = {
     eta: 0.30, kRpm: 150, ratio: 4.0, ledW: 10.0,
     leak: 0.6, belt: 0.5,
     chg: 0.003, drain: 0.0006, fastDrain: 0.02,
     vRest0: 10.6, vRestSpan: 2.4, vChg: 0.6
   };
-  var S = { on: true, q: 0.5, h: 0.5, fault: 'none', qe: 0, rpm: 0, rpmg: 0, tr: 0, pe: 0, soc: 0.7, vbat: 0 };
-  S.vbat = CFG.vRest0 + CFG.vRestSpan * S.soc;
+  /* Simulasi acak dimatikan sementara agar angka di Live Monitoring 0 sampai data sensor asli masuk */
+  var SIM_ENABLED = false;
+  var S = { on: false, q: 0, h: 0, fault: 'none', qe: 0, rpm: 0, rpmg: 0, tr: 0, pe: 0, soc: 0, vbat: 0 };
   var simListeners = [], simHist = [], simLast = Date.now();
 
   function ratioNow() { return CFG.ratio * (S.fault === 'belt' ? CFG.belt : 1); }
   function stepSim(dt) {
+    if (!SIM_ENABLED) return;
     var inflow = S.on ? S.q : 0;
     S.qe += (inflow - S.qe) * (1 - Math.exp(-dt * 2.2));
     var qt = S.qe * (S.fault === 'leak' ? 1 - CFG.leak : 1);
@@ -38,6 +40,13 @@
     S.vbat += (target - S.vbat) * (1 - Math.exp(-dt * 3));
   }
   function readingSim(noise) {
+    if (!SIM_ENABLED) {
+      return {
+        debit: 0, vbat: 0, rpmShaft: 0, rpmGen: 0,
+        head: 0, daya: 0, led: 0,
+        on: false, fault: 'none', ts: Date.now()
+      };
+    }
     var j = function (v, a) { return noise && v > 0 ? v * (1 + (Math.random() - 0.5) * a) : v; };
     var v = S.vbat;
     return {
@@ -50,14 +59,16 @@
       on: S.on, fault: S.fault, ts: Date.now()
     };
   }
-  setInterval(function () {
-    var now = Date.now(), dt = Math.min(0.5, (now - simLast) / 1000);
-    simLast = now; stepSim(dt);
-  }, 100);
-  setInterval(function () {
-    simHist.push(readingSim(true));
-    if (simHist.length > 60) simHist.shift();
-  }, 1000);
+  if (SIM_ENABLED) {
+    setInterval(function () {
+      var now = Date.now(), dt = Math.min(0.5, (now - simLast) / 1000);
+      simLast = now; stepSim(dt);
+    }, 100);
+    setInterval(function () {
+      simHist.push(readingSim(true));
+      if (simHist.length > 60) simHist.shift();
+    }, 1000);
+  }
 
   window.VXSim = {
     CFG: CFG, state: S,
@@ -915,10 +926,17 @@
     if (!run || authState.role !== 'admin') return;
     if ($('dclk')) $('dclk').textContent = new Date().toLocaleTimeString('id-ID');
     var o = window.VXSim.read();
-    K.forEach(function (k) { D[k] = o[k] || 0; hist[k].push(D[k]); if (hist[k].length > N) hist[k].shift(); });
+    if (SIM_ENABLED) {
+      K.forEach(function (k) { D[k] = o[k] || 0; hist[k].push(D[k]); if (hist[k].length > N) hist[k].shift(); });
+    } else {
+      K.forEach(function (k) { D[k] = 0; hist[k] = [0]; });
+    }
     K.forEach(function (k) {
       var c = document.querySelector('[data-c="' + k + '"]');
-      if (c) { c.querySelector('b span').textContent = D[k].toFixed(fmt[k]); c.querySelector('polyline').setAttribute('points', spark(k)); }
+      if (c) {
+        c.querySelector('b span').textContent = D[k].toFixed(fmt[k]);
+        c.querySelector('polyline').setAttribute('points', SIM_ENABLED ? spark(k) : '');
+      }
     });
     if ($('dvDebit')) $('dvDebit').textContent = D.debit.toFixed(2);
     if ($('dvRpmg')) $('dvRpmg').textContent = Math.round(D.rpmGen);
@@ -933,7 +951,10 @@
     if ($('geff')) $('geff').style.strokeDashoffset = 75 - Math.min(1, D.rpmGen / 900) * 75;
     if ($('geft')) $('geft').textContent = Math.round(D.rpmGen);
     var st = $('dst');
-    if (st) { st.classList.remove('off'); st.classList.add('ok'); st.lastChild.textContent = 'LIVE · SIMULASI'; }
+    if (st) {
+      if (SIM_ENABLED) { st.classList.remove('off'); st.classList.add('ok'); st.lastChild.textContent = 'LIVE · SIMULASI'; }
+      else { st.classList.remove('ok'); st.classList.add('off'); st.lastChild.textContent = 'MENUNGGU SENSOR'; }
+    }
     chart();
   }
   function initDash() {
@@ -975,7 +996,8 @@
       B.classList.toggle('is-dash', isAdmin);
       if (isAdmin) {
         initDash();
-        if (!timer) { timer = setInterval(stepDash, 1000); stepDash(); }
+        stepDash();
+        if (SIM_ENABLED && !timer) { timer = setInterval(stepDash, 1000); }
         requestAnimationFrame(placeLens);
       }
     } else {
