@@ -881,11 +881,107 @@
     if ($('geft')) $('geft').textContent = Math.round(D.rpmGen);
     var st = $('dst');
     if (st) {
-      if (liveData.online) { st.classList.remove('off'); st.classList.add('ok'); st.lastChild.textContent = 'LIVE · SENSOR'; }
+      if (liveData.online) { st.classList.remove('off'); st.classList.add('ok'); st.lastChild.textContent = 'LIVE · ESP32'; }
+      else if (liveData.hasData) { st.classList.remove('ok'); st.classList.add('off'); st.lastChild.textContent = 'STANDBY · ESP32'; }
       else { st.classList.remove('ok'); st.classList.add('off'); st.lastChild.textContent = 'MENUNGGU SENSOR'; }
     }
     if (hist[tab].length) chart();
     else if ($('dch')) $('dch').innerHTML = '';
+  }
+
+  /* ---------- 5b. Live Supabase ESP32 Telemetry Connector (live_telemetry & telemetry_log) ---------- */
+  var espLastUpdatedAt = '';
+  var espLastTs = null;
+  var espHistoryLoaded = false;
+  var espPollInFlight = false;
+  var espWasOnline = false;
+  var ESP_ONLINE_WINDOW_MS = 15000;
+
+  function supaRestHeaders() {
+    var h = { apikey: PUB_KEY, Accept: 'application/json' };
+    var jwt = authState.session && authState.session.access_token;
+    if (jwt) h.Authorization = 'Bearer ' + jwt;
+    return h;
+  }
+
+  function loadEspHistory() {
+    if (authState.role !== 'admin') return Promise.resolve();
+    var url = SUPA_URL + '/rest/v1/telemetry_log?select=id,ts,debit,vbat,rpm_shaft,rpm_gen,out_peak_w&order=id.desc&limit=' + N;
+    return fetch(url, { headers: supaRestHeaders(), cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (rows) {
+        if (!Array.isArray(rows) || !rows.length) return;
+        rows.reverse();
+        K.forEach(function (k) { hist[k] = []; });
+        rows.forEach(function (row) {
+          hist.debit.push(Number(row.debit) || 0);
+          hist.vbat.push(Number(row.vbat) || 0);
+          hist.rpmShaft.push(Number(row.rpm_shaft) || 0);
+          hist.rpmGen.push(Number(row.rpm_gen) || 0);
+        });
+        var last = rows[rows.length - 1];
+        liveData.debit = Number(last.debit) || 0;
+        liveData.vbat = Number(last.vbat) || 0;
+        liveData.rpmShaft = Number(last.rpm_shaft) || 0;
+        liveData.rpmGen = Number(last.rpm_gen) || 0;
+        liveData.daya = Number(last.out_peak_w) || liveData.daya || 0;
+        liveData.hasData = true;
+        espHistoryLoaded = true;
+        renderTelemetry(false);
+        logEvt('Riwayat ESP32 dimuat (' + rows.length + ' titik dari Supabase)', 'o');
+      })
+      .catch(function () {});
+  }
+
+  function pollEspLive() {
+    if (!run || authState.role !== 'admin' || location.hash !== '#dashboard' || espPollInFlight) return;
+    espPollInFlight = true;
+    var url = SUPA_URL + '/rest/v1/live_telemetry?id=eq.live&select=debit,vbat,rpm_shaft,rpm_gen,gen_out_w,pln_in_w,bess_soc,ts,updated_at&limit=1';
+    fetch(url, { headers: supaRestHeaders(), cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (rows) {
+        if (!Array.isArray(rows) || !rows.length) return;
+        var row = rows[0];
+        var updatedIso = row.updated_at || '';
+        var updatedMs = updatedIso ? Date.parse(updatedIso) : 0;
+        var rowTs = row.ts != null ? Number(row.ts) : 0;
+        var changed = (updatedIso && updatedIso !== espLastUpdatedAt) || (espLastTs !== null && rowTs !== espLastTs);
+        var freshByClock = updatedMs > 0 && (Date.now() - updatedMs) <= ESP_ONLINE_WINDOW_MS;
+        var isLiveNow = freshByClock || (espLastUpdatedAt !== '' && changed);
+
+        liveData.debit = Number(row.debit) || 0;
+        liveData.vbat = Number(row.vbat) || 0;
+        liveData.rpmShaft = Number(row.rpm_shaft) || 0;
+        liveData.rpmGen = Number(row.rpm_gen) || 0;
+        liveData.daya = Number(row.gen_out_w) || 0;
+        liveData.ts = updatedMs || Date.now();
+        liveData.hasData = true;
+        liveData.online = isLiveNow;
+
+        var shouldRecord = changed || hist.debit.length === 0;
+        if (isLiveNow && !espWasOnline) {
+          logEvt('Sensor ESP32 terhubung LIVE dari Supabase', 'o');
+        } else if (!isLiveNow && espWasOnline) {
+          logEvt('Sinyal live ESP32 terhenti · menampilkan data terakhir', 'w');
+        }
+        espWasOnline = isLiveNow;
+        espLastUpdatedAt = updatedIso;
+        espLastTs = rowTs;
+
+        renderTelemetry(shouldRecord);
+      })
+      .catch(function () {})
+      .finally(function () { espPollInFlight = false; });
+  }
+
+  function startEspPolling() {
+    if (timer) { clearInterval(timer); timer = null; }
+    if (!espHistoryLoaded) {
+      loadEspHistory().then(function () { pollEspLive(); });
+    } else {
+      pollEspLive();
+    }
+    timer = setInterval(pollEspLive, 1500);
   }
 
   /* API bersih untuk menyuntikkan pembacaan sensor asli (Water Flow, INA219, RPM NJK) */
@@ -899,11 +995,16 @@
       liveData.rpmGen = Number(sample.rpmGen != null ? sample.rpmGen : sample.rpm_gen) || 0;
       liveData.daya = Number(sample.daya != null ? sample.daya : sample.gen_out_w) || 0;
       liveData.ts = Number(sample.ts) || Date.now();
+      liveData.hasData = true;
       liveData.online = true;
       renderTelemetry(true);
     },
+    refresh: function () { return loadEspHistory().then(pollEspLive); },
     clear: function () {
-      liveData = { debit: 0, vbat: 0, rpmShaft: 0, rpmGen: 0, daya: 0, ts: 0, online: false };
+      liveData = { debit: 0, vbat: 0, rpmShaft: 0, rpmGen: 0, daya: 0, ts: 0, hasData: false, online: false };
+      espLastUpdatedAt = '';
+      espLastTs = null;
+      espHistoryLoaded = false;
       K.forEach(function (k) { hist[k] = []; });
       renderTelemetry(false);
     }
@@ -914,12 +1015,12 @@
     if ($('dav')) $('dav').setAttribute('title', 'Profil Administrator · ' + (authState.email || 'Admin Vortex'));
     if (!initialized) {
       initialized = true;
-      logEvt('Dashboard Admin aktif · Menunggu data sensor asli', 'o');
+      logEvt('Dashboard Admin aktif · Menghubungkan ke Supabase ESP32…', 'o');
       if ($('dpause')) {
         $('dpause').onclick = function () {
           run = !run; this.textContent = run ? 'Jeda' : 'Lanjut';
           if (!run && $('dst')) { $('dst').classList.add('off'); $('dst').lastChild.textContent = 'DIJEDA'; }
-          else renderTelemetry(false);
+          else { pollEspLive(); renderTelemetry(false); }
         };
       }
       if ($('dtabs')) {
@@ -934,6 +1035,7 @@
     loadAiStats();
     loadAiList(true);
     loadDailyReport(true);
+    startEspPolling();
     showPane(dashEl.dataset.pane || 'ringkasan');
   }
 
