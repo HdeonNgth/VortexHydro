@@ -10,79 +10,8 @@
   var ADMIN_API = SUPA_URL + '/functions/v1/admin-ai-monitor';
   var SESSION_KEY = 'vx_admin_monitor_session';
 
-  /* ---------- 1. Prototype Physics Engine (VXSim — DINONAKTIFKAN / Menunggu Sensor Asli) ---------- */
-  var CFG = {
-    eta: 0.30, kRpm: 150, ratio: 4.0, ledW: 10.0,
-    leak: 0.6, belt: 0.5,
-    chg: 0.003, drain: 0.0006, fastDrain: 0.02,
-    vRest0: 10.6, vRestSpan: 2.4, vChg: 0.6
-  };
-  /* Simulasi acak dimatikan sementara agar angka di Live Monitoring 0 sampai data sensor asli masuk */
-  var SIM_ENABLED = false;
-  var S = { on: false, q: 0, h: 0, fault: 'none', qe: 0, rpm: 0, rpmg: 0, tr: 0, pe: 0, soc: 0, vbat: 0 };
-  var simListeners = [], simHist = [], simLast = Date.now();
-
-  function ratioNow() { return CFG.ratio * (S.fault === 'belt' ? CFG.belt : 1); }
-  function stepSim(dt) {
-    if (!SIM_ENABLED) return;
-    var inflow = S.on ? S.q : 0;
-    S.qe += (inflow - S.qe) * (1 - Math.exp(-dt * 2.2));
-    var qt = S.qe * (S.fault === 'leak' ? 1 - CFG.leak : 1);
-    S.tr = S.fault === 'jam' ? 0 : CFG.kRpm * Math.sqrt(S.h / 0.5) * Math.pow(qt / 0.5, 0.7);
-    S.rpm += (S.tr - S.rpm) * (1 - Math.exp(-dt * (S.fault === 'jam' ? 5 : 1.6)));
-    S.rpmg += (S.rpm * ratioNow() - S.rpmg) * (1 - Math.exp(-dt * 4));
-    var pe = S.tr > 0.5 ? CFG.eta * 9.81 * qt * S.h * Math.min(1, S.rpm / S.tr) : 0;
-    if (S.fault === 'belt') pe *= CFG.belt;
-    S.pe = pe;
-    S.soc += (pe * CFG.chg - (S.on ? CFG.drain : CFG.drain * 0.5) - (S.fault === 'batt' ? CFG.fastDrain : 0)) * dt;
-    S.soc = Math.max(0, Math.min(1, S.soc));
-    var target = CFG.vRest0 + CFG.vRestSpan * S.soc + CFG.vChg * Math.min(1, pe / CFG.ledW);
-    S.vbat += (target - S.vbat) * (1 - Math.exp(-dt * 3));
-  }
-  function readingSim(noise) {
-    if (!SIM_ENABLED) {
-      return {
-        debit: 0, vbat: 0, rpmShaft: 0, rpmGen: 0,
-        head: 0, daya: 0, led: 0,
-        on: false, fault: 'none', ts: Date.now()
-      };
-    }
-    var j = function (v, a) { return noise && v > 0 ? v * (1 + (Math.random() - 0.5) * a) : v; };
-    var v = S.vbat;
-    return {
-      debit: j(S.qe, 0.02),
-      vbat: noise ? v + (Math.random() - 0.5) * 0.02 : v,
-      rpmShaft: j(S.rpm, 0.015),
-      rpmGen: j(S.rpmg, 0.015),
-      head: S.h, daya: j(S.pe, 0.02),
-      led: S.rpmg > 60 ? Math.min(1, S.pe / CFG.ledW) : 0,
-      on: S.on, fault: S.fault, ts: Date.now()
-    };
-  }
-  if (SIM_ENABLED) {
-    setInterval(function () {
-      var now = Date.now(), dt = Math.min(0.5, (now - simLast) / 1000);
-      simLast = now; stepSim(dt);
-    }, 100);
-    setInterval(function () {
-      simHist.push(readingSim(true));
-      if (simHist.length > 60) simHist.shift();
-    }, 1000);
-  }
-
-  window.VXSim = {
-    CFG: CFG, state: S,
-    read: function () { return readingSim(true); },
-    history: function () { return simHist.slice(); },
-    set: function (o) {
-      var ch = {};
-      ['on', 'q', 'h', 'fault'].forEach(function (k) {
-        if (o[k] != null && o[k] !== S[k]) { ch[k] = o[k]; S[k] = o[k]; }
-      });
-      if (Object.keys(ch).length) simListeners.forEach(function (f) { try { f(ch, S); } catch (e) {} });
-    },
-    onChange: function (f) { simListeners.push(f); }
-  };
+  /* ---------- 1. Real Sensor Telemetry State (Tanpa Simulasi / Tanpa Angka Acak) ---------- */
+  var liveData = { debit: 0, vbat: 0, rpmShaft: 0, rpmGen: 0, daya: 0, ts: 0, online: false };
 
   /* ---------- 2. Unified Backend-Verified Admin Auth (Supabase Auth + Role Check) ---------- */
   var authState = { authenticated: false, role: 'guest', email: '', displayName: '', session: null };
@@ -617,12 +546,11 @@
   function renderTelemetrySummaryIntoReport() {
     var box = $('drepTelemetry');
     if (!box) return;
-    var cur = window.VXSim ? window.VXSim.read() : { debit: 0, rpmGen: 0, vbat: 0, daya: 0 };
     box.innerHTML =
-      '<div class="drep__kv"><span>Debit Puncak</span><b>' + Math.max(peakStats.debit, cur.debit || 0).toFixed(2) + ' L/s</b></div>' +
-      '<div class="drep__kv"><span>RPM Gen Puncak</span><b>' + Math.round(Math.max(peakStats.rpmGen, cur.rpmGen || 0)) + ' RPM</b></div>' +
-      '<div class="drep__kv"><span>Tegangan Baterai</span><b>' + (cur.vbat || 0).toFixed(2) + ' V</b></div>' +
-      '<div class="drep__kv"><span>Status Simulasi</span><b>' + (run ? 'Aktif' : 'Dijeda') + '</b></div>';
+      '<div class="drep__kv"><span>Debit Puncak</span><b>' + Math.max(peakStats.debit, liveData.debit || 0).toFixed(2) + ' L/s</b></div>' +
+      '<div class="drep__kv"><span>RPM Gen Puncak</span><b>' + Math.round(Math.max(peakStats.rpmGen, liveData.rpmGen || 0)) + ' RPM</b></div>' +
+      '<div class="drep__kv"><span>Tegangan Baterai</span><b>' + (liveData.vbat || 0).toFixed(2) + ' V</b></div>' +
+      '<div class="drep__kv"><span>Status Sensor</span><b>' + (liveData.online ? 'Terhubung' : 'Menunggu Data') + '</b></div>';
   }
 
   function renderDailyReport(rep) {
@@ -922,29 +850,30 @@
     dchEl.addEventListener('pointermove', function (e) { var r = dchEl.getBoundingClientRect(); hovX = (e.clientX - r.left) / r.width * 600; chart(); });
     dchEl.addEventListener('pointerleave', function () { hovX = null; chart(); });
   }
-  function stepDash() {
+  function renderTelemetry(recordPoint) {
     if (!run || authState.role !== 'admin') return;
     if ($('dclk')) $('dclk').textContent = new Date().toLocaleTimeString('id-ID');
-    var o = window.VXSim.read();
-    if (SIM_ENABLED) {
-      K.forEach(function (k) { D[k] = o[k] || 0; hist[k].push(D[k]); if (hist[k].length > N) hist[k].shift(); });
-    } else {
-      K.forEach(function (k) { D[k] = 0; hist[k] = [0]; });
-    }
+    K.forEach(function (k) {
+      D[k] = Number(liveData[k]) || 0;
+      if (recordPoint) {
+        hist[k].push(D[k]);
+        if (hist[k].length > N) hist[k].shift();
+      }
+    });
     K.forEach(function (k) {
       var c = document.querySelector('[data-c="' + k + '"]');
       if (c) {
         c.querySelector('b span').textContent = D[k].toFixed(fmt[k]);
-        c.querySelector('polyline').setAttribute('points', SIM_ENABLED ? spark(k) : '');
+        c.querySelector('polyline').setAttribute('points', hist[k].length > 1 ? spark(k) : '');
       }
     });
     if ($('dvDebit')) $('dvDebit').textContent = D.debit.toFixed(2);
     if ($('dvRpmg')) $('dvRpmg').textContent = Math.round(D.rpmGen);
     if ($('dvVbat')) $('dvVbat').textContent = D.vbat.toFixed(2);
-    if ($('dvDaya')) $('dvDaya').textContent = (o.daya || 0).toFixed(2);
+    if ($('dvDaya')) $('dvDaya').textContent = (Number(liveData.daya) || 0).toFixed(2);
     if (D.debit > peakStats.debit) peakStats.debit = D.debit;
     if (D.rpmGen > peakStats.rpmGen) peakStats.rpmGen = D.rpmGen;
-    if ((o.daya || 0) > peakStats.daya) peakStats.daya = o.daya || 0;
+    if ((Number(liveData.daya) || 0) > peakStats.daya) peakStats.daya = Number(liveData.daya) || 0;
     if (dashEl.dataset.pane === 'laporan') renderTelemetrySummaryIntoReport();
     if ($('grpm')) $('grpm').style.strokeDashoffset = 75 - Math.min(1, D.rpmShaft / 400) * 75;
     if ($('grpmt')) $('grpmt').textContent = Math.round(D.rpmShaft);
@@ -952,24 +881,45 @@
     if ($('geft')) $('geft').textContent = Math.round(D.rpmGen);
     var st = $('dst');
     if (st) {
-      if (SIM_ENABLED) { st.classList.remove('off'); st.classList.add('ok'); st.lastChild.textContent = 'LIVE · SIMULASI'; }
+      if (liveData.online) { st.classList.remove('off'); st.classList.add('ok'); st.lastChild.textContent = 'LIVE · SENSOR'; }
       else { st.classList.remove('ok'); st.classList.add('off'); st.lastChild.textContent = 'MENUNGGU SENSOR'; }
     }
-    chart();
+    if (hist[tab].length) chart();
+    else if ($('dch')) $('dch').innerHTML = '';
   }
+
+  /* API bersih untuk menyuntikkan pembacaan sensor asli (Water Flow, INA219, RPM NJK) */
+  window.VXTelemetry = {
+    read: function () { return Object.assign({}, liveData); },
+    push: function (sample) {
+      if (!sample || typeof sample !== 'object') return;
+      liveData.debit = Number(sample.debit) || 0;
+      liveData.vbat = Number(sample.vbat) || 0;
+      liveData.rpmShaft = Number(sample.rpmShaft != null ? sample.rpmShaft : sample.rpm_shaft) || 0;
+      liveData.rpmGen = Number(sample.rpmGen != null ? sample.rpmGen : sample.rpm_gen) || 0;
+      liveData.daya = Number(sample.daya != null ? sample.daya : sample.gen_out_w) || 0;
+      liveData.ts = Number(sample.ts) || Date.now();
+      liveData.online = true;
+      renderTelemetry(true);
+    },
+    clear: function () {
+      liveData = { debit: 0, vbat: 0, rpmShaft: 0, rpmGen: 0, daya: 0, ts: 0, online: false };
+      K.forEach(function (k) { hist[k] = []; });
+      renderTelemetry(false);
+    }
+  };
+
   function initDash() {
     if ($('dwho')) $('dwho').textContent = authState.email || 'Admin';
     if ($('dav')) $('dav').setAttribute('title', 'Profil Administrator · ' + (authState.email || 'Admin Vortex'));
     if (!initialized) {
       initialized = true;
-      var seed = window.VXSim.history();
-      if (!seed.length) seed = [window.VXSim.read()];
-      seed.forEach(function (r) { K.forEach(function (k) { hist[k].push(r[k] || 0); }); });
-      logEvt('Dashboard Admin aktif dan terverifikasi Supabase Auth', 'o');
+      logEvt('Dashboard Admin aktif · Menunggu data sensor asli', 'o');
       if ($('dpause')) {
         $('dpause').onclick = function () {
           run = !run; this.textContent = run ? 'Jeda' : 'Lanjut';
           if (!run && $('dst')) { $('dst').classList.add('off'); $('dst').lastChild.textContent = 'DIJEDA'; }
+          else renderTelemetry(false);
         };
       }
       if ($('dtabs')) {
@@ -977,7 +927,7 @@
           var b = e.target.closest('button'); if (!b) return;
           tab = b.dataset.k;
           this.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-          chart();
+          if (hist[tab].length) chart();
         };
       }
     }
@@ -996,8 +946,7 @@
       B.classList.toggle('is-dash', isAdmin);
       if (isAdmin) {
         initDash();
-        stepDash();
-        if (SIM_ENABLED && !timer) { timer = setInterval(stepDash, 1000); }
+        renderTelemetry(false);
         requestAnimationFrame(placeLens);
       }
     } else {
